@@ -1,0 +1,12 @@
+closeDataset-methods    ~~ Methods for Function closeDataset in
+                        package "rgdal"
+GDALDataset-class       Class "GDALDataset"
+GDALDriver-class        Class "GDALDriver": GDAL Driver Object
+GDALMajorObject-class   Class "GDALMajorObject"
+GDALRasterBand-class    Class "GDALRasterBand"
+GDALReadOnlyDataset-class
+                        Class "GDALReadOnlyDataset"
+GDALTransientDataset-class
+                        Class "GDALTransientDataset"
+getPixmapGDAL           Read GDAL datasets as pixmapGrey or pixmapRGB
+                        objects
