@@ -1,0 +1,12 @@
+#!/bin/bash
+for f in ./config.*; do
+    rm -f $f
+done
+if [ -e confdefs.h ]; then
+    rm -f confdefs.h
+fi
+if [ -e src/Makevars ]; then
+    rm -f src/Makevars
+fi
+
+exit 0

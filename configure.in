@@ -1,0 +1,28 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(src/gdal-bindings.cpp)
+
+if test `gdal-config --version`;
+then
+
+	PKG_CPPFLAGS=`gdal-config --cflags`
+	PKG_LIBS=`gdal-config --libs`
+
+else
+
+	echo ''
+	echo 'I was unable to find the gdal-config script distributed with'
+	echo 'GDAL. If you have not installed the GDAL libraries, you can'
+	echo 'download the source from  http://www.remotesensing.org/gdal/'
+	echo 'If you have installed the GDAL libraries, then make sure that'
+	echo 'gdal-config is in your path. Try typing gdal-config at a'
+	echo 'shell prompt and see if it runs. If not, find it and add its'
+	echo 'path to your shell path.'
+	echo ''
+
+	exit 1
+
+fi
+
+AC_SUBST(PKG_CPPFLAGS)
+AC_SUBST(PKG_LIBS)
+AC_OUTPUT(src/Makevars)
