@@ -39,9 +39,9 @@ getProjectionRef(dataset)
   \item{dataset}{An object inheriting from class 'GDALReadOnlyDataset'}
   \item{band}{The band number (1-based) to read from}
   \item{offset}{Number of rows and columns from the origin (usually the
-    upper left corner) to begin reading from}
+    upper left corner) to begin reading from; presently ordered (y,x) - this may change}
   \item{region.dim}{The number of rows and columns to read from the
-    dataset}
+    dataset; presently ordered (y,x) - this may change}
   \item{output.dim}{Number of rows and columns in the output data; if
     smaller than \code{region.dim} the data will be subsampled}
   \item{interleave}{Element and row stride while reading data; rarely

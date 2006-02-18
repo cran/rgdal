@@ -1,0 +1,23 @@
+Installing the R Windows binary rgdal package
+
+In order to install the R Windows binary rgdal package, you should first have installed GDAL/OGR with all of their dependencies needed for the data you need to access. 
+
+Installing FWTools is a convenient way to get started (but will be limited to the - extensive - range of drivers built into the binary package):
+
+http://fwtools.maptools.org/
+
+http://fwtools.maptools.org/windows-main.html
+
+Setting the FWTools bin/ directory in the PATH environmental variable is essential, as is setting GDAL_DATA to the appropriate value.
+
+The R Windows binary rgdal package is built against an FWTools Windows binary, using VC++.
+
+Notes:
+
+Building rgdal.dll in rgdal/src:
+
+cl /MT /Ox /EHsc /D "WIN32" /c /I E:\rsb\R\R-2.2.1pat\include /I C:\Programfiler\FWTools1.0.0a7\include *.cpp
+
+link /dll /out:rgdal.dll /def:RGDAL.def gdal-bindings.obj ogr_geom.obj ogr_proj.obj ogrsource.obj E:\rsb\R\R-2.2.1pat\lib\Rdll.lib /libpath:"C:\Programfiler\FWTools1.0.0a7\lib" gdal_i.lib
+
+for RSBs locations of current R and FWTools

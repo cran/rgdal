@@ -1,11 +1,14 @@
 #include <gdal_priv.h>
 #include <cpl_string.h>
+#include <ogr_spatialref.h>
+#include "ogrsf_frmts.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include <R.h>
+#include <Rdefines.h>
 #include <Rinternals.h>
 
 static SEXP
@@ -108,6 +111,8 @@ RGDAL_Init(void) {
 
   GDALAllRegister();
 
+  OGRRegisterAll();
+ 
   return(R_NilValue);
 
 }
@@ -150,8 +155,9 @@ RGDAL_GetMetadata(SEXP sxpObj, SEXP sxpDomain) {
   PROTECT(sxpMetadata = allocVector(VECSXP, CSLCount(metadata)));
 
   PROTECT(sxpNames = allocVector(STRSXP, CSLCount(metadata)));
-
-  for (int i = 0; i < CSLCount(metadata); ++i) {
+  
+  int i;
+  for (i = 0; i < CSLCount(metadata); ++i) {
 
     const char *field = CSLGetField(metadata, i);
 
@@ -186,7 +192,8 @@ RGDAL_SetMetadata(SEXP sxpObj, SEXP sxpMetadataList) {
 
   if (isNull(sxpNames)) {
 
-    for (int i = 0; i < length(sxpMetadataList); ++i) {
+    int i;
+    for (i = 0; i < length(sxpMetadataList); ++i) {
      
       value = asString(VECTOR_ELT(sxpMetadataList, i));
       CSLAddString(metadata, value);
@@ -195,7 +202,8 @@ RGDAL_SetMetadata(SEXP sxpObj, SEXP sxpMetadataList) {
 
   } else {
 
-    for (int i = 0; i < length(sxpMetadataList); ++i) {
+    int i;
+    for (i = 0; i < length(sxpMetadataList); ++i) {
 
       name = asString(sxpNames, i);
       value = asString(VECTOR_ELT(sxpMetadataList, i));
@@ -220,7 +228,8 @@ RGDAL_GetDriverNames(void) {
 
   PROTECT(sxpDriverList = allocVector(STRSXP, GDALGetDriverCount()));
 
-  for (int i = 0; i < GDALGetDriverCount(); ++i) {
+  int i;
+  for (i = 0; i < GDALGetDriverCount(); ++i) {
 
     GDALDriver *pDriver = GetGDALDriverManager()->GetDriver(i);
     
@@ -460,14 +469,30 @@ RGDAL_GetRasterCount(SEXP sDataset) {
 
 }
 
+/* changed to return proj4 string 20060212 RSB */
 SEXP
 RGDAL_GetProjectionRef(SEXP sDataset) {
 
-  GDALDataset *pDataset = getGDALDatasetPtr(sDataset);
+  OGRSpatialReference oSRS;
+  char *pszSRS_WKT = NULL;
+  SEXP ans;
 
-  return(mkString_safe(pDataset->GetProjectionRef()));
+  GDALDataset *pDataset = getGDALDatasetPtr(sDataset);
+  
+  pszSRS_WKT = (char*) pDataset->GetProjectionRef();
+
+  oSRS.importFromWkt( &pszSRS_WKT );
+  oSRS.exportToProj4( &pszSRS_WKT );
+  PROTECT(ans = NEW_CHARACTER(1));
+  SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszSRS_WKT));
+
+  CPLFree( pszSRS_WKT );
+  UNPROTECT(1);
+  return(ans);
 
 }
+
+
 
 SEXP
 RGDAL_GetDatasetDriver(SEXP sDataset) {
@@ -705,9 +730,11 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
   }
 
   // Create matrix transposed
-  SEXP sRStorage = allocMatrix(uRType,
+  int pc=0;
+  SEXP sRStorage;
+  PROTECT(sRStorage = allocMatrix(uRType,
 			       INTEGER(sxpDimOut)[1],
-			       INTEGER(sxpDimOut)[0]);
+			       INTEGER(sxpDimOut)[0])); pc++;
 
   // Data is read in transposed order
   if(pRasterBand->RasterIO(GF_Read,
@@ -728,23 +755,48 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
 
   double noDataValue = pRasterBand->GetNoDataValue(&hasNoDataValue);
 
+  int i;
+
   if (hasNoDataValue) {
 
     switch(uRType) {
 
     case INTSXP:
 
-      for (int i = 0; i < LENGTH(sRStorage); ++i)
-	if (INTEGER(sRStorage)[i] == (int)noDataValue)
+      for (i = 0; i < LENGTH(sRStorage); ++i)
+	if (INTEGER(sRStorage)[i] == (int) noDataValue) {
 	  INTEGER(sRStorage)[i] = NA_INTEGER;
+	}
 
       break;
 
     case REALSXP:
 
-      for (int i = 0; i < LENGTH(sRStorage); ++i)
-	if (REAL(sRStorage)[i] == noDataValue)
-	  REAL(sRStorage)[i] = NA_REAL;
+      switch(pRasterBand->GetRasterDataType()) {
+
+        case GDT_Float32:
+
+        for (i = 0; i < LENGTH(sRStorage); ++i)
+	  if (REAL(sRStorage)[i] == (double) ((float) noDataValue)) {
+	    REAL(sRStorage)[i] = NA_REAL;
+	  }
+	break;
+
+        case GDT_Float64:
+
+        for (i = 0; i < LENGTH(sRStorage); ++i)
+	  if (REAL(sRStorage)[i] == (double) (noDataValue)) {
+	    REAL(sRStorage)[i] = NA_REAL;
+	  }
+	break;
+
+        default:
+
+          error("Raster data type unknown\n");
+    
+        break;
+
+      }
 
       break;
 
@@ -758,6 +810,7 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
 
   }
 
+  UNPROTECT(pc);
   return(sRStorage);
 
 }
@@ -798,7 +851,8 @@ RGDAL_GetColorTable(SEXP sxpRasterBand) {
 
   SEXP sxpColorMatrix = allocMatrix(INTSXP, nColorEntries, 4);
 
-  for (int i = 0; i < nColorEntries; ++i) {
+  int i;
+  for (i = 0; i < nColorEntries; ++i) {
 
     const GDALColorEntry *pColorEntry = pColorTable->GetColorEntry(i);
 
@@ -820,7 +874,8 @@ RGDAL_SetCategoryNames(SEXP sxpRasterBand, SEXP sxpNames) {
 
   char **nameList = NULL;
 
-  for (int i = 0; i < length(sxpNames); ++i)
+  int i;
+  for (i = 0; i < length(sxpNames); ++i)
     nameList = CSLAddString(nameList, asString(sxpNames, i));
 
   CPLErr err = pRasterBand->SetCategoryNames(nameList);
@@ -846,7 +901,8 @@ RGDAL_GetCategoryNames(SEXP sxpRasterBand) {
 
   PROTECT(sxpCNames = allocVector(STRSXP, CSLCount(pcCNames)));
 
-  for (int i = 0; i < CSLCount(pcCNames); ++i) {
+  int i;
+  for (i = 0; i < CSLCount(pcCNames); ++i) {
 
     const char *field = CSLGetField(pcCNames, i);
 
@@ -882,6 +938,60 @@ RGDAL_GetGeoTransform(SEXP sxpDataset) {
 
   return(sxpGeoTrans);
 
+}
+
+SEXP
+RGDAL_SetNoDataValue(SEXP sxpRasterBand, SEXP NoDataValue) {
+  CPLErr err;
+
+  if (LENGTH(NoDataValue) != 1)
+	error("argument NoDataValue should have length 1");
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+
+  err = pRasterBand->SetNoDataValue(NUMERIC_POINTER(NoDataValue)[0]);
+
+  if (err == CE_Failure)
+	warning("setting of missing value not supported by this driver");
+
+  return(sxpRasterBand);
+
+}
+
+SEXP
+RGDAL_SetGeoTransform(SEXP sxpDataset, SEXP GeoTransform) {
+
+  GDALDataset *pDataset = getGDALDatasetPtr(sxpDataset);
+
+  if (LENGTH(GeoTransform) != 6)
+	error("GeoTransform argument should have length 6");
+
+  CPLErr err = pDataset->SetGeoTransform(NUMERIC_POINTER(GeoTransform));
+
+  if (err == CE_Failure) 
+	warning("Failed to set GeoTransform\n");
+
+  return(sxpDataset);
+}
+/* added RSB 20060212 */
+SEXP
+RGDAL_SetProject(SEXP sxpDataset, SEXP proj4string) {
+
+  OGRSpatialReference oSRS;
+  char *pszSRS_WKT = NULL;
+
+  GDALDataset *pDataset = getGDALDatasetPtr(sxpDataset);
+
+  oSRS.importFromProj4(CHAR(STRING_ELT(proj4string, 0)));
+  oSRS.exportToWkt( &pszSRS_WKT );
+
+  OGRErr err = pDataset->SetProjection(pszSRS_WKT);
+  CPLFree( pszSRS_WKT );
+
+  if (err == CE_Failure) 
+	warning("Failed to set Projection\n");
+
+  return(sxpDataset);
 }
 
 #ifdef __cplusplus

@@ -9,6 +9,8 @@
 \alias{getGeoTransFunc}
 \alias{initialize,GDALReadOnlyDataset-method}
 \alias{dim,GDALReadOnlyDataset-method}
+% \alias{[,GDALReadOnlyDataset-method}
+% \alias{sub.GDROD}
 \title{Class "GDALReadOnlyDataset"}
 \description{\code{GDALReadOnlyDataset} is the base class for a GDAL Dataset
   classes. Only read operations are supported. Both \code{GDALDataset}
@@ -34,6 +36,11 @@ Class \code{"GDALMajorObject"}, directly.
     \item{closeDataset}{\code{signature(dataset = "GDALReadOnlyDataset")}: ... }
     \item{dim}{\code{signature(x = "GDALReadOnlyDataset")}: ... }
     \item{initialize}{\code{signature(.Object = "GDALReadOnlyDataset")}: ... }
+%     \item{"["}{\code{signature(.Object = "GDALReadOnlyDataset")}: requires package
+% 	sp; selects rows and columns, and returns an object of class SpatialGridDataFrame
+% 	if the grid is not rotated, or else of class SpatialPointsDataFrame. Any arguments
+% 	passed to getRasterData (or in case of rotation getRasterTable) may be passed as
+% 	named arguments; the first three unnamed arguments are row,col,band }
   }
 }
 \usage{
