@@ -108,6 +108,7 @@ getDriverLongName <- function(driver) {
 setMethod('initialize', 'GDALReadOnlyDataset',
           def = function(.Object, filename, handle = NULL) {
             if (is.null(handle)) {
+	      if (nchar(filename) == 0) stop("empty file name")
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset', as.character(filename), 
 			TRUE, PACKAGE="rgdal")
@@ -124,6 +125,7 @@ setMethod('initialize', 'GDALReadOnlyDataset',
 setMethod('initialize', 'GDALDataset',
           def = function(.Object, filename, handle = NULL) {
             if (is.null(handle)) {
+	      if (nchar(filename) == 0) stop("empty file name")
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset', as.character(filename), 
 			FALSE, PACKAGE="rgdal")
@@ -142,15 +144,17 @@ setMethod('initialize', 'GDALTransientDataset',
             type = 'Byte', options = '', handle = NULL) {
             if (is.null(handle)) {
               typeNum <- match(type, .GDALDataTypes, 1) - 1
+	      my_tempfile <- tempfile()
+	      if (nchar(my_tempfile) == 0) stop("empty file name")
               slot(.Object, 'handle') <- .Call('RGDAL_CreateDataset', driver,
                                               as.integer(c(cols, rows, bands)),
                                               as.integer(typeNum),
                                               as.character(options),
-                                              tempfile(), PACKAGE="rgdal")
+                                              my_tempfile, PACKAGE="rgdal")
             } else {
               slot(.Object, 'handle') <- handle
             }
-            cfn <- function(handle) .Call('RGDAL_DeleteHandle', 
+            cfn <- function(handle) .Call('RGDAL_CloseHandle', 
 		handle, PACKAGE="rgdal")
             .setCollectorFun(slot(.Object, 'handle'), cfn)
             .Object
@@ -171,12 +175,15 @@ copyDataset <- function(dataset, driver, strict = FALSE, options = '') {
   
   if (missing(driver)) driver <- getDriver(dataset)
   
+  my_tempfile <- tempfile()
+  if (nchar(my_tempfile) == 0) stop("empty file name")
+#  my_tempfile <- as.character(tempfile(tmpdir=.my_tempdir()))
   new.obj <- new('GDALTransientDataset',
                  handle = .Call('RGDAL_CopyDataset',
                    dataset, driver,
                    as.integer(strict),
                    as.character(options),
-                   tempfile(), PACKAGE="rgdal"))
+                   my_tempfile, PACKAGE="rgdal"))
 
   new.obj
   
@@ -189,6 +196,7 @@ saveDataset <- function(dataset, filename) {
   new.class <- ifelse(class(dataset) == 'GDALTransientDataset',
                       'GDALDataset', class(dataset))
   
+  if (nchar(filename) == 0) stop("empty file name")
   new.obj <- new(new.class,
                  handle = .Call('RGDAL_CopyDataset',
                    dataset, getDriver(dataset),
@@ -216,7 +224,7 @@ setMethod('closeDataset', 'GDALTransientDataset',
           def = function(dataset) {
             driver <- getDriver(dataset)
             filename <- getDescription(dataset)
-            .Call('RGDAL_DeleteFile', driver, filename, PACKAGE="rgdal")
+            .Call('RGDAL_CloseDataset', driver, filename, PACKAGE="rgdal")
             callNextMethod()
           })
 
@@ -268,6 +276,7 @@ deleteDataset <- function(dataset) {
 }
 
 GDAL.open <- function(filename) {
+  	if (nchar(filename) == 0) stop("empty file name")
 	res <- new("GDALReadOnlyDataset", filename)
 	res
 }
@@ -335,8 +344,11 @@ getRasterTable <- function(dataset,
 
   geoTrans <- getGeoTransFunc(dataset)
 
-  x.i <- 1:region.dim[1] + offset[1]
-  y.i <- 1:region.dim[2] + offset[2]
+  # EJP, 06/01/05:
+  #x.i <- 1:region.dim[1] + offset[1]
+  #y.i <- 1:region.dim[2] + offset[2]
+  y.i <- 1:region.dim[1] - 0.5 + offset[1]
+  x.i <- 1:region.dim[2] - 0.5 + offset[2]
 
   y.i <- rep(y.i, each = length(x.i))
   x.i <- rep(x.i, len = prod(region.dim))
@@ -352,12 +364,13 @@ getRasterTable <- function(dataset,
 
   out <- as.data.frame(out)
     
-  names(out) <- c('row', 'column', paste('band', 1:nbands, sep = ''))
+  # EJP, 06/01/05:
+  #names(out) <- c('row', 'column', paste('band', 1:nbands, sep = ''))
+  names(out) <- c('x', 'y', paste('band', 1:nbands, sep = ''))
 
   out
 
 }
-
                            
 getRasterData <- function(dataset,
                           band = NULL,
@@ -420,7 +433,7 @@ getColorTable <- function(dataset, band = 1) {
   .assertClass(dataset, 'GDALReadOnlyDataset')
 
   if (length(band) > 1) stop("choose one band only")
-  nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
+  nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
   if (!(band %in% 1:nbands)) stop("no such band")
 
   rasterBand <- new('GDALRasterBand', dataset, band)
@@ -502,9 +515,13 @@ getGeoTransFunc <- function(dataset) {
 
   geoTrans <- .Call('RGDAL_GetGeoTransform', dataset, PACKAGE="rgdal")
 
-  rotMat <- matrix(geoTrans[c(6, 5, 3, 2)], 2)
+  # EJP, 06/01/05:
+  #rotMat <- matrix(geoTrans[c(6, 5, 3, 2)], 2)
+  rotMat <- matrix(geoTrans[c(2, 3, 5, 6)], 2)
 
-  offset <- geoTrans[c(4, 1)]
+  # EJP, 06/01/05:
+  #offset <- geoTrans[c(4, 1)]
+  offset <- geoTrans[c(1, 4)]
 
   function(x, y) {
 
