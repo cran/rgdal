@@ -77,7 +77,8 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 		ysign <- sign(gt[6])
 		co.x <- gt[1] + (gdal.args$offset[2] + half.cell[2]) *
 			 cellsize[1]
-		co.y <- ifelse(ysign < 0, gt[4] + (ysign*((region.dim[1] + 
+		co.y <- ifelse(ysign < 0, gt[4] + (ysign*((
+			gdal.args$region.dim[1] + 
 			gdal.args$offset[1]) + (ysign*half.cell[1]))) * 
 			abs(cellsize[2]), gt[4] + (ysign*(
 			(gdal.args$offset[1]) + (ysign*half.cell[1]))) * 

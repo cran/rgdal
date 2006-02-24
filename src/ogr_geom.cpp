@@ -24,10 +24,10 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 
     int navailable_layers; 
     int i, j, k, km;
-    int iDriver;
+/*    int iDriver;*/
     int dim, with_z;
     int np, nr, nm;
-    char *pszProj4 = NULL;
+/*    char *pszProj4 = NULL;*/
 
     int pc=0;
     int nf, mp_count;

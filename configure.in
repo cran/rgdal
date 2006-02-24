@@ -1,6 +1,21 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/gdal-bindings.cpp)
 
+AC_CHECK_LIB(proj,pj_init_plus,PROJ_SETTING="external",PROJ_SETTING="none",$LIBS)
+AC_CHECK_HEADERS(proj_api.h)
+#echo "PROJ_SETTING: $PROJ_SETTING"
+if test "$PROJ_SETTING" = "none" ; then
+    STOP="stop"
+fi
+if test "$ac_cv_header_proj_api_h" = "no" ; then
+    STOP="stop"
+fi
+if test "$STOP" = "stop" ; then
+    echo "libproj.a and proj_api.h not found in standard search locations,"
+    echo "edit src/Makevars manually, adding -I<directory with proj_api.h>"
+    echo "to PKG_CPPFLAGS = , and -L<directory with libproj.a> to PKG_LIBS ="
+    exit 1
+fi
 if test `gdal-config --version`;
 then
 
@@ -22,7 +37,13 @@ else
 	exit 1
 
 fi
-
+GDAL_VERSION=`gdal-config --version`
+REQ_GDAL="1.3.1"
+if test "$GDAL_VERSION" != "$REQ_GDAL" ; then
+    echo "GDAL version $GDAL_VERSION found ..."
+    echo "For building this version, GDAL version $REQ_GDAL is required."
+    exit 1
+fi
 AC_SUBST(PKG_CPPFLAGS)
 AC_SUBST(PKG_LIBS)
 AC_OUTPUT(src/Makevars)

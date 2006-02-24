@@ -1,5 +1,6 @@
-closeDataset-methods    ~~ Methods for Function closeDataset in package
-                        "rgdal"
+closeDataset-methods    closeDataset methods
+CRS-class               Class "CRS" of coordinate reference system
+                        arguments
 GDALDataset-class       Class "GDALDataset"
 GDALDriver-class        Class "GDALDriver": GDAL Driver Object
 GDALMajorObject-class   Class "GDALMajorObject"
@@ -12,8 +13,12 @@ GDALTransientDataset-class
                         Class "GDALTransientDataset"
 getPixmapGDAL           Read GDAL datasets as pixmapGrey or pixmapRGB
                         objects
+make_EPSG               Make a data frame of EPSG projection codes
+project                 Projection of coordinate matrices
 readGDAL                Read/write between GDAL grid maps and Spatial
                         objects
 readOGR                 Read OGR vector maps into Spatial objects
 showWKT                 Show Well-Known Text spatial reference system
                         metadata
+transform-methods       Methods for Function transform in package
+                        "spproj"

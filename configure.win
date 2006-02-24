@@ -1,0 +1,11 @@
+#!/bin/sh
+if test -z "$GDAL_HOME" ; then
+    GDAL_HOME="E:/rsb/MSYS/1.0/local"
+fi
+echo "GDAL_HOME=${GDAL_HOME}" > src/Makeconf.win
+
+echo "using GDAL_HOME: ${GDAL_HOME}"
+
+mkdir $DPKG/libs
+cp ${GDAL_HOME}/bin/libgdal-1.dll $DPKG/libs
+

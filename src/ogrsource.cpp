@@ -29,16 +29,16 @@ extern "C" {
   SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer){
     // return FIDs, nFields, fieldInfo
 
-    SEXP ans,vec,mat,drv;
+    SEXP ans,vec,/*mat,*/drv;
     SEXP itemlist, itemnames, itemwidth, itemtype;
-    SEXP geotype;
+    /*SEXP geotype;*/
 
     int nFIDs, nFields, iField, pc=0;
 
     OGRDataSource *poDS;
     OGRLayer *poLayer;
     OGRFeatureDefn *poDefn;
-    OGRGeometry *poGeom;
+  /*  OGRGeometry *poGeom;*/
     OGRSFDriver *poDriver;
 
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrsourcename, 0)), 
@@ -154,7 +154,7 @@ extern "C" {
     OGRFieldDefn *poField;
     OGRFeature *poFeature;
     int iRow,nRows;
-    SEXP ans;
+    SEXP ans = R_NilValue;
 
     nRows=length(FIDs);
     // get field data from layer

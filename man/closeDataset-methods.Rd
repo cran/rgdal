@@ -1,6 +1,6 @@
 \name{closeDataset-methods}
 \docType{methods}
-\title{ ~~ Methods for Function closeDataset in package "rgdal"}
+\title{closeDataset methods}
 \alias{closeDataset-methods}
 \alias{closeDataset}
 \alias{closeDataset.default}

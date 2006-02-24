@@ -536,15 +536,3 @@ getGeoTransFunc <- function(dataset) {
 
 }
 
-.First.lib <- function(lib, pkg) {
-
-  require(methods, quietly = TRUE, warn.conflicts = FALSE)
-
-  library.dynam('rgdal', pkg, lib)
-
-  .Call('RGDAL_Init', PACKAGE="rgdal")
-
-  cat('Geospatial Data Abstraction Library ')
-  cat('extensions to R successfully loaded\n')
-  
-}

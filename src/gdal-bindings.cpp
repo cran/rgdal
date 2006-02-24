@@ -617,7 +617,7 @@ RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
   int rowsIn = nrows(sxpData);
   int colsIn = ncols(sxpData);
 
-  GDALDataType eGDALType;
+  GDALDataType eGDALType = GDT_Int32;
 
   switch(pRasterBand->GetRasterDataType()) {
 
@@ -684,8 +684,8 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
 
   GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
 
-  GDALDataType eGDALType;
-  SEXPTYPE uRType;
+  GDALDataType eGDALType = GDT_Int32;
+  SEXPTYPE uRType = INTSXP;
 
   switch(pRasterBand->GetRasterDataType()) {
 
