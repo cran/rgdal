@@ -5,7 +5,7 @@
 \description{The functions read or write GDAL grid maps. They will set the spatial reference system if available.}
 \usage{ 
 readGDAL(fname, offset, region.dim, ..., half.cell=c(0.5, 0.5), silent = FALSE)
-writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA
+writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=""
 %, clone = NULL
 )
 }
@@ -24,6 +24,7 @@ etc.) }
 \item{drivername}{ GDAL driver name }
 \item{type}{ GDAL write data type (others than this default have not been tested) }
 \item{ mvFlag }{ missing value flag for output file }
+\item{options}{driver-specific options to be passed to the GDAL driver}
 %\item{clone}{if not NULL, a grid file to clone}
 }
 

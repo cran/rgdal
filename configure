@@ -2959,12 +2959,14 @@ else
 
 fi
 GDAL_VERSION=`gdal-config --version`
-REQ_GDAL="1.3.1"
-if test "$GDAL_VERSION" != "$REQ_GDAL" ; then
+VER12=`echo "$GDAL_VERSION" | cut -d"." -f1,2`
+REQ_GDAL="1.3"
+if test "$VER12" != "$REQ_GDAL" ; then
     echo "GDAL version $GDAL_VERSION found ..."
-    echo "For building this version, GDAL version $REQ_GDAL is required."
+    echo "For building this version, at least GDAL version 1.3.1 is required."
     exit 1
 fi
+
 
 
           ac_config_files="$ac_config_files src/Makevars"

@@ -20,5 +20,5 @@ readGDAL                Read/write between GDAL grid maps and Spatial
 readOGR                 Read OGR vector maps into Spatial objects
 showWKT                 Show Well-Known Text spatial reference system
                         metadata
-transform-methods       Methods for Function transform in package
-                        "spproj"
+spTransform-methods     Methods for Function spTransform in package
+                        "rgdal"

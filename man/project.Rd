@@ -25,7 +25,7 @@ project(xy, proj, inv = FALSE)
 
 \note{ The locations of Hawaii and Alaska in the data source are (putting it mildly) arbitrary, please avoid airlines using these positions.}
 
-\seealso{ \code{\link[sp]{CRS-class}}, \code{\link{transform-methods}} }
+\seealso{ \code{\link[sp]{CRS-class}}, \code{\link{spTransform-methods}} }
 
 \examples{
 data(state)

@@ -358,8 +358,12 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
 		    SEXP sOpts, SEXP sFile) {
 
   GDALDriver *pDriver = getGDALDriverPtr(sxpDriver);
-
+  GDALDataset *pDataset;
   const char *filename = asString(sFile);
+
+  int i, n;
+
+/*  char **opts=NULL; */
 
 #ifdef RGDALDEBUG
   fprintf(stderr, "Opening dataset: %s\n", filename);
@@ -370,11 +374,24 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
 
   GDALDataType eGDALType = (GDALDataType) asInteger(sType);
 
-  GDALDataset *pDataset = pDriver->Create(filename,
-					  INTEGER(sDim)[0],
-					  INTEGER(sDim)[1],
-					  INTEGER(sDim)[2],
-					  eGDALType, NULL);
+  if (isNull(sOpts)) {
+    char **opts = NULL;
+    pDataset = pDriver->Create(filename,
+			  INTEGER(sDim)[0],
+			  INTEGER(sDim)[1],
+			  INTEGER(sDim)[2],
+			  eGDALType, opts);
+  } else {
+    n = length(sOpts);
+    char *opts[n];
+    for (i=0; i < n; i++) opts[i] = CHAR(STRING_ELT(sOpts, i));
+    for (i=0; i < n; i++) Rprintf("option: %s\n", opts[i]);
+    pDataset = pDriver->Create(filename,
+			  INTEGER(sDim)[0],
+			  INTEGER(sDim)[1],
+			  INTEGER(sDim)[2],
+			  eGDALType, opts);
+  }
 
   if (pDataset == NULL) error("Unable to create dataset\n");
 

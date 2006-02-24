@@ -1,30 +1,31 @@
-\name{transform-methods}
+\name{spTransform-methods}
 \docType{methods}
-\title{ Methods for Function transform in package "spproj" }
-\alias{transform-methods}
-\alias{transform,ANY-method}
-\alias{transform,SpatialPoints-method}
-\alias{transform,SpatialPointsDataFrame-method}
-\alias{transform,SpatialPixelsDataFrame-method}
-\alias{transform,SpatialGridDataFrame-method}
-%\alias{transform,Sline-method}
-%\alias{transform,Slines-method}
-\alias{transform,SpatialLines-method}
-%\alias{transform,Sring-method}
-%\alias{transform,Srings-method}
-\alias{transform,SpatialPolygons-method}
-\alias{transform.SpatialPoints}
-\alias{transform.SpatialPointsDataFrame}
-%\alias{transform.Sline}
-%\alias{transform.Slines}
-\alias{transform.SpatialLines}
-\alias{transform.SpatialLinesDataFrame}
-\alias{transform,SpatialLinesDataFrame-method}
-%\alias{transform.Sring}
-%\alias{transform.Srings}
-\alias{transform.SpatialPolygons}
-\alias{transform.SpatialPolygonsDataFrame}
-\alias{transform,SpatialPolygonsDataFrame-method}
+\title{ Methods for Function spTransform in package "rgdal" }
+\alias{spTransform-methods}
+\alias{spTransform}
+\alias{spTransform,ANY-method}
+\alias{spTransform,SpatialPoints,CRS-method}
+\alias{spTransform,SpatialPointsDataFrame,CRS-method}
+\alias{spTransform,SpatialPixelsDataFrame,CRS-method}
+\alias{spTransform,SpatialGridDataFrame,CRS-method}
+%\alias{spTransform,Sline-method}
+%\alias{spTransform,Slines-method}
+\alias{spTransform,SpatialLines,CRS-method}
+%\alias{spTransform,Sring-method}
+%\alias{spTransform,Srings-method}
+\alias{spTransform,SpatialPolygons,CRS-method}
+\alias{spTransform.SpatialPoints}
+\alias{spTransform.SpatialPointsDataFrame}
+%\alias{spTransform.Sline}
+%\alias{spTransform.Slines}
+\alias{spTransform.SpatialLines}
+\alias{spTransform.SpatialLinesDataFrame}
+\alias{spTransform,SpatialLinesDataFrame,CRS-method}
+%\alias{spTransform.Sring}
+%\alias{spTransform.Srings}
+\alias{spTransform.SpatialPolygons}
+\alias{spTransform.SpatialPolygonsDataFrame}
+\alias{spTransform,SpatialPolygonsDataFrame,CRS-method}
 \section{Methods}{\describe{
 
 \item{"ANY"}{default void method}
@@ -63,11 +64,11 @@ states <- states[states$x > -121,]
 coordinates(states) <- c("x", "y")
 proj4string(states) <- CRS("+proj=longlat +ellps=clrk66")
 summary(states)
-state.ll83 <- transform(states, CRS("+proj=longlat +ellps=GRS80"))
+state.ll83 <- spTransform(states, CRS("+proj=longlat +ellps=GRS80"))
 summary(state.ll83)
-state.merc <- transform(states, CRS=CRS("+proj=merc +ellps=GRS80"))
+state.merc <- spTransform(states, CRS=CRS("+proj=merc +ellps=GRS80"))
 summary(state.merc)
-state.merc <- transform(states, CRS=CRS("+proj=merc +ellps=GRS80 +units=us-mi"))
+state.merc <- spTransform(states, CRS=CRS("+proj=merc +ellps=GRS80 +units=us-mi"))
 summary(state.merc)
 \dontrun{
 states <- data.frame(state.x77, state.center)
@@ -75,26 +76,26 @@ states <- states[states$x > -121,]
 coordinates(states) <- c("x", "y")
 proj4string(states) <- CRS("+init=epsg:4267")
 summary(states)
-state.ll83 <- transform(states, CRS("+init=epsg:4269"))
+state.ll83 <- spTransform(states, CRS("+init=epsg:4269"))
 summary(state.ll83)
-state.kansasSlcc <- transform(states, CRS=CRS("+init=epsg:26978"))
+state.kansasSlcc <- spTransform(states, CRS=CRS("+init=epsg:26978"))
 summary(state.kansasSlcc)
 }
 data(meuse)
 coordinates(meuse) <- c("x", "y")
 proj4string(meuse) <- CRS("+proj=stere +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m")
 summary(meuse)
-meuse.utm <- transform(meuse, CRS("+proj=utm +zone=32 +ellps=WGS84"))
+meuse.utm <- spTransform(meuse, CRS("+proj=utm +zone=32 +ellps=WGS84"))
 summary(meuse.utm)
 cbind(coordinates(meuse), coordinates(meuse.utm))
 kiritimati_primary_roads <- readOGR(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")
-kiritimati_primary_roads_ll <- transform(kiritimati_primary_roads, CRS("+proj=longlat +ellps=WGS84"))
+kiritimati_primary_roads_ll <- spTransform(kiritimati_primary_roads, CRS("+proj=longlat +ellps=WGS84"))
 opar <- par(mfrow=c(1,2))
 plot(kiritimati_primary_roads, axes=TRUE)
 plot(kiritimati_primary_roads_ll, axes=TRUE, las=1)
 par(opar)
 scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1], "scot_BNG")
-scot_LL <- transform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
+scot_LL <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
 opar <- par(mfrow=c(1,2))
 plot(scot_LL, axes=TRUE)
 plot(scot_BNG, axes=TRUE, las=1)
@@ -103,12 +104,12 @@ easts <- pretty(bbox(scot_LL)[1,], min.n=4)
 easts <- easts[easts > bbox(scot_LL)[1,1] & easts < bbox(scot_LL)[1,2]]
 eastlist <- vector(mode="list", length=length(easts))
 for (i in 1:length(easts)) eastlist[[i]] <- Line(cbind(rep(easts[i], 100), seq(bbox(scot_LL)[2,1], bbox(scot_LL)[2,2], length.out=100)))
-plot(transform(SpatialLines(list(Lines(eastlist)), CRS("+proj=longlat +datum=WGS84")), toproj), add=TRUE, col="grey")
+plot(spTransform(SpatialLines(list(Lines(eastlist)), CRS("+proj=longlat +datum=WGS84")), toproj), add=TRUE, col="grey")
 norths <- pretty(bbox(scot_LL)[2,], min.n=4)
 norths <- norths[norths > bbox(scot_LL)[2,1] & norths < bbox(scot_LL)[2,2]]
 northlist <- vector(mode="list", length=length(norths))
 for (i in 1:length(norths)) northlist[[i]] <- Line(cbind(seq(bbox(scot_LL)[1,1], bbox(scot_LL)[1,2], length.out=100), rep(norths[i], 100)))
-plot(transform(SpatialLines(list(Lines(northlist)), CRS("+proj=longlat +datum=WGS84")), toproj), add=TRUE, col="grey")
+plot(spTransform(SpatialLines(list(Lines(northlist)), CRS("+proj=longlat +datum=WGS84")), toproj), add=TRUE, col="grey")
 par(opar)
 }
 
