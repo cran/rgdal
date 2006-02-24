@@ -1,0 +1,8 @@
+include Makeconf.win
+
+GDAL_INC_DIR=${GDAL_HOME}/include
+GDAL_LIB_DIR=${GDAL_HOME}/lib
+
+PKG_CPPFLAGS=-I${GDAL_INC_DIR} -g -DRGDALDEBUG
+PKG_LIBS=-L${GDAL_LIB_DIR} -lgdal -lproj
+
