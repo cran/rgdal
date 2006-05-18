@@ -141,15 +141,16 @@ setMethod('initialize', 'GDALDataset',
 
 setMethod('initialize', 'GDALTransientDataset',
           def = function(.Object, driver, rows, cols, bands = 1,
-            type = 'Byte', options = '', handle = NULL) {
+            type = 'Byte', options = NULL, handle = NULL) {
             if (is.null(handle)) {
               typeNum <- match(type, .GDALDataTypes, 1) - 1
 	      my_tempfile <- tempfile()
 	      if (nchar(my_tempfile) == 0) stop("empty file name")
+	      if (!is.null(options)) options <- as.character(options)
               slot(.Object, 'handle') <- .Call('RGDAL_CreateDataset', driver,
                                               as.integer(c(cols, rows, bands)),
                                               as.integer(typeNum),
-                                              as.character(options),
+                                              options,
                                               my_tempfile, PACKAGE="rgdal")
             } else {
               slot(.Object, 'handle') <- handle
