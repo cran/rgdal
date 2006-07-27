@@ -61,11 +61,14 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer) {
     if (hSRS != NULL) {
 	hSRS->morphFromESRI();
         if (hSRS->exportToProj4(&pszProj4) != OGRERR_NONE) {
-	    SET_VECTOR_ELT(ans, 0, NA_STRING);
+//	    SET_VECTOR_ELT(ans, 0, NA_STRING);
+            SET_STRING_ELT(ans, 0, NA_STRING);
 	} else {
-	    SET_VECTOR_ELT(ans, 0, COPY_TO_USER_STRING(pszProj4));
+//	    SET_VECTOR_ELT(ans, 0, COPY_TO_USER_STRING(pszProj4));
+            SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszProj4));
 	}
-    } else SET_VECTOR_ELT(ans, 0, NA_STRING);
+//    } else SET_VECTOR_ELT(ans, 0, NA_STRING);
+      } else SET_STRING_ELT(ans, 0, NA_STRING);
 
     delete poDS;
     UNPROTECT(1);
