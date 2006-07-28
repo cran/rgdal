@@ -60,14 +60,16 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
     setAttrib(ans, R_NamesSymbol, ansnames);
 
     SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(1));
-    SET_VECTOR_ELT(VECTOR_ELT(ans, 0), 0, 
+//    SET_VECTOR_ELT(VECTOR_ELT(ans, 0), 0,
+    SET_STRING_ELT(VECTOR_ELT(ans, 0), 0, 
 	COPY_TO_USER_STRING(OGR_DS_GetName(Ogr_ds)));
 
     Ogr_layer =  OGR_DS_GetLayer(Ogr_ds, j);
     Ogr_featuredefn = OGR_L_GetLayerDefn(Ogr_layer);
 
     SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(1));
-    SET_VECTOR_ELT(VECTOR_ELT(ans, 1), 0, 
+//    SET_VECTOR_ELT(VECTOR_ELT(ans, 1), 0, 
+    SET_STRING_ELT(VECTOR_ELT(ans, 1), 0,
 	COPY_TO_USER_STRING((char *)OGR_FD_GetName(Ogr_featuredefn)));
     SET_VECTOR_ELT(ans, 2, NEW_INTEGER(1));
 

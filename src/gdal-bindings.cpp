@@ -167,7 +167,8 @@ RGDAL_GetMetadata(SEXP sxpObj, SEXP sxpDomain) {
 
     SET_VECTOR_ELT(sxpMetadata, i, value ? mkChar(value) : mkChar(""));
 
-    SET_VECTOR_ELT(sxpNames, i, tag ? mkChar(tag) : mkChar(""));
+//    SET_VECTOR_ELT(sxpNames, i, tag ? mkChar(tag) : mkChar(""));
+    SET_STRING_ELT(sxpNames, i, tag ? mkChar(tag) : mkChar(""));
 
   }
 
@@ -233,7 +234,8 @@ RGDAL_GetDriverNames(void) {
 
     GDALDriver *pDriver = GetGDALDriverManager()->GetDriver(i);
     
-  SET_VECTOR_ELT(sxpDriverList, i, mkChar(GDALGetDriverShortName( pDriver )));
+//  SET_VECTOR_ELT(sxpDriverList, i, mkChar(GDALGetDriverShortName( pDriver )));
+    SET_STRING_ELT(sxpDriverList, i, mkChar(GDALGetDriverShortName( pDriver )));
 
   }
 
@@ -646,6 +648,18 @@ RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
 
     eGDALType = GDT_Int32;
     PROTECT(sxpData = coerceVector(sxpData, INTSXP));
+  // Transpose data
+// replication for 2.4.0 RSB 20060726
+    if(pRasterBand->RasterIO(GF_Write,
+			   INTEGER(sxpOffset)[1],
+			   INTEGER(sxpOffset)[0],
+			   rowsIn, colsIn,
+			   (void *)INTEGER(sxpData),
+			   rowsIn, colsIn,
+			   eGDALType,
+			   0, 0)
+       == CE_Failure)
+      error("Failure during raster IO\n");
 
     break;
 
@@ -654,6 +668,17 @@ RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
 
     eGDALType = GDT_Float64;
     PROTECT(sxpData = coerceVector(sxpData, REALSXP));
+  // Transpose data
+    if(pRasterBand->RasterIO(GF_Write,
+			   INTEGER(sxpOffset)[1],
+			   INTEGER(sxpOffset)[0],
+			   rowsIn, colsIn,
+			   (void *)REAL(sxpData),
+			   rowsIn, colsIn,
+			   eGDALType,
+			   0, 0)
+       == CE_Failure)
+      error("Failure during raster IO\n");
 
     break;
 
@@ -664,6 +689,17 @@ RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
 
     eGDALType = GDT_CFloat64;
     PROTECT(sxpData = coerceVector(sxpData, CPLXSXP));
+  // Transpose data
+    if(pRasterBand->RasterIO(GF_Write,
+			   INTEGER(sxpOffset)[1],
+			   INTEGER(sxpOffset)[0],
+			   rowsIn, colsIn,
+			   (void *)COMPLEX(sxpData),
+			   rowsIn, colsIn,
+			   eGDALType,
+			   0, 0)
+       == CE_Failure)
+      error("Failure during raster IO\n");
 
     break;
     
@@ -676,16 +712,16 @@ RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
   }
 
   // Transpose data
-  if(pRasterBand->RasterIO(GF_Write,
-			   INTEGER(sxpOffset)[1],
-			   INTEGER(sxpOffset)[0],
-			   rowsIn, colsIn,
-			   (void *)CHAR(sxpData),
-			   rowsIn, colsIn,
-			   eGDALType,
-			   0, 0)
-     == CE_Failure)
-    error("Failure during raster IO\n");
+//    if(pRasterBand->RasterIO(GF_Write,
+//			   INTEGER(sxpOffset)[1],
+//			   INTEGER(sxpOffset)[0],
+//			   rowsIn, colsIn,
+//			   (void *)CHAR(sxpData),
+//			   rowsIn, colsIn,
+//			   eGDALType,
+//			   0, 0)
+//       == CE_Failure)
+//      error("Failure during raster IO\n");
 
   UNPROTECT(1);
 
@@ -715,6 +751,7 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
     // Fix me!
     uRType = INTSXP;
     eGDALType = GDT_Int32;
+//Rprintf("INTSXP ");
 
     break;
 
@@ -724,6 +761,7 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
     // Fix me!
     uRType = REALSXP;
     eGDALType = GDT_Float64;
+//Rprintf("REALSXP ");
 
     break;
 
@@ -735,6 +773,7 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
     // Fix me!
     uRType = CPLXSXP;
     eGDALType = GDT_CFloat64;
+//Rprintf("CPLXSXP ");
 
     break;
     
@@ -752,21 +791,69 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
   PROTECT(sRStorage = allocMatrix(uRType,
 			       INTEGER(sxpDimOut)[1],
 			       INTEGER(sxpDimOut)[0])); pc++;
-
+//Rprintf("allocated %d, %d\n", INTEGER(sxpDimOut)[1], INTEGER(sxpDimOut)[0]);
   // Data is read in transposed order
-  if(pRasterBand->RasterIO(GF_Read,
+// replication for 2.4.0 RSB 20060726
+  switch(uRType) {
+
+    case INTSXP:
+      if(pRasterBand->RasterIO(GF_Read,
 			   INTEGER(sxpRegion)[1],
 			   INTEGER(sxpRegion)[0],
 			   INTEGER(sxpRegion)[3],
 			   INTEGER(sxpRegion)[2],
-			   (void *)CHAR(sRStorage),
+			   (void *)INTEGER(sRStorage),
 			   INTEGER(sxpDimOut)[1],
 			   INTEGER(sxpDimOut)[0],
 			   eGDALType,
 			   INTEGER(sxpInterleave)[0],
 			   INTEGER(sxpInterleave)[1])
-     == CE_Failure)
-    error("Failure during raster IO\n");
+         == CE_Failure)
+           error("Failure during raster IO\n");
+      break;
+
+    case REALSXP:
+
+      if(pRasterBand->RasterIO(GF_Read,
+			   INTEGER(sxpRegion)[1],
+			   INTEGER(sxpRegion)[0],
+			   INTEGER(sxpRegion)[3],
+			   INTEGER(sxpRegion)[2],
+			   (void *)REAL(sRStorage),
+			   INTEGER(sxpDimOut)[1],
+			   INTEGER(sxpDimOut)[0],
+			   eGDALType,
+			   INTEGER(sxpInterleave)[0],
+			   INTEGER(sxpInterleave)[1])
+         == CE_Failure)
+           error("Failure during raster IO\n");
+      break;
+
+    case CPLXSXP:
+
+      if(pRasterBand->RasterIO(GF_Read,
+			   INTEGER(sxpRegion)[1],
+			   INTEGER(sxpRegion)[0],
+			   INTEGER(sxpRegion)[3],
+			   INTEGER(sxpRegion)[2],
+			   (void *)COMPLEX(sRStorage),
+			   INTEGER(sxpDimOut)[1],
+			   INTEGER(sxpDimOut)[0],
+			   eGDALType,
+			   INTEGER(sxpInterleave)[0],
+			   INTEGER(sxpInterleave)[1])
+         == CE_Failure)
+           error("Failure during raster IO\n");
+      break;
+
+    default:
+
+          error("Raster data type unknown\n");
+    
+      break;
+
+  }
+
 
   int hasNoDataValue;
 

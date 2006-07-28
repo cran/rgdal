@@ -11,8 +11,6 @@ GDALReadOnlyDataset-class
                         subset methods for "GDALReadOnlyDataset"
 GDALTransientDataset-class
                         Class "GDALTransientDataset"
-getPixmapGDAL           Read GDAL datasets as pixmapGrey or pixmapRGB
-                        objects
 make_EPSG               Make a data frame of EPSG projection codes
 project                 Projection of coordinate matrices
 readGDAL                Read/write between GDAL grid maps and Spatial

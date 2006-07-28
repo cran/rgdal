@@ -2,6 +2,7 @@
 \alias{readOGR}
 \alias{ogrInfo}
 \alias{ogrFIDs}
+\alias{ogrDrivers}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Read OGR vector maps into Spatial objects}
 \description{
@@ -11,6 +12,7 @@
 readOGR(dsn, layer, verbose = TRUE)
 ogrInfo(dsn, layer)
 ogrFIDs(dsn, layer)
+ogrDrivers()
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,7 +21,7 @@ ogrFIDs(dsn, layer)
   \item{verbose}{report progress}
 }
 \details{
-  The drivers available will depend on the installation of GDAL/OGR, and can vary. Note that stray files in data source directories (such as *.dbf) may lead to suprious errors that accompanying *.shp are missing.
+  The drivers available will depend on the installation of GDAL/OGR, and can vary; the \code{ogrDrivers()} function shows which are available. Note that stray files in data source directories (such as *.dbf) may lead to suprious errors that accompanying *.shp are missing.
 }
 \value{
   A Spatial object is returned suiting the vector data source, either a SpatialPointsDataFrame (using an AttributeList for its data slot directly), a SpatialLinesDataFrame, or a SpatialPolygonsDataFrame.
@@ -31,6 +33,7 @@ ogrFIDs(dsn, layer)
 
 \seealso{\code{\link[sp]{SpatialPointsDataFrame-class}}, \code{\link[sp]{SpatialLinesDataFrame-class}}, \code{\link[sp]{SpatialPolygonsDataFrame-class}}, \code{\link[maptools]{readShapePoly}}}
 \examples{
+ogrDrivers()
 cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
 summary(cities)
 kiritimati_primary_roads <- readOGR(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")

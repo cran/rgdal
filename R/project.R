@@ -1,4 +1,4 @@
-# Copyright (c) 2003-5 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
+# Copyright (c) 2003-6 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
 
 "project" <- function(xy, proj, inv=FALSE) {
 
@@ -34,7 +34,7 @@ if (!isGeneric("spTransform"))
 	setGeneric("spTransform", function(x, CRSobj, ...)
 		standardGeneric("spTransform"))
 
-    "spTransform.SpatialPoints" <-  function(x, CRSobj, ...) {
+"spTransform.SpatialPoints" <-  function(x, CRSobj, ...) {
 	if (is.na(proj4string(x))) 
 		stop("No transformation possible from NA reference system")
 	if (is.na(CRSargs(CRSobj))) 
@@ -52,12 +52,12 @@ if (!isGeneric("spTransform"))
 	dimnames(crds)[[2]] <- crds.names
 	x <- SpatialPoints(coords=crds, proj4string=CRS(res[[4]]))
 	x
-    }
-    setMethod("spTransform", signature("SpatialPoints", "CRS"), spTransform.SpatialPoints)
+}
+setMethod("spTransform", signature("SpatialPoints", "CRS"), spTransform.SpatialPoints)
 
 
 
-    "spTransform.SpatialPointsDataFrame" <- function(x, CRSobj, ...) {
+"spTransform.SpatialPointsDataFrame" <- function(x, CRSobj, ...) {
 	xSP <- as(x, "SpatialPoints")
 	resSP <- spTransform(xSP, CRSobj)
 	# xDF <- as(x, "data.frame")
@@ -65,18 +65,18 @@ if (!isGeneric("spTransform"))
 	res <- SpatialPointsDataFrame(coords=coordinates(resSP), data=xDF,
 		coords.nrs = numeric(0), proj4string = CRS(proj4string(resSP)))
 	res
-    }
-    setMethod("spTransform", signature("SpatialPointsDataFrame", "CRS"), 
+}
+setMethod("spTransform", signature("SpatialPointsDataFrame", "CRS"), 
 	spTransform.SpatialPointsDataFrame)
 
 
 
 
-    setMethod("spTransform", signature("SpatialPixelsDataFrame", "CRS"), 
+setMethod("spTransform", signature("SpatialPixelsDataFrame", "CRS"), 
 	function(x, CRSobj, ...) 
 		spTransform(as(x, "SpatialPointsDataFrame"), CRSobj, ...))
 
-    setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"), 
+setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"), 
 	function(x, CRSobj, ...) 
 		spTransform(as(x, "SpatialPixelsDataFrame"), CRSobj, ...))
 
@@ -108,7 +108,7 @@ if (!isGeneric("spTransform"))
 
 #setMethod("spTransform", signature("Slines", "CRS"), spTransform.Slines)
 
-    "spTransform.SpatialLines" <- function(x, CRSobj, ...) {
+"spTransform.SpatialLines" <- function(x, CRSobj, ...) {
 	from_args <- proj4string(x)
 	if (is.na(from_args)) 
 		stop("No transformation possible from NA reference system")
@@ -123,16 +123,16 @@ if (!isGeneric("spTransform"))
 		to_args=to_args, from_args=from_args)
 	res <- SpatialLines(output, proj4string=CRS(to_args))
 	res
-    }
-    setMethod("spTransform", signature("SpatialLines", "CRS"), spTransform.SpatialLines)
-    "spTransform.SpatialLinesDataFrame" <- function(x, CRSobj, ...) {
+}
+setMethod("spTransform", signature("SpatialLines", "CRS"), spTransform.SpatialLines)
+"spTransform.SpatialLinesDataFrame" <- function(x, CRSobj, ...) {
 	xSP <- as(x, "SpatialLines")
 	resSP <- spTransform(xSP, CRSobj)
 	xDF <- as(x, "data.frame")
 	res <- SpatialLinesDataFrame(sl=resSP, data=xDF)
 	res
-    }
-    setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.SpatialLinesDataFrame)
+}
+setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.SpatialLinesDataFrame)
 
 
 
@@ -163,7 +163,7 @@ if (!isGeneric("spTransform"))
 
 #setMethod("spTransform", signature("Srings", "CRS"), spTransform.Srings)
 
-    "spTransform.SpatialPolygons" <- function(x, CRSobj, ...) {
+"spTransform.SpatialPolygons" <- function(x, CRSobj, ...) {
 	from_args <- proj4string(x)
 	if (is.na(from_args)) 
 		stop("No transformation possible from NA reference system")
@@ -178,15 +178,15 @@ if (!isGeneric("spTransform"))
 	res <- SpatialPolygons(output, pO=getSpPplotOrderSlot(x), 
 		proj4string=CRSobj)
 	res
-    }
-    setMethod("spTransform", signature("SpatialPolygons", "CRS"), spTransform.SpatialPolygons)
+}
+setMethod("spTransform", signature("SpatialPolygons", "CRS"), spTransform.SpatialPolygons)
 
-    "spTransform.SpatialPolygonsDataFrame" <- function(x, CRSobj, ...) {
+"spTransform.SpatialPolygonsDataFrame" <- function(x, CRSobj, ...) {
 	xSP <- as(x, "SpatialPolygons")
 	resSP <- spTransform(xSP, CRSobj)
 	xDF <- as(x, "data.frame")
 	res <- SpatialPolygonsDataFrame(Sr=resSP, data=xDF)
 	res
-    }
-    setMethod("spTransform", signature("SpatialPolygonsDataFrame", "CRS"), spTransform.SpatialPolygonsDataFrame)
+}
+setMethod("spTransform", signature("SpatialPolygonsDataFrame", "CRS"), spTransform.SpatialPolygonsDataFrame)
 

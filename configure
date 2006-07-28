@@ -309,7 +309,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP EGREP PKG_CPPFLAGS PKG_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS GDAL_CONFIG PKG_CPPFLAGS CPPFLAGS CC CFLAGS LDFLAGS ac_ct_CC EXEEXT OBJEXT CPP EGREP PKG_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -837,6 +837,16 @@ if test -n "$ac_init_help"; then
 
   cat <<\_ACEOF
 
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-gdal-config=GDAL_CONFIG
+                          the location of gdal-config
+  --with-proj-include=INCLUDE_PATH
+                          the location of proj header files
+  --with-proj-lib=LIB_PATH
+                          the location of proj libraries
+
 Some influential environment variables:
   CC          C compiler command
   CFLAGS      C compiler flags
@@ -1283,6 +1293,71 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
+
+GDAL_CONFIG="gdal-config"
+
+
+# Check whether --with-gdal-config or --without-gdal-config was given.
+if test "${with_gdal_config+set}" = set; then
+  withval="$with_gdal_config"
+  gdal_config=$withval
+fi;
+if test  -n "$gdal_config"  ; then
+    GDAL_CONFIG="${gdal_config}"
+
+fi
+echo "gdal-config: ${GDAL_CONFIG}"
+if test `${GDAL_CONFIG} --version`;
+then
+
+	PKG_CPPFLAGS=`${GDAL_CONFIG} --cflags`
+	PKG_LIBS=`${GDAL_CONFIG} --libs`
+
+else
+
+	echo ""
+	echo "The gdal-config script distributed with GDAL could not be found."
+	echo "If you have not installed the GDAL libraries, you can"
+	echo "download the source from  http://www.gdal.org/"
+	echo "If you have installed the GDAL libraries, then make sure that"
+	echo "gdal-config is in your path. Try typing gdal-config at a"
+	echo "shell prompt and see if it runs. If not, use:"
+	echo " --configure-args='--with-gdal-config=/usr/local/bin/gdal-config'"	echo "with appropriate values for your installation."
+	echo ""
+
+	exit 1
+
+fi
+GDAL_VERSION=`${GDAL_CONFIG} --version`
+VER12=`echo "$GDAL_VERSION" | cut -d"." -f1,2`
+REQ_GDAL="1.3"
+if test "$VER12" != "$REQ_GDAL" ; then
+    echo "GDAL version $GDAL_VERSION found ..."
+    echo "For building this version, at least GDAL version 1.3.1 is required."
+    exit 1
+fi
+
+: ${R_HOME=`R RHOME`}
+          if test -z "${R_HOME}"; then
+            echo "could not determine R_HOME"
+            exit 1
+fi
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+
+
+# Check whether --with-proj-include or --without-proj-include was given.
+if test "${with_proj_include+set}" = set; then
+  withval="$with_proj_include"
+  proj_include_path=$withval
+fi;
+if test  -n "$proj_include_path"  ; then
+    PKG_CPPFLAGS="-I${proj_include_path} ${PKG_CPPFLAGS}"
+
+fi
+
+CPPFLAGS="${CPPFLAGS} ${PKG_CPPFLAGS}"
 
 
 ac_ext=c
@@ -2216,76 +2291,6 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-echo "$as_me:$LINENO: checking for pj_init_plus in -lproj" >&5
-echo $ECHO_N "checking for pj_init_plus in -lproj... $ECHO_C" >&6
-if test "${ac_cv_lib_proj_pj_init_plus+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lproj $LIBS $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char pj_init_plus ();
-int
-main ()
-{
-pj_init_plus ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_proj_pj_init_plus=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_proj_pj_init_plus=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_proj_pj_init_plus" >&5
-echo "${ECHO_T}$ac_cv_lib_proj_pj_init_plus" >&6
-if test $ac_cv_lib_proj_pj_init_plus = yes; then
-  PROJ_SETTING="external"
-else
-  PROJ_SETTING="none"
-fi
-
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2924,48 +2929,110 @@ fi
 
 done
 
+if test "$ac_cv_header_proj_api_h" = "no" ; then
+    STOP="stop"
+fi
+
+
+# Check whether --with-proj-lib or --without-proj-lib was given.
+if test "${with_proj_lib+set}" = set; then
+  withval="$with_proj_lib"
+  proj_lib_path=$withval
+fi;
+if test  -n "$proj_lib_path"  ; then
+    PKG_LIBS=" -L${proj_lib_path} ${PKG_LIBS}"
+
+fi
+
+LIBS="${LIBS} ${PKG_LIBS}"
+
+
+echo "$as_me:$LINENO: checking for pj_init_plus in -lproj" >&5
+echo $ECHO_N "checking for pj_init_plus in -lproj... $ECHO_C" >&6
+if test "${ac_cv_lib_proj_pj_init_plus+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lproj $LIBS $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char pj_init_plus ();
+int
+main ()
+{
+pj_init_plus ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_proj_pj_init_plus=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_proj_pj_init_plus=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_proj_pj_init_plus" >&5
+echo "${ECHO_T}$ac_cv_lib_proj_pj_init_plus" >&6
+if test $ac_cv_lib_proj_pj_init_plus = yes; then
+  PROJ_SETTING="external"
+else
+  PROJ_SETTING="none"
+fi
+
 #echo "PROJ_SETTING: $PROJ_SETTING"
 if test "$PROJ_SETTING" = "none" ; then
     STOP="stop"
 fi
-if test "$ac_cv_header_proj_api_h" = "no" ; then
-    STOP="stop"
-fi
 if test "$STOP" = "stop" ; then
-    echo "libproj.a and proj_api.h not found in standard search locations,"
-    echo "edit src/Makevars manually, adding -I<directory with proj_api.h>"
-    echo "to PKG_CPPFLAGS = , and -L<directory with libproj.a> to PKG_LIBS ="
+    echo "libproj.a and/or proj_api.h not found."
+    echo "If the PROJ.4 library is installed in a non-standard location,"
+    echo "use --configure-args='--with-proj-include=/opt/local/include"
+    echo "--with-proj-lib=/opt/local/lib' for example, replacing /opt/local/*"
+    echo "with appropriate values for your installation."
+    echo "If PROJ.4 is not installed, install it."
     exit 1
 fi
-if test `gdal-config --version`;
-then
 
-	PKG_CPPFLAGS=`gdal-config --cflags`
-	PKG_LIBS=`gdal-config --libs`
-
-else
-
-	echo ''
-	echo 'I was unable to find the gdal-config script distributed with'
-	echo 'GDAL. If you have not installed the GDAL libraries, you can'
-	echo 'download the source from  http://www.remotesensing.org/gdal/'
-	echo 'If you have installed the GDAL libraries, then make sure that'
-	echo 'gdal-config is in your path. Try typing gdal-config at a'
-	echo 'shell prompt and see if it runs. If not, find it and add its'
-	echo 'path to your shell path.'
-	echo ''
-
-	exit 1
-
-fi
-GDAL_VERSION=`gdal-config --version`
-VER12=`echo "$GDAL_VERSION" | cut -d"." -f1,2`
-REQ_GDAL="1.3"
-if test "$VER12" != "$REQ_GDAL" ; then
-    echo "GDAL version $GDAL_VERSION found ..."
-    echo "For building this version, at least GDAL version 1.3.1 is required."
-    exit 1
-fi
+echo "Package CPP flags: $PKG_CPPFLAGS"
+echo "Package LIBS: $PKG_LIBS"
 
 
 
@@ -3604,16 +3671,17 @@ s,@ECHO_C@,$ECHO_C,;t t
 s,@ECHO_N@,$ECHO_N,;t t
 s,@ECHO_T@,$ECHO_T,;t t
 s,@LIBS@,$LIBS,;t t
+s,@GDAL_CONFIG@,$GDAL_CONFIG,;t t
+s,@PKG_CPPFLAGS@,$PKG_CPPFLAGS,;t t
+s,@CPPFLAGS@,$CPPFLAGS,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
-s,@CPPFLAGS@,$CPPFLAGS,;t t
 s,@ac_ct_CC@,$ac_ct_CC,;t t
 s,@EXEEXT@,$EXEEXT,;t t
 s,@OBJEXT@,$OBJEXT,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
-s,@PKG_CPPFLAGS@,$PKG_CPPFLAGS,;t t
 s,@PKG_LIBS@,$PKG_LIBS,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t

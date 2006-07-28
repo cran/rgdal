@@ -29,4 +29,6 @@ ogrFIDs <- function(dsn, layer){
   fids
 }
 
-
+ogrDrivers <- function() {
+  .Call("ogr_GetDriverNames", PACKAGE="rgdal")
+}

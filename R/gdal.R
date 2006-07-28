@@ -454,49 +454,49 @@ getColorTable <- function(dataset, band = 1) {
 
 }
 
-displayDataset <- function(x, offset = c(0, 0), region.dim = dim(x),
-                           reduction = 1, band = NULL, col = NULL,
-                           max.dim = 500, ...) {
-
-  .assertClass(x, 'GDALReadOnlyDataset')
-
-  offset <- rep(offset, length.out = 2)
-  region.dim <- rep(region.dim, length.out = 2)
-  reduction <- rep(reduction, length.out = 2)
-
-  nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
-
-  if (is.null(band)) band <- 1:nbands
-
-  if (!length(band) %in% c(1, 3))
-    stop("Only single band or 3 band RGB plotting supported")
-  
-  offset <- offset %% dim(x)[1:2]
-  
-  outOfBounds <- (region.dim + offset) > dim(x)[1:2]
-  
-  if (any(outOfBounds))
-    region.dim[outOfBounds]  <- {
-      dim(x)[outOfBounds] - offset[outOfBounds]
-    }
-
-  if (any(reduction < 1)) reduction[reduction < 1] <- 1
-
-  plot.dim <- region.dim / reduction
-            
-  if (any(plot.dim > max.dim))
-    plot.dim <- max.dim * plot.dim / max(plot.dim)
-
-  if (any(plot.dim < 3))
-    plot.dim <- 3 * plot.dim / max(plot.dim)
-
-  pm <- getPixmapGDAL(x, col, band, offset, region.dim, plot.dim)
-
-  plot(pm)
-
-  invisible(pm)
-
-}
+#displayDataset <- function(x, offset = c(0, 0), region.dim = dim(x),
+#                           reduction = 1, band = NULL, col = NULL,
+#                           max.dim = 500, ...) {
+#
+#  .assertClass(x, 'GDALReadOnlyDataset')
+#
+#  offset <- rep(offset, length.out = 2)
+#  region.dim <- rep(region.dim, length.out = 2)
+#  reduction <- rep(reduction, length.out = 2)
+#
+#  nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
+#
+#  if (is.null(band)) band <- 1:nbands
+#
+#  if (!length(band) %in% c(1, 3))
+#    stop("Only single band or 3 band RGB plotting supported")
+#  
+#  offset <- offset %% dim(x)[1:2]
+#  
+#  outOfBounds <- (region.dim + offset) > dim(x)[1:2]
+#  
+#  if (any(outOfBounds))
+#    region.dim[outOfBounds]  <- {
+#      dim(x)[outOfBounds] - offset[outOfBounds]
+#    }
+#
+#  if (any(reduction < 1)) reduction[reduction < 1] <- 1
+#
+#  plot.dim <- region.dim / reduction
+#            
+#  if (any(plot.dim > max.dim))
+#    plot.dim <- max.dim * plot.dim / max(plot.dim)
+#
+#  if (any(plot.dim < 3))
+#    plot.dim <- 3 * plot.dim / max(plot.dim)
+#
+#  pm <- getPixmapGDAL(x, col, band, offset, region.dim, plot.dim)
+#
+#  plot(pm)
+#
+#  invisible(pm)
+#
+#}
 
 setMethod('initialize', 'GDALRasterBand',
           def =  function(.Object, dataset, band = 1) {

@@ -1,0 +1,42 @@
+useDynLib(rgdal)
+
+import(methods)
+import(sp)
+#import(pixmap)
+
+exportMethods(spTransform)
+exportMethods(closeDataset)
+exportMethods(initialize)
+
+exportClass(GDALDataset)
+exportClass(GDALDriver)
+exportClass(GDALMajorObject)
+exportClass(GDALRasterBand)
+exportClass(GDALReadOnlyDataset)
+exportClass(GDALTransientDataset)
+exportClass(CRS)
+
+export(project, make_EPSG)
+export(CRSargs)
+export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
+export(getGDALDriverNames, getDriverName, getDriverLongName)
+export(getDescription, getMetadata, setMetadata, appendMetadata)
+export(getRasterData, getRasterTable, getProjectionRef)
+export(getDriver, GDAL.close, GDAL.open, getColorTable,
+  getGeoTransFunc, sub.GDROD)
+export(make_EPSG, project, readGDAL, writeGDAL, showWKT)
+export(readOGR, ogrInfo, ogrFIDs, ogrDrivers)
+#export(getPixmapGDAL, displayDataset)
+
+export(spTransform, spTransform.SpatialPoints, 
+  spTransform.SpatialPointsDataFrame, spTransform.SpatialLines, 
+  spTransform.SpatialLinesDataFrame, spTransform.SpatialPolygons, 
+  spTransform.SpatialPolygonsDataFrame)
+
+S3method(spTransform, SpatialPoints)
+S3method(spTransform, SpatialPointsDataFrame)
+S3method(spTransform, SpatialLines)
+S3method(spTransform, SpatialLinesDataFrame)
+S3method(spTransform, SpatialPolygons)
+S3method(spTransform, SpatialPolygonsDataFrame)
+
