@@ -1,19 +1,23 @@
 \name{readGDAL}
 \alias{readGDAL}
 \alias{writeGDAL}
+\alias{GDALinfo}
+\alias{print.GDALobj}
 \title{Read/write between GDAL grid maps and Spatial objects}
-\description{The functions read or write GDAL grid maps. They will set the spatial reference system if available.}
+\description{The functions read or write GDAL grid maps. They will set the spatial reference system if available. \code{GDALinfo} reports the size and other parameters of the dataset.}
 \usage{ 
-readGDAL(fname, offset, region.dim, ..., half.cell=c(0.5, 0.5), silent = FALSE)
+readGDAL(fname, offset, region.dim, output.dim, ..., half.cell=c(0.5, 0.5), silent = FALSE)
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=""
 %, clone = NULL
 )
+GDALinfo(fname)
 }
 
 \arguments{
 \item{fname}{ file name of grid map }
 \item{offset}{Number of rows and columns from the origin (usually the upper left corner) to begin reading from; presently ordered (y,x) - this may change}
 \item{region.dim}{The number of rows and columns to read from the dataset; presently ordered (y,x) - this may change}
+\item{output.dim}{The number of rows and columns to return in the created object using GDAL's method to take care of image decimation / replication; presently ordered (y,x) - this may change}
 \item{half.cell}{Used to adjust the intra-cell offset from corner to centre, usually as default, but may be set to c=(0,0) if needed; presently ordered (y,x) - this may change}
 \item{silent}{ logical; if TRUE, comment is suppressed }
 \item{...}{ arguments passed to either \code{getRasterData}, or
@@ -44,9 +48,10 @@ later on by e.g. using \code{\link[sp]{gridded}(x)=TRUE}.
 
 \seealso{ \code{\link[sp]{as.image.SpatialGridDataFrame}}, \code{\link[sp]{image}}, \code{\link[maptools]{readAsciiGrid}} }
 
-\author{Edzer J.\ Pebesma, e.pebesma@geo.uu.nl}
+\author{Edzer J.\ Pebesma, Roger Bivand}
 
 \examples{
+GDALinfo(system.file("external/test.ag", package="sp")[1])
 x <- readGDAL(system.file("external/test.ag", package="sp")[1])
 class(x)
 image(x)
@@ -71,13 +76,15 @@ fn <- tempfile()
 writeGDAL(meuse.grid["dist"], fn)
 mg2 <- readGDAL(fn)
 proj4string(mg2)
-SP27GTIF <- readGDAL(system.file("pictures/SP27GTIF.TIF", package = "rgdal")[1])
+SP27GTIF <- readGDAL(system.file("pictures/SP27GTIF.TIF", package = "rgdal")[1], output.dim=c(100,100))
 summary(SP27GTIF)
 image(SP27GTIF, col=grey(1:99/100))
-cea <- readGDAL(system.file("pictures/cea.tif", package = "rgdal")[1])
+
+GDALinfo(system.file("pictures/cea.tif", package = "rgdal")[1])
+cea <- readGDAL(system.file("pictures/cea.tif", package = "rgdal")[1], output.dim=c(100,100))
 summary(cea)
 image(cea, col=grey(1:99/100))
-erdas_spnad83 <- readGDAL(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1])
+erdas_spnad83 <- readGDAL(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1], output.dim=c(100,100))
 summary(erdas_spnad83)
 image(erdas_spnad83, col=grey(1:99/100))
 }

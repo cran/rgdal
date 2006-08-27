@@ -25,6 +25,13 @@ readOGR <- function(dsn, layer, verbose=TRUE) {
 		as.character(layer), PACKAGE="rgdal")
 	eType <- geometry[[4]]
 	u_eType <- unique(sort(eType))
+	with_z <- geometry[[6]]
+	u_with_z <- unique(sort(with_z))
+	if (length(u_with_z) != 1) stop(
+		paste("Multiple # dimensions:", 
+			paste((u_with_z + 2), collapse=":")))
+	if (u_with_z < 0 || u_with_z > 1) stop(
+		paste("Invalid # dimensions:", (u_with_z + 2)))
 	if (length(u_eType) > 2) stop(
 		paste("Multiple incompatible geometries:", 
 			paste(u_eType, collapse=":")))
@@ -39,12 +46,19 @@ readOGR <- function(dsn, layer, verbose=TRUE) {
 	gFeatures <- geometry[[5]]
 	if (length(gFeatures) != ogr_info$nrows) stop("Feature mismatch")
 	if (u_eType == 1) { # points
-		coords <- do.call("rbind", lapply(gFeatures, 
-			function(x) c(x[[1]][[1]], x[[1]][[2]])))
+		if (u_with_z == 0) {
+			coords <- do.call("rbind", lapply(gFeatures, 
+				function(x) c(x[[1]][[1]], x[[1]][[2]])))
+		} else {
+			coords <- do.call("rbind", lapply(gFeatures, 
+				function(x) c(x[[1]][[1]], x[[1]][[2]],
+				x[[1]][[3]])))
+		}
 		data <- as(dlist, "AttributeList")
 		res <- SpatialPointsDataFrame(coords=coords, data=data,
 			proj4string=CRS(p4s))
 	} else if (u_eType == 2) { # lines
+		if (u_with_z != 0) warning("Z-dimension discarded")
 		n <- length(gFeatures)
 		lnList <- vector(mode="list", length=n)
 		for (i in 1:n) {
@@ -61,6 +75,7 @@ readOGR <- function(dsn, layer, verbose=TRUE) {
 		data <- data.frame(dlist, row.names=fids)
 		res <- SpatialLinesDataFrame(SL, data)
 	} else if (u_eType == 3) { # polygons
+		if (u_with_z != 0) warning("Z-dimension discarded")
 		n <- length(gFeatures)
 		plList <- vector(mode="list", length=n)
 		for (i in 1:n) {

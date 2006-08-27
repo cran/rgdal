@@ -1,5 +1,5 @@
-#require(methods, quietly = TRUE, warn.conflicts = FALSE)
-
+# Note that reg.finalizer does not finalize objects
+# at the end of an R session. This could be a problem.
 .setCollectorFun <- function(object, fun) {
 
   if (is.null(fun)) fun <- function(obj) obj
@@ -177,8 +177,9 @@ copyDataset <- function(dataset, driver, strict = FALSE, options = '') {
   if (missing(driver)) driver <- getDriver(dataset)
   
   my_tempfile <- tempfile()
+
   if (nchar(my_tempfile) == 0) stop("empty file name")
-#  my_tempfile <- as.character(tempfile(tmpdir=.my_tempdir()))
+  
   new.obj <- new('GDALTransientDataset',
                  handle = .Call('RGDAL_CopyDataset',
                    dataset, driver,
@@ -232,6 +233,8 @@ setMethod('closeDataset', 'GDALTransientDataset',
 
 saveDatasetAs <- function(dataset, filename, driver = NULL) {
 
+  .Deprecated("saveDataset")
+
   .assertClass(dataset, 'GDALReadOnlyDataset')
   
   if (is.null(driver)) driver <- getDriver(dataset)
@@ -276,10 +279,15 @@ deleteDataset <- function(dataset) {
 
 }
 
-GDAL.open <- function(filename) {
-  	if (nchar(filename) == 0) stop("empty file name")
-	res <- new("GDALReadOnlyDataset", filename)
+GDAL.open <- function(filename, read.only = TRUE) {
+  
+	res <- if(read.only)
+          new("GDALReadOnlyDataset", filename)
+        else
+          new("GDALDataset", filename)
+        
 	res
+        
 }
 
 GDAL.close <- function(dataset) {
@@ -316,9 +324,9 @@ putRasterData <- function(dataset,
 
   offset <- rep(offset, length.out = 2)
   
-  rasterBand <- new('GDALRasterBand', dataset, band)
+  raster <- new('GDALRasterBand', dataset, band)
   
-  .Call('RGDAL_PutRasterData', rasterBand, rasterData, 
+  .Call('RGDAL_PutRasterData', raster, rasterData, 
 	as.integer(offset), PACKAGE="rgdal")
 
 }
@@ -345,9 +353,6 @@ getRasterTable <- function(dataset,
 
   geoTrans <- getGeoTransFunc(dataset)
 
-  # EJP, 06/01/05:
-  #x.i <- 1:region.dim[1] + offset[1]
-  #y.i <- 1:region.dim[2] + offset[2]
   y.i <- 1:region.dim[1] - 0.5 + offset[1]
   x.i <- 1:region.dim[2] - 0.5 + offset[2]
 
@@ -357,16 +362,14 @@ getRasterTable <- function(dataset,
   out <- geoTrans(x.i, y.i)
 
   out <- cbind(out$x, out$y)
-    for (b in band) { 
-        vec <- as.numeric(rasterData[, , b])
-        out <- cbind(out, vec)
-    }
-#for (b in band) out <- cbind(out, as.vector(rasterData[,,b]))
+  
+  for (b in band) { 
+    vec <- as.numeric(rasterData[, , b])
+    out <- cbind(out, vec)
+  }
 
   out <- as.data.frame(out)
     
-  # EJP, 06/01/05:
-  #names(out) <- c('row', 'column', paste('band', 1:nbands, sep = ''))
   names(out) <- c('x', 'y', paste('band', 1:nbands, sep = ''))
 
   out
@@ -394,11 +397,11 @@ getRasterData <- function(dataset,
   
   x <- array(dim = as.integer(c(rev(output.dim), length(band))))
 
-  for (i in seq(along=band)) {
-  
-    rasterBand <- new('GDALRasterBand', dataset, band[i])
+  for (i in seq(along = band)) {
 
-    x[,,i] <- .Call('RGDAL_GetRasterData', rasterBand,
+    raster <- getRasterBand(dataset, band[i])
+
+    x[,,i] <- .Call('RGDAL_GetRasterData', raster,
                       as.integer(c(offset, region.dim)),
                       as.integer(output.dim),
                       as.integer(interleave), PACKAGE="rgdal")
@@ -409,13 +412,13 @@ getRasterData <- function(dataset,
 
   if (!as.is) {
   
-    scale <- .Call('RGDAL_GetScale', rasterBand, PACKAGE="rgdal")
-    offset <- .Call('RGDAL_GetOffset', rasterBand, PACKAGE="rgdal")
+    scale <- .Call('RGDAL_GetScale', raster, PACKAGE="rgdal")
+    offset <- .Call('RGDAL_GetOffset', raster, PACKAGE="rgdal")
 
     if (scale != 1) x <- x * scale
     if (offset != 0) x <- x + offset
     
-    catNames <- .Call('RGDAL_GetCategoryNames', rasterBand, PACKAGE="rgdal")
+    catNames <- .Call('RGDAL_GetCategoryNames', raster, PACKAGE="rgdal")
   
     if (!is.null(catNames)) {
       levels <- rep(min(x):max(x), len = length(catNames))
@@ -437,14 +440,14 @@ getColorTable <- function(dataset, band = 1) {
   nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
   if (!(band %in% 1:nbands)) stop("no such band")
 
-  rasterBand <- new('GDALRasterBand', dataset, band)
+  raster <- getRasterBand(dataset, band)
   
-  ctab <- .Call('RGDAL_GetColorTable', rasterBand, PACKAGE="rgdal") / 255
+  ctab <- .Call('RGDAL_GetColorTable', raster, PACKAGE="rgdal") / 255
 
   if (length(ctab) == 0) return(NULL)
 
-  if (.Call('RGDAL_GetColorInterp', rasterBand, PACKAGE="rgdal") == 'Palette')
-    switch(.Call('RGDAL_GetPaletteInterp', rasterBand, PACKAGE="rgdal"),  
+  if (.Call('RGDAL_GetColorInterp', raster, PACKAGE="rgdal") == 'Palette')
+    switch(.Call('RGDAL_GetPaletteInterp', raster, PACKAGE="rgdal"),  
            RGB = rgb(ctab[,1], ctab[,2], ctab[,3]),
            HSV = hsv(ctab[,1], ctab[,2], ctab[,3]), # Doesn't actually exist
            Gray = gray(ctab[,1]),
@@ -514,14 +517,12 @@ setMethod('dim', 'GDALRasterBand',
 
 getGeoTransFunc <- function(dataset) {
 
+  .assertClass(dataset, 'GDALReadOnlyDataset')
+
   geoTrans <- .Call('RGDAL_GetGeoTransform', dataset, PACKAGE="rgdal")
 
-  # EJP, 06/01/05:
-  #rotMat <- matrix(geoTrans[c(6, 5, 3, 2)], 2)
   rotMat <- matrix(geoTrans[c(2, 3, 5, 6)], 2)
 
-  # EJP, 06/01/05:
-  #offset <- geoTrans[c(4, 1)]
   offset <- geoTrans[c(1, 4)]
 
   function(x, y) {
@@ -535,5 +536,21 @@ getGeoTransFunc <- function(dataset) {
 
   }
 
+}
+
+getRasterBand <- function(dataset, band = 1) {
+
+  .assertClass(dataset, 'GDALReadOnlyDataset')
+
+  new('GDALRasterBand', dataset, band)
+
+}
+
+getRasterBlockSize <- function(raster) {
+
+  .assertClass(raster, 'GDALRasterBand')
+  
+  .Call('RGDAL_GetRasterBlockSize', raster, PACKAGE="rgdal")
+  
 }
 
