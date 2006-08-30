@@ -167,7 +167,6 @@ RGDAL_GetMetadata(SEXP sxpObj, SEXP sxpDomain) {
 
     SET_VECTOR_ELT(sxpMetadata, i, value ? mkChar(value) : mkChar(""));
 
-//    SET_VECTOR_ELT(sxpNames, i, tag ? mkChar(tag) : mkChar(""));
     SET_STRING_ELT(sxpNames, i, tag ? mkChar(tag) : mkChar(""));
 
   }
@@ -234,7 +233,6 @@ RGDAL_GetDriverNames(void) {
 
     GDALDriver *pDriver = GetGDALDriverManager()->GetDriver(i);
     
-//  SET_VECTOR_ELT(sxpDriverList, i, mkChar(GDALGetDriverShortName( pDriver )));
     SET_STRING_ELT(sxpDriverList, i, mkChar(GDALGetDriverShortName( pDriver )));
 
   }
@@ -580,6 +578,19 @@ RGDAL_GetYSize(SEXP sRasterBand) {
 }
 
 SEXP
+RGDAL_GetRasterBlockSize(SEXP rasterObj) {
+	
+	 GDALRasterBand *raster = getGDALRasterPtr(rasterObj);
+	 
+	 SEXP blockSize = allocVector(INTSXP, 2);
+	 
+	 raster->GetBlockSize(INTEGER(blockSize) + 1, INTEGER(blockSize));
+	 
+	 return(blockSize);
+	 
+}
+
+SEXP
 RGDAL_GetAccess(SEXP sxpDataset) {
 
   GDALDataset *pDataset = getGDALDatasetPtr(sxpDataset);
@@ -710,18 +721,6 @@ RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
     break;
 
   }
-
-  // Transpose data
-//    if(pRasterBand->RasterIO(GF_Write,
-//			   INTEGER(sxpOffset)[1],
-//			   INTEGER(sxpOffset)[0],
-//			   rowsIn, colsIn,
-//			   (void *)CHAR(sxpData),
-//			   rowsIn, colsIn,
-//			   eGDALType,
-//			   0, 0)
-//       == CE_Failure)
-//      error("Failure during raster IO\n");
 
   UNPROTECT(1);
 
@@ -970,6 +969,7 @@ RGDAL_GetColorTable(SEXP sxpRasterBand) {
   return(sxpColorMatrix);
 
 }
+
 
 SEXP
 RGDAL_SetCategoryNames(SEXP sxpRasterBand, SEXP sxpNames) {

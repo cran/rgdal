@@ -16,6 +16,8 @@ project                 Projection of coordinate matrices
 readGDAL                Read/write between GDAL grid maps and Spatial
                         objects
 readOGR                 Read OGR vector maps into Spatial objects
+SGDF2RGB                Convert RGB three band to single band colour
+                        table
 showWKT                 Show Well-Known Text spatial reference system
                         metadata
 spTransform-methods     Methods for Function spTransform in package

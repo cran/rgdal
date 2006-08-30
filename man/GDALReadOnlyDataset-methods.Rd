@@ -1,6 +1,8 @@
 \name{GDALReadOnlyDataset-methods}
 \docType{methods}
 \alias{[,GDALReadOnlyDataset-method}
+\alias{,GDALReadOnlyDataset-method}
+\alias{coerce,GDALReadOnlyDataset,SpatialGridDataFrame-method}
 \alias{sub.GDROD}
 \title{subset methods for "GDALReadOnlyDataset"}
 \description{subsets GDAL objects, returning a SpatialGridDataFrame object}
@@ -14,7 +16,7 @@
   }
 }
 \details{
-subsets a GDAL data set, returning a SpatialGridDataFrame object. Reading is
+The \code{[} method subsets a GDAL data set, returning a SpatialGridDataFrame object. Reading is
 done on the GDAL side, and only the subset requested is ever read into memory.
 
 Further named arguments to \code{[} are to either getRasterTable or getRasterData:
@@ -25,6 +27,8 @@ Further named arguments to \code{[} are to either getRasterTable or getRasterDat
 }
 the other arguments, \code{offset} and \code{region.dim} are
 derived from row/column selection values.
+
+An GDALReadOnlyDataset object can be coerced directly to a SpatialGridDataFrame
 }
 
 \author{Edzer J. Pebesma}
@@ -51,5 +55,11 @@ summary(x)
 spplot(x)
 spplot(x.gdal[])
 GDAL.close(x.gdal)
+
+logo <- system.file("pictures/Rlogo.jpg", package="rgdal")[1]
+x.gdal <- new("GDALReadOnlyDataset", logo)
+x.as <- as(x.gdal, "SpatialGridDataFrame")
+GDAL.close(x.gdal)
+summary(x.as)
 }
 \keyword{classes}

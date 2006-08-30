@@ -7,6 +7,7 @@ import(sp)
 exportMethods(spTransform)
 exportMethods(closeDataset)
 exportMethods(initialize)
+exportMethods(coerce)
 
 exportClass(GDALDataset)
 exportClass(GDALDriver)
@@ -22,10 +23,12 @@ export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
 export(getGDALDriverNames, getDriverName, getDriverLongName)
 export(getDescription, getMetadata, setMetadata, appendMetadata)
 export(getRasterData, getRasterTable, getProjectionRef)
+export(getRasterBand, getRasterBlockSize)
 export(getDriver, GDAL.close, GDAL.open, getColorTable,
-  getGeoTransFunc, sub.GDROD)
+  getGeoTransFunc, sub.GDROD, SGDF2RGB)
 export(make_EPSG, project, readGDAL, writeGDAL, showWKT)
 export(readOGR, ogrInfo, ogrFIDs, ogrDrivers)
+export(GDALinfo, print.GDALobj)
 #export(getPixmapGDAL, displayDataset)
 
 export(spTransform, spTransform.SpatialPoints, 
@@ -39,4 +42,5 @@ S3method(spTransform, SpatialLines)
 S3method(spTransform, SpatialLinesDataFrame)
 S3method(spTransform, SpatialPolygons)
 S3method(spTransform, SpatialPolygonsDataFrame)
+S3method(print, GDALobj)
 

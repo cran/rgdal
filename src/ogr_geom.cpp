@@ -50,13 +50,14 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 
     if (j < 0) error("Layer not found");
 
-    PROTECT(ans = NEW_LIST(5)); pc++;
-    PROTECT(ansnames = NEW_CHARACTER(5)); pc++;
+    PROTECT(ans = NEW_LIST(6)); pc++;
+    PROTECT(ansnames = NEW_CHARACTER(6)); pc++;
     SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("dsn"));
     SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("layer"));
     SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("proj4string"));
     SET_STRING_ELT(ansnames, 3, COPY_TO_USER_STRING("geomTypes"));
     SET_STRING_ELT(ansnames, 4, COPY_TO_USER_STRING("crdlist"));
+    SET_STRING_ELT(ansnames, 4, COPY_TO_USER_STRING("with_z"));
     setAttrib(ans, R_NamesSymbol, ansnames);
 
     SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(1));
@@ -79,6 +80,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 
     SET_VECTOR_ELT(ans, 3, NEW_INTEGER(nf));
     SET_VECTOR_ELT(ans, 4, NEW_LIST(nf));
+    SET_VECTOR_ELT(ans, 5, NEW_INTEGER(nf));
 
     i=0;
     while( (Ogr_feature = OGR_L_GetNextFeature(Ogr_layer)) != NULL ) {
@@ -95,6 +97,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
         eType = wkbFlatten(OGR_G_GetGeometryType(Ogr_geometry));
 
 	INTEGER_POINTER(VECTOR_ELT(ans, 3))[i] =  eType;
+	INTEGER_POINTER(VECTOR_ELT(ans, 5))[i] =  with_z;
 
 	if (eType == wkbPoint) {
 	    SET_VECTOR_ELT(VECTOR_ELT(ans, 4), i, NEW_LIST(1));

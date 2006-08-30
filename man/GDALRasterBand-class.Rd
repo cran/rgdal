@@ -6,6 +6,8 @@
 \alias{getProjectionRef}
 \alias{initialize,GDALRasterBand-method}
 \alias{dim,GDALRasterBand-method}
+\alias{getRasterBand}
+\alias{getRasterBlockSize}
 \title{Class "GDALRasterBand"}
 \description{Returns a two-dimensional array with data from a raster band, used internally within functions}
 \section{Objects from the Class}{
@@ -34,6 +36,10 @@ getRasterData(dataset, band = NULL, offset = c(0, 0),
 getRasterTable(dataset, band = NULL, offset = c(0, 0), region.dim = dim(dataset))
 
 getProjectionRef(dataset)
+
+getRasterBand(dataset, band = 1)
+
+getRasterBlockSize(raster)
 }
 \arguments{
   \item{dataset}{An object inheriting from class 'GDALReadOnlyDataset'}
@@ -48,6 +54,7 @@ getProjectionRef(dataset)
     needed}
   \item{as.is}{If false, scale the data to its natural units; if the
     case of thematic data, return the data as factors}
+  \item{raster}{An object of class GDALRasterBand}
 }
 
 \details{
@@ -58,6 +65,11 @@ getProjectionRef(dataset)
     
     \item{\code{getProjectionRef}:}{returns the geodetic projection in
       Well Known Text format.}
+
+    \item{\code{getRasterBand}:}{returns a raster band}
+
+    \item{\code{getRasterBlockSize}:}{returns the natural block size of
+      the raster band. Use this for efficient tiled IO.}
 
   }
 }
