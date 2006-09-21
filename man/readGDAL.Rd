@@ -1,5 +1,6 @@
 \name{readGDAL}
 \alias{readGDAL}
+\alias{asSGDF_GROD}
 \alias{writeGDAL}
 \alias{GDALinfo}
 \alias{print.GDALobj}
@@ -7,6 +8,7 @@
 \description{The functions read or write GDAL grid maps. They will set the spatial reference system if available. \code{GDALinfo} reports the size and other parameters of the dataset.}
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, ..., half.cell=c(0.5, 0.5), silent = FALSE)
+asSGDF_GROD(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,0.5))
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=""
 %, clone = NULL
 )
@@ -15,6 +17,7 @@ GDALinfo(fname)
 
 \arguments{
 \item{fname}{ file name of grid map }
+\item{x}{A GDALReadOnlyDataset object}
 \item{offset}{Number of rows and columns from the origin (usually the upper left corner) to begin reading from; presently ordered (y,x) - this may change}
 \item{region.dim}{The number of rows and columns to read from the dataset; presently ordered (y,x) - this may change}
 \item{output.dim}{The number of rows and columns to return in the created object using GDAL's method to take care of image decimation / replication; presently ordered (y,x) - this may change}
@@ -87,5 +90,12 @@ image(cea, col=grey(1:99/100))
 erdas_spnad83 <- readGDAL(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1], output.dim=c(100,100))
 summary(erdas_spnad83)
 image(erdas_spnad83, col=grey(1:99/100))
+
+x <- GDAL.open(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1])
+erdas_spnad83 <- asSGDF_GROD(x, output.dim=c(100,100))
+GDAL.close(x)
+summary(erdas_spnad83)
+image(erdas_spnad83, col=grey(1:99/100))
+
 }
 \keyword{spatial}

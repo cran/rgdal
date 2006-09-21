@@ -1,6 +1,7 @@
 closeDataset-methods    closeDataset methods
 CRS-class               Class "CRS" of coordinate reference system
                         arguments
+displayDataset          Display a GDAL dataset
 GDALDataset-class       Class "GDALDataset"
 GDALDriver-class        Class "GDALDriver": GDAL Driver Object
 GDALMajorObject-class   Class "GDALMajorObject"
@@ -16,6 +17,8 @@ project                 Projection of coordinate matrices
 readGDAL                Read/write between GDAL grid maps and Spatial
                         objects
 readOGR                 Read OGR vector maps into Spatial objects
+RGB2PCT                 Convert RGB three band to single band colour
+                        table
 SGDF2RGB                Convert RGB three band to single band colour
                         table
 showWKT                 Show Well-Known Text spatial reference system
