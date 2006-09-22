@@ -7,7 +7,7 @@
 
 }
 
-.assertClass <- function(object, class) {
+assertClass <- function(object, class) {
   
   if (class %in% is(object))
     invisible(object)
@@ -25,7 +25,7 @@ setClass('GDALMajorObject',
  
 getDescription <- function(object) {
 
-  .assertClass(object, 'GDALMajorObject')
+  assertClass(object, 'GDALMajorObject')
 
   .Call('RGDAL_GetDescription', object, PACKAGE="rgdal")
 
@@ -33,7 +33,7 @@ getDescription <- function(object) {
 
 getMetadata <- function(object, domain = "") {
 
-  .assertClass(object, 'GDALMajorObject')
+  assertClass(object, 'GDALMajorObject')
 
   metadata <- .Call('RGDAL_GetMetadata', object,
                     as.character(domain), PACKAGE="rgdal")
@@ -47,7 +47,7 @@ getMetadata <- function(object, domain = "") {
 
 setMetadata <- function(object, metadata) {
 
-  .assertClass(object, 'GDALMajorObject')
+  assertClass(object, 'GDALMajorObject')
 
   metadata <- lapply(as.list(metadata), as.character)
 
@@ -59,7 +59,7 @@ setMetadata <- function(object, metadata) {
 
 appendMetadata <- function(object, metadata) {
 
-  .assertClass(object, 'GDALMajorObject')
+  assertClass(object, 'GDALMajorObject')
 
   setMetadata(object, append(getMetadata(object), metadata))
 
@@ -91,7 +91,7 @@ setMethod('initialize', 'GDALDriver',
 
 getDriverName <- function(driver) {
 
-  .assertClass(driver, 'GDALDriver')
+  assertClass(driver, 'GDALDriver')
 
   .Call('RGDAL_GetDriverShortName', driver, PACKAGE="rgdal")
 
@@ -99,7 +99,7 @@ getDriverName <- function(driver) {
 
 getDriverLongName <- function(driver) {
 
-  .assertClass(driver, 'GDALDriver')
+  assertClass(driver, 'GDALDriver')
 
   .Call('RGDAL_GetDriverLongName', driver, PACKAGE="rgdal")
 
@@ -163,7 +163,7 @@ setMethod('initialize', 'GDALTransientDataset',
 
 getDriver <- function(dataset) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
 
   new('GDALDriver',
       handle = .Call('RGDAL_GetDatasetDriver', dataset, PACKAGE="rgdal"))
@@ -172,7 +172,7 @@ getDriver <- function(dataset) {
 
 copyDataset <- function(dataset, driver, strict = FALSE, options = '') {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
   
   if (missing(driver)) driver <- getDriver(dataset)
   
@@ -193,7 +193,7 @@ copyDataset <- function(dataset, driver, strict = FALSE, options = '') {
 
 saveDataset <- function(dataset, filename) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
   
   new.class <- ifelse(class(dataset) == 'GDALTransientDataset',
                       'GDALDataset', class(dataset))
@@ -235,7 +235,7 @@ saveDatasetAs <- function(dataset, filename, driver = NULL) {
 
   .Deprecated("saveDataset")
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
   
   if (is.null(driver)) driver <- getDriver(dataset)
   
@@ -267,7 +267,7 @@ saveDatasetAs <- function(dataset, filename, driver = NULL) {
 
 deleteDataset <- function(dataset) {
 
-  .assertClass(dataset, 'GDALDataset')
+  assertClass(dataset, 'GDALDataset')
   
   driver <- getDriver(dataset)
   
@@ -309,7 +309,7 @@ setMethod('dim', 'GDALReadOnlyDataset',
 
 getProjectionRef <- function(dataset) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
 
   noquote(.Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal"))
 
@@ -320,11 +320,11 @@ putRasterData <- function(dataset,
                           band = 1,
                           offset = c(0, 0)) {
 
-  .assertClass(dataset, 'GDALDataset')
+  assertClass(dataset, 'GDALDataset')
 
   offset <- rep(offset, length.out = 2)
   
-  raster <- new('GDALRasterBand', dataset, band)
+  raster <- getRasterBand(dataset, band)
   
   .Call('RGDAL_PutRasterData', raster, rasterData, 
 	as.integer(offset), PACKAGE="rgdal")
@@ -336,7 +336,7 @@ getRasterTable <- function(dataset,
                            offset = c(0, 0),
                            region.dim = dim(dataset)) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
 
   offset <- rep(offset, length.out = 2)
   region.dim <- rep(region.dim, length.out = 2)
@@ -345,9 +345,16 @@ getRasterTable <- function(dataset,
                               offset = offset,
                               region = region.dim)
 
-  nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
+  if (is.null(band)) {
 
-  if (is.null(band)) band <- 1:nbands
+    nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
+    band <- 1:nbands
+
+  } else {
+
+    nbands <- length(band)
+
+  }
 
   dim(rasterData) <- c(region.dim, nbands)
 
@@ -384,7 +391,7 @@ getRasterData <- function(dataset,
                           interleave = c(0, 0),
                           as.is = FALSE) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
 
   offset <- rep(offset, length.out = 2)
   region.dim <- rep(region.dim, length.out = 2)
@@ -434,11 +441,7 @@ getRasterData <- function(dataset,
 
 getColorTable <- function(dataset, band = 1) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
-
-  if (length(band) > 1) stop("choose one band only")
-  nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
-  if (!(band %in% 1:nbands)) stop("no such band")
+  assertClass(dataset, 'GDALReadOnlyDataset')
 
   raster <- getRasterBand(dataset, band)
   
@@ -457,49 +460,94 @@ getColorTable <- function(dataset, band = 1) {
 
 }
 
-#displayDataset <- function(x, offset = c(0, 0), region.dim = dim(x),
-#                           reduction = 1, band = NULL, col = NULL,
-#                           max.dim = 500, ...) {
-#
-#  .assertClass(x, 'GDALReadOnlyDataset')
-#
-#  offset <- rep(offset, length.out = 2)
-#  region.dim <- rep(region.dim, length.out = 2)
-#  reduction <- rep(reduction, length.out = 2)
-#
-#  nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
-#
-#  if (is.null(band)) band <- 1:nbands
-#
-#  if (!length(band) %in% c(1, 3))
-#    stop("Only single band or 3 band RGB plotting supported")
-#  
-#  offset <- offset %% dim(x)[1:2]
-#  
-#  outOfBounds <- (region.dim + offset) > dim(x)[1:2]
-#  
-#  if (any(outOfBounds))
-#    region.dim[outOfBounds]  <- {
-#      dim(x)[outOfBounds] - offset[outOfBounds]
-#    }
-#
-#  if (any(reduction < 1)) reduction[reduction < 1] <- 1
-#
-#  plot.dim <- region.dim / reduction
-#            
-#  if (any(plot.dim > max.dim))
-#    plot.dim <- max.dim * plot.dim / max(plot.dim)
-#
-#  if (any(plot.dim < 3))
-#    plot.dim <- 3 * plot.dim / max(plot.dim)
-#
-#  pm <- getPixmapGDAL(x, col, band, offset, region.dim, plot.dim)
-#
-#  plot(pm)
-#
-#  invisible(pm)
-#
-#}
+RGB2PCT <- function(x, band, driver.name = 'MEM',
+                    ncolors = 256, set.ctab = TRUE) {
+  
+  assertClass(x, 'GDALReadOnlyDataset')
+
+  if (ncolors < 2 || ncolors > 256)
+    stop('Number of colors must be between 2 and 256')
+
+  band <- rep(band, length.out = 3)
+
+  dithered <- new('GDALTransientDataset',
+                  new('GDALDriver', driver.name),
+                  nrow(x), ncol(x))
+
+  ctab <- .Call('RGDAL_GenCMap',
+                getRasterBand(x, band[1]),
+                getRasterBand(x, band[2]),
+                getRasterBand(x, band[3]),
+                getRasterBand(dithered),
+                as.integer(ncolors),
+                as.logical(set.ctab),
+                package = "rgdal") / 255
+
+  if (set.ctab)
+    dithered
+  else
+    list(dataset = dithered,
+         pct = rgb(ctab[,1], ctab[,2], ctab[,3]))
+
+}  
+
+displayDataset <- function(x, offset = c(0, 0), region.dim = dim(x),
+                           reduction = 1, band = 1, col = NULL,
+                           reset.par = TRUE, max.dim = 500, ...) {
+
+  assertClass(x, 'GDALReadOnlyDataset')
+
+  offset <- rep(offset, length.out = 2)
+  region.dim <- rep(region.dim, length.out = 2)
+  reduction <- rep(reduction, length.out = 2)
+
+  offset <- offset %% dim(x)[1:2]
+  
+  oob <- (region.dim + offset) > dim(x)[1:2]
+  
+  if (any(oob)) region.dim[oob]  <-  dim(x)[oob] - offset[oob]
+
+  reduction[reduction < 1] <- 1
+
+  plot.dim <- region.dim / reduction
+            
+  if (any(plot.dim > max.dim))
+    plot.dim <- max.dim * plot.dim / max(plot.dim)
+
+  image.data <- getRasterData(x, band[1], offset,
+                              region.dim, plot.dim,
+                              as.is = TRUE)
+
+  if (is.null(col)) {
+    
+    max.val <- max(image.data, na.rm = TRUE)
+
+    if (!is.finite(max.val)) {
+      image.data[] <- 2
+      max.val <- 2
+    }
+
+    col <- getColorTable(x, band)[1:(max.val + 1)]
+      
+  }
+
+  if (is.null(col)) col <- gray(seq(0, 1, len = 256))
+  
+  par.in <- par(no.readonly = TRUE)
+
+  if (reset.par) on.exit(par(par.in))
+
+  par(pin = max(par.in$pin)
+      * par.in$fin / max(par.in$fin)
+      * rev(plot.dim) / max(plot.dim))
+  
+  image.data <- image.data[, ncol(image.data):1]
+
+  image.default(image.data + 1, col = col, axes = FALSE, ...)
+            
+  invisible(list(image.data = image.data, col = col, par.in = par.in))
+
+}
 
 setMethod('initialize', 'GDALRasterBand',
           def =  function(.Object, dataset, band = 1) {
@@ -517,7 +565,7 @@ setMethod('dim', 'GDALRasterBand',
 
 getGeoTransFunc <- function(dataset) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
 
   geoTrans <- .Call('RGDAL_GetGeoTransform', dataset, PACKAGE="rgdal")
 
@@ -540,7 +588,7 @@ getGeoTransFunc <- function(dataset) {
 
 getRasterBand <- function(dataset, band = 1) {
 
-  .assertClass(dataset, 'GDALReadOnlyDataset')
+  assertClass(dataset, 'GDALReadOnlyDataset')
 
   new('GDALRasterBand', dataset, band)
 
@@ -548,7 +596,7 @@ getRasterBand <- function(dataset, band = 1) {
 
 getRasterBlockSize <- function(raster) {
 
-  .assertClass(raster, 'GDALRasterBand')
+  assertClass(raster, 'GDALRasterBand')
   
   .Call('RGDAL_GetRasterBlockSize', raster, PACKAGE="rgdal")
   

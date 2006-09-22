@@ -2,7 +2,6 @@ useDynLib(rgdal)
 
 import(methods)
 import(sp)
-#import(pixmap)
 
 exportMethods(spTransform)
 exportMethods(closeDataset)
@@ -25,11 +24,11 @@ export(getDescription, getMetadata, setMetadata, appendMetadata)
 export(getRasterData, getRasterTable, getProjectionRef)
 export(getRasterBand, getRasterBlockSize)
 export(getDriver, GDAL.close, GDAL.open, getColorTable,
-  getGeoTransFunc, sub.GDROD, SGDF2RGB)
+  getGeoTransFunc, sub.GDROD, SGDF2RGB, asSGDF_GROD, RGB2PCT)
 export(make_EPSG, project, readGDAL, writeGDAL, showWKT)
 export(readOGR, ogrInfo, ogrFIDs, ogrDrivers)
 export(GDALinfo, print.GDALobj)
-#export(getPixmapGDAL, displayDataset)
+export(displayDataset)
 
 export(spTransform, spTransform.SpatialPoints, 
   spTransform.SpatialPointsDataFrame, spTransform.SpatialLines, 

@@ -2932,6 +2932,14 @@ done
 if test "$ac_cv_header_proj_api_h" = "no" ; then
     STOP="stop"
 fi
+if test "$STOP" = "stop" ; then
+    echo "proj_api.h not found."
+    echo "If the PROJ.4 library is installed in a non-standard location,"
+    echo "use --configure-args='--with-proj-include=/opt/local/include'"
+    echo "for example, replacing /opt/local/* with appropriate values"
+    echo "for your installation. If PROJ.4 is not installed, install it."
+    exit 1
+fi
 
 
 # Check whether --with-proj-lib or --without-proj-lib was given.
@@ -2940,12 +2948,11 @@ if test "${with_proj_lib+set}" = set; then
   proj_lib_path=$withval
 fi;
 if test  -n "$proj_lib_path"  ; then
+    LIBS=" -L${proj_lib_path} ${LIBS}"
+
     PKG_LIBS=" -L${proj_lib_path} ${PKG_LIBS}"
 
 fi
-
-LIBS="${LIBS} ${PKG_LIBS}"
-
 
 echo "$as_me:$LINENO: checking for pj_init_plus in -lproj" >&5
 echo $ECHO_N "checking for pj_init_plus in -lproj... $ECHO_C" >&6
@@ -3017,16 +3024,15 @@ else
   PROJ_SETTING="none"
 fi
 
-#echo "PROJ_SETTING: $PROJ_SETTING"
+
 if test "$PROJ_SETTING" = "none" ; then
     STOP="stop"
 fi
 if test "$STOP" = "stop" ; then
-    echo "libproj.a and/or proj_api.h not found."
+    echo "libproj.a not found."
     echo "If the PROJ.4 library is installed in a non-standard location,"
-    echo "use --configure-args='--with-proj-include=/opt/local/include"
-    echo "--with-proj-lib=/opt/local/lib' for example, replacing /opt/local/*"
-    echo "with appropriate values for your installation."
+    echo "use --configure-args='--with-proj-lib=/opt/local/lib' for example,"
+    echo "replacing /opt/local/* with appropriate values for your installation."
     echo "If PROJ.4 is not installed, install it."
     exit 1
 fi
