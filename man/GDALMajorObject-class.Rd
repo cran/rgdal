@@ -63,7 +63,7 @@ appendMetadata(object, metadata)
 
 \examples{
 
-driver <- new('GDALDriver', getGDALDriverNames()[1])
+driver <- new('GDALDriver', as.character(getGDALDriverNames()[1,1]))
 setMetadata(driver, list(Key = 'Test metadata'))
 getMetadata(driver)
 rm(driver)

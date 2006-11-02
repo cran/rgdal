@@ -23,7 +23,7 @@ extern "C" {
 #include <Rdefines.h>
 }
 
-
+#define EJP
 
 extern "C" {
   SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer){
@@ -180,11 +180,18 @@ extern "C" {
 
     // now go over each row and retrieve data. iRow is an index in a 
     // vector of FIDs
+#ifndef EJP
     for(iRow=0;iRow<nRows;iRow++){
       poFeature=poLayer->GetFeature(INTEGER(FIDs)[iRow]);
       if(poFeature == NULL){
 	error("Error getting feature FID: %d",(INTEGER(FIDs)[iRow]));
       }
+#else
+    // EJP, changed into:
+    poLayer->ResetReading();
+    iRow = 0;
+    while((poFeature = poLayer->GetNextFeature()) != NULL) {
+#endif
       // now get the value using the right type:
       switch(poField->GetType()){
       case OFTInteger:
@@ -197,10 +204,18 @@ extern "C" {
 	SET_STRING_ELT(ans,iRow,mkChar(poFeature->GetFieldAsString(iField)));
 	break;
       default:
-	delete poFeature;
+        delete poFeature;
 	error("Unsupported type. should have been caught before");
       }
       delete poFeature;
+#ifdef EJP
+      // according to tutorial: OGRFeature::DestroyFeature(poFeature);
+      // see comment FW in OGR tutorial: We could just "delete" it, 
+      // but this can cause problems in windows builds where the GDAL DLL 
+      // has a different "heap" from the main program. To be on the safe 
+      // side we use a GDAL function to delete the feature.
+      iRow++;
+#endif
     }
     UNPROTECT(1);
     return(ans);

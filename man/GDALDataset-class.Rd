@@ -29,10 +29,10 @@ Class \code{"GDALMajorObject"}, by class "GDALReadOnlyDataset".
 }
 \usage{
 putRasterData(dataset, rasterData, band = 1, offset = c(0, 0))
-saveDataset(dataset, filename)
+saveDataset(dataset, filename, options=NULL)
 copyDataset(dataset, driver, strict = FALSE, options = '')
 deleteDataset(dataset)
-saveDatasetAs(dataset, filename, driver = NULL)
+saveDatasetAs(dataset, filename, driver = NULL, options=NULL)
 }
 \arguments{
   \item{dataset}{An object inheriting from class 'GDALDataset'}

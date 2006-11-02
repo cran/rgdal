@@ -9,9 +9,7 @@
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, ..., half.cell=c(0.5, 0.5), silent = FALSE)
 asSGDF_GROD(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,0.5))
-writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=""
-%, clone = NULL
-)
+writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
 GDALinfo(fname)
 }
 
@@ -54,6 +52,7 @@ later on by e.g. using \code{\link[sp]{gridded}(x)=TRUE}.
 \author{Edzer J.\ Pebesma, Roger Bivand}
 
 \examples{
+library(grid)
 GDALinfo(system.file("external/test.ag", package="sp")[1])
 x <- readGDAL(system.file("external/test.ag", package="sp")[1])
 class(x)
@@ -90,6 +89,11 @@ image(cea, col=grey(1:99/100))
 erdas_spnad83 <- readGDAL(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1], output.dim=c(100,100))
 summary(erdas_spnad83)
 image(erdas_spnad83, col=grey(1:99/100))
+tf <- tempfile()
+writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte", options=NULL)
+all.equal(erdas_spnad83, readGDAL(tf))
+writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte", options="INTERLEAVE=PIXEL")
+all.equal(erdas_spnad83, readGDAL(tf))
 
 x <- GDAL.open(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1])
 erdas_spnad83 <- asSGDF_GROD(x, output.dim=c(100,100))

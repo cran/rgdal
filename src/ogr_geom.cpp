@@ -57,7 +57,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
     SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("proj4string"));
     SET_STRING_ELT(ansnames, 3, COPY_TO_USER_STRING("geomTypes"));
     SET_STRING_ELT(ansnames, 4, COPY_TO_USER_STRING("crdlist"));
-    SET_STRING_ELT(ansnames, 4, COPY_TO_USER_STRING("with_z"));
+    SET_STRING_ELT(ansnames, 5, COPY_TO_USER_STRING("with_z"));
     setAttrib(ans, R_NamesSymbol, ansnames);
 
     SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(1));

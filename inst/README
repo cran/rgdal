@@ -2,8 +2,6 @@ Installing the R source rgdal package
 
 In order to install the R source rgdal package, you should first have installed GDAL/OGR with all of their dependencies needed for the data you need to access. There are many dependencies, not all of which need to be met for every user, but which provide the flexibility needed by users with special requirements. Note that both driver updates and new drivers are made available in successive releases of GDAL/OGR, and that, for special purposes, tracking the GDAL/OGR CVS changes can be very useful.
 
-GDAL/OGR depends on PROJ.4, as do functions in the R spproj package, but spproj does not depend on GDAL/OGR.
-
 The main download source is:
 
 http://www.gdal.org/download.html

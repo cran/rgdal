@@ -25,3 +25,4 @@ showWKT                 Show Well-Known Text spatial reference system
                         metadata
 spTransform-methods     Methods for Function spTransform in package
                         "rgdal"
+writeOGR                Write spatial vector data using OGR

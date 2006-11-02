@@ -109,3 +109,5 @@ showWKT <- function(p4s, file=NULL, morphToESRI=TRUE) {
 	if (!is.null(file)) cat(res, "\n", sep="", file=file)
 	res
 }
+
+ 

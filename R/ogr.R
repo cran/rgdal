@@ -30,5 +30,9 @@ ogrFIDs <- function(dsn, layer){
 }
 
 ogrDrivers <- function() {
-  .Call("ogr_GetDriverNames", PACKAGE="rgdal")
+  res <- .Call("ogr_GetDriverNames", PACKAGE="rgdal")
+  res <- as.data.frame(res)
+  res <- res[order(res$name),]
+  row.names(res) <- NULL
+  res
 }
