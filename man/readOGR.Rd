@@ -21,7 +21,7 @@ ogrDrivers()
   \item{verbose}{report progress}
 }
 \details{
-  The drivers available will depend on the installation of GDAL/OGR, and can vary; the \code{ogrDrivers()} function shows which are available. Note that stray files in data source directories (such as *.dbf) may lead to suprious errors that accompanying *.shp are missing.
+  The drivers available will depend on the installation of GDAL/OGR, and can vary; the \code{ogrDrivers()} function shows which are available, and which may be written (but all are assumed to be readable, which is not the case - KML is writable but not readable). Note that stray files in data source directories (such as *.dbf) may lead to suprious errors that accompanying *.shp are missing.
 }
 \value{
   A Spatial object is returned suiting the vector data source, either a SpatialPointsDataFrame (using an AttributeList for its data slot directly), a SpatialLinesDataFrame, or a SpatialPolygonsDataFrame.
@@ -40,8 +40,10 @@ kiritimati_primary_roads <- readOGR(system.file("vectors", package = "rgdal")[1]
 summary(kiritimati_primary_roads)
 scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1], "scot_BNG")
 summary(scot_BNG)
-places <- try(readOGR(system.file("vectors/places.gml", package = "rgdal")[1], "places"))
-if (class(places) != "try-error") summary(places)
+if ("GML" \%in\% ogrDrivers()$name) {
+  airports <- try(readOGR(system.file("vectors/airports.gml", package = "rgdal")[1], "airports"))
+  if (class(airports) != "try-error") summary(airports)
+}
 ps_cant_31 <- readOGR(system.file("vectors/ps_cant_31.MIF", package = "rgdal")[1], "ps_cant_31")
 summary(ps_cant_31)
 Up <- readOGR(system.file("vectors/Up.tab", package = "rgdal")[1], "Up")

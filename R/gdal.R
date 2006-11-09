@@ -75,7 +75,13 @@ setClass('GDALTransientDataset', 'GDALDataset')
          
 setClass('GDALRasterBand', 'GDALMajorObject')
 
-getGDALDriverNames <- function() .Call('RGDAL_GetDriverNames', PACKAGE="rgdal")
+getGDALDriverNames <- function() {
+  res <- .Call('RGDAL_GetDriverNames', PACKAGE="rgdal")
+  res <- as.data.frame(res)
+  res <- res[order(res$name),]
+  row.names(res) <- NULL
+  res
+}
 
 setMethod('initialize', 'GDALDriver',
           def = function(.Object, name, handle = NULL) {
@@ -170,7 +176,7 @@ getDriver <- function(dataset) {
 
 }
 
-copyDataset <- function(dataset, driver, strict = FALSE, options = '') {
+copyDataset <- function(dataset, driver, strict = FALSE, options = NULL) {
 
   assertClass(dataset, 'GDALReadOnlyDataset')
   
@@ -179,6 +185,8 @@ copyDataset <- function(dataset, driver, strict = FALSE, options = '') {
   my_tempfile <- tempfile()
 
   if (nchar(my_tempfile) == 0) stop("empty file name")
+  if (!is.null(options) && !is.character(options))
+    stop("options not character")
   
   new.obj <- new('GDALTransientDataset',
                  handle = .Call('RGDAL_CopyDataset',
@@ -191,18 +199,20 @@ copyDataset <- function(dataset, driver, strict = FALSE, options = '') {
   
 }
 
-saveDataset <- function(dataset, filename) {
+saveDataset <- function(dataset, filename, options=NULL) {
 
   assertClass(dataset, 'GDALReadOnlyDataset')
   
   new.class <- ifelse(class(dataset) == 'GDALTransientDataset',
                       'GDALDataset', class(dataset))
+  if (!is.null(options) && !is.character(options))
+    stop("options not character")
   
   if (nchar(filename) == 0) stop("empty file name")
   new.obj <- new(new.class,
                  handle = .Call('RGDAL_CopyDataset',
                    dataset, getDriver(dataset),
-                   FALSE, NULL, filename, PACKAGE="rgdal"))
+                   FALSE, options, filename, PACKAGE="rgdal"))
 
   invisible(new.obj)
   
@@ -231,17 +241,19 @@ setMethod('closeDataset', 'GDALTransientDataset',
           })
 
 
-saveDatasetAs <- function(dataset, filename, driver = NULL) {
+saveDatasetAs <- function(dataset, filename, driver = NULL, options=NULL) {
 
   .Deprecated("saveDataset")
 
   assertClass(dataset, 'GDALReadOnlyDataset')
   
   if (is.null(driver)) driver <- getDriver(dataset)
+  if (!is.null(options) && !is.character(options))
+    stop("options not character")
   
   new.obj <- new('GDALReadOnlyDataset',
                  handle = .Call('RGDAL_CopyDataset',
-                   dataset, driver, FALSE, NULL, filename, PACKAGE="rgdal"))
+                   dataset, driver, FALSE, options, filename, PACKAGE="rgdal"))
   
   closeDataset(new.obj)
   

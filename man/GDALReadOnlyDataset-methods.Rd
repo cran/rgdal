@@ -38,6 +38,7 @@ An GDALReadOnlyDataset object can be coerced directly to a SpatialGridDataFrame
 \code{\link[sp]{SpatialGridDataFrame-class}} .}
 
 \examples{
+library(grid)
 logo <- system.file("pictures/logo.jpg", package="rgdal")[1]
 x <- new("GDALReadOnlyDataset", logo)
 dim(x)

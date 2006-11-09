@@ -1,5 +1,9 @@
 /* Copyright (c) 2003 Barry Rowlingson and Roger Bivand */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <R.h>
 #include <Rdefines.h>
 /*#include <Rinternals.h>*/
@@ -173,3 +177,8 @@ SEXP checkCRSArgs(SEXP args) {
 	UNPROTECT(1);
 	return(res);
 }
+
+#ifdef __cplusplus
+}
+#endif
+

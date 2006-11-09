@@ -203,8 +203,6 @@ readGDAL = function(fname, offset, region.dim, output.dim, ..., half.cell=c(0.5,
 
 writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32", 
 		mvFlag = NA, options=NULL)
-#, clone = NULL
-#) 
 {
 	if (nchar(fname) == 0) stop("empty file name")
 	# stop("write.gdal is not working (yet>")
@@ -213,21 +211,20 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 	d.dim = dim(as.matrix(dataset[1]))
 	d.drv = new("GDALDriver", drivername)
 	nbands = length(names(slot(dataset, "data")))
-#	if (!is.null(clone) && is.character(clone))
-#		tds.out = new("GDALDataset", clone)
-#	else {
-		tds.out = new("GDALTransientDataset", driver = d.drv, 
-			rows = d.dim[2], cols = d.dim[1],
-        	bands = nbands, type = type, options = options, 
-			handle = NULL)
-		gp = gridparameters(dataset)
-		cellsize = gp$cellsize
-		offset = gp$cellcentre.offset
-		dims = gp$cells.dim
-		gt = c(offset[1] - 0.5 * cellsize[1], cellsize[1], 0.0, 
-			offset[2] + (dims[2] -0.5) * cellsize[2], 0.0, -cellsize[2])
-		.Call("RGDAL_SetGeoTransform", tds.out, gt, PACKAGE = "rgdal")
-#	}
+        if (!is.null(options) && !is.character(options))
+                stop("options not character")
+	tds.out = new("GDALTransientDataset", driver = d.drv, 
+		rows = d.dim[2], cols = d.dim[1],
+        bands = nbands, type = type, options = options, 
+		handle = NULL)
+	gp = gridparameters(dataset)
+	cellsize = gp$cellsize
+	offset = gp$cellcentre.offset
+	dims = gp$cells.dim
+	gt = c(offset[1] - 0.5 * cellsize[1], cellsize[1], 0.0, 
+		offset[2] + (dims[2] -0.5) * cellsize[2], 0.0, -cellsize[2])
+	.Call("RGDAL_SetGeoTransform", tds.out, gt, PACKAGE = "rgdal")
+
 	if (!is.na(mvFlag))
 		.Call("RGDAL_SetNoDataValue", tds.out, as.double(mvFlag), PACKAGE = "rgdal")
 	p4s <- proj4string(dataset)
@@ -240,8 +237,10 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 			band[is.na(band)] = mvFlag
 		putRasterData(tds.out, band, i)
 	}
-	saveDataset(tds.out, fname)
+	saveDataset(tds.out, fname, options=options)
 	invisible(fname)
 }
+
+gdalDrivers <- function() getGDALDriverNames()
 
 

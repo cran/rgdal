@@ -2,6 +2,7 @@
 \docType{class}
 \alias{GDALDriver-class}
 \alias{getGDALDriverNames}
+\alias{gdalDrivers}
 \alias{getDriverName}
 \alias{getDriverLongName}
 \alias{initialize,GDALDriver-method}
@@ -29,6 +30,7 @@ Class \code{"GDALMajorObject"}, directly.
 }
 \usage{
 getGDALDriverNames()
+gdalDrivers()
 getDriverName(driver)
 getDriverLongName(driver)
 }
@@ -38,8 +40,7 @@ getDriverLongName(driver)
 
 \details{
   \describe{
-    \item{\code{showGDALDriverNames}:}{returns all driver names currently
-      installed in GDAL.}
+    \item{\code{getGDALDriverNames, gdalDrivers}:}{returns all driver names currently installed in GDAL, with their declared write status.}
   
     \item{\code{getDriverName}:}{returns the GDAL driver name associated
       with the driver object.}
@@ -53,7 +54,7 @@ getDriverLongName(driver)
 \seealso{\code{\link{GDALMajorObject-class}}}
 
 \examples{
-getGDALDriverNames()
+gdalDrivers()
 logo <- system.file("pictures/logo.jpg", package="rgdal")[1]
 x <- new("GDALReadOnlyDataset", logo)
 getDriver(x)

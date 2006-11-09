@@ -241,22 +241,40 @@ RGDAL_SetMetadata(SEXP sxpObj, SEXP sxpMetadataList) {
 SEXP
 RGDAL_GetDriverNames(void) {
 
-  SEXP sxpDriverList;
+  SEXP ans, ansnames;
+  int pc=0;
+  int nDr=GDALGetDriverCount();
 
-  PROTECT(sxpDriverList = allocVector(STRSXP, GDALGetDriverCount()));
+  PROTECT(ans = NEW_LIST(3)); pc++;
+  PROTECT(ansnames = NEW_CHARACTER(3)); pc++;
+  SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("name"));
+  SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("long_name"));
+  SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("write"));
+  setAttrib(ans, R_NamesSymbol, ansnames);
+//  PROTECT(sxpDriverList = allocVector(STRSXP, GDALGetDriverCount()));
+  SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(nDr));
+  SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(nDr));
+  SET_VECTOR_ELT(ans, 2, NEW_LOGICAL(nDr));
 
-  int i;
-  for (i = 0; i < GDALGetDriverCount(); ++i) {
+  int i, flag;
+  for (i = 0; i < nDr; ++i) {
 
     GDALDriver *pDriver = GetGDALDriverManager()->GetDriver(i);
     
-    SET_STRING_ELT(sxpDriverList, i, mkChar(GDALGetDriverShortName( pDriver )));
+    SET_STRING_ELT(VECTOR_ELT(ans, 0), i, 
+      mkChar(GDALGetDriverShortName( pDriver )));
+    SET_STRING_ELT(VECTOR_ELT(ans, 1), i, 
+      mkChar(GDALGetDriverLongName( pDriver )));
+    flag=0;
+    if (GDALGetMetadataItem( pDriver, GDAL_DCAP_CREATE, NULL ) ||
+      GDALGetMetadataItem( pDriver, GDAL_DCAP_CREATECOPY, NULL )) flag=1;
+    LOGICAL_POINTER(VECTOR_ELT(ans, 2))[i] = flag;
 
   }
 
-  UNPROTECT(1);
+  UNPROTECT(pc);
 
-  return(sxpDriverList);
+  return(ans);
 
 }
 
@@ -383,8 +401,8 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
   GDALDriver *pDriver = getGDALDriverPtr(sxpDriver);
   GDALDataset *pDataset;
   const char *filename = asString(sFile);
-
-  int i, n;
+  int i/*, n*/;
+  char **papszCreateOptions = NULL;
 
 #ifdef RGDALDEBUG
   fprintf(stderr, "Opening dataset: %s\n", filename);
@@ -395,24 +413,18 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
 
   GDALDataType eGDALType = (GDALDataType) asInteger(sType);
 
-  if (isNull(sOpts)) {
-    char **opts = NULL;
-    pDataset = pDriver->Create(filename,
+  for (i=0; i < length(sOpts); i++) papszCreateOptions = CSLAddString( 
+    papszCreateOptions, CHAR(STRING_ELT(sOpts, i)) );
+#ifdef RGDALDEBUG
+  for (i=0; i < CSLCount(papszCreateOptions); i++)
+    Rprintf("option %d: %s\n", i, CSLGetField(papszCreateOptions, i));
+#endif
+  pDataset = pDriver->Create(filename,
 			  INTEGER(sDim)[0],
 			  INTEGER(sDim)[1],
 			  INTEGER(sDim)[2],
-			  eGDALType, opts);
-  } else {
-    n = length(sOpts);
-    char *opts[n];
-    for (i=0; i < n; i++) opts[i] = CHAR(STRING_ELT(sOpts, i));
-    for (i=0; i < n; i++) Rprintf("option: %s\n", opts[i]);
-    pDataset = pDriver->Create(filename,
-			  INTEGER(sDim)[0],
-			  INTEGER(sDim)[1],
-			  INTEGER(sDim)[2],
-			  eGDALType, opts);
-  }
+			  eGDALType, papszCreateOptions);
+  CSLDestroy(papszCreateOptions);
 
   if (pDataset == NULL) error("Unable to create dataset\n");
 
@@ -457,6 +469,8 @@ RGDAL_CopyDataset(SEXP sxpDataset, SEXP sxpDriver,
 		  SEXP sxpFile) {
 
   GDALDataset *pDataset = getGDALDatasetPtr(sxpDataset);
+  char **papszCreateOptions = NULL;
+  int i;
 
   const char *filename = asString(sxpFile);
 
@@ -464,12 +478,18 @@ RGDAL_CopyDataset(SEXP sxpDataset, SEXP sxpDriver,
 
   GDALDriver *pDriver = getGDALDriverPtr(sxpDriver);
 
+  for (i=0; i < length(sxpOpts); i++) papszCreateOptions = CSLAddString( 
+    papszCreateOptions, CHAR(STRING_ELT(sxpOpts, i)) );
+#ifdef RGDALDEBUG
+  for (i=0; i < CSLCount(papszCreateOptions); i++)
+    Rprintf("option %d: %s\n", i, CSLGetField(papszCreateOptions, i));
+#endif
   GDALDataset *pDatasetCopy = pDriver->CreateCopy(filename,
-						  pDataset,
-						  asInteger(sxpStrict),
-						  NULL, NULL, NULL);
+		pDataset, asInteger(sxpStrict),
+		papszCreateOptions, NULL, NULL);
 
   if (pDatasetCopy == NULL) error("Dataset copy failed\n");
+  CSLDestroy(papszCreateOptions);
 
   SEXP sxpHandle = R_MakeExternalPtr((void *) pDatasetCopy,
 				     mkChar("GDAL Dataset"),
