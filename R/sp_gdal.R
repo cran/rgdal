@@ -7,6 +7,7 @@ GDALinfo <- function(fname) {
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt <- .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
 	nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
+        if (nbands < 1) warning("no bands in dataset")
 	GDAL.close(x)
 	res <- c(rows=d[1], columns=d[2], bands=nbands, ll.x=gt[1], ll.y=gt[4], 
 		res.x=abs(gt[2]), res.y=abs(gt[6]), oblique.x=abs(gt[3]), 
@@ -19,12 +20,19 @@ GDALinfo <- function(fname) {
 }
 
 print.GDALobj <- function(x, ...) {
-	xx <- cbind(x)
-	colnames(xx) <- "values"
-	print(xx)
-	cat("driver:", attr(x, "driver"), "\n")
-	cat("projection:", attr(x, "projection"), "\n")
-	cat("file:", attr(x, "file"), "\n")
+	cat("rows       ", x[1], "\n")
+	cat("columns    ", x[2], "\n")
+	cat("bands      ", x[3], "\n")
+	cat("ll.x       ", x[4], "\n")
+	cat("ll.y       ", x[5], "\n")
+	cat("res.x      ", x[6], "\n")
+	cat("res.y      ", x[7], "\n")
+	cat("oblique.x  ", x[8], "\n")
+	cat("oblique.y  ", x[9], "\n")
+	cat("driver     ", attr(x, "driver"), "\n")
+	cat("projection ", paste(strwrap(attr(x, "projection")),
+		collapse="\n"), "\n")
+	cat("file       ", attr(x, "file"), "\n")
 	invisible(x)
 }
 
@@ -76,8 +84,8 @@ setAs("GDALReadOnlyDataset", "SpatialGridDataFrame", asGDALROD_SGDF)
 }
 
 asSGDF_GROD <- function(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,0.5)) {
-	if (!inherits(x, "GDALReadOnlyDataset"))
-		stop("GDALReadOnlyDataset required")
+	if (!extends(class(x), "GDALReadOnlyDataset"))
+		stop("x must be or extend a GDALReadOnlyDataset")
 	d = dim(x)
 	if (missing(offset)) offset <- c(0,0)
 	if (missing(region.dim)) region.dim <- dim(x)[1:2]
@@ -205,7 +213,44 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 		mvFlag = NA, options=NULL)
 {
 	if (nchar(fname) == 0) stop("empty file name")
-	# stop("write.gdal is not working (yet>")
+#	stopifnot(gridded(dataset))
+#	fullgrid(dataset) = TRUE
+#	d.dim = dim(as.matrix(dataset[1]))
+#	d.drv = new("GDALDriver", drivername)
+#	nbands = length(names(slot(dataset, "data")))
+#        if (!is.null(options) && !is.character(options))
+#                stop("options not character")
+#	tds.out = new("GDALTransientDataset", driver = d.drv, 
+#		rows = d.dim[2], cols = d.dim[1], bands = nbands,
+#		type = type, options = options, handle = NULL)
+#	gp = gridparameters(dataset)
+#	cellsize = gp$cellsize
+#	offset = gp$cellcentre.offset
+#	dims = gp$cells.dim
+#	gt = c(offset[1] - 0.5 * cellsize[1], cellsize[1], 0.0, 
+#		offset[2] + (dims[2] -0.5) * cellsize[2], 0.0, -cellsize[2])
+#	.Call("RGDAL_SetGeoTransform", tds.out, gt, PACKAGE = "rgdal")
+#
+#	if (!is.na(mvFlag))
+#		.Call("RGDAL_SetNoDataValue", tds.out, as.double(mvFlag), PACKAGE = "rgdal")
+#	p4s <- proj4string(dataset)
+#	if (!is.na(p4s) && nchar(p4s) > 0)
+#		.Call("RGDAL_SetProject", tds.out, p4s, PACKAGE = "rgdal")
+#	for (i in 1:nbands) {
+#		band = as.matrix(dataset[i])
+#		if (!is.numeric(band)) stop("Numeric bands required")
+#		if (!is.na(mvFlag))
+#			band[is.na(band)] = mvFlag
+#		putRasterData(tds.out, band, i)
+#	}
+	tds.out <- create2GDAL(dataset=dataset, drivername=drivername, 
+		type=type, mvFlag=mvFlag, options=options)
+	saveDataset(tds.out, fname, options=options)
+	invisible(fname)
+}
+
+create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
+{
 	stopifnot(gridded(dataset))
 	fullgrid(dataset) = TRUE
 	d.dim = dim(as.matrix(dataset[1]))
@@ -215,7 +260,7 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
                 stop("options not character")
 	tds.out = new("GDALTransientDataset", driver = d.drv, 
 		rows = d.dim[2], cols = d.dim[1],
-        bands = nbands, type = type, options = options, 
+        	bands = nbands, type = type, options = options, 
 		handle = NULL)
 	gp = gridparameters(dataset)
 	cellsize = gp$cellsize
@@ -237,8 +282,7 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 			band[is.na(band)] = mvFlag
 		putRasterData(tds.out, band, i)
 	}
-	saveDataset(tds.out, fname, options=options)
-	invisible(fname)
+	tds.out
 }
 
 gdalDrivers <- function() getGDALDriverNames()

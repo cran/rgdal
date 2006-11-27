@@ -2,14 +2,16 @@
 \alias{readGDAL}
 \alias{asSGDF_GROD}
 \alias{writeGDAL}
+\alias{create2GDAL}
 \alias{GDALinfo}
 \alias{print.GDALobj}
 \title{Read/write between GDAL grid maps and Spatial objects}
-\description{The functions read or write GDAL grid maps. They will set the spatial reference system if available. \code{GDALinfo} reports the size and other parameters of the dataset.}
+\description{The functions read or write GDAL grid maps. They will set the spatial reference system if available. \code{GDALinfo} reports the size and other parameters of the dataset. \code{create2GDAL} creates a GDAL data set from a SpatialGridDataFrame object, in particular to be able to save to GDAL driver formats that only permit copying rather than creation.}
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, ..., half.cell=c(0.5, 0.5), silent = FALSE)
 asSGDF_GROD(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,0.5))
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
+create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
 GDALinfo(fname)
 }
 
@@ -100,6 +102,14 @@ erdas_spnad83 <- asSGDF_GROD(x, output.dim=c(100,100))
 GDAL.close(x)
 summary(erdas_spnad83)
 image(erdas_spnad83, col=grey(1:99/100))
+
+tf <- tempfile()
+xx <- create2GDAL(erdas_spnad83, type="Byte")
+xxx <- copyDataset(xx, driver="PNG")
+saveDataset(xxx, tf)
+GDAL.close(xx)
+GDAL.close(xxx)
+GDALinfo(tf)
 
 }
 \keyword{spatial}

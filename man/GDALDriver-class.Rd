@@ -40,7 +40,7 @@ getDriverLongName(driver)
 
 \details{
   \describe{
-    \item{\code{getGDALDriverNames, gdalDrivers}:}{returns all driver names currently installed in GDAL, with their declared write status.}
+    \item{\code{getGDALDriverNames, gdalDrivers}:}{returns all driver names currently installed in GDAL, with their declared create and copy status (some drivers can create datasets, others can only copy from a prototype with a different driver.}
   
     \item{\code{getDriverName}:}{returns the GDAL driver name associated
       with the driver object.}

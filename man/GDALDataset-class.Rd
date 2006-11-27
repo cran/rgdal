@@ -30,7 +30,7 @@ Class \code{"GDALMajorObject"}, by class "GDALReadOnlyDataset".
 \usage{
 putRasterData(dataset, rasterData, band = 1, offset = c(0, 0))
 saveDataset(dataset, filename, options=NULL)
-copyDataset(dataset, driver, strict = FALSE, options = '')
+copyDataset(dataset, driver, strict = FALSE, options = NULL)
 deleteDataset(dataset)
 saveDatasetAs(dataset, filename, driver = NULL, options=NULL)
 }
@@ -42,8 +42,8 @@ saveDatasetAs(dataset, filename, driver = NULL, options=NULL)
     upper left corner) to begin reading from}
   \item{filename}{name of file to contain raster data object}
   \item{driver}{GDAL driver name to use for saving raster data object}
-  \item{strict}{Driver specific options (currently passed to GDAL)}
-  \item{options}{Driver specific options (currently ignored)}
+  \item{strict}{TRUE if the copy must be strictly equivelent, or more normally FALSE indicating that the copy may adapt as needed for the output format}
+  \item{options}{Driver specific options (currently passed to GDAL)}
 }
 \details{
   \describe{

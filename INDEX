@@ -14,12 +14,13 @@ GDALTransientDataset-class
                         Class "GDALTransientDataset"
 make_EPSG               Make a data frame of EPSG projection codes
 project                 Projection of coordinate matrices
+projInfo                List PROJ.4 tag information
 readGDAL                Read/write between GDAL grid maps and Spatial
                         objects
 readOGR                 Read OGR vector maps into Spatial objects
 RGB2PCT                 Convert RGB three band to single band colour
                         table
-SGDF2RGB                Convert RGB three band to single band colour
+SGDF2PCT                Convert RGB three band to single band colour
                         table
 showWKT                 Show Well-Known Text spatial reference system
                         metadata

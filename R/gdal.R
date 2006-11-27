@@ -181,7 +181,8 @@ copyDataset <- function(dataset, driver, strict = FALSE, options = NULL) {
   assertClass(dataset, 'GDALReadOnlyDataset')
   
   if (missing(driver)) driver <- getDriver(dataset)
-  
+  else if (is.character(driver)) driver <- new("GDALDriver", driver)
+
   my_tempfile <- tempfile()
 
   if (nchar(my_tempfile) == 0) stop("empty file name")
@@ -313,6 +314,7 @@ setMethod('dim', 'GDALReadOnlyDataset',
             nrows <- .Call('RGDAL_GetRasterYSize', x, PACKAGE="rgdal")
             ncols <- .Call('RGDAL_GetRasterXSize', x, PACKAGE="rgdal")
             nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
+            if (nbands < 1) warning("no bands in dataset")
             if (nbands > 1)
               c(nrows, ncols, nbands)
             else
@@ -360,6 +362,7 @@ getRasterTable <- function(dataset,
   if (is.null(band)) {
 
     nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
+    if (nbands < 1) stop("no bands in dataset")
     band <- 1:nbands
 
   } else {
@@ -411,6 +414,7 @@ getRasterData <- function(dataset,
   interleave <- rep(interleave, length.out = 2)
 
   nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
+  if (nbands < 1) stop("no bands in dataset")
 
   if (is.null(band)) band <- 1:nbands
   

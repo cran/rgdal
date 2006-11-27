@@ -245,16 +245,18 @@ RGDAL_GetDriverNames(void) {
   int pc=0;
   int nDr=GDALGetDriverCount();
 
-  PROTECT(ans = NEW_LIST(3)); pc++;
-  PROTECT(ansnames = NEW_CHARACTER(3)); pc++;
+  PROTECT(ans = NEW_LIST(4)); pc++;
+  PROTECT(ansnames = NEW_CHARACTER(4)); pc++;
   SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("name"));
   SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("long_name"));
-  SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("write"));
+  SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("create"));
+  SET_STRING_ELT(ansnames, 3, COPY_TO_USER_STRING("copy"));
   setAttrib(ans, R_NamesSymbol, ansnames);
 //  PROTECT(sxpDriverList = allocVector(STRSXP, GDALGetDriverCount()));
   SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(nDr));
   SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(nDr));
   SET_VECTOR_ELT(ans, 2, NEW_LOGICAL(nDr));
+  SET_VECTOR_ELT(ans, 3, NEW_LOGICAL(nDr));
 
   int i, flag;
   for (i = 0; i < nDr; ++i) {
@@ -266,10 +268,11 @@ RGDAL_GetDriverNames(void) {
     SET_STRING_ELT(VECTOR_ELT(ans, 1), i, 
       mkChar(GDALGetDriverLongName( pDriver )));
     flag=0;
-    if (GDALGetMetadataItem( pDriver, GDAL_DCAP_CREATE, NULL ) ||
-      GDALGetMetadataItem( pDriver, GDAL_DCAP_CREATECOPY, NULL )) flag=1;
+    if (GDALGetMetadataItem( pDriver, GDAL_DCAP_CREATE, NULL )) flag=1;
     LOGICAL_POINTER(VECTOR_ELT(ans, 2))[i] = flag;
-
+    flag=0;
+    if (GDALGetMetadataItem( pDriver, GDAL_DCAP_CREATECOPY, NULL )) flag=1;
+    LOGICAL_POINTER(VECTOR_ELT(ans, 3))[i] = flag;
   }
 
   UNPROTECT(pc);

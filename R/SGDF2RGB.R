@@ -1,4 +1,4 @@
-SGDF2RGB <- function(x, ncolors=256) {
+SGDF2PCT <- function(x, ncolors=256, adjust.bands=TRUE) {
 	if (!inherits(x, "SpatialGridDataFrame")) 
 		stop("SpatialGridDataFrame required")
 	if (length(names(slot(x, "data"))) != 3)
@@ -25,30 +25,45 @@ SGDF2RGB <- function(x, ncolors=256) {
 	gt <- c(offset[1] - 0.5 * cellsize[1], cellsize[1], 0.0, 
 		offset[2] + (dims[2] -0.5) * cellsize[2], 0.0, -cellsize[2])
 	.Call("RGDAL_SetGeoTransform", GTiff3B, gt, PACKAGE = "rgdal")
+	have_NAs <- FALSE
 	for (i in 1:3) {
 		band = as.matrix(x[i])
+		if (any(is.na(band))) have_NAs <- TRUE
 		if (!is.numeric(band)) stop("Numeric bands required")
-		bmax <- max(band)
-		bmin <- min(band)
-		if (bmax == bmin) bmax <- bmin + ncolors
-		band <- floor((band - bmin)/((bmax-bmin)/(255)))
+		if (adjust.bands) {
+			bmax <- max(band)
+			bmin <- min(band)
+			if (bmax == bmin) bmax <- bmin + ncolors
+			band <- floor((band - bmin)/((bmax-bmin)/(255)))
+		} else {
+			if (!is.integer(band)) 
+				stop("unadjusted band not integer")
+			if (any(band[!is.na(band)] < 0) || 
+				any(band[!is.na(band)] > 255)) 
+				stop("unadjusted band out of range")
+		}
 		storage.mode(band) <- "integer"
 		putRasterData(GTiff3B, band, i)
 	}
-	GTiff3B.tif <- tempfile()
-	GTiff3Bs <- saveDataset(GTiff3B, GTiff3B.tif)
-	GTiff1I.tif <- as.character(tempfile())
-
-	cmd <- paste("rgb2pct.py -n", ncolors, GTiff3B.tif, GTiff1I.tif)
-	system(cmd)
-
-	GTiff1Is <- GDAL.open(GTiff1I.tif)
-	output <- getRasterData(GTiff1Is, band=1)
-	idx <- as.vector(output)
-	ct <- getColorTable(GTiff1Is, band=1)
-	res <- list(idx=idx, ct=ct[1:ncolors])
+	if (have_NAs) ncolors <- ncolors + 1
+	dx <- RGB2PCT(GTiff3B, band=1:3, ncolors=ncolors, set.ctab=FALSE)
 	GDAL.close(GTiff3B)
-	GDAL.close(GTiff3Bs)
-	GDAL.close(GTiff1Is)
+	output <- getRasterData(dx$dataset, band=1)
+	idx <- as.vector(output)+1
+	ct <- dx$pct
+	res <- list(idx=idx, ct=ct[1:ncolors])
+	GDAL.close(dx$dataset)
 	res
+}
+
+vec2RGB <- function(vec, breaks, col) {
+	if (!is.numeric(vec)) stop("vec must be numeric")
+	if (!is.vector(vec)) stop("vec must be a vector")
+	if (length(col) != (length(breaks)-1)) 
+		stop("length of col must be one less than length of breaks")
+	idvec <- findInterval(vec, breaks, all.inside=TRUE)
+	rgb_col <- col2rgb(col)
+	res <- rgb_col[, idvec]
+	storage.mode(res) <- "integer"
+	t(res)
 }
