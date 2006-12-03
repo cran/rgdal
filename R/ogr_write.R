@@ -4,9 +4,21 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     if (is.na(mch) || length(mch) > 1)
         stop(paste("No such driver:", driver))
     if (!drvs$write[mch]) stop("Chosen driver cannot create files")
+    if (driver == "KML") {
+      if (is.na(is.projected(obj))) warning(paste("Unknown coordinate", 
+        "reference system: for KML driver should be geographical"))
+      else if (is.projected(obj)) warning(paste("Projected coordinate",
+        "reference system: for KML driver should be geographical"))
+    }
     if (!"data" %in% names(getSlots(class(obj)))) stop("obj of wrong class") 
     dfcls <- sapply(slot(obj, "data"), function(x) class(x)[1])
+    known <- c("numeric", "character", "factor", "POSIXt", "integer")
+    if (!all(dfcls %in% known)) stop("unknown data type")
+
     dftof <- sapply(slot(obj, "data"), typeof)
+    known <- c("double", "character", "integer")
+    if (!all(dftof %in% known)) stop("unknown data type")
+
     nf <- length(dfcls)
     ldata <- vector(mode="list", length=nf)
     ogr_ftype <- integer(nf)
@@ -26,7 +38,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         } else if (dfcls[i] == "integer" && dftof[i] == "integer") {
             ldata[[i]] <- slot(obj, "data")[,i]
             ogr_ftype[i] <- as.integer(0) #"OFTInteger"
-        }
+        } else stop(paste(dfcls[i], dftof[i], "unknown data type"))
     }
     fld_names <- names(dfcls)
     nobj <- nrow(slot(obj, "data"))

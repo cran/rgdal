@@ -9,6 +9,7 @@ extern "C" {
 /*#include <Rinternals.h>*/
 #include <proj_api.h>
 
+
 void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg){
 
   /* call the _forward_ projection specified by the string projarg,
@@ -177,6 +178,118 @@ SEXP checkCRSArgs(SEXP args) {
 	UNPROTECT(1);
 	return(res);
 }
+
+/* #include <projects.h> */
+struct PJconsts;
+    
+struct PJ_LIST {
+	char	*id;		/* projection keyword */
+	struct PJconsts	*(*proj)(struct PJconsts*);/* projection entry point */
+	char 	* const *descr;	/* description text */
+};
+struct PJ_LIST  *pj_get_list_ref( void );
+struct PJ_ELLPS {
+	char	*id;	/* ellipse keyword name */
+	char	*major;	/* a= value */
+	char	*ell;	/* elliptical parameter */
+	char	*name;	/* comments */
+};
+struct PJ_ELLPS *pj_get_ellps_ref( void );
+struct PJ_DATUMS {
+    char    *id;     /* datum keyword */
+    char    *defn;   /* ie. "to_wgs84=..." */
+    char    *ellipse_id; /* ie from ellipse table */
+    char    *comments; /* EPSG code, etc */
+};
+struct PJ_DATUMS *pj_get_datums_ref( void );
+
+SEXP projInfo(SEXP type) {
+    SEXP ans;
+    SEXP ansnames;
+    int n=0, pc=0;
+
+
+    if (INTEGER_POINTER(type)[0] == 0) {
+        PROTECT(ans = NEW_LIST(2)); pc++;
+        PROTECT(ansnames = NEW_CHARACTER(2)); pc++;
+        SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("name"));
+        SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("description"));
+        setAttrib(ans, R_NamesSymbol, ansnames);
+
+        struct PJ_LIST *lp;
+        for (lp = pj_get_list_ref() ; lp->id ; ++lp) n++;
+        SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(n));
+        n=0;
+        for (lp = pj_get_list_ref() ; lp->id ; ++lp) {
+            SET_STRING_ELT(VECTOR_ELT(ans, 0), n, 
+		COPY_TO_USER_STRING(lp->id));
+
+            SET_STRING_ELT(VECTOR_ELT(ans, 1), n, 
+		COPY_TO_USER_STRING(*lp->descr));
+            n++;
+        }
+    } else if (INTEGER_POINTER(type)[0] == 1) {
+        PROTECT(ans = NEW_LIST(4)); pc++;
+        PROTECT(ansnames = NEW_CHARACTER(4)); pc++;
+        SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("name"));
+        SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("major"));
+        SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("ell"));
+        SET_STRING_ELT(ansnames, 3, COPY_TO_USER_STRING("description"));
+        setAttrib(ans, R_NamesSymbol, ansnames);
+
+        struct PJ_ELLPS *le;
+        for (le = pj_get_ellps_ref(); le->id ; ++le) n++;
+        SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 2, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 3, NEW_CHARACTER(n));
+        n=0;
+        for (le = pj_get_ellps_ref(); le->id ; ++le) {
+            SET_STRING_ELT(VECTOR_ELT(ans, 0), n, 
+		COPY_TO_USER_STRING(le->id));
+            SET_STRING_ELT(VECTOR_ELT(ans, 1), n, 
+		COPY_TO_USER_STRING(le->major));
+            SET_STRING_ELT(VECTOR_ELT(ans, 2), n, 
+		COPY_TO_USER_STRING(le->ell));
+            SET_STRING_ELT(VECTOR_ELT(ans, 3), n, 
+		COPY_TO_USER_STRING(le->name));
+            n++;
+        }
+    } else if (INTEGER_POINTER(type)[0] == 2) {
+        PROTECT(ans = NEW_LIST(4)); pc++;
+        PROTECT(ansnames = NEW_CHARACTER(4)); pc++;
+        SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("name"));
+        SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("ellipse"));
+        SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("definition"));
+        SET_STRING_ELT(ansnames, 3, COPY_TO_USER_STRING("description"));
+        setAttrib(ans, R_NamesSymbol, ansnames);
+
+        struct PJ_DATUMS *ld;
+        for (ld = pj_get_datums_ref(); ld->id ; ++ld) n++;
+        SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 2, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 3, NEW_CHARACTER(n));
+        n=0;
+        for (ld = pj_get_datums_ref(); ld->id ; ++ld) {
+            SET_STRING_ELT(VECTOR_ELT(ans, 0), n, 
+		COPY_TO_USER_STRING(ld->id));
+            SET_STRING_ELT(VECTOR_ELT(ans, 1), n, 
+		COPY_TO_USER_STRING(ld->ellipse_id));
+            SET_STRING_ELT(VECTOR_ELT(ans, 2), n, 
+		COPY_TO_USER_STRING(ld->defn));
+            SET_STRING_ELT(VECTOR_ELT(ans, 3), n, 
+		COPY_TO_USER_STRING(ld->comments));
+            n++;
+        }
+
+    } else error("no such type");
+    
+    UNPROTECT(pc);
+    return(ans);
+}
+
 
 #ifdef __cplusplus
 }
