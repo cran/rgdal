@@ -1,0 +1,515 @@
+2007-01-07 22:02  rsbivand
+
+	* DESCRIPTION, configure, configure.in, R/ogr_write.R: 1.4
+	  configure
+
+2006-12-06 11:23  rsbivand
+
+	* inst/README.windows: VC++
+
+2006-12-02 16:38  rsbivand
+
+	* INDEX, R/SGDF2RGB.R: release
+
+2006-11-28 22:01  rsbivand
+
+	* R/sp_gdal.R: print formats
+
+2006-11-28 16:08  rsbivand
+
+	* NAMESPACE, R/SGDF2RGB.R, R/sp_gdal.R, man/SGDF2PCT.Rd,
+	  man/SGDF2RGB.Rd, man/writeOGR.Rd: vec2RGB
+
+2006-11-27 10:48  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/gdal.R, R/sp_gdal.R,
+	  man/GDALDataset-class.Rd, man/GDALDriver-class.Rd,
+	  man/readGDAL.Rd, src/gdal-bindings.cpp: create2GDAL
+
+2006-11-24 09:38  rsbivand
+
+	* NAMESPACE, R/gdal.R, R/project.R, R/sp_gdal.R, src/projectit.cpp,
+	  man/projInfo.Rd: projInfo
+
+2006-11-22 21:20  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_write.R,
+	  man/GDALDriver-class.Rd, man/GDALMajorObject-class.Rd,
+	  man/readOGR.Rd, man/writeOGR.Rd, src/gdal-bindings.cpp: write
+	  classes
+
+2006-11-08 12:48  rsbivand
+
+	* src/: projectit.c, projectit.cpp: projectit.cpp
+
+2006-11-06 15:45  rsbivand
+
+	* src/OGR_write.cpp: no MultiPolygon objects --enable-auto-import
+
+2006-11-06 14:43  rsbivand
+
+	* INDEX, inst/gdal/s57agencies.csv, inst/proj/esri.extra,
+	  inst/proj/nzgd2kgrid0005.gsb, inst/proj/other.extra: metadata
+
+2006-11-06 13:33  rsbivand
+
+	* R/ogr_write.R, man/readOGR.Rd, man/writeOGR.Rd,
+	  src/OGR_write.cpp: options
+
+2006-11-05 21:32  rsbivand
+
+	* inst/: gdal/ecw_cs.dat, gdal/ellipsoid.csv, gdal/gcs.csv,
+	  gdal/gdal_datum.csv, gdal/pcs.csv, gdal/projop_wparm.csv,
+	  gdal/s57objectclasses_aml.csv, gdal/stateplane.csv,
+	  gdal/unit_of_measure.csv, proj/FL, proj/MD, proj/TN, proj/WI,
+	  proj/WO, proj/alaska, proj/conus, proj/epsg, proj/hawaii,
+	  proj/null, proj/prvi, proj/stgeorge, proj/stlrnc, proj/stpaul,
+	  proj/world: proj/gdal share
+
+2006-11-05 21:05  rsbivand
+
+	* man/writeOGR.Rd, src/OGR_write.cpp, src/RGDAL.def: options
+
+2006-11-04 22:18  rsbivand
+
+	* R/gdal.R, R/sp_gdal.R, man/GDALDataset-class.Rd,
+	  src/OGR_write.cpp, src/gdal-bindings.cpp: options
+
+2006-11-04 18:10  rsbivand
+
+	* src/: OGR_write.cpp, gdal-bindings.cpp: options
+
+2006-11-04 17:54  rsbivand
+
+	* man/readGDAL.Rd, man/readOGR.Rd, man/writeOGR.Rd,
+	  src/OGR_write.cpp, src/gdal-bindings.cpp: options
+
+2006-11-03 14:20  rsbivand
+
+	* src/RGDAL.def: writeOGR
+
+2006-11-03 14:08  rsbivand
+
+	* R/ogr_write.R, man/writeOGR.Rd, src/OGR_write.cpp: writeOGR
+
+2006-11-03 14:07  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/ogr.R, R/ogr_sp.R, inst/README,
+	  inst/vectors/SOURCES, src/RGDAL.def, src/gdal-bindings.cpp,
+	  src/ogr_geom.cpp, src/ogrdrivers.cpp: writeGDAL options
+
+2006-10-30 16:10  edzer
+
+	* src/ogrsource.cpp: error if EJP is not defined; iRow++ should be
+	  inside #ifdef EJP
+
+2006-10-30 12:38  rsbivand
+
+	* inst/vectors/airports.gml, inst/vectors/places.gml,
+	  inst/vectors/places.xsd, man/GDALReadOnlyDataset-methods.Rd,
+	  man/readGDAL.Rd, man/readOGR.Rd, src/ogrsource.cpp: OGR speed up
+
+2006-10-11 11:34  rsbivand
+
+	* NAMESPACE, R/sp_gdal.R, man/GDALDriver-class.Rd: gdalDrivers
+
+2006-09-21 21:43  rsbivand
+
+	* DESCRIPTION, INDEX, configure, configure.in, R/ogr_sp.R,
+	  R/sp_gdal.R, man/RGB2PCT.Rd, man/displayDataset.Rd: R 2.4.0
+
+2006-09-12 18:50  thk
+
+	* .cvsignore, INDEX: minor edit
+
+2006-09-12 18:35  thk
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/sp_gdal.R, R/subs.R,
+	  man/GDALDataset-class.Rd, man/GDALDataset-methods.Rd,
+	  man/GDALDriver-class.Rd, man/GDALMajorObject-class.Rd,
+	  man/GDALMutableDataset-class.Rd, man/GDALRasterBand-class.Rd,
+	  man/GDALReadOnlyDataset-class.Rd,
+	  man/GDALReadOnlyDataset-methods.Rd,
+	  man/GDALTransientDataset-class.Rd, man/closeDataset-methods.Rd,
+	  man/readGDAL.Rd, src/Makevars, src/gdal-bindings.cpp,
+	  src/rgdal.so: major code overhaul -- sp related code may break
+
+2006-09-09 13:39  thk
+
+	* R/gdal.R: Added RGB2PCT to dither RGB images
+
+2006-09-09 13:18  thk
+
+	* NAMESPACE, src/gdal-bindings.cpp: added check to ensure R <->
+	  GDAL data type compatibility
+
+2006-09-03 06:02  thk
+
+	* .cdtproject, NAMESPACE, R/gdal.R, src/gdal-bindings.cpp:
+	  resurrected 'displayDataset' and added RGB support from GDAL
+
+2006-08-30 21:43  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/sp_gdal.R, man/readGDAL.Rd: asSGDF_GROD
+
+2006-08-29 22:12  rsbivand
+
+	* INDEX, NAMESPACE, R/SGDF2RGB.R, R/sp_gdal.R, man/SGDF2RGB.Rd,
+	  src/gdal-bindings.cpp: preliminary system to rgb2pct.py
+
+2006-08-28 10:37  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/ogr_sp.R, R/sp_gdal.R,
+	  man/GDALReadOnlyDataset-methods.Rd, src/ogr_geom.cpp: coerce from
+	  ROD, 3D points in OGR
+
+2006-08-21 21:53  rsbivand
+
+	* NAMESPACE, R/sp_gdal.R, man/readGDAL.Rd: GDALinfo
+
+2006-08-21 18:15  thk
+
+	* man/GDALRasterBand-class.Rd: Fixed alias statement
+
+2006-08-21 18:07  thk
+
+	* .cvsignore, NAMESPACE, R/gdal.R, man/GDALRasterBand-class.Rd:
+	  Added function to get raster block size
+
+2006-08-21 13:28  rsbivand
+
+	* man/readGDAL.Rd: output.dim
+
+2006-08-21 12:57  rsbivand
+
+	* R/sp_gdal.R: output.dim fix in readGDAL
+
+2006-08-21 09:22  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd: output.dim in readGDAL
+
+2006-08-04 01:18  thk
+
+	* R/gdal.R, man/GDALReadOnlyDataset-class.Rd: Misc changes. Added
+	  getRasterBand and getRasterBlockSize functions.
+
+2006-08-04 01:08  thk
+
+	* .cvsignore, src/Makevars.in, src/gdal-bindings.cpp: Miscellaneus
+	  changes and cleanups.
+
+	  Added getRasterBand and getRasterBlockSize functions.
+
+2006-07-27 21:01  rsbivand
+
+	* DESCRIPTION, src/gdal-bindings.cpp, src/ogr_geom.cpp,
+	  src/ogr_proj.cpp, src/ogrdrivers.cpp: more types
+
+2006-07-26 11:26  rsbivand
+
+	* DESCRIPTION, src/gdal-bindings.cpp: switch on SEXPTYPES
+
+2006-05-23 19:53  rsbivand
+
+	* INDEX, configure, configure.in: configure
+
+2006-05-23 15:44  rsbivand
+
+	* configure, configure.in: configure
+
+2006-05-23 13:20  rsbivand
+
+	* configure, configure.in: configure
+
+2006-05-22 19:12  rsbivand
+
+	* inst/pictures/erdas_spnad83.tif: binary tags
+
+2006-05-22 18:47  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/gdal.R, R/pixmapGDAL.R,
+	  inst/pictures/erdas_spnad83.tif,
+	  man/GDALReadOnlyDataset-class.Rd, man/getPixmapGDAL.Rd: binary
+	  tags
+
+2006-05-22 15:17  rsbivand
+
+	* R/project.R: tidy project.R
+
+2006-05-20 23:03  rsbivand
+
+	* R/AAA.R, R/zzz.R, NAMESPACE: more validity
+
+2006-05-19 12:19  rsbivand
+
+	* DESCRIPTION, INDEX, R/AAA.R, R/Class-CRSx.R, R/ogr.R,
+	  man/readOGR.Rd, src/ogrdrivers.cpp: CRS checking against rgdal
+
+2006-05-18 14:01  rsbivand
+
+	* man/: spTransform-methods.Rd, transform-methods.Rd: tidying
+
+2006-05-02 20:54  rsbivand
+
+	* configure, configure.in, R/gdal.R, R/sp_gdal.R, src/Makefile.win,
+	  src/gdal-bindings.cpp, src/projectit.c: writeGDAL options
+
+2006-05-02 10:38  rsbivand
+
+	* R/project.R, R/sp_gdal.R, man/project.Rd, man/readGDAL.Rd,
+	  man/transform-methods.Rd: spTransform
+
+2006-03-28 21:44  edzer
+
+	* man/: CRS-class.Rd, transform-methods.Rd: changed mentioning of
+	  spproj into rgdal twice.
+
+2006-03-01 10:12  rsbivand
+
+	* inst/: proj/FL, proj/GL27, proj/MD, proj/TN, proj/WI, proj/WO,
+	  proj/alaska, proj/conus, proj/epsg, proj/esri, proj/hawaii,
+	  proj/nad.lst, proj/nad27, proj/nad83, proj/ntv1_can.dat,
+	  proj/null, proj/proj_def.dat, proj/prvi, proj/stgeorge,
+	  proj/stlrnc, proj/stpaul, proj/world, gdal/cubewerx_extra.wkt,
+	  gdal/ecw_cs.dat, gdal/ellipsoid.csv, gdal/epsg.wkt,
+	  gdal/esri_extra.wkt, gdal/gcs.csv, gdal/gdal_datum.csv,
+	  gdal/gdalicon.png, gdal/pcs.csv, gdal/prime_meridian.csv,
+	  gdal/projop_wparm.csv, gdal/s57attributes.csv,
+	  gdal/s57attributes_aml.csv, gdal/s57attributes_iw.csv,
+	  gdal/s57expectedinput.csv, gdal/s57objectclasses.csv,
+	  gdal/s57objectclasses_aml.csv, gdal/s57objectclasses_iw.csv,
+	  gdal/seed_2d.dgn, gdal/seed_3d.dgn, gdal/stateplane.csv,
+	  gdal/unit_of_measure.csv: release
+
+2006-03-01 10:02  rsbivand
+
+	* src/Makevars.win: release
+
+2006-03-01 09:58  rsbivand
+
+	* DESCRIPTION, INDEX, configure, configure.in, R/gdal.R, R/subs.R,
+	  inst/README.windows, inst/pictures/erdas_spnad83.tif,
+	  man/closeDataset-methods.Rd, src/Makevars.in,
+	  src/gdal-bindings.cpp, src/ogr_geom.cpp, src/ogrsource.cpp,
+	  configure.win, R/AAA.R, R/Class-CRSx.R, R/make_EPSG.R,
+	  R/project.R, R/zzz.R, man/CRS-class.Rd, man/make_EPSG.Rd,
+	  man/project.Rd, man/transform-methods.Rd, src/projectit.c:
+	  release
+
+2006-02-17 19:59  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sp_gdal.R,
+	  R/subs.R, man/GDALReadOnlyDataset-methods.Rd: fixes in sub.GDROD
+
+2006-02-17 14:54  rsbivand
+
+	* R/subs.R: added NA trap to subs.R
+
+2006-02-17 09:08  rsbivand
+
+	* DESCRIPTION, man/GDALReadOnlyDataset-methods.Rd: to 2.3.0
+
+2006-02-16 18:27  rsbivand
+
+	* DESCRIPTION, INDEX, R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sp_gdal.R,
+	  R/subs.R, inst/README, inst/README.windows,
+	  inst/pictures/SOURCES, inst/pictures/SP27GTIF.TIF,
+	  inst/pictures/cea.tif, inst/pictures/erdas_spnad83.tif,
+	  inst/vectors/SOURCES, inst/vectors/Up.dat, inst/vectors/Up.id,
+	  inst/vectors/Up.ind, inst/vectors/Up.map, inst/vectors/Up.tab,
+	  inst/vectors/cities.dbf, inst/vectors/cities.htm,
+	  inst/vectors/cities.prj, inst/vectors/cities.sbn,
+	  inst/vectors/cities.sbx, inst/vectors/cities.shp,
+	  inst/vectors/cities.shx,
+	  inst/vectors/kiritimati_primary_roads.dbf,
+	  inst/vectors/kiritimati_primary_roads.prj,
+	  inst/vectors/kiritimati_primary_roads.sbn,
+	  inst/vectors/kiritimati_primary_roads.sbx,
+	  inst/vectors/kiritimati_primary_roads.shp,
+	  inst/vectors/kiritimati_primary_roads.shx,
+	  inst/vectors/places.gml, inst/vectors/places.xsd,
+	  inst/vectors/ps_cant_31.MID, inst/vectors/ps_cant_31.MIF,
+	  inst/vectors/scot_BNG.dbf, inst/vectors/scot_BNG.prj,
+	  inst/vectors/scot_BNG.shp, inst/vectors/scot_BNG.shx,
+	  man/GDALReadOnlyDataset-methods.Rd, man/readGDAL.Rd,
+	  man/readOGR.Rd, man/showWKT.Rd, src/RGDAL.def,
+	  src/gdal-bindings.cpp, src/ogr_geom.cpp, src/ogr_proj.cpp,
+	  src/ogrsource.cpp: added OGR
+
+2006-02-10 19:14  rsbivand
+
+	* src/: RGDAL.def, gdal-bindings.cpp, rgdal.def: capitalise
+	  RGDAL.def
+
+2006-02-10 11:19  rsbivand
+
+	* DESCRIPTION, install.R, src/rgdal.def: install.R removed, added
+	  to rgdal.def
+
+2005-12-16 15:57  edzer
+
+	* INDEX, R/sp.R, man/GDALReadOnlyDataset-class.Rd,
+	  src/gdal-bindings.cpp: added a few Set functions for write.GDAL
+	  in spGDAL; moved [ method to spGDAL
+
+2005-12-16 15:38  edzer
+
+	* src/rgdal.def: RGDAL_SetNoDataValue
+
+2005-06-22 21:05  rsbivand
+
+	* cleanup, man/GDALRasterBand-class.Rd: sentence in help page
+
+2005-04-24 23:09  edzer
+
+	* DESCRIPTION, INDEX: updated version number; added author (hope
+	  you don't mind)
+
+2005-04-22 17:01  edzer
+
+	* R/sp.R: now derive offset and dim.region from row and column
+	  index min/max
+
+2005-04-22 11:17  edzer
+
+	* R/sp.R, man/GDALReadOnlyDataset-class.Rd: added [ methods for
+	  GDALReadOnlyDataset; returns SpatialGridDataFrame (in sp)
+
+2005-01-08 14:51  rsbivand
+
+	* INDEX: cleaning
+
+2005-01-06 15:42  edzer
+
+	* DESCRIPTION, INDEX, R/gdal.R: getRasterTable now works correctly
+	  (I hope).
+
+2004-12-21 19:37  rsbivand
+
+	* src/gdal-bindings.cpp: setting NA in getRasterData
+
+2004-12-21 19:15  rsbivand
+
+	* src/gdal-bindings.cpp: setting NA in getRasterData
+
+2004-12-20 22:11  rsbivand
+
+	* DESCRIPTION, src/gdal-bindings.cpp: setting NA in getRasterData
+
+2004-11-12 15:29  rsbivand
+
+	* inst/README.windows: README
+
+2004-11-01 16:20  rsbivand
+
+	* R/gdal.R: pre lancs
+
+2004-08-21 19:59  rsbivand
+
+	* DESCRIPTION: added VC++ files
+
+2004-08-21 19:27  rsbivand
+
+	* src/: Makefile.win, gdal-bindings.cpp, rgdal.def: added VC++
+	  files
+
+2004-08-06 19:48  rsbivand
+
+	* DESCRIPTION: SystemRequirements:
+
+2004-02-28 16:48  rsbivand
+
+	* R/gdal.R, DESCRIPTION: last PACKAGE
+
+2003-11-27 18:39  rsbivand
+
+	* DESCRIPTION: change webpage
+
+2003-11-24 08:28  rsbivand
+
+	* DESCRIPTION, cleanup, configure, configure.in, src/Makevars,
+	  src/Makevars.in, src/gdal-bindings.cpp: adding back configure and
+	  cleanup
+
+2003-11-18 22:16  rsbivand
+
+	* DESCRIPTION, src/gdal-bindings.cpp: remove < 1180 test because of
+	  debian 12
+
+2003-11-18 12:24  rsbivand
+
+	* DESCRIPTION: clean up for 1.8.*
+
+2003-11-18 12:16  rsbivand
+
+	* DESCRIPTION, INDEX, R/gdal.R, R/pixmapGDAL.R,
+	  man/GDALDataset-class.Rd, man/GDALDriver-class.Rd,
+	  man/GDALRasterBand-class.Rd, man/GDALReadOnlyDataset-class.Rd,
+	  man/GDALTransientDataset-class.Rd, man/getPixmapGDAL.Rd: clean up
+	  for 1.8.*
+
+2003-10-13 23:52  thk
+
+	* R/: gdal.R, pixmapGDAL.R: Minor updates
+
+2003-08-16 01:26  thk
+
+	* R/gdal.R: Image method now uses pixmap, still needs a few mods
+
+2003-08-15 22:32  thk
+
+	* src/gdal-bindings.cpp: Fixed data write order
+
+2003-08-15 22:02  thk
+
+	* R/gdal.R: Fixed broken object inheritance
+
+2003-08-14 17:50  thk
+
+	* R/gdal.R: Fixed problem with NULL passed to ref.finalizer
+
+2003-08-13 22:02  thk
+
+	* R/gdal.R: Removed an ugly hack that called R primitive code with
+	  .Call (shiver).
+
+2003-08-08 11:02  rsbivand
+
+	* INDEX: adding simple pixmap capability
+
+2003-08-08 10:50  rsbivand
+
+	* DESCRIPTION, R/pixmapGDAL.R, inst/pictures/Rlogo.jpg,
+	  man/getPixmapGDAL.Rd: adding simple pixmap capability
+
+2003-08-08 08:59  rsbivand
+
+	* DESCRIPTION, R/gdal.R, man/closeDataset-methods.Rd: tidying
+	  closeDataset methods
+
+2003-08-07 23:32  rsbivand
+
+	* DESCRIPTION, R/gdal.R: fixed PACKAGE error in finalizer
+
+2003-08-05 20:40  rsbivand
+
+	* DESCRIPTION: Changed Tim Keitts email
+
+2003-08-05 11:58  rsb
+
+	* DESCRIPTION, INDEX, install.R, R/gdal.R, inst/pictures/logo.jpg,
+	  man/GDALDataset-class.Rd, man/GDALDriver-class.Rd,
+	  man/GDALMajorObject-class.Rd, man/GDALRasterBand-class.Rd,
+	  man/GDALReadOnlyDataset-class.Rd,
+	  man/GDALTransientDataset-class.Rd, src/Makevars,
+	  src/gdal-bindings.cpp: Imported sources
+
+2003-08-05 11:58  rsb
+
+	* DESCRIPTION, INDEX, install.R, R/gdal.R, inst/pictures/logo.jpg,
+	  man/GDALDataset-class.Rd, man/GDALDriver-class.Rd,
+	  man/GDALMajorObject-class.Rd, man/GDALRasterBand-class.Rd,
+	  man/GDALReadOnlyDataset-class.Rd,
+	  man/GDALTransientDataset-class.Rd, src/Makevars,
+	  src/gdal-bindings.cpp: Initial revision
+

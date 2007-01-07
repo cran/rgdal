@@ -4,7 +4,7 @@ In order to install the R Windows binary rgdal package, you should first have in
 
 One way is to build PROJ.4, GDAL, and any extra libraries you require with MSYS and MinGW, ideally the same MinGW as is used to build R. In both cases configure, make, make install. Note the installation prefix and exit MSYS. Set an environment variable GDAL_HOME to that value in your R build console (Windows command line interface) --- the value will be passed through and used to access header files, libraries, and to copy across a DLL.
 
-The MSYS build used here was proj 4.4.9 without jni, GDAL 1.3.1, no external libraries.
+The MSYS build used here was proj 4.5.0 without jni, GDAL CVS 1.3.2+ dated October 2006, no external libraries.
 
 --------------------------------
 
@@ -16,6 +16,54 @@ Installing FWTools is a convenient way to get started (but will be limited to th
 http://fwtools.maptools.org/
 
 http://fwtools.maptools.org/windows-main.html
+
+Michael Sumner reports (6 December 2006):
+
+Here I am using a source install of R 2.4.0 in C:/R/src, and binary install of
+FWTools in C:/FWTools.  I have Visual C++ 2005, Express Edition.
+http://msdn.microsoft.com/vstudio/express/visualc/download/
+Version 8.0.50727.42  (RTM.050727-4200)
+
+Windows XP2, SP2, .NET 2.0
+
+Rtools in C:/R/Rtools.
+
+
+[R]/bin, [FWTools]/bin and [Rtools]/bin are all in the path.
+
+###############################################################################
+## Building rgdal.dll in rgdal/src:
+
+## Build Rdll.lib and place in [R]\libs\ (see example below in link step, and see
+##  http://www.stats.uwo.ca/faculty/murdoch/software/compilingDLLs/readme.packages.txt)
+
+## [R]src\gnuwin32
+
+make R.exp
+lib /def:R.exp /out:Rdll.lib
+
+## run command window with VC++ (I can't see how else to include it in the path)
+## First compile the C++ against R and FWTools include
+
+## set the location of GDAL_HOME in configure.win (mine is GDAL_HOME="C:/FWTools")
+## Also change libgdal-1.dll to gdal_fw.dll in configure.win
+
+## [rgdal]/src 
+##   - includes a Makefile.win with one line:   all:
+##   - and RGDAL.def as supplied in rgdal_0.5-3.tar.gz
+
+
+cl /MT /Ox /EHsc /D "WIN32" /c /I C:/R/Rsrc/src/include /I C:/FWTools/include *.cpp
+
+## Then link the resulting files with R and gdal:
+##  (note that this includes all the present .obj files, and the gdal_ and proj_ libs from GDAL_HOME
+
+link /dll /out:rgdal.dll /def:rgdal.def gdal-bindings.obj ogr_geom.obj ogr_proj.obj ogrsource.obj OGR_write.obj ogrdrivers.obj projectit.obj C:\R\Rsrc\libs\Rdll.lib /libpath:"C:\FWTools\lib" gdal_i.lib proj_i.lib
+
+Then build and install rgdal as normal.
+
+
+------------------------------- Earlier notes (RSB)
 
 Setting the FWTools bin/ directory in the PATH environmental variable is essential, (GDAL_DATA is set internally to the copy included in the rgdal package).
 

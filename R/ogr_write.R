@@ -43,8 +43,10 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     fld_names <- names(dfcls)
     nobj <- nrow(slot(obj, "data"))
     
-    pre <- list(obj, dsn, layer, driver, nobj, nf, fld_names,
-         ogr_ftype, ldata, dataset_options, layer_options)
+    pre <- list(obj, as.character(dsn), as.character(layer), 
+        as.character(driver), as.integer(nobj), nf,
+        as.character(fld_names), as.integer(ogr_ftype), ldata, 
+        as.character(dataset_options), as.character(layer_options))
     res <- .Call("OGR_write", pre, PACKAGE="rgdal")
     if (verbose) {
         res <- list(object_type=res, output_dsn=dsn, output_layer=layer,
