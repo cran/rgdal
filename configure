@@ -1330,13 +1330,23 @@ else
 
 fi
 GDAL_VERSION=`${GDAL_CONFIG} --version`
-VER12=`echo "$GDAL_VERSION" | cut -d"." -f1,2`
-REQ_GDAL="1.3"
-if test "$VER12" != "$REQ_GDAL" ; then
+VER2=`echo "$GDAL_VERSION" | cut -d"." -f2`
+REQ2_GDAL="3"
+VER3=`echo "$GDAL_VERSION" | cut -d"." -f3`
+REQ3_GDAL="1"
+if test "$VER2" -lt "$REQ2_GDAL" ; then
     echo "GDAL version $GDAL_VERSION found ..."
     echo "For building this version, at least GDAL version 1.3.1 is required."
     exit 1
 fi
+if test "$VER2" -eq "$REQ2_GDAL" ; then
+    if test "$VER3" -lt "$REQ3_GDAL" ; then
+        echo "GDAL version $GDAL_VERSION found ..."
+        echo "For building this version, at least GDAL version 1.3.1 is required."
+        exit 1
+    fi
+fi
+
 
 : ${R_HOME=`R RHOME`}
           if test -z "${R_HOME}"; then
