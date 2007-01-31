@@ -19,9 +19,7 @@ vec2RGB(vec, breaks, col)
   \item{breaks}{a set of breakpoints for the colours: must give one more breakpoint than colour}
   \item{col}{a list of colors}
 }
-\details{
-  The function makes a \code{system()} call to the GDAL utility rgb2pct.py, which is only available if GDAL has been built with Python support. It is hoped to replace this extra dependency with compiled code if the function proves useful.
-}
+
 \value{
 The value returned is a list:
   \item{idx}{a vector of colour indices in the same spatial order as the input object}
