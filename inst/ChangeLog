@@ -1,3 +1,12 @@
+2007-01-31 11:09  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/zzz.R, inst/README.windows,
+	  man/SGDF2PCT.Rd, src/RGDAL.def: fix putenv/setenv
+
+2007-01-09 08:21  rsbivand
+
+	* ChangeLog, inst/ChangeLog: ChangeLog
+
 2007-01-07 22:02  rsbivand
 
 	* DESCRIPTION, configure, configure.in, R/ogr_write.R: 1.4
