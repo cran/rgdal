@@ -1,7 +1,53 @@
+2007-04-11 20:15  rsbivand
+
+	* inst/gdal/: ecw_cs.dat, ellipsoid.csv, gcs.csv, gdal_datum.csv,
+	  gdalicon.png, pcs.csv, projop_wparm.csv, unit_of_measure.csv,
+	  ecw_cs.wkt: gdal-1.4.1
+
+2007-04-11 11:30  rsbivand
+
+	* DESCRIPTION, R/project.R, src/projectit.cpp: projection error
+	  handling
+
+2007-04-10 11:25  edzer
+
+	* R/project.R: match.ID = FALSE for projecting
+	  SpatialLinesDataFrame and SpatialPolygondDataFrame
+
+2007-03-26 12:58  rsbivand
+
+	* src/OGR_write.cpp: OGR_write
+
+2007-03-26 12:14  edzer
+
+	* src/OGR_write.cpp: removed debug comment
+
+2007-03-26 12:10  edzer
+
+	* src/OGR_write.cpp: multipolygon issue
+
+2007-02-17 17:36  rsbivand
+
+	* NAMESPACE, R/ogr.R, man/readOGR.Rd, src/ogrsource.cpp: error
+	  message correction
+
+2007-02-17 12:57  rsbivand
+
+	* R/ogr.R, src/ogrsource.cpp: error message correction
+
+2007-02-15 17:54  rsbivand
+
+	* R/sp_gdal.R: output.dim bug for multiband files
+
+2007-02-15 17:39  rsbivand
+
+	* R/sp_gdal.R: output.dim bug for multiband files
+
 2007-01-31 11:09  rsbivand
 
 	* DESCRIPTION, R/AAA.R, R/zzz.R, inst/README.windows,
-	  man/SGDF2PCT.Rd, src/RGDAL.def: fix putenv/setenv
+	  man/SGDF2PCT.Rd, src/RGDAL.def, ChangeLog, inst/ChangeLog: fix
+	  putenv/setenv
 
 2007-01-09 08:21  rsbivand
 
