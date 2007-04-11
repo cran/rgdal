@@ -16,9 +16,18 @@ ogrInfo <- function(dsn, layer){
   ogrinfo <- .Call("ogrInfo",as.character(dsn),as.character(layer), PACKAGE = "rgdal")
   
   names(ogrinfo) <- c("nrows","nitems","iteminfo","driver")
-  names(ogrinfo$iteminfo) <- c("name","precision","length")
+  names(ogrinfo$iteminfo) <- c("name","type","length","typeName")
+  class(ogrinfo) <- "ogrinfo"
   ogrinfo
 }
+
+print.ogrinfo <- function(x, ...) {
+	cat("Driver:", x$driver, "number of rows", x$nrows, "\n")
+	cat("Number of fields:", x$nitems, "\n")
+	print(as.data.frame(x$iteminfo))
+	invisible(x)
+}
+
 
 ogrFIDs <- function(dsn, layer){
   if (missing(dsn)) stop("missing dsn")

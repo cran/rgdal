@@ -353,6 +353,7 @@ SEXP OGR_write(SEXP inp)
 // Multi polygon data
 
     } else if (wkbtype == wkbMultiPolygon) {
+	// Rprintf("Yes, multipolygons...\n");
 
         SEXP lns = GET_SLOT(obj, install("polygons"));
         if (length(lns) != nobs)
@@ -379,7 +380,6 @@ SEXP OGR_write(SEXP inp)
             Lns = GET_SLOT(VECTOR_ELT(lns, i), install("Polygons"));
             Lns_l = length(Lns);
 
-//            OGRMultiPolygon OGRmpls;
             OGRPolygon OGRply;
 
             for (k=0; k<Lns_l; k++) {
@@ -389,7 +389,6 @@ SEXP OGR_write(SEXP inp)
                 dim = getAttrib(crds, install("dim"));
                 int ncrds = INTEGER_POINTER(dim)[0];
 
-//                OGRPolygon OGRply;
                 OGRLinearRing OGRlr;
 
                 for (j=0; j<ncrds; j++) 
@@ -398,24 +397,25 @@ SEXP OGR_write(SEXP inp)
 
                 OGRply.addRing( &OGRlr );
 
-//                if( OGRmpls.addGeometry( &OGRply ) != OGRERR_NONE ) {
-//                    error( "Failed to add polygon" );
-//                } 
-            }
+            } // k
 
-//             if( poFeature->SetGeometry( &OGRmpls ) != OGRERR_NONE ) {
              if( poFeature->SetGeometry( &OGRply ) != OGRERR_NONE ) {
                error( "Failed to set geometry" );
             } 
+
+	    // EJP:
+	    poFeature->SetGeometryDirectly(
+		OGRGeometryFactory::forceToMultiPolygon(
+		poFeature->StealGeometry() ) );
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
                error( "Failed to create feature" );
             } 
 
              OGRFeature::DestroyFeature( poFeature );
-        } 
+        } // i 
 
-    } 
+    } // multiPolygon 
 
     OGRDataSource::DestroyDataSource( poDS );
 

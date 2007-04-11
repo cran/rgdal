@@ -1,6 +1,7 @@
 \name{readOGR}
 \alias{readOGR}
 \alias{ogrInfo}
+\alias{print.ogrinfo}
 \alias{ogrFIDs}
 \alias{ogrDrivers}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -13,12 +14,15 @@ readOGR(dsn, layer, verbose = TRUE)
 ogrInfo(dsn, layer)
 ogrFIDs(dsn, layer)
 ogrDrivers()
+\method{print}{ogrinfo}(x, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{dsn}{data source name (interpretation varies by driver --- for some drivers, dsn is a file name, but may also be a folder)}
   \item{layer}{layer name (varies by driver, may be a file name without extension)}
   \item{verbose}{report progress}
+  \item{x}{ogrinfo object}
+  \item{...}{other arguments to print method}
 }
 \details{
   The drivers available will depend on the installation of GDAL/OGR, and can vary; the \code{ogrDrivers()} function shows which are available, and which may be written (but all are assumed to be readable, which is not the case - KML is writable but not readable). Note that stray files in data source directories (such as *.dbf) may lead to suprious errors that accompanying *.shp are missing.
@@ -36,6 +40,7 @@ ogrDrivers()
 ogrDrivers()
 cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
 summary(cities)
+ogrInfo(system.file("vectors", package = "rgdal")[1], "cities")
 kiritimati_primary_roads <- readOGR(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")
 summary(kiritimati_primary_roads)
 scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1], "scot_BNG")

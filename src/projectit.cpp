@@ -25,7 +25,7 @@ void project(int *n, double *xlon, double *ylat, double *x, double *y, char **pr
     error(pj_strerrno(*pj_get_errno_ref()));
 /*  Rprintf("%s\n", pj_get_def(pj, 0));*/
 
-  for(i=0;i<*n;i++){
+  for (i=0; i<*n; i++) {
     /* preserve NAs and NaNs. Allow Infs, since maybe proj can handle them. */
     if(ISNAN(xlon[i]) || ISNAN(ylat[i])){
       x[i]=xlon[i];
@@ -36,9 +36,8 @@ void project(int *n, double *xlon, double *ylat, double *x, double *y, char **pr
       p.u *= DEG_TO_RAD;
       p.v *= DEG_TO_RAD;
       p = pj_fwd(p, pj);
-      if (p.u == HUGE_VAL) {
-	      pj_free(pj);
-	      error(pj_strerrno(*pj_get_errno_ref()));
+      if (p.u == HUGE_VAL || ISNAN(p.u)) {
+	      Rprintf("projected point not finite\n");
       }
       x[i]=p.u;
       y[i]=p.v;
@@ -71,9 +70,8 @@ void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char 
       p.u=x[i];
       p.v=y[i];
       p = pj_inv(p, pj);
-      if (p.u == HUGE_VAL) {
-            pj_free(pj);
-      	    error(pj_strerrno(*pj_get_errno_ref()));
+      if (p.u == HUGE_VAL || ISNAN(p.u)) {
+	    Rprintf("inverse projected point not finite\n");
       }
       xlon[i]=p.u * RAD_TO_DEG;
       ylat[i]=p.v * RAD_TO_DEG;
@@ -88,9 +86,8 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 	/* interface to pj_transform() to be able to use longlat proj
 	 * and datum transformation in an SEXP format */
 
-	int i, n;
-	double z;
-	projUV p;
+	int i, n, iter;
+	double *xx, *yy, *zz;
 	projPJ fromPJ, toPJ;
 	SEXP res;
 	
@@ -101,7 +98,22 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 		error(pj_strerrno(*pj_get_errno_ref()));
 	
 	n = INTEGER_POINTER(npts)[0];
-	
+	xx = (double *) R_alloc((long) n, sizeof(double));
+	yy = (double *) R_alloc((long) n, sizeof(double));
+	zz = (double *) R_alloc((long) n, sizeof(double));
+
+	for (i=0; i < n; i++) {
+		xx[i] = NUMERIC_POINTER(x)[i];
+		yy[i] = NUMERIC_POINTER(y)[i];
+		zz[i] = (double) 0;
+	}
+	if ( pj_is_latlong(fromPJ) ) {
+		for (i=0; i < n; i++) {
+       			 xx[i] *= DEG_TO_RAD;
+       			 yy[i] *= DEG_TO_RAD;
+		}
+	}
+
 	PROTECT(res = NEW_LIST(4));
 	SET_VECTOR_ELT(res, 0, NEW_NUMERIC(n));
 	SET_VECTOR_ELT(res, 1, NEW_NUMERIC(n));
@@ -111,44 +123,29 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 	SET_VECTOR_ELT(res, 3, NEW_CHARACTER(1));
 	SET_STRING_ELT(VECTOR_ELT(res, 3), 0, 
 		COPY_TO_USER_STRING(pj_get_def(toPJ, 0)));
-	for(i=0; i < n; i++){
-		if(ISNAN(NUMERIC_POINTER(x)[i]) || 
-			ISNAN(NUMERIC_POINTER(y)[i])){
-			NUMERIC_POINTER(VECTOR_ELT(res, 0))[i] = NA_REAL;
-			NUMERIC_POINTER(VECTOR_ELT(res, 1))[i] = NA_REAL;
-		} else {
-			p.u = NUMERIC_POINTER(x)[i];
-			p.v = NUMERIC_POINTER(y)[i];
-			z = (double) 0;
-			if (p.v == HUGE_VAL) p.u = HUGE_VAL;
-			if (p.u != HUGE_VAL) {
-				if ( pj_is_latlong(fromPJ) ) {
-                			p.v *= DEG_TO_RAD;
-                			p.u *= DEG_TO_RAD;
-            			}
 
-            			if( pj_transform( fromPJ, toPJ, 1, 0, 
-                              		&(p.u), &(p.v), &z ) != 0 ) {
-                			p.u = HUGE_VAL;
-                			p.v = HUGE_VAL;
-            			}
-			}
-
-        		if (p.u == HUGE_VAL)  {
-            			pj_free(fromPJ); pj_free(toPJ);
-      	    			error(pj_strerrno(*pj_get_errno_ref()));
-      			}
-			if ( pj_is_latlong(toPJ) ) {
-                		p.v *= RAD_TO_DEG;
-                		p.u *= RAD_TO_DEG;
-            		}
-
-			NUMERIC_POINTER(VECTOR_ELT(res, 0))[i] = p.u;
-			NUMERIC_POINTER(VECTOR_ELT(res, 1))[i] = p.v;
-		}
+	if( pj_transform( fromPJ, toPJ, (long) n, 0, xx, yy, zz ) != 0 ) {
+		pj_free(fromPJ); pj_free(toPJ);
+		Rprintf("error in pj_transform\n");
+		error(pj_strerrno(*pj_get_errno_ref()));
 	}
 
         pj_free(fromPJ); pj_free(toPJ);
+	if ( pj_is_latlong(toPJ) ) {
+		for (i=0; i < n; i++) {
+               		xx[i] *= RAD_TO_DEG;
+               		yy[i] *= RAD_TO_DEG;
+            	}
+	}
+	for (i=0; i < n; i++) {
+		if (xx[i] == HUGE_VAL || yy[i] == HUGE_VAL 
+		    || ISNAN(xx[i]) || ISNAN(yy[i])) {
+		    Rprintf("transformed point not finite\n");
+		}
+		NUMERIC_POINTER(VECTOR_ELT(res, 0))[i] = xx[i];
+		NUMERIC_POINTER(VECTOR_ELT(res, 1))[i] = yy[i];
+	}
+
 	UNPROTECT(1);
 	return(res);
 }

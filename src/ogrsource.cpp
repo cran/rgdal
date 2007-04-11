@@ -30,7 +30,7 @@ extern "C" {
     // return FIDs, nFields, fieldInfo
 
     SEXP ans,vec,/*mat,*/drv;
-    SEXP itemlist, itemnames, itemwidth, itemtype;
+    SEXP itemlist, itemnames, itemwidth, itemtype, itemTypeNames;
     /*SEXP geotype;*/
 
     int nFIDs, nFields, iField, pc=0;
@@ -81,17 +81,21 @@ extern "C" {
     PROTECT(itemnames=allocVector(STRSXP,nFields)); pc++;
     PROTECT(itemtype=allocVector(INTSXP,nFields)); pc++;
     PROTECT(itemwidth=allocVector(INTSXP,nFields)); pc++;
+    PROTECT(itemTypeNames=allocVector(STRSXP,nFields)); pc++;
 
     for(iField=0;iField<nFields;iField++){
       OGRFieldDefn *poField = poDefn->GetFieldDefn(iField);
       SET_STRING_ELT(itemnames,iField,mkChar(poField->GetNameRef()));
       INTEGER(itemtype)[iField]=poField->GetType();
       INTEGER(itemwidth)[iField]=poField->GetWidth();
+      SET_STRING_ELT(itemTypeNames,iField,mkChar(poField->GetFieldTypeName(
+        poField->GetType())));
     }
-    PROTECT(itemlist=allocVector(VECSXP,3)); pc++;
+    PROTECT(itemlist=allocVector(VECSXP,4)); pc++;
     SET_VECTOR_ELT(itemlist,0,itemnames);
     SET_VECTOR_ELT(itemlist,1,itemtype);
     SET_VECTOR_ELT(itemlist,2,itemwidth);
+    SET_VECTOR_ELT(itemlist,3,itemTypeNames);
     SET_VECTOR_ELT(ans,2,itemlist);
 
     UNPROTECT(pc);
@@ -175,7 +179,8 @@ extern "C" {
       PROTECT(ans=allocVector(STRSXP,nRows));
       break;
     default:
-      error("unsupported type");
+      error("unsupported field type: %s",poField->GetFieldTypeName(
+        poField->GetType()));
     }
 
     // now go over each row and retrieve data. iRow is an index in a 
@@ -205,7 +210,7 @@ extern "C" {
 	break;
       default:
         delete poFeature;
-	error("Unsupported type. should have been caught before");
+	error("Unsupported field type. should have been caught before");
       }
       delete poFeature;
 #ifdef EJP
