@@ -42,4 +42,5 @@ S3method(spTransform, SpatialLinesDataFrame)
 S3method(spTransform, SpatialPolygons)
 S3method(spTransform, SpatialPolygonsDataFrame)
 S3method(print, GDALobj)
+S3method(print, ogrinfo)
 
