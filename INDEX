@@ -1,3 +1,5 @@
+[,GDALReadOnlyDataset-method
+                        subset methods for "GDALReadOnlyDataset"
 closeDataset-methods    closeDataset methods
 CRS-class               Class "CRS" of coordinate reference system
                         arguments
@@ -8,8 +10,6 @@ GDALMajorObject-class   Class "GDALMajorObject"
 GDALRasterBand-class    Class "GDALRasterBand"
 GDALReadOnlyDataset-class
                         Class "GDALReadOnlyDataset"
-[,GDALReadOnlyDataset-method
-                        subset methods for "GDALReadOnlyDataset"
 GDALTransientDataset-class
                         Class "GDALTransientDataset"
 make_EPSG               Make a data frame of EPSG projection codes
