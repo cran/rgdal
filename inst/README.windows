@@ -30,24 +30,26 @@ Notes:
 ###############################################################################
 ## Building rgdal binary against FWTools binary using VC++
 
-MDSumner 30 January 2007
+MDSumner 30 April 2007
 
 Windows XP2, SP2, .NET 2.0
 Rtools in C:/R/Rtools.
 
-Here I am using a binary install of R 2.4.1 in C:/R/R-2.4.1, and binary install
-of FWTools 1.1.3 in C:/FWTools.  
+Here I am using a 
+
+	source install of R 2.5.0 in C:/R/Rsrc/R-2.5.0
+	with a source install of sp 0.9-14, and 
+	binary install of FWTools 1.2.2 in C:/FWTools.  
 
 gdalinfo --version
-GDAL 1.4.0.0, FWTools 1.1.3, released 2007/01/04
+GDAL 1.4.0.0, FWTools 1.2.2, released 2007/02/22
 
 I have Visual C++ 2005, Express Edition.
 http://msdn.microsoft.com/vstudio/express/visualc/download/
 Version 8.0.50727.42  (RTM.050727-4200)
 
 
-
-I obtain rgdal source via CVS:
+I obtain rgdal_0.5-9 source via CVS:
 
 cvs -d:pserver:anonymous@rgdal.cvs.sourceforge.net:/cvsroot/rgdal login 
 cvs -z3 -d:pserver:anonymous@rgdal.cvs.sourceforge.net:/cvsroot/rgdal co -P
@@ -69,7 +71,7 @@ xt)
 make R.exp
 lib /def:R.exp /out:Rdll.lib
 
-2. Ensure the configuration.win, Makefile.win and RGDAL.def are all correct. 
+2. Ensure the configure.win, Makefile.win and RGDAL.def are all correct. 
 
 
 
@@ -96,7 +98,7 @@ cp ${GDAL_HOME}/bin/gdal_fw.dll $DPKG/libs
 
 ## [rgdal]/src  
 ##   - includes a Makefile.win with one line:   all:
-##   - and RGDAL.def as supplied in rgdal_0.5-3.tar.gz
+##   - and RGDAL.def as supplied in rgdal/src
 
 
 ## run command window with VC++ (I can't see how else to include it in the path)
@@ -105,15 +107,13 @@ cp ${GDAL_HOME}/bin/gdal_fw.dll $DPKG/libs
 
 3. Compile and link
 
-cl /MT /Ox /EHsc /D "WIN32" /c /I C:/R/Rsrc/src/include /I C:/FWTools/include
+cl /MT /Ox /EHsc /D "WIN32" /c /I C:/R/Rsrc/R-2.5.0/include /I C:/FWTools/include
 *.cpp
 
 ## Then link the resulting files with R and gdal:
 ##  (note that this includes all the present .obj files, and the gdal_ and proj_ libs from GDAL_HOME
 
-link /dll /out:rgdal.dll /def:rgdal.def gdal-bindings.obj ogr_geom.obj
-ogr_proj.obj ogrsource.obj OGR_write.obj ogrdrivers.obj projectit.obj 
-C:\R\Rsrc\libs\Rdll.lib /libpath:"C:\FWTools\lib" gdal_i.lib proj_i.lib
+link /dll /out:rgdal.dll /def:rgdal.def *.obj C:\R\Rsrc\R-2.5.0\libs\Rdll.lib /libpath:"C:\FWTools\lib" gdal_i.lib proj_i.lib
 
 4. Then build and install rgdal as normal.
 
@@ -124,10 +124,7 @@ At this stage you will see errors if gdal_fw.dll (libgdal-1.dll) can't be found
 (I don't know the difference, it seems to work)
 
 R CMD INSTALL --library [path-to-[R]/library-of-choice] rgdal_[version#].tar.gz
-R
 
->library(rgdal, lib.loc = "[path-to-[R]/library-of-choice]")
->CRS("+proj=longlat")  ## in early versions this didn't work without datum=[...]
 
 
 
