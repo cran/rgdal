@@ -1,5 +1,3 @@
-[,GDALReadOnlyDataset-method
-                        subset methods for "GDALReadOnlyDataset"
 closeDataset-methods    closeDataset methods
 CRS-class               Class "CRS" of coordinate reference system
                         arguments
@@ -10,6 +8,8 @@ GDALMajorObject-class   Class "GDALMajorObject"
 GDALRasterBand-class    Class "GDALRasterBand"
 GDALReadOnlyDataset-class
                         Class "GDALReadOnlyDataset"
+[,GDALReadOnlyDataset-method
+                        subset methods for "GDALReadOnlyDataset"
 GDALTransientDataset-class
                         Class "GDALTransientDataset"
 make_EPSG               Make a data frame of EPSG projection codes
@@ -24,6 +24,8 @@ SGDF2PCT                Convert RGB three band to single band colour
                         table
 showWKT                 Show Well-Known Text spatial reference system
                         metadata
+SpatialGridDataFrameGDAL-class
+                        Class "SpatialGridDataFrameGDAL"
 spTransform-methods     Methods for Function spTransform in package
                         "rgdal"
 writeOGR                Write spatial vector data using OGR

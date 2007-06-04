@@ -57,7 +57,8 @@ SEXP OGR_write(SEXP inp)
     OGRLayer *poLayer;
     SEXP obj = VECTOR_ELT(inp, 0);
     int nobs = INTEGER_POINTER(VECTOR_ELT(inp, 4))[0];
-    char *cl = CHAR(asChar(getAttrib(obj, R_ClassSymbol)));
+// const added 070604 RSB
+    const char *cl = CHAR(asChar(getAttrib(obj, R_ClassSymbol)));
     OGRwkbGeometryType wkbtype = wkbUnknown;
 
     if (!strcmp(cl, "SpatialPointsDataFrame")) wkbtype = wkbPoint;
@@ -114,7 +115,8 @@ SEXP OGR_write(SEXP inp)
 #endif
 
     SEXP p4s = GET_SLOT(obj, install("proj4string"));
-    char *PROJ4 = CHAR(STRING_ELT(GET_SLOT(p4s, install("projargs")), 0));
+// const added 070604 RSB
+    const char *PROJ4 = CHAR(STRING_ELT(GET_SLOT(p4s, install("projargs")), 0));
 
     if (strcmp(PROJ4, "NA")) {
             OGRSpatialReference hSRS = NULL;

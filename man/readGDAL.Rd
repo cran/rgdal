@@ -8,7 +8,7 @@
 \title{Read/write between GDAL grid maps and Spatial objects}
 \description{The functions read or write GDAL grid maps. They will set the spatial reference system if available. \code{GDALinfo} reports the size and other parameters of the dataset. \code{create2GDAL} creates a GDAL data set from a SpatialGridDataFrame object, in particular to be able to save to GDAL driver formats that only permit copying rather than creation.}
 \usage{ 
-readGDAL(fname, offset, region.dim, output.dim, ..., half.cell=c(0.5, 0.5), silent = FALSE)
+readGDAL(fname, offset, region.dim, output.dim, band, ..., half.cell=c(0.5, 0.5), silent = FALSE)
 asSGDF_GROD(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,0.5))
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
 create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
@@ -21,6 +21,7 @@ GDALinfo(fname)
 \item{offset}{Number of rows and columns from the origin (usually the upper left corner) to begin reading from; presently ordered (y,x) - this may change}
 \item{region.dim}{The number of rows and columns to read from the dataset; presently ordered (y,x) - this may change}
 \item{output.dim}{The number of rows and columns to return in the created object using GDAL's method to take care of image decimation / replication; presently ordered (y,x) - this may change}
+\item{band}{if missing, all bands are read}
 \item{half.cell}{Used to adjust the intra-cell offset from corner to centre, usually as default, but may be set to c=(0,0) if needed; presently ordered (y,x) - this may change}
 \item{silent}{ logical; if TRUE, comment is suppressed }
 \item{...}{ arguments passed to either \code{getRasterData}, or
@@ -68,6 +69,8 @@ x <- readGDAL(system.file("external/simple.ag", package="sp")[1])
 class(x)
 image(x)
 summary(x)
+y = readGDAL(system.file("pictures/Rlogo.jpg", package = "rgdal")[1], band=1)
+summary(y)
 y = readGDAL(system.file("pictures/Rlogo.jpg", package = "rgdal")[1])
 summary(y)
 spplot(y, zcol=1:3, names.attr=c("red","green","blue"), 

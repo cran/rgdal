@@ -1,3 +1,39 @@
+2007-06-04 10:51  edzer
+
+	* R/sgdf_gdal.R, man/SpatialGridDataFrameGDAL-class.Rd: small bug
+	  biting sp check.
+
+2007-06-04 10:48  rsbivand
+
+	* DESCRIPTION: proxy interface
+
+2007-06-03 22:14  edzer
+
+	* INDEX, NAMESPACE, R/sgdf_gdal.R, R/sp_gdal.R,
+	  man/SpatialGridDataFrameGDAL-class.Rd: added
+	  SpatialGridDataFrameGDAL class and methods.
+
+2007-05-22 14:56  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd: band in readGDAL
+
+2007-05-18 20:36  rsbivand
+
+	* inst/README.windows: tidy
+
+2007-05-18 19:30  rsbivand
+
+	* DESCRIPTION, INDEX: tidy
+
+2007-04-30 09:21  rsbivand
+
+	* DESCRIPTION, INDEX: LazyLoad
+
+2007-04-11 20:42  rsbivand
+
+	* ChangeLog, DESCRIPTION, configure.win, R/AAA.R, inst/ChangeLog:
+	  gdal-1.4.1
+
 2007-04-11 20:15  rsbivand
 
 	* inst/gdal/: ecw_cs.dat, ellipsoid.csv, gcs.csv, gdal_datum.csv,

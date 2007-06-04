@@ -37,7 +37,8 @@ mkString_safe(const char *string) {
 
 }
 
-static char*
+//static char* RSB 070604
+static const char*
 asString(SEXP sxpString, const int i = 0) {
 
   if (isNull(sxpString)) return NULL;
