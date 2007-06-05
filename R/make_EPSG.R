@@ -15,8 +15,11 @@ make_EPSG <- function(file=system.file("proj/epsg", package="rgdal")) {
 		if (is.na(code[i])) res <- readLines(epsg, n=1)
 	}
 	close(epsg)
-	prj4 <- scan(textConnection(prj4), what=character(0), sep="\n", 
-		strip.white=TRUE, quiet=TRUE)
+        prj4 <- scan(con <- textConnection(prj4), what=character(0), sep="\n",
+                 strip.white=TRUE, quiet=TRUE)
+        close(con)
+#	prj4 <- scan(textConnection(prj4), what=character(0), sep="\n", 
+#		strip.white=TRUE, quiet=TRUE)
 	EPSG <- data.frame(code=I(code), note=I(note), prj4=I(prj4))
 	EPSG <- EPSG[-which(is.na(EPSG$note)),]
 	EPSG

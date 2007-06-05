@@ -10,10 +10,10 @@
 \alias{print.summary.SpatialGridDataFrameGDAL}
 \alias{coerce,SpatialGridDataFrameGDAL,SpatialGridDataFrame-method}
 \alias{coerce,SpatialGridDataFrameGDAL,SpatialPixelsDataFrame-method}
-%\alias{$,SpatialGridDataFrameGDAL,ANY-method}
+\alias{$,SpatialGridDataFrameGDAL,character-method}
 \alias{[[,SpatialGridDataFrameGDAL,ANY,missing-method}
-%\alias{$<-,SpatialGridDataFrameGDAL,character-method}
-%\alias{[[<-,SpatialGridDataFrameGDAL,ANY,missing-method}
+\alias{$<-,SpatialGridDataFrameGDAL,character-method}
+\alias{[[<-,SpatialGridDataFrameGDAL,ANY,missing-method}
 
 \title{Class "SpatialGridDataFrameGDAL" }
 \description{  Class for spatial attributes that have spatial locations
