@@ -69,22 +69,25 @@ setMethod("[[", c("SpatialGridDataFrameGDAL", "ANY", "missing"),
 )
 
 # avoid inheritance:
-#setMethod("$", c("SpatialGridDataFrameGDAL", "ANY"),
-#    function(x, name)
-#        stop("use [[ with numeric index to select single band")
-#)
+setMethod("$", c("SpatialGridDataFrameGDAL"
+, "character"
+#, "ANY"
+),
+    function(x, name)
+        stop("use [[ with numeric index to select single band")
+)
 
 # avoid inheritance:
-#setReplaceMethod("$", c("SpatialGridDataFrameGDAL", "character", "ANY"),
-#    function(x, name, value)
-#		stop("no replacement method available")
-#)
+setReplaceMethod("$", c("SpatialGridDataFrameGDAL", "character", "ANY"),
+    function(x, name, value)
+		stop("no replacement method available")
+)
 
 # avoid inheritance:
-#setReplaceMethod("[[", c("SpatialGridDataFrameGDAL", "ANY", "missing", "ANY"),
-#    function(x, i, j, value)
-#		stop("no replacement method available")
-#)
+setReplaceMethod("[[", c("SpatialGridDataFrameGDAL", "ANY", "missing", "ANY"),
+    function(x, i, j, value)
+		stop("no replacement method available")
+)
 
 setMethod("summary", "SpatialGridDataFrameGDAL",
 	function(object, ...) {
