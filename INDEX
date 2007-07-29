@@ -24,8 +24,7 @@ SGDF2PCT                Convert RGB three band to single band colour
                         table
 showWKT                 Show Well-Known Text spatial reference system
                         metadata
-SpatialGridDataFrameGDAL-class
-                        Class "SpatialGridDataFrameGDAL"
+SpatialGDAL-class       Class "SpatialGDAL"
 spTransform-methods     Methods for Function spTransform in package
                         "rgdal"
 writeOGR                Write spatial vector data using OGR

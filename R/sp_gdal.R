@@ -71,12 +71,6 @@ asGDALROD_SGDF <- function(from) {
 
 setAs("GDALReadOnlyDataset", "SpatialGridDataFrame", asGDALROD_SGDF)
 
-.sp_lt_0.9 <- function() {
-    sI <- sessionInfo(package="sp")
-    spver <- sI$otherPkgs$sp$Version
-    as.numeric(substring(spver, 1, 3)) < 0.9
-}
-
 asSGDF_GROD <- function(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,0.5)) {
 	if (!extends(class(x), "GDALReadOnlyDataset"))
 		stop("x must be or extend a GDALReadOnlyDataset")
@@ -119,11 +113,7 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,
 			df[[band]] <- as.vector(data[,,band])
 		names(df) = paste("band", 1:d[3], sep="")
 	}
-	if (.sp_lt_0.9()) {
-		df1 <- as(df, "AttributeList")
-	} else {
-		df1 <- data.frame(df)
-	}
+	df1 <- data.frame(df)
 	data = SpatialGridDataFrame(grid = grid, 
 		data = df1, proj4string=CRS(p4s))
 	return(data)
