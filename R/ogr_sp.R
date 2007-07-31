@@ -54,11 +54,7 @@ readOGR <- function(dsn, layer, verbose=TRUE) {
 				function(x) c(x[[1]][[1]], x[[1]][[2]],
 				x[[1]][[3]])))
 		}
-		if (.sp_lt_0.9()) {
-			data <- as(dlist, "AttributeList")
-		} else {
-			data <- data.frame(dlist)
-		}
+		data <- data.frame(dlist)
 		res <- SpatialPointsDataFrame(coords=coords, data=data,
 			proj4string=CRS(p4s))
 	} else if (u_eType == 2) { # lines
