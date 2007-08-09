@@ -1,13 +1,17 @@
 #include <cpl_string.h>
 #include "ogrsf_frmts.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// R headers moved outside extern "C" 070808 RSB re. note from BDR
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
 #include <Rdefines.h> 
 #include <R.h>  
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 SEXP OGR_write(SEXP inp)
 {

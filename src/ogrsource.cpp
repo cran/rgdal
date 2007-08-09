@@ -17,15 +17,20 @@
 
 #include "ogrsf_frmts.h"
 
-extern "C" {
+// R headers moved outside extern "C" 070808 RSB re. note from BDR
+//extern "C" {
 #include <R.h>
 #include <Rinternals.h>
 #include <Rdefines.h>
-}
+//}
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define EJP
 
-extern "C" {
+// extern "C" {
   SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer){
     // return FIDs, nFields, fieldInfo
 
@@ -104,10 +109,16 @@ extern "C" {
     return(ans);
 
   }
+// }
+#ifdef __cplusplus
 }
+#endif
 
 
+#ifdef __cplusplus
 extern "C" {
+#endif
+//extern "C" {
   SEXP ogrFIDs(SEXP filename, SEXP layer){
   SEXP fids;
   int /*layerNum,*/i;
@@ -148,9 +159,15 @@ extern "C" {
   return(fids);
 
   }
+// }
+#ifdef __cplusplus
 }
+#endif
 
+#ifdef __cplusplus
 extern "C" {
+#endif
+// extern "C" {
 
   SEXP ogrReadColumn(OGRLayer *poLayer, SEXP FIDs, int iField){
     // read feature data and return something according to the type
@@ -191,6 +208,7 @@ extern "C" {
       if(poFeature == NULL){
 	error("Error getting feature FID: %d",(INTEGER(FIDs)[iRow]));
       }
+    }
 #else
     // EJP, changed into:
     poLayer->ResetReading();
@@ -225,9 +243,15 @@ extern "C" {
     UNPROTECT(1);
     return(ans);
   }
+// }
+#ifdef __cplusplus
 }
+#endif
 
+#ifdef __cplusplus
 extern "C" {
+#endif
+// extern "C" {
   SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields){
     // query an OGR data source and return a list
     SEXP ans;
@@ -261,10 +285,16 @@ extern "C" {
     return(ans);
   }
 
+// }
+#ifdef __cplusplus
 }
+#endif
 
 
+#ifdef __cplusplus
 extern "C" {
+#endif
+// extern "C" {
   SEXP OGRFeatureInfo (SEXP ogrSource, SEXP Layer){
     SEXP ans;
     OGRLayer *poLayer;
@@ -305,6 +335,10 @@ extern "C" {
     return(ans);
   }
 
-}
+//}
 
+
+#ifdef __cplusplus
+}
+#endif
 
