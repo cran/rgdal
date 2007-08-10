@@ -1,3 +1,13 @@
+2007-08-08 20:40  rsbivand
+
+	* DESCRIPTION, src/OGR_write.cpp, src/gdal-bindings.cpp,
+	  src/ogr_geom.cpp, src/ogr_proj.cpp, src/ogrdrivers.cpp,
+	  src/ogrsource.cpp, src/projectit.cpp: extern C and R headers
+
+2007-07-30 14:20  rsbivand
+
+	* ChangeLog, inst/ChangeLog: 0.5-14
+
 2007-07-29 21:43  rsbivand
 
 	* DESCRIPTION, inst/gdal/stateplane.csv: GDAL 1.4.2 data

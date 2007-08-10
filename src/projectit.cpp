@@ -1,12 +1,17 @@
 /* Copyright (c) 2003 Barry Rowlingson and Roger Bivand */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// R headers moved outside extern "C" 070808 RSB re. note from BDR
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
 #include <R.h>
 #include <Rdefines.h>
 /*#include <Rinternals.h>*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <proj_api.h>
 
 

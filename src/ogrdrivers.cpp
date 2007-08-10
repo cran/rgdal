@@ -1,14 +1,18 @@
 #include "ogrsf_frmts.h"
 
-extern "C" {
+// R headers moved outside extern "C" 070808 RSB re. note from BDR
+//extern "C" {
 #include <R.h>
 #include <Rinternals.h>
 #include <Rdefines.h>
-}
+//}
 
 
 
+#ifdef __cplusplus
 extern "C" {
+#endif
+//extern "C" {
   SEXP ogr_GetDriverNames(void){
     SEXP ans, ansnames;
     int i, n, pc=0;
@@ -36,5 +40,9 @@ extern "C" {
     UNPROTECT(pc);
     return(ans);
   }
+
+#ifdef __cplusplus
 }
+#endif
+//}
 

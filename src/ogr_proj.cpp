@@ -6,12 +6,17 @@
 #include "ogrsf_frmts.h"
 #include <ogr_spatialref.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// R headers moved outside extern "C" 070808 RSB re. note from BDR
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 #include <R.h>
 #include <Rinternals.h>
 #include <Rdefines.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
 
