@@ -1,3 +1,25 @@
+2007-10-26 18:56  rsbivand
+
+	* DESCRIPTION: close after writeGDAL
+
+2007-10-26 18:25  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R: close after writeGDAL
+
+2007-10-17 09:12  rsbivand
+
+	* R/make_EPSG.R: EPSG
+
+2007-09-04 14:52  rsbivand
+
+	* ChangeLog, inst/ChangeLog: Changelog
+
+2007-08-17 18:57  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/ogr_sp.R, R/sp_gdal.R, inst/ChangeLog,
+	  inst/README.windows, man/readGDAL.Rd, man/readOGR.Rd: p4s
+	  workaround
+
 2007-08-08 20:40  rsbivand
 
 	* DESCRIPTION, src/OGR_write.cpp, src/gdal-bindings.cpp,

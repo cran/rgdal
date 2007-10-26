@@ -2,7 +2,9 @@ make_EPSG <- function(file=system.file("proj/epsg", package="rgdal")) {
 	epsg <- file(file, open="r")
 	n <- ceiling(length(readLines(epsg)) / 2)
 	close(epsg)
-	epsg <- file(system.file("proj/epsg", package="rgdal"), open="r")
+#	epsg <- file(system.file("proj/epsg", package="rgdal"), open="r")
+# report Michael Sumner 071017
+	epsg <- file(file, open="r")
 	note <- character(n)
 	prj4 <- character(n)
 	code <- integer(n)

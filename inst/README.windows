@@ -100,6 +100,10 @@ cp ${GDAL_HOME}/bin/gdal_fw.dll $DPKG/libs
 ##   - includes a Makefile.win with one line:   all:
 ##   - and RGDAL.def as supplied in rgdal/src
 
+Place Makefile.win in src/, containing a single line:
+
+all:
+
 
 ## run command window with VC++ (I can't see how else to include it in the path)
 ## First compile the C++ against R and FWTools include
@@ -117,8 +121,20 @@ link /dll /out:rgdal.dll /def:rgdal.def *.obj C:\R\Rsrc\R-2.5.0\libs\Rdll.lib /l
 
 4. Then build and install rgdal as normal.
 
-R CMD build rgdal 
-R CMD build rgdal -- binary
+R CMD build --binary rgdal
+
+or (better)
+
+R CMD INSTALL --build rgdal
+
+to build a Windows binary package (zipfile)
+or
+
+R CMD INSTALL rgdal 
+
+to install.
+
+This step will fail if src/Makefile.win is not in place.
 
 At this stage you will see errors if gdal_fw.dll (libgdal-1.dll) can't be found
 (I don't know the difference, it seems to work)

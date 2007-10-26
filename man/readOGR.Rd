@@ -10,7 +10,7 @@
   The function reads an OGR data source and layer into a suitable Spatial vector object. It can only handle layers with conformable geometry features (not mixtures of points, lines, or polygons in a single layer). It will set the spatial reference system if the layer has such metadata.
 }
 \usage{
-readOGR(dsn, layer, verbose = TRUE)
+readOGR(dsn, layer, verbose = TRUE, p4s=NULL)
 ogrInfo(dsn, layer)
 ogrFIDs(dsn, layer)
 ogrDrivers()
@@ -21,6 +21,7 @@ ogrDrivers()
   \item{dsn}{data source name (interpretation varies by driver --- for some drivers, dsn is a file name, but may also be a folder)}
   \item{layer}{layer name (varies by driver, may be a file name without extension)}
   \item{verbose}{report progress}
+  \item{p4s}{PROJ4 string defining CRS, if default NULL, the value is read from the OGR data set} 
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }
