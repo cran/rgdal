@@ -1,6 +1,6 @@
-# Copyright 2006 Roger Bivand
+# Copyright 2006-7 Roger Bivand
 
-readOGR <- function(dsn, layer, verbose=TRUE) {
+readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
@@ -14,7 +14,9 @@ readOGR <- function(dsn, layer, verbose=TRUE) {
 		cat("with ", ogr_info$nrows," rows and ",
 			ogr_info$nitems, " columns\n")
 	}
-	p4s <- .Call("ogrP4S", as.character(dsn), as.character(layer), 
+# suggestion by Paul Hiemstra 070817
+	if (is.null(p4s)) 
+	    p4s <- .Call("ogrP4S", as.character(dsn), as.character(layer), 
 		PACKAGE="rgdal")
 	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
 	dlist <- .Call("ogrDataFrame", as.character(dsn), as.character(layer), 

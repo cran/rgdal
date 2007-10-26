@@ -71,7 +71,7 @@ asGDALROD_SGDF <- function(from) {
 
 setAs("GDALReadOnlyDataset", "SpatialGridDataFrame", asGDALROD_SGDF)
 
-asSGDF_GROD <- function(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,0.5)) {
+asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5)) {
 	if (!extends(class(x), "GDALReadOnlyDataset"))
 		stop("x must be or extend a GDALReadOnlyDataset")
 	d = dim(x)
@@ -84,7 +84,9 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,
 		odim_flag <- FALSE
 	}
 
-	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+# suggestion by Paul Hiemstra 070817
+	if (is.null(p4s)) 
+	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
 	if (any(gt[c(3,5)] != 0.0)) stop("Diagonal grid not permitted")
@@ -119,7 +121,7 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, ..., half.cell=c(0.5,
 	return(data)
 }
 
-readGDAL = function(fname, offset, region.dim, output.dim, band, ..., half.cell=c(0.5,0.5), silent = FALSE) {
+readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x = GDAL.open(fname)
 	d = dim(x)
@@ -142,7 +144,9 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, ..., half.cell=
 		cat(paste(fname, "has GDAL driver", getDriverName(getDriver(x)),"\n"))
 		cat(paste("and has", d[1], "rows and", d[2], "columns\n"))
 	}
-	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+# suggestion by Paul Hiemstra 070817
+	if (is.null(p4s)) 
+	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
 	# [1] 178400     40      0 334000      0    -40
@@ -199,7 +203,8 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 	if (nchar(fname) == 0) stop("empty file name")
 	tds.out <- create2GDAL(dataset=dataset, drivername=drivername, 
 		type=type, mvFlag=mvFlag, options=options)
-	saveDataset(tds.out, fname, options=options)
+	tmp.obj <- saveDataset(tds.out, fname, options=options)
+        GDAL.close(tmp.obj)
 	invisible(fname)
 }
 
