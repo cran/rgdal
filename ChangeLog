@@ -1,3 +1,8 @@
+2007-10-31 14:43  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/project.R, inst/ChangeLog: thingy to
+	  slot
+
 2007-10-26 18:56  rsbivand
 
 	* DESCRIPTION: close after writeGDAL

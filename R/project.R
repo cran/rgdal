@@ -89,8 +89,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 
 
 ".spTransform_Line" <- function(x, to_args, from_args, ii, jj) {
-#	crds <- getSlineCoordsSlot(x)
-	crds <- x@coords
+	crds <- slot(x, "coords")
 	n <- nrow(crds)
 	res <- .Call("transform", from_args, to_args, n,
 		as.double(crds[,1]), as.double(crds[,2]),
@@ -110,8 +109,8 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 #setMethod("spTransform", signature("Sline", "CRS"), spTransform.Sline)
 
 ".spTransform_Lines" <- function(x, to_args, from_args, ii) {
-	ID <- getLinesIDSlot(x)
-	input <- x@Lines
+	ID <- slot(x, "ID")
+	input <- slot(x, "Lines")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
 	for (i in 1:n) output[[i]] <- .spTransform_Line(input[[i]], 
@@ -129,8 +128,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 	to_args <- CRSargs(CRSobj)
 	if (is.na(to_args)) 
 		stop("No transformation possible to NA reference system")
-#	input <- getSLlinesSlot(x)
-	input <- x@lines
+	input <- slot(x, "lines")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
 	for (i in 1:n) output[[i]] <- .spTransform_Lines(input[[i]], 
@@ -152,7 +150,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 
 
 ".spTransform_Polygon" <- function(x, to_args, from_args, ii, jj) {
-	crds <- getPolygonCoordsSlot(x)
+	crds <- slot(x, "coords")
 	n <- nrow(crds)
 	res <- .Call("transform", from_args, to_args, n,
 		as.double(crds[,1]), as.double(crds[,2]),
@@ -171,8 +169,8 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 
 
 ".spTransform_Polygons" <- function(x, to_args, from_args, ii) {
-	ID <- getPolygonsIDSlot(x)
-	input <- getPolygonsPolygonsSlot(x)
+	ID <- slot(x, "ID")
+	input <- slot(x, "Polygons")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
 	for (i in 1:n) output[[i]] <- .spTransform_Polygon(input[[i]], 
@@ -189,12 +187,12 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 	to_args <- CRSargs(CRSobj)
 	if (is.na(to_args)) 
 		stop("No transformation possible to NA reference system")
-	input <- getSpPpolygonsSlot(x)
+	input <- slot(x, "polygons")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
 	for (i in 1:n) output[[i]] <- .spTransform_Polygons(input[[i]], 
 		to_args=to_args, from_args=from_args, ii=i)
-	res <- SpatialPolygons(output, pO=getSpPplotOrderSlot(x), 
+	res <- SpatialPolygons(output, pO=slot(x, "plotOrder"), 
 		proj4string=CRSobj)
 	res
 }
