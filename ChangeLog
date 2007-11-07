@@ -1,3 +1,16 @@
+2007-11-07 22:07  rsbivand
+
+	* DESCRIPTION: OGR fields
+
+2007-11-07 21:24  rsbivand
+
+	* configure.win, R/ogr_sp.R, man/readOGR.Rd: OGR fields
+
+2007-11-03 21:28  rsbivand
+
+	* ChangeLog, inst/ChangeLog, man/GDALDataset-class.Rd,
+	  man/GDALTransientDataset-class.Rd, man/SpatialGDAL-class.Rd: tidy
+
 2007-10-31 14:43  rsbivand
 
 	* ChangeLog, DESCRIPTION, R/project.R, inst/ChangeLog: thingy to

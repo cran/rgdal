@@ -64,6 +64,4 @@ saveDatasetAs(dataset, filename, driver = NULL, options=NULL)
 \seealso{\code{\link{GDALDriver-class}},
   \code{\link{GDALReadOnlyDataset-class}}, \code{\link{GDALTransientDataset-class}}}
 
-\examples{
-}
 \keyword{classes}

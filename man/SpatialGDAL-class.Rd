@@ -48,9 +48,7 @@ the GDAL file.
   }
 }
 
-\references{  }
 \author{ Edzer J. Pebesma, \email{e.pebesma@geo.uu.nl} }
-\note{  }
 
 \seealso{
   \code{\link[sp]{SpatialGridDataFrame-class}}, which is actually sub-classed.

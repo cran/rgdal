@@ -1,11 +1,24 @@
 # Copyright 2006-7 Roger Bivand
 
-readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL) {
+readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, drop_unsupported_fields=FALSE) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
 	if (nchar(layer) == 0) stop("empty name")
 	ogr_info <- ogrInfo(dsn=dsn, layer=layer)
+        keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real", "String")
+        if (drop_unsupported_fields) {
+             iflds <- as.integer((1:ogr_info$nitems)-1)
+             iflds <- iflds[keep]
+             fldnms <- ogr_info$iteminfo$name[keep]
+             if (any(!keep)) warning(paste("Fields dropped:", 
+                 paste(ogr_info$iteminfo$name[!keep], collapse=" ")))
+        } else {
+             if (any(!keep)) stop(paste("Unsupported field type:", 
+                 paste(ogr_info$iteminfo$typeName[!keep], collapse=" ")))
+             iflds <- as.integer((1:ogr_info$nitems)-1)
+             fldnms <- ogr_info$iteminfo$name
+        }
 	fids <- ogrFIDs(dsn=dsn, layer=layer)
 	if (verbose) {
 		cat("OGR data source with driver:", ogr_info$driver, "\n")
@@ -20,9 +33,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL) {
 		PACKAGE="rgdal")
 	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
 	dlist <- .Call("ogrDataFrame", as.character(dsn), as.character(layer), 
-		as.integer(fids), as.integer((1:ogr_info$nitems)-1), 
-		PACKAGE="rgdal")
-	names(dlist) <- make.names(ogr_info$iteminfo$name ,unique=TRUE)
+		as.integer(fids), iflds, PACKAGE="rgdal")
+	names(dlist) <- make.names(fldnms ,unique=TRUE)
 	geometry <- .Call("R_OGR_CAPI_features", as.character(dsn), 
 		as.character(layer), PACKAGE="rgdal")
 	eType <- geometry[[4]]

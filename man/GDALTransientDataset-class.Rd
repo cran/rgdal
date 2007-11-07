@@ -44,6 +44,4 @@ Class \code{"GDALMajorObject"}, by class "GDALDataset".
 \seealso{See also \code{\link{GDALDriver-class}},
  \code{\link{GDALReadOnlyDataset-class}}}
 
-\examples{
-}
 \keyword{classes}
