@@ -1,6 +1,6 @@
 #!/bin/sh
 if test -z "$GDAL_HOME" ; then
-    GDAL_HOME="C:/msys/1.0/local"
+    GDAL_HOME="C:/work/packages/GDAL142"
 fi
 echo "GDAL_HOME=${GDAL_HOME}" > src/Makeconf.win
 
@@ -8,4 +8,5 @@ echo "using GDAL_HOME: ${GDAL_HOME}"
 
 mkdir $DPKG/libs
 cp ${GDAL_HOME}/bin/libgdal-1.dll $DPKG/libs
+
 
