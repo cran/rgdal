@@ -94,22 +94,20 @@ opar <- par(mfrow=c(1,2))
 plot(kiritimati_primary_roads, axes=TRUE)
 plot(kiritimati_primary_roads_ll, axes=TRUE, las=1)
 par(opar)
-scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1], "scot_BNG")
-scot_LL <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
 opar <- par(mfrow=c(1,2))
+scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1],
+   "scot_BNG")
+scot_LL <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
 plot(scot_LL, axes=TRUE)
+grd_LL <- gridlines(scot_LL, ndiscr=100)
+summary(grd_LL)
+grd_BNG <- spTransform(grd_LL, CRS(proj4string(scot_BNG)))
+grdtxt_LL <- gridat(scot_LL)
+grdtxt_BNG <- spTransform(grdtxt_LL, CRS(proj4string(scot_BNG)))
 plot(scot_BNG, axes=TRUE, las=1)
-toproj <- CRS(proj4string(scot_BNG))
-easts <- pretty(bbox(scot_LL)[1,], min.n=4)
-easts <- easts[easts > bbox(scot_LL)[1,1] & easts < bbox(scot_LL)[1,2]]
-eastlist <- vector(mode="list", length=length(easts))
-for (i in 1:length(easts)) eastlist[[i]] <- Line(cbind(rep(easts[i], 100), seq(bbox(scot_LL)[2,1], bbox(scot_LL)[2,2], length.out=100)))
-plot(spTransform(SpatialLines(list(Lines(eastlist)), CRS("+proj=longlat +datum=WGS84")), toproj), add=TRUE, col="grey")
-norths <- pretty(bbox(scot_LL)[2,], min.n=4)
-norths <- norths[norths > bbox(scot_LL)[2,1] & norths < bbox(scot_LL)[2,2]]
-northlist <- vector(mode="list", length=length(norths))
-for (i in 1:length(norths)) northlist[[i]] <- Line(cbind(seq(bbox(scot_LL)[1,1], bbox(scot_LL)[1,2], length.out=100), rep(norths[i], 100)))
-plot(spTransform(SpatialLines(list(Lines(northlist)), CRS("+proj=longlat +datum=WGS84")), toproj), add=TRUE, col="grey")
+plot(grd_BNG, add=TRUE, lty=2)
+text(coordinates(grdtxt_BNG),
+   labels=parse(text=as.character(grdtxt_BNG$labels)))
 par(opar)
 }
 

@@ -35,7 +35,9 @@ ogrDrivers()
 \references{\url{http://www.remotesensing.org/gdal/ogr/index.html}, \url{http://www.remotesensing.org/gdal/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
 \author{Roger Bivand}
 
-\note{The bases for this implementation are taken from functions in Barry Rowlingson's draft Rmap package, and from Radim Blazek's v.in.ogr program in GRASS.}
+\note{The bases for this implementation are taken from functions in Barry Rowlingson's draft Rmap package, and from Radim Blazek's v.in.ogr program in GRASS.
+
+Please note that the OGR drivers used may not handle missing data gracefully, and be prepared to have to correct for this manually.}
 
 \seealso{\code{\link[sp]{SpatialPointsDataFrame-class}}, \code{\link[sp]{SpatialLinesDataFrame-class}}, \code{\link[sp]{SpatialPolygonsDataFrame-class}}, \code{\link[maptools]{readShapePoly}}}
 \examples{

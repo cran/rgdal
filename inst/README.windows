@@ -1,3 +1,14 @@
+WINDOWS BINARY PACKAGE
+
+In fulfillment of distribution requirements, the source code for GDAL/OGR 
+and PROJ.4 together with the MSYS/MinGW built DLLs, header and other files
+used in the building of the Windows binary package are available for download
+from:
+
+http://spatial.nhh.no/R/rgdal/
+
+--------------------------------------------------------
+
 Installing the R Windows binary rgdal package
 
 In order to install the R Windows binary rgdal package, you should first have installed GDAL/OGR with all of their dependencies needed for the data you need to access. 

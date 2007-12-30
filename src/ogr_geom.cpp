@@ -93,7 +93,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 	Ogr_geometry = OGR_F_GetGeometryRef(Ogr_feature);
 	with_z = 0;
 	if ( Ogr_geometry == NULL ) {
-	    warning("NULL geometry found");
+	    error("NULL geometry found");
 	} else {
 	    dim = OGR_G_GetCoordinateDimension(Ogr_geometry);
 	    if (dim > 2) 
