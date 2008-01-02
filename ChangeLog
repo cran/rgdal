@@ -1,3 +1,22 @@
+2007-12-29 22:05  rsbivand
+
+	* ChangeLog, DESCRIPTION, inst/ChangeLog, inst/README.windows,
+	  inst/gdal/LICENSE.TXT, inst/gdal/cubewerx_extra.wkt,
+	  inst/gdal/ecw_cs.wkt, inst/gdal/ellipsoid.csv, inst/gdal/gcs.csv,
+	  inst/gdal/gcs.override.csv, inst/gdal/gdal_datum.csv,
+	  inst/gdal/gt_datum.csv, inst/gdal/gt_ellips.csv,
+	  inst/gdal/pcs.csv, inst/gdal/pcs.override.csv,
+	  inst/gdal/projop_wparm.csv, inst/gdal/s57objectclasses.csv,
+	  inst/gdal/s57objectclasses_aml.csv,
+	  inst/gdal/s57objectclasses_iw.csv, inst/gdal/stateplane.csv,
+	  inst/gdal/unit_of_measure.csv, inst/proj/FL, inst/proj/MD,
+	  inst/proj/TN, inst/proj/WI, inst/proj/WO, inst/proj/alaska,
+	  inst/proj/conus, inst/proj/epsg, inst/proj/esri.extra,
+	  inst/proj/hawaii, inst/proj/null, inst/proj/prvi,
+	  inst/proj/stgeorge, inst/proj/stlrnc, inst/proj/stpaul,
+	  man/readOGR.Rd, man/spTransform-methods.Rd, src/ogr_geom.cpp:
+	  share GDAL 1.5.0 PROJ 4.6.0
+
 2007-11-07 22:07  rsbivand
 
 	* DESCRIPTION: OGR fields
