@@ -31,6 +31,12 @@ getDescription <- function(object) {
 
 }
 
+getGDALVersionInfo <- function() {
+    .Call("RGDAL_GDALVersionInfo", PACKAGE="rgdal")
+}
+
+
+
 getMetadata <- function(object, domain = "") {
 
   assertClass(object, 'GDALMajorObject')
