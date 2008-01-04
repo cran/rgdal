@@ -141,6 +141,19 @@ RGDAL_Init(void) {
 }
 
 SEXP
+RGDAL_GDALVersionInfo(void) {
+    SEXP ans;
+
+    PROTECT(ans=NEW_CHARACTER(1));
+    SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(GDALVersionInfo( "--version" )));
+
+    UNPROTECT(1);
+
+    return(ans);
+}
+
+
+SEXP
 RGDAL_NullHandle(void) {
 
   return(R_MakeExternalPtr(NULL,

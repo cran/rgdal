@@ -22,6 +22,7 @@
 
   cat('Geospatial Data Abstraction Library ')
   cat('extensions to R successfully loaded\n')
+  cat('Loaded runtime:', getGDALVersionInfo(), '\n')
   
 }
 

@@ -6,6 +6,7 @@
 \alias{getDriverName}
 \alias{getDriverLongName}
 \alias{initialize,GDALDriver-method}
+\alias{getGDALVersionInfo}
 \title{Class "GDALDriver": GDAL Driver Object}
 
 \description{\code{GDALDriver} objects encapsulate GDAL file format
@@ -33,6 +34,7 @@ getGDALDriverNames()
 gdalDrivers()
 getDriverName(driver)
 getDriverLongName(driver)
+getGDALVersionInfo()
 }
 \arguments{
   \item{driver}{An object inheriting from class 'GDALDriver'}
@@ -46,6 +48,7 @@ getDriverLongName(driver)
       with the driver object.}
 
     \item{\code{getDriverLongName}:}{returns a longer driver name.}
+    \item{\code{getGDALVersionInfo}:}{returns the version of the GDAL runtime shared object.}
   }
 }
 
