@@ -20,7 +20,7 @@ project(xy, proj, inv = FALSE)
 \value{
   A two column matrix with projected coordinates.
 }
-\references{\url{http://www.remotesensing.org/proj/}}
+\references{\url{http://proj.maptools.org/}}
 \author{Barry Rowlingson, Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{ The locations of Hawaii and Alaska in the data source are (putting it mildly) arbitrary, please avoid airlines using these positions.}

@@ -18,7 +18,7 @@ exportClass(GDALTransientDataset)
 exportClass(CRS)
 exportClass(SpatialGDAL, SpatialGDALWrite)
 
-export(project, make_EPSG, projInfo)
+export(project, make_EPSG, projInfo, getPROJ4VersionInfo)
 export(CRSargs)
 export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
 export(getGDALDriverNames, getDriverName, getDriverLongName, gdalDrivers)

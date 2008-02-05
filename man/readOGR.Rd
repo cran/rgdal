@@ -32,7 +32,7 @@ ogrDrivers()
 \value{
   A Spatial object is returned suiting the vector data source, either a SpatialPointsDataFrame (using an AttributeList for its data slot directly), a SpatialLinesDataFrame, or a SpatialPolygonsDataFrame.
 }
-\references{\url{http://www.remotesensing.org/gdal/ogr/index.html}, \url{http://www.remotesensing.org/gdal/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
+\references{\url{http://www.gdal.org/ogr/}, \url{http://www.gdal.org/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
 \author{Roger Bivand}
 
 \note{The bases for this implementation are taken from functions in Barry Rowlingson's draft Rmap package, and from Radim Blazek's v.in.ogr program in GRASS.

@@ -27,7 +27,7 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL, layer_options=NULL, ve
 }
 
 \note{Only a subset of possible data slot column classes may be written out; if the function returns an error that the data type is unknown, examine the classes and check that they are one of \code{c("numeric", "character", "factor", "POSIXt", "integer")}, and if not convert to such classes.}
-\references{\url{http://www.remotesensing.org/gdal/ogr/index.html}, \url{http://www.remotesensing.org/gdal/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
+\references{\url{http://www.gdal.org/ogr/}, \url{http://www.gdal.org/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
 \author{Roger Bivand}
 
 \seealso{\code{\link{readOGR}}}

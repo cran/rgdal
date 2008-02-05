@@ -1,4 +1,4 @@
-/* Copyright (c) 2003 Barry Rowlingson and Roger Bivand */
+/* Copyright (c) 2003-8 Barry Rowlingson and Roger Bivand */
 
 // R headers moved outside extern "C" 070808 RSB re. note from BDR
 // #ifdef __cplusplus
@@ -14,6 +14,18 @@ extern "C" {
 #endif
 #include <proj_api.h>
 
+
+SEXP
+PROJ4VersionInfo(void) {
+    SEXP ans;
+
+    PROTECT(ans=NEW_CHARACTER(1));
+    SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pj_get_release()));
+
+    UNPROTECT(1);
+
+    return(ans);
+}
 
 void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg){
 
