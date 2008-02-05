@@ -52,6 +52,8 @@ getGDALVersionInfo()
   }
 }
 
+\note{Loading the rgdal package changes the \code{GDAL\_DATA} environmental variable to the GDAL support files bundles with the package.}
+
 \author{Timothy H. Keitt, modified by Roger Bivand}
 
 \seealso{\code{\link{GDALMajorObject-class}}}

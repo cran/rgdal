@@ -1,4 +1,8 @@
-# Copyright (c) 2003-7 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
+# Copyright (c) 2003-8 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
+
+getPROJ4VersionInfo <- function() {
+    .Call("PROJ4VersionInfo", PACKAGE="rgdal")
+}
 
 "project" <- function(xy, proj, inv=FALSE) {
 

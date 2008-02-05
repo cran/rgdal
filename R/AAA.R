@@ -20,10 +20,16 @@
 
   .Call('RGDAL_Init', PACKAGE="rgdal")
 
-  cat('Geospatial Data Abstraction Library ')
-  cat('extensions to R successfully loaded\n')
-  cat('Loaded runtime:', getGDALVersionInfo(), '\n')
-  
+  gdl <- Sys.getenv("GDAL_DATA")
+  pl <- Sys.getenv("PROJ_LIB")
+
+  Smess <- paste('Geospatial Data Abstraction Library ',
+    'extensions to R successfully loaded\n',
+    'Loaded GDAL runtime: ', getGDALVersionInfo(), '\n',
+    paste(names(gdl[1]), ": ", gdl[1], sep=""), "\n",
+    'Loaded PROJ.4 runtime: ', getPROJ4VersionInfo(), '\n',
+    paste(names(pl[1]), ": ", pl[1], sep=""), "\n", sep="")
+  packageStartupMessage(Smess, appendLF = FALSE)
 }
 
 #.Last.lib <- function(lib, pkg) {

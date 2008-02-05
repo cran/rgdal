@@ -53,7 +53,7 @@ appendMetadata(object, metadata)
   }
 }
 
-\references{\url{http://keittlab.bio.sunysb.edu/R/GDAL/}, \url{http://www.remotesensing.org/gdal/}}
+\references{\url{http://keittlab.bio.sunysb.edu/R/GDAL/}, \url{http://www.gdal.org/}}
 
 \author{Timothy H. Keitt, modified by Roger Bivand}
 

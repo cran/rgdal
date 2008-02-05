@@ -1,3 +1,22 @@
+2008-02-04 19:30  rsbivand
+
+	* DESCRIPTION, man/CRS-class.Rd, man/GDALMajorObject-class.Rd,
+	  man/GDALReadOnlyDataset-class.Rd, man/RGB2PCT.Rd,
+	  man/SGDF2PCT.Rd, man/displayDataset.Rd, man/projInfo.Rd,
+	  man/project.Rd, man/readOGR.Rd, man/showWKT.Rd, man/writeOGR.Rd:
+	  websites
+
+2008-01-22 12:19  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/project.R,
+	  man/GDALDriver-class.Rd, man/projInfo.Rd, src/projectit.cpp:
+	  PROJ4 message
+
+2008-01-05 15:43  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R,
+	  man/GDALDriver-class.Rd, src/gdal-bindings.cpp: version
+
 2007-12-29 22:05  rsbivand
 
 	* ChangeLog, DESCRIPTION, inst/ChangeLog, inst/README.windows,

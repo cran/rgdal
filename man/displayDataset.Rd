@@ -21,7 +21,7 @@ displayDataset(x, offset=c(0, 0), region.dim=dim(x), reduction = 1, band = 1, co
 \value{
 a list of the image data, the colour table, and the par() values on entry.
 }
-\references{\url{http://www.remotesensing.org/gdal/}}
+\references{\url{http://www.gdal.org/}}
 \author{Tim Keitt}
 
 \examples{

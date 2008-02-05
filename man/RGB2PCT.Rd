@@ -20,7 +20,7 @@ RGB2PCT(x, band, driver.name = 'MEM', ncolors = 256, set.ctab = TRUE)
 \value{
 The value returned is a either GDALTransientDataset or a list of a GDALTransientDataset and a colour table.
 }
-\references{\url{http://www.remotesensing.org/gdal/}}
+\references{\url{http://www.gdal.org/}}
 \author{Tim Keitt}
 
 \examples{
