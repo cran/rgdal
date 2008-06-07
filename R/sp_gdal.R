@@ -212,6 +212,9 @@ create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag =
 {
 	stopifnot(gridded(dataset))
 	fullgrid(dataset) = TRUE
+	if (is.na(match(type, .GDALDataTypes)))
+            stop(paste("Invalid type:", type, "not in:",
+                paste(.GDALDataTypes, collapse="\n")))
 	d.dim = dim(as.matrix(dataset[1]))
 	d.drv = new("GDALDriver", drivername)
 	nbands = length(names(slot(dataset, "data")))
