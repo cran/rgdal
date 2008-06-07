@@ -1,3 +1,7 @@
+2008-06-07 13:53  rsbivand
+
+	* ChangeLog, R/sp_gdal.R, inst/ChangeLog: GDAL metadata 1.5.2
+
 2008-02-04 19:30  rsbivand
 
 	* DESCRIPTION, man/CRS-class.Rd, man/GDALMajorObject-class.Rd,
