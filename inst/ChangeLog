@@ -1,3 +1,15 @@
+2008-09-23 11:05  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R: band in mvFlag for writeGDAL
+
+2008-06-26 20:59  rsbivand
+
+	* R/sp_gdal.R: origin not ll in info output
+
+2008-06-07 13:58  rsbivand
+
+	* ChangeLog, DESCRIPTION, inst/ChangeLog: GDAL metadata 1.5.2
+
 2008-06-07 13:53  rsbivand
 
 	* ChangeLog, R/sp_gdal.R, inst/ChangeLog: GDAL metadata 1.5.2
