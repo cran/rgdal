@@ -218,13 +218,19 @@ extern "C" {
       // now get the value using the right type:
       switch(poField->GetType()){
       case OFTInteger:
-	INTEGER(ans)[iRow]=poFeature->GetFieldAsInteger(iField);
+	if (poFeature->IsFieldSet(iField)) 
+          INTEGER(ans)[iRow]=poFeature->GetFieldAsInteger(iField);
+	else INTEGER(ans)[iRow]=NA_INTEGER;
 	break;
       case OFTReal:
-	REAL(ans)[iRow]=poFeature->GetFieldAsDouble(iField);
+	if (poFeature->IsFieldSet(iField)) 
+          REAL(ans)[iRow]=poFeature->GetFieldAsDouble(iField);
+	else REAL(ans)[iRow]=NA_REAL;
 	break;
       case OFTString:
-	SET_STRING_ELT(ans,iRow,mkChar(poFeature->GetFieldAsString(iField)));
+	if (poFeature->IsFieldSet(iField)) 
+          SET_STRING_ELT(ans,iRow,mkChar(poFeature->GetFieldAsString(iField)));
+	else SET_STRING_ELT(ans, iRow, NA_STRING);
 	break;
       default:
         delete poFeature;

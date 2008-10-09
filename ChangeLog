@@ -1,3 +1,16 @@
+2008-10-09 10:56  rsbivand
+
+	* DESCRIPTION, src/OGR_write.cpp, src/ogrsource.cpp:
+	  readOGR/writeOGR unset fields NA handling
+
+2008-10-02 19:58  rsbivand
+
+	* src/RGDAL.def: updated def
+
+2008-10-02 16:45  rsbivand
+
+	* ChangeLog, inst/ChangeLog: changelog
+
 2008-09-23 11:05  rsbivand
 
 	* DESCRIPTION, R/sp_gdal.R: band in mvFlag for writeGDAL
