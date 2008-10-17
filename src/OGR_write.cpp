@@ -13,6 +13,9 @@
 extern "C" {
 #endif
 
+// RSB 081009
+void wrtDF(int, int, SEXP, SEXP, SEXP, OGRFeature*);
+
 SEXP OGR_write(SEXP inp)
 {
 
@@ -156,6 +159,8 @@ SEXP OGR_write(SEXP inp)
         }
         OGRFieldDefn oField( CHAR(STRING_ELT(fld_names, i)),
             (OGRFieldType)  OGR_type);
+// RSB 081009 FIXME - not working yet, integer flips to real in shapefile
+        if (OGR_type == 0) oField.SetPrecision(0);
         if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
             error( "Creating Name field failed" );
         }
@@ -176,18 +181,10 @@ SEXP OGR_write(SEXP inp)
         for (i=0; i<nobs; i++) {
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
-            for (j=0; j<nf; j++) {
-                OGR_type = INTEGER_POINTER(ogr_ftype)[j];
-		if (OGR_type == 2)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
-                else if (OGR_type == 4)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
-                else if (OGR_type == 0)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
-            }
+
+// RSB 081009
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+
             OGRPoint pt;
             pt.setX( NUMERIC_POINTER(crds)[i] );
             pt.setY( NUMERIC_POINTER(crds)[i+nobs] );
@@ -214,18 +211,9 @@ SEXP OGR_write(SEXP inp)
 
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
-            for (j=0; j<nf; j++) {
-                OGR_type = INTEGER_POINTER(ogr_ftype)[j];
-		if (OGR_type == 2)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
-                else if (OGR_type == 4)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
-                else if (OGR_type == 0)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
-            }
+// RSB 081009
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+
             SEXP crds, dim;
             crds = GET_SLOT(VECTOR_ELT(GET_SLOT(VECTOR_ELT(lns, i),
                 install("Lines")), 0), install("coords"));
@@ -260,18 +248,8 @@ SEXP OGR_write(SEXP inp)
 
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
-            for (j=0; j<nf; j++) {
-                OGR_type = INTEGER_POINTER(ogr_ftype)[j];
-		if (OGR_type == 2)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
-                else if (OGR_type == 4)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
-                else if (OGR_type == 0)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
-            }
+// RSB 081009
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
 
             Lns = GET_SLOT(VECTOR_ELT(lns, i), install("Lines"));
             Lns_l = length(Lns);
@@ -319,18 +297,9 @@ SEXP OGR_write(SEXP inp)
 
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
-            for (j=0; j<nf; j++) {
-                OGR_type = INTEGER_POINTER(ogr_ftype)[j];
-		if (OGR_type == 2)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
-                else if (OGR_type == 4)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
-                else if (OGR_type == 0)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
-            }
+// RSB 081009
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+
             SEXP crds, dim;
             crds = GET_SLOT(VECTOR_ELT(GET_SLOT(VECTOR_ELT(lns, i),
                 install("Polygons")), 0), install("coords"));
@@ -370,18 +339,8 @@ SEXP OGR_write(SEXP inp)
 
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
-            for (j=0; j<nf; j++) {
-                OGR_type = INTEGER_POINTER(ogr_ftype)[j];
-		if (OGR_type == 2)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
-                else if (OGR_type == 4)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
-                else if (OGR_type == 0)
-                    poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
-                        INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
-            }
+// RSB 081009
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
 
             Lns = GET_SLOT(VECTOR_ELT(lns, i), install("Polygons"));
             Lns_l = length(Lns);
@@ -428,6 +387,29 @@ SEXP OGR_write(SEXP inp)
     UNPROTECT(pc);
     return(ans);
 }
+
+// RSB 081009
+void wrtDF(int i, int nf, SEXP fld_names, SEXP ldata,
+     SEXP ogr_ftype, OGRFeature* poFeature) {
+     int j, OGR_type;
+     for (j=0; j<nf; j++) {
+         OGR_type = INTEGER_POINTER(ogr_ftype)[j];
+         if (OGR_type == 2) {
+             if (!ISNA(NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i]))
+                 poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
+                     NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
+         } else if (OGR_type == 4) {
+             if (STRING_ELT(VECTOR_ELT(ldata, j), i) != NA_STRING)
+                 poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
+                     CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
+         } else if (OGR_type == 0) {
+              if (INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] != NA_INTEGER)
+                  poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
+                      INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
+         }
+     }         
+}
+
 
 #ifdef __cplusplus
 }
