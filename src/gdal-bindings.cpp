@@ -321,19 +321,22 @@ RGDAL_GetDriver(SEXP sxpDriverName) {
 static void
 deleteFile(GDALDriver *pDriver, const char *filename) {
 
+
 #ifdef RGDALDEBUG
-  fprintf(stderr, "Deleting temp file: %s... ", filename);
-  fflush(stderr);
+  Rprintf("Deleting temp file: %s... ", filename);
+//  fflush(stderr);
 #endif
 
-  CPLErr eErr = pDriver->Delete(filename);
+  if (strcmp(GDALGetDriverLongName( pDriver ), "In Memory Raster") != 0) {
+      CPLErr eErr = pDriver->Delete(filename);
 
-  if (eErr == CE_Failure)
-    warning("Failed to delete dataset: %s\n", filename);
+    if (eErr == CE_Failure)
+      warning("Failed to delete dataset: %s\n", filename);
+  }
 
 #ifdef RGDALDEBUG
-  fprintf(stderr, "done.\n", filename);
-  fflush(stderr);
+  Rprintf("done.\n", filename);
+//  fflush(stderr);
 #endif
 
   return;
@@ -395,9 +398,9 @@ RGDAL_DeleteHandle(SEXP sxpHandle) {
 
   const char *filename = pDataset->GetDescription();
 
-  deleteFile(pDriver, filename);
-
   RGDAL_CloseHandle(sxpHandle);
+
+  deleteFile(pDriver, filename);
 
   return(R_NilValue);
 
@@ -406,11 +409,21 @@ RGDAL_DeleteHandle(SEXP sxpHandle) {
 SEXP
 RGDAL_CloseDataset(SEXP sxpDataset) {
 
+
   SEXP sxpHandle = getObjHandle(sxpDataset);
 
   if (sxpHandle == NULL) return(R_NilValue);
 
-  RGDAL_CloseHandle(sxpHandle);
+  const char *classname = asString(getAttrib(sxpDataset, R_ClassSymbol));
+
+  if (strcmp(classname, "GDALTransientDataset") == 0) {
+    
+    RGDAL_DeleteHandle(sxpHandle);
+
+  } else {
+
+    RGDAL_CloseHandle(sxpHandle);
+  }
 
   return(R_NilValue);
 
@@ -427,8 +440,8 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
   char **papszCreateOptions = NULL;
 
 #ifdef RGDALDEBUG
-  fprintf(stderr, "Opening dataset: %s\n", filename);
-  fflush(stderr);
+  Rprintf("Opening dataset: %s\n", filename);
+//  fflush(stderr);
 #endif
 
   if (filename == NULL) error("Invalid file name\n");

@@ -3,7 +3,7 @@
 .setCollectorFun <- function(object, fun) {
 
   if (is.null(fun)) fun <- function(obj) obj
-  reg.finalizer(object, fun)
+  reg.finalizer(object, fun, onexit=TRUE)
 
 }
 
@@ -167,7 +167,8 @@ setMethod('initialize', 'GDALTransientDataset',
             } else {
               slot(.Object, 'handle') <- handle
             }
-            cfn <- function(handle) .Call('RGDAL_CloseHandle', 
+            cfn <- function(handle) .Call('RGDAL_CloseHandle',
+#            cfn <- function(handle) .Call('RGDAL_CloseDataset', RSB 081030
 		handle, PACKAGE="rgdal")
             .setCollectorFun(slot(.Object, 'handle'), cfn)
             .Object
@@ -206,7 +207,7 @@ copyDataset <- function(dataset, driver, strict = FALSE, options = NULL) {
   
 }
 
-saveDataset <- function(dataset, filename, options=NULL) {
+saveDataset <- function(dataset, filename, options=NULL, returnNewObj=FALSE) {
 
   assertClass(dataset, 'GDALReadOnlyDataset')
   
@@ -221,8 +222,8 @@ saveDataset <- function(dataset, filename, options=NULL) {
                    dataset, getDriver(dataset),
                    FALSE, options, filename, PACKAGE="rgdal"))
 
-  invisible(new.obj)
-  
+  if (returnNewObj) return(new.obj)
+  invisible(GDAL.close(new.obj))
 }
 
 setGeneric('closeDataset', function(dataset) standardGeneric('closeDataset'))
@@ -236,14 +237,16 @@ setMethod('closeDataset', 'GDALReadOnlyDataset',
           def = function(dataset) {
             .setCollectorFun(slot(dataset, 'handle'), NULL)
             .Call('RGDAL_CloseDataset', dataset, PACKAGE="rgdal")
-            invisible()
+            invisible(gc())
           })
 
 setMethod('closeDataset', 'GDALTransientDataset',
           def = function(dataset) {
             driver <- getDriver(dataset)
-            filename <- getDescription(dataset)
-            .Call('RGDAL_CloseDataset', driver, filename, PACKAGE="rgdal")
+#            filename <- getDescription(dataset)
+#            .Call('RGDAL_CloseDataset', driver, filename, PACKAGE="rgdal")
+            .Call('RGDAL_CloseDataset', driver, PACKAGE="rgdal")
+            invisible(gc())
             callNextMethod()
           })
 
@@ -312,7 +315,7 @@ GDAL.open <- function(filename, read.only = TRUE) {
 GDAL.close <- function(dataset) {
             .setCollectorFun(slot(dataset, 'handle'), NULL)
             .Call('RGDAL_CloseDataset', dataset, PACKAGE="rgdal")
-            invisible()
+            invisible(gc())
 }
 
 setMethod('dim', 'GDALReadOnlyDataset',

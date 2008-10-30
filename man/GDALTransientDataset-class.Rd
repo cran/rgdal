@@ -43,5 +43,13 @@ Class \code{"GDALMajorObject"}, by class "GDALDataset".
 
 \seealso{See also \code{\link{GDALDriver-class}},
  \code{\link{GDALReadOnlyDataset-class}}}
-
+\examples{
+list.files(tempdir())
+x <- new('GDALTransientDataset', driver=new('GDALDriver', "GTiff"), rows=100,
+ cols=100, bands=3, type='Byte')
+dim(x)
+list.files(tempdir())
+GDAL.close(x)
+list.files(tempdir())
+}
 \keyword{classes}
