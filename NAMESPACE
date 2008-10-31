@@ -15,7 +15,6 @@ exportClass(GDALMajorObject)
 exportClass(GDALRasterBand)
 exportClass(GDALReadOnlyDataset)
 exportClass(GDALTransientDataset)
-exportClass(CRS)
 exportClass(SpatialGDAL, SpatialGDALWrite)
 
 export(project, make_EPSG, projInfo, getPROJ4VersionInfo)

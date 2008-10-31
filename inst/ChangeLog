@@ -1,3 +1,57 @@
+2008-10-30 20:59  rsbivand
+
+	* ChangeLog, R/gdal.R, inst/ChangeLog, src/Makevars.win: no DEBUG
+	  in Windows
+
+2008-10-30 15:21  edzer
+
+	* NAMESPACE: removed exportClass(CRS), as sp does this already.
+
+2008-10-30 15:13  rsbivand
+
+	* inst/proj/: IGNF, ntf_r93.gsb: added shares
+
+2008-10-30 12:52  rsbivand
+
+	* ChangeLog, inst/ChangeLog: changelog
+
+2008-10-30 12:44  rsbivand
+
+	* DESCRIPTION, inst/proj/FL, inst/proj/MD, inst/proj/TN,
+	  inst/proj/WI, inst/proj/WO, inst/proj/alaska, inst/proj/conus,
+	  inst/proj/epsg, inst/proj/hawaii, inst/proj/null, inst/proj/prvi,
+	  inst/proj/stgeorge, inst/proj/stlrnc, inst/proj/stpaul: Fresh
+	  proj and gdal metadata
+
+2008-10-30 11:06  rsbivand
+
+	* R/gdal.R, man/GDALTransientDataset-class.Rd,
+	  src/gdal-bindings.cpp: delete Transient
+
+2008-10-30 09:53  rsbivand
+
+	* DESCRIPTION, configure.win: saveDataset
+
+2008-10-30 09:39  rsbivand
+
+	* R/gdal.R, R/sp_gdal.R, man/GDALDataset-class.Rd: saveDataset
+
+2008-10-28 16:32  rsbivand
+
+	* configure.win, R/gdal.R: GDAL.close gc()
+
+2008-10-28 14:40  rsbivand
+
+	* R/gdal.R: onexit in reg.finalizer
+
+2008-10-17 09:13  rsbivand
+
+	* man/: readOGR.Rd, writeOGR.Rd: vector NA
+
+2008-10-09 11:01  rsbivand
+
+	* ChangeLog, inst/ChangeLog: changelog
+
 2008-10-09 10:56  rsbivand
 
 	* DESCRIPTION, src/OGR_write.cpp, src/ogrsource.cpp:
