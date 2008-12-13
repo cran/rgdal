@@ -37,39 +37,6 @@ getGDALVersionInfo <- function() {
 
 
 
-getMetadata <- function(object, domain = "") {
-
-  assertClass(object, 'GDALMajorObject')
-
-  metadata <- .Call('RGDAL_GetMetadata', object,
-                    as.character(domain), PACKAGE="rgdal")
-
-  if (is.null(metadata))
-    metadata
-  else
-    noquote(metadata)
-
-}
-
-setMetadata <- function(object, metadata) {
-
-  assertClass(object, 'GDALMajorObject')
-
-  metadata <- lapply(as.list(metadata), as.character)
-
-  .Call('RGDAL_SetMetadata', object, metadata, PACKAGE="rgdal")
-
-  invisible(object)
-  
-}
-
-appendMetadata <- function(object, metadata) {
-
-  assertClass(object, 'GDALMajorObject')
-
-  setMetadata(object, append(getMetadata(object), metadata))
-
-}
 
 setClass('GDALDriver', 'GDALMajorObject')
 

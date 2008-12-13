@@ -21,7 +21,7 @@ export(project, make_EPSG, projInfo, getPROJ4VersionInfo)
 export(CRSargs)
 export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
 export(getGDALDriverNames, getDriverName, getDriverLongName, gdalDrivers)
-export(getDescription, getMetadata, setMetadata, appendMetadata)
+export(getDescription)
 export(getRasterData, getRasterTable, getProjectionRef)
 export(getRasterBand, getRasterBlockSize)
 export(getDriver, GDAL.close, GDAL.open, getColorTable,

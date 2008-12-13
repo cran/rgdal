@@ -9,9 +9,18 @@ GDALinfo <- function(fname) {
 	nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
         if (nbands < 1) warning("no bands in dataset")
 	GDAL.close(x)
-	res <- c(rows=d[1], columns=d[2], bands=nbands, ll.x=gt[1], ll.y=gt[4], 
-		res.x=abs(gt[2]), res.y=abs(gt[6]), oblique.x=abs(gt[3]), 
-		oblique.y=abs(gt[5]))
+#	res <- c(rows=d[1], columns=d[2], bands=nbands, ll.x=gt[1], ll.y=gt[4],
+#		res.x=abs(gt[2]), res.y=abs(gt[6]), oblique.x=abs(gt[3]), 
+#		oblique.y=abs(gt[5]))
+### Modified: MDSumner 22 November 2008
+        cellsize = abs(c(gt[2], gt[6]))
+        ysign <- sign(gt[6])
+        offset.y <- ifelse(ysign < 0, gt[4] + ysign * d[1] * abs(cellsize[2]),
+            gt[4] +   abs(cellsize[2]))
+        res <- c(rows = d[1], columns = d[2], bands = nbands, ll.x = gt[1],
+            ll.y = offset.y, res.x = abs(gt[2]), res.y = abs(gt[6]),
+            oblique.x = abs(gt[3]), oblique.y = abs(gt[5]))
+#### end modification
 	attr(res, "driver") <- dr 
 	attr(res, "projection") <- p4s 
 	attr(res, "file") <- fname
@@ -217,19 +226,19 @@ create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag =
 	if (is.na(match(type, .GDALDataTypes)))
             stop(paste("Invalid type:", type, "not in:",
                 paste(.GDALDataTypes, collapse="\n")))
-	d.dim = dim(as.matrix(dataset[1]))
+#	d.dim = dim(as.matrix(dataset[1])) RSB 081106
+	gp = gridparameters(dataset)
+	cellsize = gp$cellsize
+	offset = gp$cellcentre.offset
+	dims = gp$cells.dim
 	d.drv = new("GDALDriver", drivername)
 	nbands = length(names(slot(dataset, "data")))
         if (!is.null(options) && !is.character(options))
                 stop("options not character")
 	tds.out = new("GDALTransientDataset", driver = d.drv, 
-		rows = d.dim[2], cols = d.dim[1],
+		rows = dims[2], cols = dims[1],
         	bands = nbands, type = type, options = options, 
 		handle = NULL)
-	gp = gridparameters(dataset)
-	cellsize = gp$cellsize
-	offset = gp$cellcentre.offset
-	dims = gp$cells.dim
 	gt = c(offset[1] - 0.5 * cellsize[1], cellsize[1], 0.0, 
 		offset[2] + (dims[2] -0.5) * cellsize[2], 0.0, -cellsize[2])
 	.Call("RGDAL_SetGeoTransform", tds.out, gt, PACKAGE = "rgdal")
