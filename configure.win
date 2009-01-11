@@ -6,7 +6,11 @@ echo "GDAL_HOME=${GDAL_HOME}" > src/Makeconf.win
 
 echo "using GDAL_HOME: ${GDAL_HOME}"
 
-mkdir $DPKG/libs
-cp ${GDAL_HOME}/bin/libgdal-1.dll $DPKG/libs
+if test -z "$R_PACKAGE_DIR" ; then
+    R_PACKAGE_DIR=${DPKG}
+fi
+
+mkdir ${R_PACKAGE_DIR}/libs
+cp ${GDAL_HOME}/bin/libgdal-1.dll ${R_PACKAGE_DIR}/libs
 
 

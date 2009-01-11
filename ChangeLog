@@ -1,3 +1,38 @@
+2009-01-11 21:54  rsbivand
+
+	* DESCRIPTION, configure.win: add R_PACKAGE_DIR in configure.win
+
+2008-12-15 10:36  rsbivand
+
+	* DESCRIPTION, inst/README, ChangeLog, inst/ChangeLog: testing for
+	  1.6
+
+2008-12-15 10:04  rsbivand
+
+	* DESCRIPTION, inst/vectors/cities.prj: testing for 1.6
+
+2008-12-13 12:30  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/gdal.R, man/GDALMajorObject-class.Rd,
+	  man/GDALReadOnlyDataset-class.Rd, src/gdal-bindings.cpp,
+	  ChangeLog, inst/ChangeLog: metadata problems
+
+2008-12-11 21:08  rsbivand
+
+	* man/GDALMajorObject-class.Rd: metadata problems
+
+2008-12-11 21:04  rsbivand
+
+	* DESCRIPTION, man/GDALMajorObject-class.Rd: metadata problems
+
+2008-11-22 01:01  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R: fix GDALinfo origin bug
+
+2008-11-06 09:09  rsbivand
+
+	* R/sp_gdal.R: tidy in create2GDAL
+
 2008-10-30 20:59  rsbivand
 
 	* ChangeLog, R/gdal.R, inst/ChangeLog, src/Makevars.win: no DEBUG
