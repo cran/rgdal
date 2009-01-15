@@ -4,6 +4,13 @@ getPROJ4VersionInfo <- function() {
     .Call("PROJ4VersionInfo", PACKAGE="rgdal")
 }
 
+getPROJ4libPath <- function() {
+    res <- Sys.getenv("PROJ_LIB")
+    res
+}
+
+
+
 "project" <- function(xy, proj, inv=FALSE) {
 
     if (!is.numeric(xy)) stop("xy not numeric")

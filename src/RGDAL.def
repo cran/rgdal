@@ -53,6 +53,7 @@ RGDAL_SetMetadata
 RGDAL_SetNoDataValue
 RGDAL_SetProject
 RGDAL_GDALVersionInfo
+RGDAL_GDAL_DATA_Info
 PROJ4VersionInfo
 R_OGR_CAPI_features
 transform

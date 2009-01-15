@@ -1,6 +1,7 @@
 #include <gdal_priv.h>
 #include <gdal_alg.h>
 #include <cpl_string.h>
+#include <cpl_csv.h>
 #include <ogr_spatialref.h>
 #include <ogrsf_frmts.h>
 
@@ -146,6 +147,18 @@ RGDAL_GDALVersionInfo(void) {
 
     PROTECT(ans=NEW_CHARACTER(1));
     SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(GDALVersionInfo( "--version" )));
+
+    UNPROTECT(1);
+
+    return(ans);
+}
+
+SEXP
+RGDAL_GDAL_DATA_Info(void) {
+    SEXP ans;
+
+    PROTECT(ans=NEW_CHARACTER(1));
+    SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(CSVFilename( "prime_meridian.csv" )));
 
     UNPROTECT(1);
 

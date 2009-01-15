@@ -9,6 +9,8 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         "reference system: for KML driver should be geographical"))
       else if (is.projected(obj)) warning(paste("Projected coordinate",
         "reference system: for KML driver should be geographical"))
+      proj4string(obj) <- CRS(as.character(NA))
+# fix for over-eager internal checking in the KML driver 090114
     }
     if (!"data" %in% names(getSlots(class(obj)))) stop("obj of wrong class") 
     dfcls <- sapply(slot(obj, "data"), function(x) class(x)[1])

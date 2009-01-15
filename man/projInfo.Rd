@@ -1,6 +1,7 @@
 \name{projInfo}
 \alias{projInfo}
 \alias{getPROJ4VersionInfo}
+\alias{getPROJ4libPath}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{List PROJ.4 tag information}
 \description{

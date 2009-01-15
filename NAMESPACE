@@ -17,7 +17,7 @@ exportClass(GDALReadOnlyDataset)
 exportClass(GDALTransientDataset)
 exportClass(SpatialGDAL, SpatialGDALWrite)
 
-export(project, make_EPSG, projInfo, getPROJ4VersionInfo)
+export(project, make_EPSG, projInfo, getPROJ4VersionInfo, getPROJ4libPath)
 export(CRSargs)
 export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
 export(getGDALDriverNames, getDriverName, getDriverLongName, gdalDrivers)
@@ -28,7 +28,7 @@ export(getDriver, GDAL.close, GDAL.open, getColorTable,
   getGeoTransFunc, sub.GDROD, SGDF2PCT, vec2RGB, asSGDF_GROD, RGB2PCT)
 export(make_EPSG, project, readGDAL, writeGDAL, showWKT, create2GDAL)
 export(readOGR, ogrInfo, ogrFIDs, ogrDrivers, writeOGR)
-export(GDALinfo, print.GDALobj, getGDALVersionInfo)
+export(GDALinfo, print.GDALobj, getGDALVersionInfo, getGDAL_DATA_Path)
 export(displayDataset)
 export(open.SpatialGDAL, copy.SpatialGDAL)
 
