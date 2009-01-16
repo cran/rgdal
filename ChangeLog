@@ -1,6 +1,34 @@
+2009-01-15 21:24  rsbivand
+
+	* src/RGDAL.def: changed to use platform shared files
+
+2009-01-15 21:20  rsbivand
+
+	* configure.win, R/gdal.R: Windows adjustment for CRAN build
+
+2009-01-15 21:07  rsbivand
+
+	* ChangeLog, inst/ChangeLog: changed to use platform shared files
+
+2009-01-15 21:04  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/project.R,
+	  man/GDALDriver-class.Rd, man/projInfo.Rd, src/gdal-bindings.cpp,
+	  src/projectit.cpp: changed to use platform shared files
+
+2009-01-14 12:33  rsbivand
+
+	* inst/pictures/big_int_arc_file.asc, man/readGDAL.Rd: big_int
+	  issue for AAIGRID
+
+2009-01-14 12:32  rsbivand
+
+	* DESCRIPTION, configure.win, R/ogr_write.R: 1.6.0 KML fix
+
 2009-01-11 21:54  rsbivand
 
-	* DESCRIPTION, configure.win: add R_PACKAGE_DIR in configure.win
+	* DESCRIPTION, configure.win, ChangeLog, inst/ChangeLog: add
+	  R_PACKAGE_DIR in configure.win
 
 2008-12-15 10:36  rsbivand
 
@@ -42,21 +70,13 @@
 
 	* NAMESPACE: removed exportClass(CRS), as sp does this already.
 
-2008-10-30 15:13  rsbivand
-
-	* inst/proj/: IGNF, ntf_r93.gsb: added shares
-
 2008-10-30 12:52  rsbivand
 
 	* ChangeLog, inst/ChangeLog: changelog
 
 2008-10-30 12:44  rsbivand
 
-	* DESCRIPTION, inst/proj/FL, inst/proj/MD, inst/proj/TN,
-	  inst/proj/WI, inst/proj/WO, inst/proj/alaska, inst/proj/conus,
-	  inst/proj/epsg, inst/proj/hawaii, inst/proj/null, inst/proj/prvi,
-	  inst/proj/stgeorge, inst/proj/stlrnc, inst/proj/stpaul: Fresh
-	  proj and gdal metadata
+	* DESCRIPTION: Fresh proj and gdal metadata
 
 2008-10-30 11:06  rsbivand
 
@@ -138,19 +158,6 @@
 2007-12-29 22:05  rsbivand
 
 	* ChangeLog, DESCRIPTION, inst/ChangeLog, inst/README.windows,
-	  inst/gdal/LICENSE.TXT, inst/gdal/cubewerx_extra.wkt,
-	  inst/gdal/ecw_cs.wkt, inst/gdal/ellipsoid.csv, inst/gdal/gcs.csv,
-	  inst/gdal/gcs.override.csv, inst/gdal/gdal_datum.csv,
-	  inst/gdal/gt_datum.csv, inst/gdal/gt_ellips.csv,
-	  inst/gdal/pcs.csv, inst/gdal/pcs.override.csv,
-	  inst/gdal/projop_wparm.csv, inst/gdal/s57objectclasses.csv,
-	  inst/gdal/s57objectclasses_aml.csv,
-	  inst/gdal/s57objectclasses_iw.csv, inst/gdal/stateplane.csv,
-	  inst/gdal/unit_of_measure.csv, inst/proj/FL, inst/proj/MD,
-	  inst/proj/TN, inst/proj/WI, inst/proj/WO, inst/proj/alaska,
-	  inst/proj/conus, inst/proj/epsg, inst/proj/esri.extra,
-	  inst/proj/hawaii, inst/proj/null, inst/proj/prvi,
-	  inst/proj/stgeorge, inst/proj/stlrnc, inst/proj/stpaul,
 	  man/readOGR.Rd, man/spTransform-methods.Rd, src/ogr_geom.cpp:
 	  share GDAL 1.5.0 PROJ 4.6.0
 
@@ -206,7 +213,7 @@
 
 2007-07-29 21:43  rsbivand
 
-	* DESCRIPTION, inst/gdal/stateplane.csv: GDAL 1.4.2 data
+	* DESCRIPTION: GDAL 1.4.2 data
 
 2007-06-07 16:20  thk
 
@@ -287,12 +294,6 @@
 
 	* ChangeLog, DESCRIPTION, configure.win, R/AAA.R, inst/ChangeLog:
 	  gdal-1.4.1
-
-2007-04-11 20:15  rsbivand
-
-	* inst/gdal/: ecw_cs.dat, ellipsoid.csv, gcs.csv, gdal_datum.csv,
-	  gdalicon.png, pcs.csv, projop_wparm.csv, unit_of_measure.csv,
-	  ecw_cs.wkt: gdal-1.4.1
 
 2007-04-11 11:30  rsbivand
 
@@ -393,23 +394,12 @@
 
 2006-11-06 14:43  rsbivand
 
-	* INDEX, inst/gdal/s57agencies.csv, inst/proj/esri.extra,
-	  inst/proj/nzgd2kgrid0005.gsb, inst/proj/other.extra: metadata
+	* INDEX: metadata
 
 2006-11-06 13:33  rsbivand
 
 	* R/ogr_write.R, man/readOGR.Rd, man/writeOGR.Rd,
 	  src/OGR_write.cpp: options
-
-2006-11-05 21:32  rsbivand
-
-	* inst/: gdal/ecw_cs.dat, gdal/ellipsoid.csv, gdal/gcs.csv,
-	  gdal/gdal_datum.csv, gdal/pcs.csv, gdal/projop_wparm.csv,
-	  gdal/s57objectclasses_aml.csv, gdal/stateplane.csv,
-	  gdal/unit_of_measure.csv, proj/FL, proj/MD, proj/TN, proj/WI,
-	  proj/WO, proj/alaska, proj/conus, proj/epsg, proj/hawaii,
-	  proj/null, proj/prvi, proj/stgeorge, proj/stlrnc, proj/stpaul,
-	  proj/world: proj/gdal share
 
 2006-11-05 21:05  rsbivand
 
@@ -608,23 +598,6 @@
 
 	* man/: CRS-class.Rd, transform-methods.Rd: changed mentioning of
 	  spproj into rgdal twice.
-
-2006-03-01 10:12  rsbivand
-
-	* inst/: proj/FL, proj/GL27, proj/MD, proj/TN, proj/WI, proj/WO,
-	  proj/alaska, proj/conus, proj/epsg, proj/esri, proj/hawaii,
-	  proj/nad.lst, proj/nad27, proj/nad83, proj/ntv1_can.dat,
-	  proj/null, proj/proj_def.dat, proj/prvi, proj/stgeorge,
-	  proj/stlrnc, proj/stpaul, proj/world, gdal/cubewerx_extra.wkt,
-	  gdal/ecw_cs.dat, gdal/ellipsoid.csv, gdal/epsg.wkt,
-	  gdal/esri_extra.wkt, gdal/gcs.csv, gdal/gdal_datum.csv,
-	  gdal/gdalicon.png, gdal/pcs.csv, gdal/prime_meridian.csv,
-	  gdal/projop_wparm.csv, gdal/s57attributes.csv,
-	  gdal/s57attributes_aml.csv, gdal/s57attributes_iw.csv,
-	  gdal/s57expectedinput.csv, gdal/s57objectclasses.csv,
-	  gdal/s57objectclasses_aml.csv, gdal/s57objectclasses_iw.csv,
-	  gdal/seed_2d.dgn, gdal/seed_3d.dgn, gdal/stateplane.csv,
-	  gdal/unit_of_measure.csv: release
 
 2006-03-01 10:02  rsbivand
 
