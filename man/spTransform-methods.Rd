@@ -70,16 +70,22 @@ state.merc <- spTransform(states, CRS=CRS("+proj=merc +ellps=GRS80"))
 summary(state.merc)
 state.merc <- spTransform(states, CRS=CRS("+proj=merc +ellps=GRS80 +units=us-mi"))
 summary(state.merc)
-\dontrun{
+if (projNAD()) {
 states <- data.frame(state.x77, state.center)
 states <- states[states$x > -121,]
 coordinates(states) <- c("x", "y")
 proj4string(states) <- CRS("+init=epsg:4267")
-summary(states)
+print(summary(states))
 state.ll83 <- spTransform(states, CRS("+init=epsg:4269"))
-summary(state.ll83)
+print(summary(state.ll83))
 state.kansasSlcc <- spTransform(states, CRS=CRS("+init=epsg:26978"))
-summary(state.kansasSlcc)
+print(summary(state.kansasSlcc))
+SFpoint_NAD83 <- SpatialPoints(matrix(c(-103.869667, 44.461676), nrow=1),
+ proj4string=CRS("+init=epsg:4269"))
+SFpoint_NAD27 <- spTransform(SFpoint_NAD83, CRS("+init=epsg:4267"))
+print(all.equal(coordinates(SFpoint_NAD83), coordinates(SFpoint_NAD27)))
+print(coordinates(SFpoint_NAD27), digits=12)
+print(coordinates(SFpoint_NAD83), digits=12)
 }
 data(meuse)
 coordinates(meuse) <- c("x", "y")

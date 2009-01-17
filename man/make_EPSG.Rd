@@ -6,11 +6,11 @@
   Make a data frame of the now-defunct European Petroleum Survey Group (EPSG) geodetic parameter dataset as distributed with PROJ.4 software and included in this package. Because finding the correct projection specification is not easy, lists still known as EPSG lists are maintained, and more generally retrieved from Access databases. The data collated here are as distributed with PROJ.4.
 }
 \usage{
-make_EPSG(file=system.file("proj/epsg", package="rgdal"))
+make_EPSG(file)
 }
 
 \arguments{
-  \item{file}{file name of the file matching EPSG codes and PROJ.4 arguments}
+  \item{file}{file name of the file matching EPSG codes and PROJ.4 arguments, should usually be autodetected}
 }
 %- maybe also 'usage' for other objects documented here.
 

@@ -2,14 +2,17 @@
 \alias{projInfo}
 \alias{getPROJ4VersionInfo}
 \alias{getPROJ4libPath}
+\alias{projNAD}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{List PROJ.4 tag information}
 \description{
-  The \code{projInfo} function lists known values and descriptions for PROJ.4 tags for tag in \code{c("proj", "ellps", "datum")}; \code{getPROJ4VersionInfo} returns the version of the underlying PROJ.4 release.
+  The \code{projInfo} function lists known values and descriptions for PROJ.4 tags for tag in \code{c("proj", "ellps", "datum")}; \code{getPROJ4VersionInfo} returns the version of the underlying PROJ.4 release, \code{getPROJ4libPath} returns the value of the PROJ\_LIB environment variable, \code{projNAD} detects the presence of NAD datum conversion tables (looking for conus).
 }
 \usage{
 projInfo(type = "proj")
 getPROJ4VersionInfo()
+getPROJ4libPath()
+projNAD()
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

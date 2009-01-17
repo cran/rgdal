@@ -12,7 +12,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* #include <projects.h> */
 #include <proj_api.h>
+FILE *pj_open_lib(const char *, const char *);
 
 
 SEXP
@@ -27,6 +29,75 @@ PROJ4VersionInfo(void) {
     return(ans);
 }
 
+SEXP
+PROJ4NADsInstalled(void) {
+    SEXP ans;
+
+    FILE *fp;
+
+    PROTECT(ans=NEW_LOGICAL(1));
+    fp = pj_open_lib("conus", "rb");
+    if (fp == NULL) LOGICAL_POINTER(ans)[0] = FALSE;
+    else {
+        LOGICAL_POINTER(ans)[0] = TRUE;
+        fclose(fp);
+    }
+    
+    UNPROTECT(1);
+
+    return(ans);
+}
+
+#define MAX_LINE_LEN 512	/* maximal line length supported.     */
+
+SEXP
+PROJcopyEPSG(SEXP tf) {
+    SEXP ans;
+
+    FILE *fp, *fptf;
+    char buf[MAX_LINE_LEN+1];   /* input buffer */
+    int i=0;
+
+    PROTECT(ans=NEW_INTEGER(1));
+    INTEGER_POINTER(ans)[0] = 0;
+    fp = pj_open_lib("epsg", "rb");
+    if (fp == NULL) INTEGER_POINTER(ans)[0] = 0;
+    else {
+        fptf = fopen(CHAR(STRING_ELT(tf, 0)), "wb");
+        if (fptf == NULL) {
+            INTEGER_POINTER(ans)[0] = 0;
+            fclose(fp);
+            UNPROTECT(1);
+            return(ans);
+        }
+        /* copy from fp to fptf */
+        /* copy source file to target file, line by line. */
+        while (fgets(buf, MAX_LINE_LEN+1, fp)) {
+	    if (fputs(buf, fptf) == EOF) {  /* error writing data */
+                INTEGER_POINTER(ans)[0] = 0;
+                fclose(fp);
+                fclose(fptf);
+                UNPROTECT(1);
+                return(ans);
+	    }
+            i++;
+        }
+        if (!feof(fp)) { /* fgets failed _not_ due to encountering EOF */
+            INTEGER_POINTER(ans)[0] = 0;
+            fclose(fp);
+            fclose(fptf);
+            UNPROTECT(1);
+            return(ans);
+        }
+        INTEGER_POINTER(ans)[0] = i;
+        fclose(fp);
+        fclose(fptf);
+    }
+    
+    UNPROTECT(1);
+
+    return(ans);
+}
 
 void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg){
 
@@ -104,7 +175,7 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 	/* interface to pj_transform() to be able to use longlat proj
 	 * and datum transformation in an SEXP format */
 
-	int i, n, iter;
+	int i, n;
 	double *xx, *yy, *zz;
 	projPJ fromPJ, toPJ;
 	SEXP res;
@@ -216,7 +287,7 @@ struct PJ_DATUMS {
     char    *ellipse_id; /* ie from ellipse table */
     char    *comments; /* EPSG code, etc */
 };
-struct PJ_DATUMS *pj_get_datums_ref( void );
+struct PJ_DATUMS *pj_get_datums_ref( void ); 
 
 SEXP projInfo(SEXP type) {
     SEXP ans;
