@@ -9,7 +9,9 @@ getPROJ4libPath <- function() {
     res
 }
 
-
+projNAD <- function() {
+    .Call("PROJ4NADsInstalled", PACKAGE="rgdal")
+}
 
 "project" <- function(xy, proj, inv=FALSE) {
 

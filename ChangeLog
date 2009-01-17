@@ -1,6 +1,22 @@
+2009-01-17 16:23  rsbivand
+
+	* src/projectit.cpp: tidy project src
+
+2009-01-17 16:01  rsbivand
+
+	* DESCRIPTION, R/make_EPSG.R, man/make_EPSG.Rd, src/projectit.cpp,
+	  ChangeLog, inst/ChangeLog: fix make_EPSG file access
+
+2009-01-16 09:24  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/project.R, man/projInfo.Rd,
+	  man/spTransform-methods.Rd, src/projectit.cpp, ChangeLog,
+	  inst/ChangeLog: added NAD examples and test
+
 2009-01-15 21:24  rsbivand
 
-	* src/RGDAL.def: changed to use platform shared files
+	* src/RGDAL.def, ChangeLog, inst/ChangeLog: changed to use platform
+	  shared files
 
 2009-01-15 21:20  rsbivand
 
