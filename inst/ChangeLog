@@ -1,3 +1,54 @@
+2009-01-20 10:52  rsbivand
+
+	* configure, configure.in: NAD files absence note
+
+2009-01-20 10:39  rsbivand
+
+	* inst/: README, OSGeo4W_test: OSGeo4W build
+
+2009-01-19 21:42  rsbivand
+
+	* DESCRIPTION, configure.win, R/AAA.R, inst/README.windows,
+	  src/gdal-bindings.cpp, src/projectit.cpp: OSGeo4W attempts
+
+2009-01-19 18:31  rsbivand
+
+	* ChangeLog, configure.win, inst/ChangeLog, src/Makevars.win:
+	  OSGeo4W build
+
+2009-01-19 17:32  rsbivand
+
+	* configure, configure.in, inst/README: proj-epsg*.rpm notes
+
+2009-01-19 13:57  rsbivand
+
+	* DESCRIPTION: configure changes to trap missing support files
+
+2009-01-19 13:53  rsbivand
+
+	* inst/README: configure changes to trap missing support files
+
+2009-01-19 13:39  rsbivand
+
+	* configure, configure.in: configure changes to trap missing
+	  support files
+
+2009-01-17 20:39  rsbivand
+
+	* inst/README.windows, src/RGDAL.def: freshen RGDAL.def
+
+2009-01-17 18:03  rsbivand
+
+	* src/RGDAL.def: fresh RGDAL.def
+
+2009-01-17 17:59  rsbivand
+
+	* configure.win: freshen RGDAL.def
+
+2009-01-17 16:26  rsbivand
+
+	* ChangeLog, inst/ChangeLog: fix make_EPSG file access
+
 2009-01-17 16:23  rsbivand
 
 	* src/projectit.cpp: tidy project src

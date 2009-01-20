@@ -1316,7 +1316,7 @@ then
 
 else
 
-	echo ""
+	echo "Error: gdal-config not found"
 	echo "The gdal-config script distributed with GDAL could not be found."
 	echo "If you have not installed the GDAL libraries, you can"
 	echo "download the source from  http://www.gdal.org/"
@@ -2943,7 +2943,7 @@ if test "$ac_cv_header_proj_api_h" = "no" ; then
     STOP="stop"
 fi
 if test "$STOP" = "stop" ; then
-    echo "proj_api.h not found."
+    echo "Error: proj_api.h not found."
     echo "If the PROJ.4 library is installed in a non-standard location,"
     echo "use --configure-args='--with-proj-include=/opt/local/include'"
     echo "for example, replacing /opt/local/* with appropriate values"
@@ -3039,12 +3039,77 @@ if test "$PROJ_SETTING" = "none" ; then
     STOP="stop"
 fi
 if test "$STOP" = "stop" ; then
-    echo "libproj.a not found."
+    echo "Error: libproj.a not found."
     echo "If the PROJ.4 library is installed in a non-standard location,"
     echo "use --configure-args='--with-proj-lib=/opt/local/lib' for example,"
     echo "replacing /opt/local/* with appropriate values for your installation."
     echo "If PROJ.4 is not installed, install it."
     exit 1
+fi
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+FILE *pj_open_lib(const char *, const char *);
+
+int main() {
+    FILE *fp;
+    fp = pj_open_lib("epsg", "rb");
+    if (fp == NULL) exit(1);
+    fclose(fp);
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS} -lproj
+./proj_conf_test
+
+proj_share=`echo $?`
+if test ${proj_share} -eq 1 ; then
+    STOP="stop"
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$STOP" = "stop" ; then
+    echo "Error: proj/epsg not found"
+    echo "Either install missing proj support files, for example"
+    echo "the proj-nad and proj-epsg RPMs on systems using RPMs,"
+    echo "or if installed but not autodetected, set PROJ_LIB to the"
+    echo "correct path."
+    exit 1
+fi
+
+
+cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+FILE *pj_open_lib(const char *, const char *);
+
+int main() {
+    FILE *fp;
+    fp = pj_open_lib("conus", "rb");
+    if (fp == NULL) exit(1);
+    fclose(fp);
+    exit(0);
+}
+_EOCONF
+
+${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS} -lproj
+./proj_conf_test
+
+proj_share=`echo $?`
+if test ${proj_share} -eq 1 ; then
+    WARN="warn"
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$WARN" = "warn" ; then
+    echo "Note: proj/conus not found"
+    echo "No support available in PROJ4 for NAD grid datum transformations"
+    echo "If required, consider re-installing from source with the contents"
+    echo "of http://download.osgeo.org/proj/proj-datumgrid-1.4.zip in nad/."
 fi
 
 echo "Package CPP flags: $PKG_CPPFLAGS"

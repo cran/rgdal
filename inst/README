@@ -22,6 +22,23 @@ package):
 
 http://fwtools.maptools.org/
 
+If installing PROJ.4 from RPM binaries, note that four RPM files are
+required: "proj", "proj-devel", "proj-epsg" and "proj-nad". The third and
+fourth files, "proj-epsg" and "proj-nad", contain all of the support files
+placed in /usr/share/proj, and are required for any use of "proj" itself.
+
+Debian users appear to get the required files (libraries, binaries,
+support files and headers) in the "proj" package, although package
+lists for proj 4.6.* and etch-backports, lenny and sid omit NAD support
+binaries, for example /usr/share/proj/conus, which if missing will
+provoke a warning under ./configure. This only matters if grid datum
+transformation is required (for example in North America), in which
+case, until the Debian packagers re-insert the missing support files,
+the resolution is to install proj (and the NAD files, a separate download)
+from source, or to download just the source NAD files, and run nad2bin on
+each required, placing the output files in /usr/share/proj, as described
+in the nad2bin manual page.
+
 For OSX users, either install PROJ.4 and GDAL/OGR from source, then
 install the rgdal source package, or use the comprehensive frameworks
 provided by William Kyngesburye:

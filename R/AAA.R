@@ -16,6 +16,8 @@
     Sys.setenv("GDAL_DATA"=system.file("gdal", package = "rgdal")[1])
     .zzz_xxx <- paste(.rgdal_old.PROJ_LIB, .rgdal_old.GDAL_DATA)
     rm(.zzz_xxx)
+  } else if (.Platform$OS.type == "windows") {
+    .rgdal_OSGeo4W <- Sys.getenv("OSGEO4W_ROOT")
   }
 
   library.dynam('rgdal', pkg, lib)

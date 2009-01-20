@@ -29,7 +29,6 @@ RGDAL_GetDriverLongName
 RGDAL_GetDriverNames
 RGDAL_GetDriverShortName
 RGDAL_GetGeoTransform
-RGDAL_GetMetadata
 RGDAL_GetNoDataValue
 RGDAL_GetOffset
 RGDAL_GetPaletteInterp
@@ -49,12 +48,13 @@ RGDAL_OpenDataset
 RGDAL_PutRasterData
 RGDAL_SetCategoryNames
 RGDAL_SetGeoTransform
-RGDAL_SetMetadata
 RGDAL_SetNoDataValue
 RGDAL_SetProject
 RGDAL_GDALVersionInfo
 RGDAL_GDAL_DATA_Info
 PROJ4VersionInfo
+PROJ4NADsInstalled
+PROJcopyEPSG
 R_OGR_CAPI_features
 transform
 

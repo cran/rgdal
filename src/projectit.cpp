@@ -32,7 +32,10 @@ PROJ4VersionInfo(void) {
 SEXP
 PROJ4NADsInstalled(void) {
     SEXP ans;
-
+#ifdef OSGEO4W
+    PROTECT(ans=NEW_LOGICAL(1));
+    LOGICAL_POINTER(ans)[0] = TRUE;
+#else
     FILE *fp;
 
     PROTECT(ans=NEW_LOGICAL(1));
@@ -42,7 +45,7 @@ PROJ4NADsInstalled(void) {
         LOGICAL_POINTER(ans)[0] = TRUE;
         fclose(fp);
     }
-    
+#endif /* OSGEO4W */
     UNPROTECT(1);
 
     return(ans);
@@ -60,7 +63,12 @@ PROJcopyEPSG(SEXP tf) {
 
     PROTECT(ans=NEW_INTEGER(1));
     INTEGER_POINTER(ans)[0] = 0;
+
+#ifdef OSGEO4W
+    fp = fopen("C:\\OSGeo4W\\share\\proj\\epsg", "rb");
+#else
     fp = pj_open_lib("epsg", "rb");
+#endif /* OSGEO4W */
     if (fp == NULL) INTEGER_POINTER(ans)[0] = 0;
     else {
         fptf = fopen(CHAR(STRING_ELT(tf, 0)), "wb");

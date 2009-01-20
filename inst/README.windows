@@ -38,6 +38,26 @@ using VC++.
 
 
 Notes:
+#################################################
+Initial notes for OSGeo4W: RSB 090117-19
+
+Run in OSGeo4W console, after setting:
+
+set OSGEO4W_BUILD=yes
+set GDAL_HOME=%OSGEO4W_ROOT%
+
+cd rgdal/src
+
+cl /MT /Ox /EHsc /D "WIN32" /c /I "C:/Program Files/R/R-2.8.1/include" /I C:/OSGeo4W/include /I "C:\Program Files\Microsoft Visual Studio 9.0\VC\include" /D OSGEO4W *.cpp
+
+link /dll /out:rgdal.dll /def:rgdal.def *.obj "C:\Program Files\R\R-2.8.1\bin\Rdll.lib" /libpath:"C:\Program Files\Microsoft Visual Studio 9.0\VC\lib" /libpath:"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib" /libpath:"C:\OSGeo4W\lib" gdal_i.lib proj_i.lib
+
+cd ../..
+
+Set Makefile.win as below to all:!!
+
+R CMD INSTALL --build rgdal
+
 ###############################################################################
 ## Building rgdal binary against FWTools binary using VC++
 
