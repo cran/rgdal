@@ -330,8 +330,10 @@ RGDAL_DeleteHandle(SEXP sxpHandle) {
 
   RGDAL_CloseHandle(sxpHandle);
 
+/* FIXME path name problem to temporary file */
+#ifndef OSGEO4W
   deleteFile(pDriver, filename);
-
+#endif
   return(R_NilValue);
 
 }
