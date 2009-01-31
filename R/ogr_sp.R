@@ -1,11 +1,13 @@
-# Copyright 2006-7 Roger Bivand
+# Copyright 2006-9 Roger Bivand
 
-readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, drop_unsupported_fields=FALSE) {
+readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
+        drop_unsupported_fields=FALSE, input_field_name_encoding=NULL) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
 	if (nchar(layer) == 0) stop("empty name")
-	ogr_info <- ogrInfo(dsn=dsn, layer=layer)
+	ogr_info <- ogrInfo(dsn=dsn, layer=layer,
+            input_field_name_encoding=input_field_name_encoding)
         keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real", "String")
         if (drop_unsupported_fields) {
              iflds <- as.integer((1:ogr_info$nitems)-1)
@@ -55,8 +57,13 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, drop_unsupported_fields=
 		else stop(paste("Multiple incompatible geometries:", 
 			paste(u_eType, collapse=":")))
 	}
+	WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
+	    "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
+        if (verbose) cat("Feature type:", paste(WKB[u_eType], collapse=", "),
+	    "with", u_with_z+2, "dimensions\n")
 	if (u_eType == 5) u_eType <- 2
 	if (u_eType == 6) u_eType <- 3
+
 	gFeatures <- geometry[[5]]
 	if (length(gFeatures) != ogr_info$nrows) stop("Feature mismatch")
 	if (u_eType == 1) { # points

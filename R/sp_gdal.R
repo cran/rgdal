@@ -69,9 +69,9 @@ asGDALROD_SGDF <- function(from) {
 		df = list(band1 = as.vector(data))
 	else {
 		df <- vector(mode="list", length=d[3])
-		df[[1]] <- as.vector(data[,,1])
+		df[[1]] <- as.vector(data[,,1, drop = FALSE])
 		for (band in 2:d[3])
-			df[[band]] <- as.vector(data[,,band])
+			df[[band]] <- as.vector(data[,,band, drop = FALSE])
 		names(df) = paste("band", 1:d[3], sep="")
 	}
 	return(SpatialGridDataFrame(grid = grid, 
@@ -119,9 +119,9 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 		df = list(band1 = as.vector(data))
 	else {
 		df <- vector(mode="list", length=d[3])
-		df[[1]] <- as.vector(data[,,1])
+		df[[1]] <- as.vector(data[,,1, drop = FALSE])
 		for (band in 2:d[3])
-			df[[band]] <- as.vector(data[,,band])
+			df[[band]] <- as.vector(data[,,band, drop = FALSE])
 		names(df) = paste("band", 1:d[3], sep="")
 	}
 	df1 <- data.frame(df)
@@ -194,9 +194,9 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 			df = list(band1 = as.vector(data))
 		else {
 			df <- vector(mode="list", length=d[3])
-			df[[1]] <- as.vector(data[,,1])
+			df[[1]] <- as.vector(data[,,1, drop = FALSE])
 			for (band in 2:d[3])
-				df[[band]] <- as.vector(data[,,band])
+				df[[band]] <- as.vector(data[,,band, drop = FALSE])
 #			df = as.data.frame(df)
 			names(df) = paste("band", 1:d[3], sep="")
 		}

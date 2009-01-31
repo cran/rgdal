@@ -1,6 +1,32 @@
+2009-02-16 10:13  rsbivand
+
+	* R/gdal.R: drop=FALSE in readGDAL
+
+2009-02-16 09:17  rsbivand
+
+	* INDEX, R/sp_gdal.R, ChangeLog, inst/ChangeLog: drop=FALSE in
+	  readGDAL
+
+2009-02-15 16:12  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, man/readOGR.Rd, src/ogr_geom.cpp, ChangeLog,
+	  inst/ChangeLog: feature type in ogrInfo
+
+2009-01-31 20:47  rsbivand
+
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: iconv in
+	  ogrInfo
+
+2009-01-20 14:31  rsbivand
+
+	* DESCRIPTION, inst/OSGeo4W_test, inst/README.windows,
+	  man/GDALReadOnlyDataset-methods.Rd, man/writeOGR.Rd: OSGeo4W
+	  integration
+
 2009-01-20 10:52  rsbivand
 
-	* configure, configure.in: NAD files absence note
+	* configure, configure.in, ChangeLog, inst/ChangeLog: NAD files
+	  absence note
 
 2009-01-20 10:39  rsbivand
 

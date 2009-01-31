@@ -223,6 +223,98 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
     return(ans);
 }
 
+SEXP R_OGR_types(SEXP dsn, SEXP layer)
+{
+
+    OGRDataSourceH Ogr_ds;
+    OGRLayerH Ogr_layer;
+    OGRFeatureDefnH Ogr_featuredefn;
+    OGRFeatureH Ogr_feature;
+    OGRGeometryH Ogr_geometry;
+    OGRwkbGeometryType eType;
+
+    int navailable_layers; 
+    int i, j;
+/*    int iDriver;*/
+    int dim, with_z;
+/*    char *pszProj4 = NULL;*/
+
+    int pc=0;
+    int nf;
+
+    SEXP ans;
+    SEXP ansnames;
+
+    Ogr_ds = OGROpen(CHAR(STRING_ELT(dsn, 0)), FALSE, NULL);
+    if (Ogr_ds == NULL) error("Cannot open data source");
+
+    navailable_layers = OGR_DS_GetLayerCount(Ogr_ds);
+
+    j=-1;
+    for (i = 0; i < navailable_layers; i++) {
+	Ogr_layer =  OGR_DS_GetLayer( Ogr_ds, i );
+	Ogr_featuredefn = OGR_L_GetLayerDefn(Ogr_layer);
+	if (strcmp((char *)OGR_FD_GetName(Ogr_featuredefn), 
+	    CHAR(STRING_ELT(layer, 0))) == 0) j = i; 
+    }
+
+    if (j < 0) error("Layer not found");
+
+    PROTECT(ans = NEW_LIST(5)); pc++;
+    PROTECT(ansnames = NEW_CHARACTER(5)); pc++;
+    SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("dsn"));
+    SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("layer"));
+    SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("proj4string"));
+    SET_STRING_ELT(ansnames, 3, COPY_TO_USER_STRING("geomTypes"));
+    SET_STRING_ELT(ansnames, 5, COPY_TO_USER_STRING("with_z"));
+    setAttrib(ans, R_NamesSymbol, ansnames);
+
+    SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(1));
+//    SET_VECTOR_ELT(VECTOR_ELT(ans, 0), 0,
+    SET_STRING_ELT(VECTOR_ELT(ans, 0), 0, 
+	COPY_TO_USER_STRING(OGR_DS_GetName(Ogr_ds)));
+
+    Ogr_layer =  OGR_DS_GetLayer(Ogr_ds, j);
+    Ogr_featuredefn = OGR_L_GetLayerDefn(Ogr_layer);
+
+    SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(1));
+//    SET_VECTOR_ELT(VECTOR_ELT(ans, 1), 0, 
+    SET_STRING_ELT(VECTOR_ELT(ans, 1), 0,
+	COPY_TO_USER_STRING((char *)OGR_FD_GetName(Ogr_featuredefn)));
+    SET_VECTOR_ELT(ans, 2, NEW_INTEGER(1));
+
+/* was projection */
+
+    nf = OGR_L_GetFeatureCount(Ogr_layer, 1);
+
+    SET_VECTOR_ELT(ans, 3, NEW_INTEGER(nf));
+    SET_VECTOR_ELT(ans, 4, NEW_INTEGER(nf));
+
+    i=0;
+    while( (Ogr_feature = OGR_L_GetNextFeature(Ogr_layer)) != NULL ) {
+	    /* Geometry */
+	Ogr_geometry = OGR_F_GetGeometryRef(Ogr_feature);
+	with_z = 0;
+	if ( Ogr_geometry == NULL ) {
+	    error("NULL geometry found");
+	} else {
+	    dim = OGR_G_GetCoordinateDimension(Ogr_geometry);
+	    if (dim > 2) 
+		with_z = 1;
+	}
+        eType = wkbFlatten(OGR_G_GetGeometryType(Ogr_geometry));
+
+	INTEGER_POINTER(VECTOR_ELT(ans, 3))[i] =  eType;
+	INTEGER_POINTER(VECTOR_ELT(ans, 4))[i] =  with_z;
+
+	OGR_F_Destroy(Ogr_feature);
+	i++;
+    }
+    UNPROTECT(pc);
+
+    return(ans);
+}
+
 #ifdef __cplusplus
 }
 #endif
