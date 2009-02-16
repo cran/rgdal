@@ -39,7 +39,7 @@ using VC++.
 
 Notes:
 #################################################
-Initial notes for OSGeo4W: RSB 090117-19
+Initial notes for OSGeo4W: RSB 090117-20
 
 Run in OSGeo4W console, after setting:
 
@@ -57,6 +57,14 @@ cd ../..
 Set Makefile.win as below to all:!!
 
 R CMD INSTALL --build rgdal
+
+Post-installation, start R from the OSGeo4W console (command line). If you want
+to check that the OSGeo4W-aware rgdal is present, check the reported support
+file locations, and consider running:
+
+source(system.file("OSGeo4W_test", package="rgdal"), echo=TRUE)
+
+The initial version (0.6-6) is preliminary.
 
 ###############################################################################
 ## Building rgdal binary against FWTools binary using VC++

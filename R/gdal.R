@@ -415,7 +415,7 @@ getRasterData <- function(dataset,
   
   }
 
-  x <- drop(x)
+  if (length(band) == 1) x <- drop(x)
 
   if (!as.is) {
   

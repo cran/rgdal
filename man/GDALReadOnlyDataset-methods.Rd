@@ -1,5 +1,6 @@
 \name{GDALReadOnlyDataset-methods}
 \docType{methods}
+\alias{GDALReadOnlyDataset-methods}
 \alias{[,GDALReadOnlyDataset-method}
 \alias{,GDALReadOnlyDataset-method}
 \alias{coerce,GDALReadOnlyDataset,SpatialGridDataFrame-method}

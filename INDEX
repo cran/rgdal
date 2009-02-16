@@ -8,7 +8,7 @@ GDALMajorObject-class   Class "GDALMajorObject"
 GDALRasterBand-class    Class "GDALRasterBand"
 GDALReadOnlyDataset-class
                         Class "GDALReadOnlyDataset"
-[,GDALReadOnlyDataset-method
+GDALReadOnlyDataset-methods
                         subset methods for "GDALReadOnlyDataset"
 GDALTransientDataset-class
                         Class "GDALTransientDataset"
