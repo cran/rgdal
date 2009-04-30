@@ -1,6 +1,11 @@
+2009-04-16 18:05  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd: third coordinate in OGR
+	  points
+
 2009-02-16 10:13  rsbivand
 
-	* R/gdal.R: drop=FALSE in readGDAL
+	* R/gdal.R, ChangeLog, inst/ChangeLog: drop=FALSE in readGDAL
 
 2009-02-16 09:17  rsbivand
 

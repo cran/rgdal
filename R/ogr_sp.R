@@ -1,7 +1,8 @@
 # Copyright 2006-9 Roger Bivand
 
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
-        drop_unsupported_fields=FALSE, input_field_name_encoding=NULL) {
+        drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
+	pointDropZ=FALSE) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
@@ -67,7 +68,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	gFeatures <- geometry[[5]]
 	if (length(gFeatures) != ogr_info$nrows) stop("Feature mismatch")
 	if (u_eType == 1) { # points
-		if (u_with_z == 0) {
+		if (u_with_z == 0 || pointDropZ) {
 			coords <- do.call("rbind", lapply(gFeatures, 
 				function(x) c(x[[1]][[1]], x[[1]][[2]])))
 		} else {
