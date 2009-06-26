@@ -1,3 +1,40 @@
+2009-06-26 11:13  rsbivand
+
+	* man/readOGR.Rd, inst/vectors/trin_inca_pl03.dbf,
+	  inst/vectors/trin_inca_pl03.shp, inst/vectors/trin_inca_pl03.shx:
+	  adding NULL example
+
+2009-06-26 10:56  rsbivand
+
+	* R/ogr.R, src/ogr_geom.cpp, ChangeLog, inst/ChangeLog: added
+	  destroy DS object to readOGR and ogrInfo to permit reading many
+	  files
+
+2009-06-26 10:08  rsbivand
+
+	* ChangeLog, inst/ChangeLog: adding NULL, empty geometry, ring
+	  closure handling
+
+2009-06-26 10:04  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, inst/vectors/pgnullGPS.gpx, man/readOGR.Rd,
+	  src/ogr_geom.cpp, src/ogrsource.cpp, ChangeLog, inst/ChangeLog,
+	  DESCRIPTION: adding NULL, empty geometry, ring closure handling
+
+2009-06-25 18:09  rsbivand
+
+	* inst/vectors/pgnullGPS.gpx: GPX example
+
+2009-06-25 15:03  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/ogr_sp.R, inst/vectors/test_trk2.gpx,
+	  src/ogr_geom.cpp, src/ogrsource.cpp, inst/ChangeLog: adding
+	  DateTime -> String reading
+
+2009-06-24 20:28  rsbivand
+
+	* src/ogrsource.cpp: Date handling
+
 2009-04-16 18:05  rsbivand
 
 	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd: third coordinate in OGR

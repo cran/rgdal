@@ -1,9 +1,9 @@
 WINDOWS BINARY PACKAGE
 
-In fulfillment of distribution requirements, the source code for GDAL/OGR 
-and PROJ.4 together with the MSYS/MinGW built DLLs, header and other files
-used in the building of the Windows binary package are available for download
-from:
+In fulfillment of distribution requirements, the source code for GDAL/OGR, 
+EXPAT, and PROJ.4 together with the MSYS/MinGW built DLLs, header and 
+other files used in the building of the Windows binary package are 
+available for download from:
 
 http://spatial.nhh.no/R/rgdal/
 
@@ -15,7 +15,7 @@ In order to install the R Windows binary rgdal package, you should first have in
 
 One way is to build PROJ.4, GDAL, and any extra libraries you require with MSYS and MinGW, ideally the same MinGW as is used to build R. In both cases configure, make, make install. Note the installation prefix and exit MSYS. Set an environment variable GDAL_HOME to that value in your R build console (Windows command line interface) --- the value will be passed through and used to access header files, libraries, and to copy across a DLL.
 
-The MSYS build used here was proj 4.5.0 without jni, GDAL CVS 1.3.2+ dated October 2006, no external libraries.
+
 
 --------------------------------
 

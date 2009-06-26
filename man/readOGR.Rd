@@ -11,7 +11,7 @@
 }
 \usage{
 readOGR(dsn, layer, verbose = TRUE, p4s=NULL, drop_unsupported_fields=FALSE,
- input_field_name_encoding=NULL, pointDropZ=FALSE)
+ input_field_name_encoding=NULL, pointDropZ=FALSE, dropNULLGeometries=TRUE)
 ogrInfo(dsn, layer, input_field_name_encoding=NULL)
 ogrFIDs(dsn, layer)
 ogrDrivers()
@@ -23,9 +23,10 @@ ogrDrivers()
   \item{layer}{layer name (varies by driver, may be a file name without extension)}
   \item{verbose}{report progress}
   \item{p4s}{PROJ4 string defining CRS, if default NULL, the value is read from the OGR data set} 
-  \item{drop\_unsupported\_fields}{default FALSE, if TRUE skip fields other than string, integer, and real}
+  \item{drop\_unsupported\_fields}{default FALSE, if TRUE skip fields other than String, Integer, and Real; Date, Time and DateTime are converted to String}
   \item{input\_field\_name\_encoding}{default NULL; if not NULL, should be a valid encoding name for the source platform of the data source and layer, see \code{\link[base]{iconv}}}
   \item{pointDropZ}{default FALSE, if TRUE, discard third coordinates for point geometries; third coordinates are alway discarded for line and polygon geometries}
+  \item{dropNULLGeometries}{default TRUE, drop both declared NULL geometries, and empty geometries with no coordinates; if FALSE, return a data frame with the attribute values of the NULL and empty geometries}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }
@@ -41,6 +42,10 @@ ogrDrivers()
 \note{The bases for this implementation are taken from functions in Barry Rowlingson's draft Rmap package, and from Radim Blazek's v.in.ogr program in GRASS.
 
 Please note that the OGR drivers used may not handle missing data gracefully, and be prepared to have to correct for this manually. From rgdal 0.5-27, missing value handling has been improved, and OGR unset field values are set to NA in R, but drivers and external files may vary in their representations of missing values.
+
+In addition, from 0.6-9 date and time fields are read as strings rather than being treated as unsupported; NULL geometries are identified and dropped. There are differences in the reporting of NULL geometries between \code{ogrInfo} and \code{readOGR} - in \code{ogrInfo}, only declared NULL geometries are reported, but in \code{readOGR}, any line or polygon geometries with no coordinates are assigned NULL geometry status as well. An attempt is made to close unclosed rings in polygon geometries. 
+
+For reading GPX files, refer to the OGR GPX format documentation for the use of layer tags: \dQuote{waypoints}, \dQuote{tracks}, \dQuote{routes}, \dQuote{track_points} and \dQuote{route_points} - reading GPX files requires a build of GDAL/OGR with the expat XML library. 
 }
 \seealso{\code{\link[sp]{SpatialPointsDataFrame-class}}, \code{\link[sp]{SpatialLinesDataFrame-class}}, \code{\link[sp]{SpatialPolygonsDataFrame-class}}, \code{\link[maptools]{readShapePoly}}, \code{\link[base]{iconv}}}
 \examples{
@@ -64,6 +69,13 @@ summary(ps_cant_31)
 ogrInfo(system.file("vectors/Up.tab", package = "rgdal")[1], "Up")
 Up <- readOGR(system.file("vectors/Up.tab", package = "rgdal")[1], "Up")
 summary(Up)
+test_trk2 <- try(readOGR(system.file("vectors/test_trk2.gpx", package = "rgdal")[1], "tracks"))
+if (class(test_trk2) != "try-error") summary(test_trk2)
+test_trk2pts <- try(readOGR(system.file("vectors/test_trk2.gpx", package = "rgdal")[1], "track_points"))
+if (class(test_trk2pts) != "try-error") summary(test_trk2pts)
+ogrInfo(system.file("vectors", package = "rgdal")[1], "trin_inca_pl03")
+birds <- readOGR(system.file("vectors", package = "rgdal")[1], "trin_inca_pl03")
+summary(birds)
 }
 \keyword{spatial}
 
