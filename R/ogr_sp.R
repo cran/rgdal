@@ -2,14 +2,15 @@
 
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
-	pointDropZ=FALSE) {
+	pointDropZ=FALSE, dropNULLGeometries=TRUE) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
 	if (nchar(layer) == 0) stop("empty name")
 	ogr_info <- ogrInfo(dsn=dsn, layer=layer,
             input_field_name_encoding=input_field_name_encoding)
-        keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real", "String")
+        keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real",
+            "String", "Date", "Time", "DateTime")
         if (drop_unsupported_fields) {
              iflds <- as.integer((1:ogr_info$nitems)-1)
              iflds <- iflds[keep]
@@ -41,8 +42,13 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	geometry <- .Call("R_OGR_CAPI_features", as.character(dsn), 
 		as.character(layer), PACKAGE="rgdal")
 	eType <- geometry[[4]]
-	u_eType <- unique(sort(eType))
 	with_z <- geometry[[6]]
+        isNULL <- as.logical(geometry[[7]])
+        if (any(isNULL)) {
+            eType <- eType[!isNULL]
+            with_z <- with_z[!isNULL]
+        }        
+	u_eType <- unique(sort(eType))
 	u_with_z <- unique(sort(with_z))
 	if (length(u_with_z) != 1) stop(
 		paste("Multiple # dimensions:", 
@@ -66,7 +72,24 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	if (u_eType == 6) u_eType <- 3
 
 	gFeatures <- geometry[[5]]
+	data <- data.frame(dlist, row.names=fids)
 	if (length(gFeatures) != ogr_info$nrows) stop("Feature mismatch")
+
+        if (any(isNULL)) {
+            if (dropNULLGeometries) {
+                warning(paste("Dropping null geometries:", paste(which(isNULL),
+                    collapse=", ")))
+                gFeatures <- gFeatures[!isNULL]
+	        data <- data[!isNULL, , drop=FALSE]
+                fids <- fids[!isNULL]
+            } else {
+                warning(paste("Null geometries found:", paste(which(isNULL),
+                    collapse=", ")))
+                warning("dropNULLGeometries FALSE, returning only data for null-geometry features")
+                return(data[isNULL, , drop=FALSE])
+            }
+        }
+
 	if (u_eType == 1) { # points
 		if (u_with_z == 0 || pointDropZ) {
 			coords <- do.call("rbind", lapply(gFeatures, 
@@ -76,7 +99,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 				function(x) c(x[[1]][[1]], x[[1]][[2]],
 				x[[1]][[3]])))
 		}
-		data <- data.frame(dlist)
+#		data <- data.frame(dlist)
+		row.names(data) <- NULL
 		res <- SpatialPointsDataFrame(coords=coords, data=data,
 			proj4string=CRS(p4s))
 	} else if (u_eType == 2) { # lines
@@ -94,7 +118,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 			lnList[[i]] <- Lines(lnlist, ID=as.character(fids[i]))
 		}
 		SL <- SpatialLines(lnList, proj4string=CRS(p4s))
-		data <- data.frame(dlist, row.names=fids)
+#		data <- data.frame(dlist, row.names=fids)
 		res <- SpatialLinesDataFrame(SL, data)
 	} else if (u_eType == 3) { # polygons
 		if (u_with_z != 0) warning("Z-dimension discarded")
@@ -106,12 +130,18 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 			pllist <- vector(mode="list", length=m)
 			for (j in 1:m) {
 				jG <- iG[[j]]
-				pllist[[j]] <- Polygon(cbind(jG[[1]], jG[[2]]))
+				cmat <- cbind(jG[[1]], jG[[2]])
+				if (!identical(cmat[1,], cmat[nrow(cmat),])) {
+				  cmat <- rbind(cmat, cmat[1,])
+                                  warning(paste("Ring closed in Polygons",
+				    i, "Polygon", j))
+				}
+				pllist[[j]] <- Polygon(cmat)
 			}
 			plList[[i]] <- Polygons(pllist, ID=as.character(fids[i]))
 		}
 		SP <- SpatialPolygons(plList, proj4string=CRS(p4s))
-		data <- data.frame(dlist, row.names=fids)
+#		data <- data.frame(dlist, row.names=fids)
 		res <- SpatialPolygonsDataFrame(SP, data)
 	} else stop(paste("Incompatible geometry:", u_eType))
 

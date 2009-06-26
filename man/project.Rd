@@ -3,7 +3,7 @@
 
 \title{Projection of coordinate matrices}
 \description{
-  Interface to the PROJ.4 library of projection functions for geographical position data, no datum transformation possible. Use \code{transform()} for extended support.
+  Interface to the PROJ.4 library of projection functions for geographical position data, no datum transformation possible. Use \code{spTransform()} for extended support.
 }
 \usage{
 project(xy, proj, inv = FALSE)

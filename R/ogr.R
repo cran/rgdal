@@ -18,8 +18,16 @@ ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
   eTypes <- .Call("R_OGR_types",as.character(dsn), as.character(layer),
     PACKAGE = "rgdal")
   eType <- eTypes[[4]]
-  u_eType <- unique(sort(eType))
   with_z <- eTypes[[5]]
+  isNULL <- as.logical(eTypes[[6]])
+  null_geometries <- NULL
+  if (any(isNULL)) {
+      eType <- eType[!isNULL]
+      with_z <- with_z[!isNULL]
+      null_geometries <- paste("Null geometries:", 
+        paste(which(isNULL), collapse=", "))
+  }        
+  u_eType <- unique(sort(eType))
   u_with_z <- unique(sort(with_z))
   if (length(u_with_z) != 1) stop(
     paste("Multiple # dimensions:", 
@@ -42,16 +50,21 @@ ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
       from=input_field_name_encoding)
   ogrinfo$eType <- u_eType
   ogrinfo$with_z <- u_with_z
+  ogrinfo$null_geometries <- null_geometries
+  ogrinfo$dsn <- dsn
+  ogrinfo$layer <- layer
   class(ogrinfo) <- "ogrinfo"
   ogrinfo
 }
 
 print.ogrinfo <- function(x, ...) {
+  cat("Source: \"", x$dsn, '\", layer: \"', x$layer, "\"", '\n', sep='')
   cat("Driver:", x$driver, "number of rows", x$nrows, "\n")
   WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
     "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
   cat("Feature type:", paste(WKB[x$eType], collapse=", "), "with",
     x$with_z+2, "dimensions\n")
+  if (!is.null(x$null_geometries)) cat(x$null_geometries, "\n")
   cat("Number of fields:", x$nitems, "\n")
   print(as.data.frame(x$iteminfo))
   invisible(x)

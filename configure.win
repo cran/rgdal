@@ -1,6 +1,6 @@
 #!/bin/sh
 if test -z "$GDAL_HOME" ; then
-    GDAL_HOME="C:/work/packages/GDAL160"
+    GDAL_HOME="C:/work/packages/GDAL161"
 fi
 echo "GDAL_HOME=${GDAL_HOME}" > src/Makeconf.win
 
@@ -12,10 +12,11 @@ if test -z "$OSGEO4W_BUILD" ; then
     R_PACKAGE_DIR=${DPKG}
   fi
 
-  mkdir ${R_PACKAGE_DIR}/libs
-  cp ${GDAL_HOME}/bin/libgdal-1.dll ${R_PACKAGE_DIR}/libs
-  cp -r ${GDAL_HOME}/share/proj ${R_PACKAGE_DIR}
-  cp -r ${GDAL_HOME}/share/gdal ${R_PACKAGE_DIR}
+  mkdir "${R_PACKAGE_DIR}/libs"
+  cp ${GDAL_HOME}/bin/libgdal-1.dll "${R_PACKAGE_DIR}/libs"
+  cp ${GDAL_HOME}/bin/libexpat-1.dll "${R_PACKAGE_DIR}/libs"
+  cp -r ${GDAL_HOME}/share/proj "${R_PACKAGE_DIR}"
+  cp -r ${GDAL_HOME}/share/gdal "${R_PACKAGE_DIR}"
   echo "OSGEO= " >> src/Makeconf.win
 
 else
