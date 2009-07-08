@@ -15,16 +15,35 @@ ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
 # a list with various ogr data source information
   ogrinfo <- .Call("ogrInfo",as.character(dsn), as.character(layer),
     PACKAGE = "rgdal")
+  fids <- ogrFIDs(dsn=dsn, layer=layer)
+  if (attr(fids, "i") != attr(fids, "nf")) {
+     retain <- 1:attr(fids, "i")
+     afids <- 0:(attr(fids, "nf")-1)
+     deleted <- afids[!(afids %in% fids[retain])]
+     deleted_geometries <- paste("Deleted feature IDs:", paste(deleted,
+        collapse=", "))
+     fids <- fids[retain]
+  } else {
+     deleted_geometries <- NULL
+     retain <- NULL
+  }
+  attributes(fids) <- NULL
   eTypes <- .Call("R_OGR_types",as.character(dsn), as.character(layer),
     PACKAGE = "rgdal")
-  eType <- eTypes[[4]]
-  with_z <- eTypes[[5]]
-  isNULL <- as.logical(eTypes[[6]])
+  if (is.null(retain)) {
+    eType <- eTypes[[4]]
+    with_z <- eTypes[[5]]
+    isNULL <- as.logical(eTypes[[6]])
+ } else {
+    eType <- eTypes[[4]][retain]
+    with_z <- eTypes[[5]][retain]
+    isNULL <- as.logical(eTypes[[6]])[retain]
+  }
   null_geometries <- NULL
   if (any(isNULL)) {
       eType <- eType[!isNULL]
       with_z <- with_z[!isNULL]
-      null_geometries <- paste("Null geometries:", 
+      null_geometries <- paste("Null geometry IDs:", 
         paste(which(isNULL), collapse=", "))
   }        
   u_eType <- unique(sort(eType))
@@ -51,6 +70,7 @@ ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
   ogrinfo$eType <- u_eType
   ogrinfo$with_z <- u_with_z
   ogrinfo$null_geometries <- null_geometries
+  ogrinfo$deleted_geometries <- deleted_geometries
   ogrinfo$dsn <- dsn
   ogrinfo$layer <- layer
   class(ogrinfo) <- "ogrinfo"
@@ -65,6 +85,7 @@ print.ogrinfo <- function(x, ...) {
   cat("Feature type:", paste(WKB[x$eType], collapse=", "), "with",
     x$with_z+2, "dimensions\n")
   if (!is.null(x$null_geometries)) cat(x$null_geometries, "\n")
+  if (!is.null(x$deleted_geometries)) cat(x$deleted_geometries, "\n")
   cat("Number of fields:", x$nitems, "\n")
   print(as.data.frame(x$iteminfo))
   invisible(x)

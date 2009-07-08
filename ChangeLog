@@ -1,8 +1,17 @@
+2009-07-07 20:40  rsbivand
+
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd,
+	  src/ogrsource.cpp: handling deleted features
+
+2009-06-26 13:28  rsbivand
+
+	* configure.win, inst/README.windows, man/project.Rd: tidy
+
 2009-06-26 11:13  rsbivand
 
 	* man/readOGR.Rd, inst/vectors/trin_inca_pl03.dbf,
-	  inst/vectors/trin_inca_pl03.shp, inst/vectors/trin_inca_pl03.shx:
-	  adding NULL example
+	  inst/vectors/trin_inca_pl03.shp, inst/vectors/trin_inca_pl03.shx,
+	  ChangeLog, inst/ChangeLog: adding NULL example
 
 2009-06-26 10:56  rsbivand
 

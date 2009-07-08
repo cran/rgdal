@@ -24,12 +24,23 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
              fldnms <- ogr_info$iteminfo$name
         }
 	fids <- ogrFIDs(dsn=dsn, layer=layer)
+        if (attr(fids, "i") != attr(fids, "nf")) {
+            retain <- 1:attr(fids, "i")
+            afids <- 0:(attr(fids, "nf")-1)
+            deleted <- afids[!(afids %in% fids[retain])]
+            warning(paste("Deleted feature IDs:", paste(deleted,
+                    collapse=", ")))
+            fids <- fids[retain]
+        } else {
+            retain <- NULL
+        }
+        attributes(fids) <- NULL
 	if (verbose) {
 		cat("OGR data source with driver:", ogr_info$driver, "\n")
 		cat("Source: \"", dsn, '\", layer: \"', layer, "\"", '\n',
 			sep='')
-		cat("with ", ogr_info$nrows," rows and ",
-			ogr_info$nitems, " columns\n")
+		cat("with", length(fids),"features and",
+			length(iflds), "fields\n")
 	}
 # suggestion by Paul Hiemstra 070817
 	if (is.null(p4s)) 
@@ -41,9 +52,17 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	names(dlist) <- make.names(fldnms ,unique=TRUE)
 	geometry <- .Call("R_OGR_CAPI_features", as.character(dsn), 
 		as.character(layer), PACKAGE="rgdal")
-	eType <- geometry[[4]]
-	with_z <- geometry[[6]]
-        isNULL <- as.logical(geometry[[7]])
+	if (is.null(retain)) {
+	    eType <- geometry[[4]]
+	    with_z <- geometry[[6]]
+            isNULL <- as.logical(geometry[[7]])
+	    gFeatures <- geometry[[5]]
+        } else {
+	    eType <- geometry[[4]][retain]
+	    with_z <- geometry[[6]][retain]
+            isNULL <- as.logical(geometry[[7]])[retain]
+	    gFeatures <- geometry[[5]][retain]
+        }
         if (any(isNULL)) {
             eType <- eType[!isNULL]
             with_z <- with_z[!isNULL]
@@ -71,9 +90,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	if (u_eType == 5) u_eType <- 2
 	if (u_eType == 6) u_eType <- 3
 
-	gFeatures <- geometry[[5]]
 	data <- data.frame(dlist, row.names=fids)
-	if (length(gFeatures) != ogr_info$nrows) stop("Feature mismatch")
+	if (length(gFeatures) != length(fids)) stop("Feature mismatch")
 
         if (any(isNULL)) {
             if (dropNULLGeometries) {
