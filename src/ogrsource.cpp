@@ -120,9 +120,9 @@ extern "C" {
 #endif
 //extern "C" {
   SEXP ogrFIDs(SEXP filename, SEXP layer){
-  SEXP fids;
+  SEXP fids, nf, ii;
   int /*layerNum,*/i;
-  int nFeatures;
+  int nFeatures, pc=0;
   OGRDataSource *poDS;
   OGRLayer *poLayer;
   OGRFeature *poFeature;
@@ -142,7 +142,10 @@ extern "C" {
   }
   nFeatures=poLayer->GetFeatureCount();
 
-  PROTECT(fids=allocVector(INTSXP,nFeatures));
+  PROTECT(fids=allocVector(INTSXP,nFeatures)); pc++;
+  PROTECT(nf = NEW_INTEGER(1)); pc++;
+  INTEGER_POINTER(nf)[0] = nFeatures;
+  PROTECT(ii = NEW_INTEGER(1)); pc++;
 
   poLayer->ResetReading();
 
@@ -152,10 +155,13 @@ extern "C" {
     i++;
     delete poFeature;
   }
+  INTEGER_POINTER(ii)[0] = i;
+  setAttrib(fids, install("nf"), nf);
+  setAttrib(fids, install("i"), ii);
 
   delete poDS;
 
-  UNPROTECT(1);
+  UNPROTECT(pc);
   return(fids);
 
   }
