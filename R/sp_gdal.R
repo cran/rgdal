@@ -1,6 +1,6 @@
-GDALinfo <- function(fname) {
+GDALinfo <- function(fname, silent=FALSE) {
 	if (nchar(fname) == 0) stop("empty file name")
-	x <- GDAL.open(fname)
+	x <- GDAL.open(fname, silent=silent)
 	d <- dim(x)[1:2]
         dr <- getDriverName(getDriver(x))
 	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
@@ -132,7 +132,7 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 
 readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE) {
 	if (nchar(fname) == 0) stop("empty file name")
-	x = GDAL.open(fname)
+	x = GDAL.open(fname, silent=silent)
 	d = dim(x)
 	if (missing(offset)) offset <- c(0,0)
 	if (missing(region.dim)) region.dim <- dim(x)[1:2] # rows=nx, cols=ny

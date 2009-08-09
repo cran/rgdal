@@ -43,7 +43,7 @@ saveDatasetAs(dataset, filename, driver = NULL, options=NULL)
   \item{filename}{name of file to contain raster data object}
   \item{returnNewObj}{until and including 0.5-27, \code{saveDataset} returned an invisible copy of the new file handle, which was then only finalized when the garbage collector ran. The old behaviour can be retained by setting to FALSE, the default behaviour is to close the hande and not return it.}
   \item{driver}{GDAL driver name to use for saving raster data object}
-  \item{strict}{TRUE if the copy must be strictly equivelent, or more normally FALSE indicating that the copy may adapt as needed for the output format}
+  \item{strict}{TRUE if the copy must be strictly equivalent, or more normally FALSE indicating that the copy may adapt as needed for the output format}
   \item{options}{Driver specific options (currently passed to GDAL)}
 }
 \details{

@@ -93,12 +93,15 @@ getDriverLongName <- function(driver) {
 }
 
 setMethod('initialize', 'GDALReadOnlyDataset',
-          def = function(.Object, filename, handle = NULL) {
+          def = function(.Object, filename, silent=FALSE, handle = NULL) {
             if (is.null(handle)) {
 	      if (nchar(filename) == 0) stop("empty file name")
+              silent <- as.logical(silent)
+              if (length(silent) != 1 || is.na(silent) || !is.logical(silent))
+                  stop("options(warn) not set")
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset', as.character(filename), 
-			TRUE, PACKAGE="rgdal")
+			TRUE, silent, PACKAGE="rgdal")
               }
             } else {
               slot(.Object, 'handle') <- handle
@@ -110,12 +113,15 @@ setMethod('initialize', 'GDALReadOnlyDataset',
           })
 
 setMethod('initialize', 'GDALDataset',
-          def = function(.Object, filename, handle = NULL) {
+          def = function(.Object, filename, silent=FALSE, handle = NULL) {
             if (is.null(handle)) {
 	      if (nchar(filename) == 0) stop("empty file name")
+              silent <- as.logical(silent)
+              if (length(silent) != 1 || is.na(silent) || !is.logical(silent))
+                  stop("options(warn) not set")
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset', as.character(filename), 
-			FALSE, PACKAGE="rgdal")
+			FALSE, silent, PACKAGE="rgdal")
               }
             } else {
               slot(.Object, 'handle') <- handle
@@ -276,12 +282,12 @@ deleteDataset <- function(dataset) {
 
 }
 
-GDAL.open <- function(filename, read.only = TRUE) {
+GDAL.open <- function(filename, read.only = TRUE, silent = FALSE) {
   
 	res <- if(read.only)
-          new("GDALReadOnlyDataset", filename)
+          new("GDALReadOnlyDataset", filename, silent=silent)
         else
-          new("GDALDataset", filename)
+          new("GDALDataset", filename, silent=silent)
         
 	res
         

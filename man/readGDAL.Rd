@@ -12,7 +12,7 @@ readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c
 asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5))
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
 create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
-GDALinfo(fname)
+GDALinfo(fname, silent=FALSE)
 }
 
 \arguments{
@@ -24,7 +24,7 @@ GDALinfo(fname)
 \item{band}{if missing, all bands are read}
 \item{p4s}{PROJ4 string defining CRS, if default (NULL), the value is read from the GDAL data set} 
 \item{half.cell}{Used to adjust the intra-cell offset from corner to centre, usually as default, but may be set to c=(0,0) if needed; presently ordered (y,x) - this may change}
-\item{silent}{ logical; if TRUE, comment is suppressed }
+\item{silent}{ logical; if TRUE, comment and non-fatal CPL driver errors suppressed }
 \item{...}{ arguments passed to either \code{getRasterData}, or
 \code{getRasterTable}, depending on rotation angles (see below);
 see the rgdal documentation for the available options (subsetting
@@ -50,6 +50,7 @@ data, being of class \link[sp]{SpatialPointsDataFrame-class}. If the points
 are on a 45 or 90 degree rotated grid, you can try to enforce gridding
 later on by e.g. using \code{\link[sp]{gridded}(x)=TRUE}.
 }
+\note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
 
 \seealso{ \code{\link[sp]{as.image.SpatialGridDataFrame}}, \code{\link[sp]{image}}, \code{\link[maptools]{readAsciiGrid}} }
 

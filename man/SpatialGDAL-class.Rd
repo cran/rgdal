@@ -47,6 +47,22 @@ the GDAL file.
 	numeric vector}
   }
 }
+\usage{
+\method{open}{SpatialGDAL}(con, \dots, silent = FALSE)
+\method{close}{SpatialGDAL}(con, \dots)
+copy.SpatialGDAL(dataset, fname, driver = getDriver(dataset@grod), strict = FALSE, options = NULL, silent = FALSE)
+}
+\arguments{
+\item{con}{ file name of grid map for opening, SpatialGDAL object for closing }
+\item{\dots}{ other arguments (currently ignored)}
+\item{silent}{ logical; if TRUE, comment and non-fatal CPL driver errors suppressed }
+\item{dataset}{ object of class SpatialGDAL}
+\item{fname}{ file name of grid map }
+\item{driver}{ GDAL driver name }
+\item{strict}{TRUE if the copy must be strictly equivalent, or more normally FALSE indicating that the copy may adapt as needed for the output format}
+\item{options}{driver-specific options to be passed to the GDAL driver}
+}
+\note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
 
 \author{ Edzer J. Pebesma, \email{e.pebesma@geo.uu.nl} }
 
