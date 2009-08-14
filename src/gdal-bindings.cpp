@@ -4,6 +4,7 @@
 #include <cpl_csv.h>
 #include <ogr_spatialref.h>
 #include <ogrsf_frmts.h>
+#include <cpl_error.h>
 
 // R headers moved outside extern "C" 070808 RSB re. note from BDR
 // #ifdef __cplusplus
@@ -116,7 +117,7 @@ __errorHandler(CPLErr eErrClass, int err_no, const char *msg) {
 
   if (eErrClass == CE_Warning) {
 
-    warning("\n\tGDAL Error %d: %s\n", err_no, msg);
+    warning("\n\tNon-fatal GDAL Error %d: %s\n", err_no, msg);
 
   } else {
 
@@ -127,6 +128,51 @@ __errorHandler(CPLErr eErrClass, int err_no, const char *msg) {
   return;
 
 }
+
+/************************************************************************/
+/*                       CPLDefaultErrorHandler()                       */
+/* quoted from GDAL, pointed at REprintf()                              */
+/************************************************************************/
+
+void CPL_STDCALL R_CPLDefaultErrorHandler( CPLErr eErrClass, int nError, 
+                             const char * pszErrorMsg )
+
+{
+    static int       nCount = 0;
+    static int       nMaxErrors = -1;
+
+    if (eErrClass != CE_Debug)
+    {
+        if( nMaxErrors == -1 )
+        {
+            nMaxErrors = 
+                atoi(CPLGetConfigOption( "CPL_MAX_ERROR_REPORTS", "1000" ));
+        }
+
+        nCount++;
+        if (nCount > nMaxErrors && nMaxErrors > 0 )
+            return;
+    }
+
+
+    if( eErrClass == CE_Debug )
+        REprintf("%s\n", pszErrorMsg );
+    else if( eErrClass == CE_Warning )
+        REprintf("CPL Warning %d: %s\n", nError, pszErrorMsg );
+    else
+        REprintf("CPL ERROR %d: %s\n", nError, pszErrorMsg );
+
+    if (eErrClass != CE_Debug 
+        && nMaxErrors > 0 
+        && nCount == nMaxErrors )
+    {
+        REprintf( "More than %d errors or warnings have been reported. "
+                 "No more will be reported from now.\n", 
+                 nMaxErrors );
+    }
+
+}
+
 
 SEXP
 RGDAL_Init(void) {
@@ -406,7 +452,7 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
 }
 
 SEXP
-RGDAL_OpenDataset(SEXP filename, SEXP read_only) {
+RGDAL_OpenDataset(SEXP filename, SEXP read_only, SEXP silent) {
 
   const char *fn = asString(filename);
 
@@ -417,10 +463,33 @@ RGDAL_OpenDataset(SEXP filename, SEXP read_only) {
   else
     RWFlag = GA_Update;
 
+/* Modification suggested by Even Rouault, 2009-08-08: */
+
+  CPLErrorReset();
+  if (asLogical(silent))
+    CPLPushErrorHandler(CPLQuietErrorHandler);
+  else
+    CPLPushErrorHandler(R_CPLDefaultErrorHandler); 
+
   GDALDataset *pDataset = (GDALDataset *) GDALOpen(fn, RWFlag);
 
+  CPLPopErrorHandler();
+
+/* Similarly to SWIG bindings, the following lines will cause
+RGDAL_OpenDataset() to fail on - uncleared - errors even if pDataset is not
+NULL. They could also be just removed. While pDataset != NULL, there's some
+hope ;-) */
+
+  CPLErr eclass = CPLGetLastErrorType();
+
+  if (pDataset != NULL && eclass == CE_Failure) {
+    GDALClose(pDataset);
+    pDataset = NULL;
+    __errorHandler(eclass, CPLGetLastErrorNo(), CPLGetLastErrorMsg());
+  }
+
   if (pDataset == NULL)
-    error("Could not open file: %s\n", filename);
+    error("%s\n", CPLGetLastErrorMsg());
 
   SEXP sxpHandle = R_MakeExternalPtr((void *) pDataset,
 				     mkChar("GDAL Dataset"),

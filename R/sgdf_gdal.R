@@ -11,7 +11,7 @@ setClass("SpatialGDALWrite", "SpatialGDAL")
 open.SpatialGDAL = function(con, ..., silent = FALSE) {
 	if (nchar(con) == 0) stop("empty file name")
 
-	grod = GDAL.open(con, read.only = TRUE)
+	grod = GDAL.open(con, read.only = TRUE, silent=silent)
 
 	d = dim(grod)
 	if (!silent) {
@@ -87,7 +87,7 @@ copy.SpatialGDAL = function(dataset, fname, driver =
 
 setAs("SpatialGDAL", "SpatialGridDataFrame",
 	function(from) { 
-		print("doing the coerce...")
+#		print("doing the coerce...")
 		from[]
 	}
 )

@@ -34,26 +34,21 @@
 
 \item{"SpatialPointsDataFrame", CRSobj = CRS}{returns transformed coordinates of an "SpatialPointsDataFrame" object using the projection arguments in "CRSobj", of class CRS}
 
-%\item{"Sline", CRSobj = CRS}{returns transformed coordinates of an "Sline" object using the projection arguments in "CRSobj", of class CRS}
-
-%\item{"Slines", CRSobj = CRS}{returns transformed coordinates of an "Slines" object using the projection arguments in "CRSobj", of class CRS}
-
 \item{"SpatialLines", CRSobj = CRS}{returns transformed coordinates of an "SpatialLines" object using the projection arguments in "CRSobj", of class CRS}
 
 \item{"SpatialLinesDataFrame", CRSobj = CRS}{returns transformed coordinates of an "SpatialLinesDataFrame" object using the projection arguments in "CRSobj", of class CRS}
-
-%\item{"Sring", CRSobj = CRS}{returns transformed coordinates of an "Sring" object using the projection arguments in "CRSobj", of class CRS}
-
-%\item{"Srings", CRSobj = CRS}{returns transformed coordinates of an "Srings" object using the projection arguments in "CRSobj", of class CRS}
 
 \item{"SpatialPolygons", CRSobj = CRS}{returns transformed coordinates of an "SpatialPolygons" object using the projection arguments in "CRSobj", of class CRS}
 
 \item{"SpatialPolygonsDataFrame", CRSobj = CRS}{returns transformed coordinates of an "SpatialPolygonsDataFrame" object using the projection arguments in "CRSobj", of class CRS}
 
 }}
-\description{Transformation in package "sp" is concerned with transformation between datum(s) and conversion between projections, from one unambiguously specified coordinate reference system to another, using PROJ.4 projection arguments. Note that warnings about different projections may be issued when the PROJ.4 library extends projection arguments; examine the warning to see if the differences are real.}
+\description{The \code{spTransform} methods provide transformation between datum(s) and conversion between projections, from one unambiguously specified coordinate reference system to another, using PROJ.4 projection arguments. For simple projection, when no +datum tags are used, datum projection does not occur. When datum transformation is required, the +datum tag should be present with a valid value both in the CRS of the object to be transformed, and in the target CRS. In general +datum= is to be prefered to +ellps=, because the datum always fixes the ellipsoid, but the ellipsoid never fixes the datum. 
 
-\note{The projection arguments must be entered exactly as in the PROJ.4 documentation, in particular there cannot be any white space in +<arg>=<value> strings, and successive such strings can only be separated by blanks.}
+In addition, the +towgs84 tag should be used where needed to make sure that datum transformation does take place. Parameters for +towgs84 will be taken from the bundled EPSG database if they are known unequivocally, but may be entered manually from known authorities. Not providing the appropriate +datum and +towgs84 tags may lead to coordinates being out by hundreds of metres. Unfortunately, there is no easy way to provide this information: the user has to know the correct metadata for the data being used, even if this can be hard to discover.}
+
+\note{The projection arguments must be entered exactly as in the PROJ.4 documentation, in particular there cannot be any white space in +<arg>=<value> strings, and successive such strings can only be separated by blanks.
+Note that warnings about different projections may be issued when the PROJ.4 library extends projection arguments; examine the warning to see if the differences are real.}
 
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
@@ -89,13 +84,15 @@ print(coordinates(SFpoint_NAD83), digits=12)
 }
 data(meuse)
 coordinates(meuse) <- c("x", "y")
-proj4string(meuse) <- CRS("+proj=stere +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m")
+proj4string(meuse) <- CRS(paste("+init=epsg:28992",
+ "+towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812"))
+# see http://trac.osgeo.org/gdal/ticket/1987
 summary(meuse)
-meuse.utm <- spTransform(meuse, CRS("+proj=utm +zone=32 +ellps=WGS84"))
+meuse.utm <- spTransform(meuse, CRS("+proj=utm +zone=32 +datum=WGS84"))
 summary(meuse.utm)
 cbind(coordinates(meuse), coordinates(meuse.utm))
 kiritimati_primary_roads <- readOGR(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")
-kiritimati_primary_roads_ll <- spTransform(kiritimati_primary_roads, CRS("+proj=longlat +ellps=WGS84"))
+kiritimati_primary_roads_ll <- spTransform(kiritimati_primary_roads, CRS("+proj=longlat +datum=WGS84"))
 opar <- par(mfrow=c(1,2))
 plot(kiritimati_primary_roads, axes=TRUE)
 plot(kiritimati_primary_roads_ll, axes=TRUE, las=1)

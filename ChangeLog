@@ -1,3 +1,35 @@
+2009-08-09 15:28  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R,
+	  man/GDALDataset-class.Rd, man/GDALReadOnlyDataset-class.Rd,
+	  man/SpatialGDAL-class.Rd, man/readGDAL.Rd, src/gdal-bindings.cpp:
+	  altered CPL default to use REprintf
+
+2009-08-09 09:42  rsbivand
+
+	* R/gdal.R, src/gdal-bindings.cpp, ChangeLog, inst/ChangeLog:
+	  altered CPL default to use REprintf
+
+2009-08-08 20:48  rsbivand
+
+	* src/gdal-bindings.cpp, ChangeLog, inst/ChangeLog: altered CPL
+	  default to use REprintf
+
+2009-08-08 17:16  rsbivand
+
+	* DESCRIPTION, R/gdal.R, src/gdal-bindings.cpp, ChangeLog,
+	  inst/ChangeLog: allowing error handler switch for opening GDAL
+	  (for AIG driver case) - suggested by Even Rouault
+
+2009-07-14 11:19  rsbivand
+
+	* man/writeOGR.Rd: KML WGS84 notes added
+
+2009-07-12 13:15  rsbivand
+
+	* ChangeLog, inst/ChangeLog, man/CRS-class.Rd,
+	  man/spTransform-methods.Rd: tidy
+
 2009-07-07 20:40  rsbivand
 
 	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd,
