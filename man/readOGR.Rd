@@ -8,6 +8,20 @@
 \title{Read OGR vector maps into Spatial objects}
 \description{
   The function reads an OGR data source and layer into a suitable Spatial vector object. It can only handle layers with conformable geometry features (not mixtures of points, lines, or polygons in a single layer). It will set the spatial reference system if the layer has such metadata.
+
+If reading a shapefile, the data source name (\code{dsn=} argument) is 
+the folder (directory) where the shapefile is, and the layer is the 
+name of the shapefile (without the .shp extension). For example to read 
+\code{bounds.shp} from \code{C:/Maps}, do 
+\code{map <- readOGR(dsn="C:/Maps", layer="bounds")}. The logic behind 
+this is that typically one keeps all the shapefiles for a project in 
+one folder (directory). 
+
+As noted below, for other file type drivers, the \code{dsn=} argument is 
+interpreted differently, and may be the file name itself, as for example 
+with the \code{GPX} driver for reading GPS data as \code{layer="tracks"} 
+lines or \code{layer="track_points"} points.
+
 }
 \usage{
 readOGR(dsn, layer, verbose = TRUE, p4s=NULL, drop_unsupported_fields=FALSE,
@@ -52,31 +66,37 @@ From 0.6-10, attempts are made to detect deleted features still present in the l
 \seealso{\code{\link[sp]{SpatialPointsDataFrame-class}}, \code{\link[sp]{SpatialLinesDataFrame-class}}, \code{\link[sp]{SpatialPolygonsDataFrame-class}}, \code{\link[maptools]{readShapePoly}}, \code{\link[base]{iconv}}}
 \examples{
 ogrDrivers()
-ogrInfo(system.file("vectors", package = "rgdal")[1], "cities")
-cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
+dsn <- system.file("vectors", package = "rgdal")[1]
+ogrInfo(dsn=dsn, layer="cities")
+cities <- readOGR(dsn=dsn, layer="cities")
 summary(cities)
-ogrInfo(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")
-kiritimati_primary_roads <- readOGR(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")
+ogrInfo(dsn=dsn, layer="kiritimati_primary_roads")
+kiritimati_primary_roads <- readOGR(dsn=dsn, layer="kiritimati_primary_roads")
 summary(kiritimati_primary_roads)
-ogrInfo(system.file("vectors", package = "rgdal")[1], "scot_BNG")
-scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1], "scot_BNG")
+ogrInfo(dsn=dsn, layer="scot_BNG")
+scot_BNG <- readOGR(dsn=dsn, layer="scot_BNG")
 summary(scot_BNG)
 if ("GML" \%in\% ogrDrivers()$name) {
-  airports <- try(readOGR(system.file("vectors/airports.gml", package = "rgdal")[1], "airports"))
+  dsn <- system.file("vectors/airports.gml", package = "rgdal")[1]
+  airports <- try(readOGR(dsn=dsn, layer="airports"))
   if (class(airports) != "try-error") summary(airports)
 }
-ogrInfo(system.file("vectors/ps_cant_31.MIF", package = "rgdal")[1], "ps_cant_31")
-ps_cant_31 <- readOGR(system.file("vectors/ps_cant_31.MIF", package = "rgdal")[1], "ps_cant_31")
+dsn <- system.file("vectors/ps_cant_31.MIF", package = "rgdal")[1]
+ogrInfo(dsn=dsn, layer="ps_cant_31")
+ps_cant_31 <- readOGR(dsn=dsn, layer="ps_cant_31")
 summary(ps_cant_31)
-ogrInfo(system.file("vectors/Up.tab", package = "rgdal")[1], "Up")
-Up <- readOGR(system.file("vectors/Up.tab", package = "rgdal")[1], "Up")
+dsn <- system.file("vectors/Up.tab", package = "rgdal")[1]
+ogrInfo(dsn=dsn, layer="Up")
+Up <- readOGR(dsn=dsn, layer="Up")
 summary(Up)
-test_trk2 <- try(readOGR(system.file("vectors/test_trk2.gpx", package = "rgdal")[1], "tracks"))
+dsn <- system.file("vectors/test_trk2.gpx", package = "rgdal")[1]
+test_trk2 <- try(readOGR(dsn=dsn, layer="tracks"))
 if (class(test_trk2) != "try-error") summary(test_trk2)
-test_trk2pts <- try(readOGR(system.file("vectors/test_trk2.gpx", package = "rgdal")[1], "track_points"))
+test_trk2pts <- try(readOGR(dsn=dsn, layer="track_points"))
 if (class(test_trk2pts) != "try-error") summary(test_trk2pts)
-ogrInfo(system.file("vectors", package = "rgdal")[1], "trin_inca_pl03")
-birds <- readOGR(system.file("vectors", package = "rgdal")[1], "trin_inca_pl03")
+dsn <- system.file("vectors", package = "rgdal")[1]
+ogrInfo(dsn=dsn, layer="trin_inca_pl03")
+birds <- readOGR(dsn=dsn, layer="trin_inca_pl03")
 summary(birds)
 }
 \keyword{spatial}

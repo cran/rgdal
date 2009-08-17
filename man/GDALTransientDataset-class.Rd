@@ -10,7 +10,7 @@
   data when closed. See \code{\link{saveDataset}} and
   \code{\link{saveDatasetAs}}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("GDALTransientDataset", driver, rows, cols, bands, type, options, handle)}.
+Objects can be created by calls of the form \code{new("GDALTransientDataset", driver, rows, cols, bands, type, options, fname, handle)}.
   \describe{
   \item{driver}{A "GDALDriver" object that determines the storage
     format}
@@ -18,7 +18,8 @@ Objects can be created by calls of the form \code{new("GDALTransientDataset", dr
   \item{cols}{Number of columns in the newly created dataset}
   \item{bands}{Number of bands to create}
   \item{type}{A GDAL type name as listed in \code{.GDALDataTypes}}
-  \item{options}{Driver specific options (currently ignored)}
+  \item{options}{Driver specific options }
+  \item{fname}{default NULL, used internally to pass through a file name with a required extension (RST driver has this problem)}
   \item{handle}{Used internally; not for public consumption}
   }
 }
