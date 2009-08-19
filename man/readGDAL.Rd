@@ -10,13 +10,13 @@
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5, 0.5), silent = FALSE)
 asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5))
-writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
-create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
+writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, copy_drivername = "GTiff")
+create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname = NULL)
 GDALinfo(fname, silent=FALSE)
 }
 
 \arguments{
-\item{fname}{ file name of grid map }
+\item{fname}{ file name of grid map; in \code{create2GDAL} provides a way to pass through a file name with driver-required extension for sensitive drivers }
 \item{x}{A GDALReadOnlyDataset object}
 \item{offset}{Number of rows and columns from the origin (usually the upper left corner) to begin reading from; presently ordered (y,x) - this may change}
 \item{region.dim}{The number of rows and columns to read from the dataset; presently ordered (y,x) - this may change}
@@ -30,7 +30,7 @@ GDALinfo(fname, silent=FALSE)
 see the rgdal documentation for the available options (subsetting
 etc.) }
 \item{dataset}{ object of class \link[sp]{SpatialGridDataFrame-class} or \link[sp]{SpatialPixelsDataFrame-class}}
-\item{drivername}{ GDAL driver name }
+\item{drivername, copy_drivername}{ GDAL driver name; if the chosen driver does not support dataset creation, an attempt is made to use the \code{copy_drivername} driver to create a dataset, and \code{copyDatset} to copy to the target driver }
 \item{type}{ GDAL write data type (others than this default have not been tested) }
 \item{ mvFlag }{ missing value flag for output file }
 \item{options}{driver-specific options to be passed to the GDAL driver}
@@ -119,6 +119,30 @@ saveDataset(xxx, tf)
 GDAL.close(xx)
 GDAL.close(xxx)
 GDALinfo(tf)
+
+tf2 <- tempfile()
+writeGDAL(erdas_spnad83, tf2, drivername="PNG", type="Byte")
+GDALinfo(tf2)
+
+GT <- GridTopology(c(0.5, 0.5), c(1, 1), c(10, 10))
+set.seed(1)
+SGDF <- SpatialGridDataFrame(GT, data=data.frame(z=runif(100)))
+opar <- par(mfrow=c(2,2), mar=c(1,1,4,1))
+image(SGDF, "z", col=colorRampPalette(c("blue", "yellow"))(20))
+title(main="input values")
+pfunc <- colorRamp(c("blue","yellow"))
+RGB <- pfunc(SGDF$z)
+SGDF$red <- RGB[,1]
+SGDF$green <- RGB[,2]
+SGDF$blue <- RGB[,3]
+image(SGDF, red="red", green="green", blue="blue")
+title(main="input RGB")
+tf <- tempfile()
+writeGDAL(SGDF[c("red", "green", "blue")], tf, type="Byte", drivername="PNG")
+t1 <- readGDAL(tf)
+image(t1, red=1, green=2, blue=3)
+title(main="output PNG RGB")
+par(opar)
 
 }
 \keyword{spatial}

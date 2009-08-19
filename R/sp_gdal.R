@@ -207,19 +207,30 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 }
 
 writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32", 
-		mvFlag = NA, options=NULL)
+		mvFlag = NA, options=NULL, copy_drivername = "GTiff")
 {
 	if (nchar(fname) == 0) stop("empty file name")
-	tds.out <- create2GDAL(dataset=dataset, drivername=drivername, 
-		type=type, mvFlag=mvFlag, options=options)
-	saveDataset(tds.out, fname, options=options)
+        x <- gdalDrivers()
+	copy_only <- as.character(x[!x$create & x$copy, 1])
+        if (drivername %in% copy_only) {
+	    tds.create <- create2GDAL(dataset=dataset,
+                drivername=copy_drivername, type=type,
+                mvFlag=mvFlag, fname=NULL)
+            tds.copy <- copyDataset(tds.create, driver=drivername, fname=fname)
+            GDAL.close(tds.create)
+	    saveDataset(tds.copy, fname, options=options)
+        } else {
+	    tds.out <- create2GDAL(dataset=dataset, drivername=drivername, 
+		type=type, mvFlag=mvFlag, options=options, fname=fname)
+	    saveDataset(tds.out, fname, options=options)
+        }
 # RSB 081030 GDAL.close cleanup
 #	tmp.obj <- saveDataset(tds.out, fname, options=options)
 #        GDAL.close(tmp.obj)
 	invisible(fname)
 }
 
-create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL)
+create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname=NULL)
 {
 	stopifnot(gridded(dataset))
 	fullgrid(dataset) = TRUE
@@ -237,15 +248,19 @@ create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag =
                 stop("options not character")
 	tds.out = new("GDALTransientDataset", driver = d.drv, 
 		rows = dims[2], cols = dims[1],
-        	bands = nbands, type = type, options = options, 
+        	bands = nbands, type = type, options = options, fname = fname,
 		handle = NULL)
 	gt = c(offset[1] - 0.5 * cellsize[1], cellsize[1], 0.0, 
 		offset[2] + (dims[2] -0.5) * cellsize[2], 0.0, -cellsize[2])
 	.Call("RGDAL_SetGeoTransform", tds.out, gt, PACKAGE = "rgdal")
 
 	p4s <- proj4string(dataset)
-	if (!is.na(p4s) && nchar(p4s) > 0)
-		.Call("RGDAL_SetProject", tds.out, p4s, PACKAGE = "rgdal")
+	if (!is.na(p4s) && nchar(p4s) > 0) {
+	    .Call("RGDAL_SetProject", tds.out, p4s, PACKAGE = "rgdal")
+        } else {
+            if (getDriverName(getDriver(tds.out)) == "RST") 
+                stop("RST files must have a valid coordinate reference system")
+        }
 	for (i in 1:nbands) {
 		band = as.matrix(dataset[i])
 		if (!is.numeric(band)) stop("Numeric bands required")

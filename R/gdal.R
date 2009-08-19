@@ -134,10 +134,16 @@ setMethod('initialize', 'GDALDataset',
 
 setMethod('initialize', 'GDALTransientDataset',
           def = function(.Object, driver, rows, cols, bands = 1,
-            type = 'Byte', options = NULL, handle = NULL) {
+            type = 'Byte', options = NULL, fname = NULL, handle = NULL) {
             if (is.null(handle)) {
               typeNum <- match(type, .GDALDataTypes, 1) - 1
-	      my_tempfile <- tempfile()
+	      if (is.null(fname)) {
+                  my_tempfile <- tempfile()
+              } else {
+                  my_tempfile <- paste(tempdir(), "/",
+                      paste(sample(letters, 3), collapse=""),
+                      basename(fname[1]), sep="")
+              }
 	      if (nchar(my_tempfile) == 0) stop("empty file name")
 	      if (!is.null(options)) options <- as.character(options)
               slot(.Object, 'handle') <- .Call('RGDAL_CreateDataset', driver,
@@ -164,15 +170,20 @@ getDriver <- function(dataset) {
 
 }
 
-copyDataset <- function(dataset, driver, strict = FALSE, options = NULL) {
+copyDataset <- function(dataset, driver, strict = FALSE, options = NULL, fname = NULL) {
 
   assertClass(dataset, 'GDALReadOnlyDataset')
   
   if (missing(driver)) driver <- getDriver(dataset)
   else if (is.character(driver)) driver <- new("GDALDriver", driver)
 
-  my_tempfile <- tempfile()
-
+  if (is.null(fname)) {
+     my_tempfile <- tempfile()
+  } else {
+     my_tempfile <- paste(tempdir(), "/",
+       paste(sample(letters, 3), collapse=""),
+       basename(fname[1]), sep="")
+  }
   if (nchar(my_tempfile) == 0) stop("empty file name")
   if (!is.null(options) && !is.character(options))
     stop("options not character")
