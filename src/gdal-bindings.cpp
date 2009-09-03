@@ -716,6 +716,66 @@ RGDAL_GetScale(SEXP sxpRasterBand) {
 
 }
 
+/* SEXP
+RGDAL_GetBandMetadataItem(SEXP sxpRasterBand, SEXP sxpItem, SEXP sxpDomain) {
+ item: PIXELTYPE, domain: IMAGE_STRUCTURE
+ http://trac.osgeo.org/gdal/wiki/rfc14_imagestructure
+
+  SEXP ans;
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+  PROTECT(ans = NEW_CHARACTER(1));
+
+  SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pRasterBand->GetMetadataItem(
+    CHAR(STRING_ELT(sxpItem, 0)), CHAR(STRING_ELT(sxpDomain, 0)))));
+
+  UNPROTECT(1);
+  return(ans);
+} */
+
+
+SEXP
+RGDAL_GetBandMinimum(SEXP sxpRasterBand) {
+
+  SEXP ans;
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+  PROTECT(ans = NEW_NUMERIC(1));
+
+  NUMERIC_POINTER(ans)[0] = (double) pRasterBand->GetMinimum();
+
+  UNPROTECT(1);
+  return(ans);
+}
+
+SEXP
+RGDAL_GetBandMaximum(SEXP sxpRasterBand) {
+
+  SEXP ans;
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+  PROTECT(ans = NEW_NUMERIC(1));
+
+  NUMERIC_POINTER(ans)[0] = (double) pRasterBand->GetMaximum();
+
+  UNPROTECT(1);
+  return(ans);
+}
+
+SEXP
+RGDAL_GetBandType(SEXP sxpRasterBand) {
+
+  SEXP ans;
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+  PROTECT(ans = NEW_INTEGER(1));
+
+  INTEGER_POINTER(ans)[0] = (int) pRasterBand->GetRasterDataType();
+
+  UNPROTECT(1);
+  return(ans);
+}
+
 SEXP
 RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
 
@@ -816,7 +876,9 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
   GDALDataType eGDALType = GDT_Int32;
   SEXPTYPE uRType = INTSXP;
 
-  switch(pRasterBand->GetRasterDataType()) {
+  int RDT = pRasterBand->GetRasterDataType();
+
+  switch(RDT) {
 
   case GDT_Byte:
   case GDT_UInt16:
@@ -923,7 +985,7 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
 
   }
 
-  int hasNoDataValue;
+  int hasNoDataValue, offset;
 
   double noDataValue = pRasterBand->GetNoDataValue(&hasNoDataValue);
 
