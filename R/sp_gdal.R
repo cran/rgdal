@@ -7,7 +7,29 @@ GDALinfo <- function(fname, silent=FALSE) {
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt <- .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
 	nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
-        if (nbands < 1) warning("no bands in dataset")
+        if (nbands < 1) {
+            warning("no bands in dataset")
+        } else {
+            band <- 1:nbands
+            GDType <- character(nbands)
+            Bmin <- numeric(nbands)
+            Bmax <- numeric(nbands)
+            Pix <- character(nbands)
+            for (i in seq(along = band)) {
+
+                raster <- getRasterBand(x, band[i])
+                GDType[i] <- .GDALDataTypes[(.Call("RGDAL_GetBandType",
+                    raster, PACKAGE="rgdal"))+1]
+                Bmin[i] <- .Call("RGDAL_GetBandMinimum", raster,
+                    PACKAGE="rgdal")
+                Bmax[i] <- .Call("RGDAL_GetBandMaximum", raster,
+                    PACKAGE="rgdal")
+#                Pix[i] <- .Call("RGDAL_GetBandMetadataItem",
+#                    raster, "PIXELTYPE", "IMAGE_STRUCTURE", PACKAGE="rgdal")
+            }
+            df <- data.frame(GDType=GDType, Bmin=Bmin, Bmax=Bmax)
+        }
+        
 	GDAL.close(x)
 #	res <- c(rows=d[1], columns=d[2], bands=nbands, ll.x=gt[1], ll.y=gt[4],
 #		res.x=abs(gt[2]), res.y=abs(gt[6]), oblique.x=abs(gt[3]), 
@@ -17,31 +39,34 @@ GDALinfo <- function(fname, silent=FALSE) {
         ysign <- sign(gt[6])
         offset.y <- ifelse(ysign < 0, gt[4] + ysign * d[1] * abs(cellsize[2]),
             gt[4] +   abs(cellsize[2]))
-        res <- c(rows = d[1], columns = d[2], bands = nbands, ll.x = gt[1],
+        res <- list(rows = d[1], columns = d[2], bands = nbands, ll.x = gt[1],
             ll.y = offset.y, res.x = abs(gt[2]), res.y = abs(gt[6]),
-            oblique.x = abs(gt[3]), oblique.y = abs(gt[5]))
+            oblique.x = abs(gt[3]), oblique.y = abs(gt[5]), driver=dr,
+            projection=p4s, file=fname, df=df)
 #### end modification
-	attr(res, "driver") <- dr 
-	attr(res, "projection") <- p4s 
-	attr(res, "file") <- fname
+#	attr(res, "driver") <- dr 
+#	attr(res, "projection") <- p4s 
+#	attr(res, "file") <- fname
 	class(res) <- "GDALobj"
 	res
 }
 
 print.GDALobj <- function(x, ...) {
-	cat("rows       ", x[1], "\n")
-	cat("columns    ", x[2], "\n")
-	cat("bands      ", x[3], "\n")
-	cat("origin.x       ", x[4], "\n")
-	cat("origin.y       ", x[5], "\n")
-	cat("res.x      ", x[6], "\n")
-	cat("res.y      ", x[7], "\n")
-	cat("oblique.x  ", x[8], "\n")
-	cat("oblique.y  ", x[9], "\n")
-	cat("driver     ", attr(x, "driver"), "\n")
-	cat("projection ", paste(strwrap(attr(x, "projection")),
+	cat("rows       ", x[[1]], "\n")
+	cat("columns    ", x[[2]], "\n")
+	cat("bands      ", x[[3]], "\n")
+	cat("origin.x       ", x[[4]], "\n")
+	cat("origin.y       ", x[[5]], "\n")
+	cat("res.x      ", x[[6]], "\n")
+	cat("res.y      ", x[[7]], "\n")
+	cat("oblique.x  ", x[[8]], "\n")
+	cat("oblique.y  ", x[[9]], "\n")
+	cat("driver     ", x[["driver"]], "\n")
+	cat("projection ", paste(strwrap(x[["projection"]]),
 		collapse="\n"), "\n")
-	cat("file       ", attr(x, "file"), "\n")
+	cat("file       ", x[["file"]], "\n")
+        cat("apparent band summary:\n")
+        print(x$df)
 	invisible(x)
 }
 
@@ -277,3 +302,21 @@ create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag =
 }
 
 gdalDrivers <- function() getGDALDriverNames()
+
+toSigned <- function(x, base) {
+    if (any(x < 0)) stop("already signed")
+    if (storage.mode(x) != "integer") stop("band not integer")
+    b_2 <- (2^(base-1)-1)
+    b <- 2^base
+    x[x > b_2] <- x[x > b_2] - b
+    as.integer(x)
+}
+
+toUnSigned <- function(x, base) {
+    if (all(x >= 0)) stop("already unsigned")
+    if (storage.mode(x) != "integer") stop("band not integer")
+    b <- 2^base
+    x[x < 0] <- x[x < 0] + b
+    as.integer(x)
+}
+

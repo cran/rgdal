@@ -421,6 +421,7 @@ getRasterData <- function(dataset,
   
   x <- array(dim = as.integer(c(rev(output.dim), length(band))))
 
+
   for (i in seq(along = band)) {
 
     raster <- getRasterBand(dataset, band[i])
@@ -428,7 +429,8 @@ getRasterData <- function(dataset,
     x[,,i] <- .Call('RGDAL_GetRasterData', raster,
                       as.integer(c(offset, region.dim)),
                       as.integer(output.dim),
-                      as.integer(interleave), PACKAGE="rgdal")
+                      as.integer(interleave),
+                      PACKAGE="rgdal")
   
   }
 

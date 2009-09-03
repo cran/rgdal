@@ -21,7 +21,7 @@ showWKT(p4s, file = NULL, morphToESRI = TRUE)
 \references{\url{http://www.gdal.org/ogr/osr_tutorial.html}}
 \author{Roger Bivand}
 
-\seealso{\code{\link[sp]{proj4string}}, \code{\link[sp]{CRS-class}}}
+\seealso{\code{\link[sp]{is.projected}}, \code{\link[sp]{CRS-class}}}
 \examples{
 cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
 readLines(system.file("vectors/cities.prj", package = "rgdal")[1])

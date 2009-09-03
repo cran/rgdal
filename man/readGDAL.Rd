@@ -48,11 +48,11 @@ Some map formats supported by GDAL are not north-south oriented grids. If
 this is the case, \code{readGDAL} returns the data as a set of point
 data, being of class \link[sp]{SpatialPointsDataFrame-class}. If the points
 are on a 45 or 90 degree rotated grid, you can try to enforce gridding
-later on by e.g. using \code{\link[sp]{gridded}(x)=TRUE}.
+later on by e.g. using \code{\link[sp]{gridded-methods}(x)=TRUE}.
 }
 \note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
 
-\seealso{ \code{\link[sp]{as.image.SpatialGridDataFrame}}, \code{\link[sp]{image}}, \code{\link[maptools]{readAsciiGrid}} }
+\seealso{ \code{\link[sp]{image}}, \code{\link[maptools]{asciigrid}} }
 
 \author{Edzer J.\ Pebesma, Roger Bivand}
 

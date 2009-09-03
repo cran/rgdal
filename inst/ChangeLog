@@ -1,8 +1,28 @@
+2009-09-03 15:03  rsbivand
+
+	* DESCRIPTION, man/SpatialGDAL-class.Rd, man/readGDAL.Rd,
+	  man/showWKT.Rd: tidying docs links for 2.10.0
+
+2009-09-02 20:33  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/gdal.R, R/sp_gdal.R,
+	  man/GDALRasterBand-class.Rd, man/readGDAL.Rd,
+	  src/gdal-bindings.cpp, ChangeLog, inst/ChangeLog: extra
+	  information on band type and helpers for signed/unsigned
+	  conversion
+
+2009-08-31 22:46  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/sp_gdal.R, man/GDALRasterBand-class.Rd,
+	  man/readGDAL.Rd, src/gdal-bindings.cpp: UInt16 as Int16 in LAN
+	  problem
+
 2009-08-17 13:56  rsbivand
 
 	* DESCRIPTION, R/gdal.R, R/sp_gdal.R, man/GDALDataset-class.Rd,
 	  man/GDALTransientDataset-class.Rd, man/readGDAL.Rd,
-	  man/readOGR.Rd: added copy only driver detection and handling
+	  man/readOGR.Rd, ChangeLog, inst/ChangeLog: added copy only driver
+	  detection and handling
 
 2009-08-14 20:48  rsbivand
 

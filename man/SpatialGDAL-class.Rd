@@ -37,12 +37,12 @@ the GDAL file.
     \item{\code{data}:}{Object of class data.frame, containing attribute data }
   }
 }
-\section{Extends}{ Class \link[sp]{"Spatial"}, directly.  }
+\section{Extends}{ Class \link[sp]{Spatial-class}, directly.  }
 \section{Methods}{
   \describe{
     \item{[}{\code{signature(x = "SpatialGDAL", i, j, ...)}: 
 		selects rows (i), columns (j), and bands (third argument); returns an object of 
-		class \link[sp]{SpatialGridDataFrame}. Only the selection is actually read. }
+		class \link[sp]{SpatialGridDataFrame-class}. Only the selection is actually read. }
 	\item{[[}{\code{signature(i)}: reads band i and returns the values as a
 	numeric vector}
   }
