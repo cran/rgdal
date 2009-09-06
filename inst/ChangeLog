@@ -1,7 +1,13 @@
+2009-09-06 10:47  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R: back out of structure change in
+	  GDALinfo output
+
 2009-09-03 15:03  rsbivand
 
 	* DESCRIPTION, man/SpatialGDAL-class.Rd, man/readGDAL.Rd,
-	  man/showWKT.Rd: tidying docs links for 2.10.0
+	  man/showWKT.Rd, ChangeLog, inst/ChangeLog: tidying docs links for
+	  2.10.0
 
 2009-09-02 20:33  rsbivand
 

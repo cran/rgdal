@@ -39,34 +39,34 @@ GDALinfo <- function(fname, silent=FALSE) {
         ysign <- sign(gt[6])
         offset.y <- ifelse(ysign < 0, gt[4] + ysign * d[1] * abs(cellsize[2]),
             gt[4] +   abs(cellsize[2]))
-        res <- list(rows = d[1], columns = d[2], bands = nbands, ll.x = gt[1],
+        res <- c(rows = d[1], columns = d[2], bands = nbands, ll.x = gt[1],
             ll.y = offset.y, res.x = abs(gt[2]), res.y = abs(gt[6]),
-            oblique.x = abs(gt[3]), oblique.y = abs(gt[5]), driver=dr,
-            projection=p4s, file=fname, df=df)
+            oblique.x = abs(gt[3]), oblique.y = abs(gt[5]))
 #### end modification
-#	attr(res, "driver") <- dr 
-#	attr(res, "projection") <- p4s 
-#	attr(res, "file") <- fname
+	attr(res, "driver") <- dr 
+	attr(res, "projection") <- p4s 
+	attr(res, "file") <- fname
+        attr(res, "df") <- df
 	class(res) <- "GDALobj"
 	res
 }
 
 print.GDALobj <- function(x, ...) {
-	cat("rows       ", x[[1]], "\n")
-	cat("columns    ", x[[2]], "\n")
-	cat("bands      ", x[[3]], "\n")
-	cat("origin.x       ", x[[4]], "\n")
-	cat("origin.y       ", x[[5]], "\n")
-	cat("res.x      ", x[[6]], "\n")
-	cat("res.y      ", x[[7]], "\n")
-	cat("oblique.x  ", x[[8]], "\n")
-	cat("oblique.y  ", x[[9]], "\n")
-	cat("driver     ", x[["driver"]], "\n")
-	cat("projection ", paste(strwrap(x[["projection"]]),
+	cat("rows       ", x[1], "\n")
+	cat("columns    ", x[2], "\n")
+	cat("bands      ", x[3], "\n")
+	cat("origin.x       ", x[4], "\n")
+	cat("origin.y       ", x[5], "\n")
+	cat("res.x      ", x[6], "\n")
+	cat("res.y      ", x[7], "\n")
+	cat("oblique.x  ", x[8], "\n")
+	cat("oblique.y  ", x[9], "\n")
+	cat("driver     ", attr(x, "driver"), "\n")
+	cat("projection ", paste(strwrap(attr(x, "projection")),
 		collapse="\n"), "\n")
-	cat("file       ", x[["file"]], "\n")
+	cat("file       ", attr(x, "file"), "\n")
         cat("apparent band summary:\n")
-        print(x$df)
+        print(attr(x, "df"))
 	invisible(x)
 }
 
