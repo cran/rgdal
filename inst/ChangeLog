@@ -1,7 +1,21 @@
+2009-10-05 15:46  rsbivand
+
+	* R/sp_gdal.R, man/readGDAL.Rd: bug fix in grid parameters for
+	  offset, region and decimation together
+
+2009-10-04 21:30  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R, ChangeLog, inst/ChangeLog: bug fix in
+	  grid parameters for offset, region and decimation together
+
+2009-09-09 08:41  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2009-09-06 10:47  rsbivand
 
-	* DESCRIPTION, R/sp_gdal.R: back out of structure change in
-	  GDALinfo output
+	* DESCRIPTION, R/sp_gdal.R, ChangeLog, inst/ChangeLog: back out of
+	  structure change in GDALinfo output
 
 2009-09-03 15:03  rsbivand
 
