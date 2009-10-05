@@ -195,15 +195,20 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 		if (!odim_flag) cellsize = abs(c(gt[2],gt[6]))
 		else {
 			icellsize = abs(c(gt[2],gt[6]))
-			span <- icellsize * rev(d[1:2])
+# bug report Jose M. Blanco Moreno 091004
+			span <- icellsize * rev(region.dim)
 # bug report Mike Sumner 070215
 			cellsize <- span / rev(output.dim)
 		}
 		ysign <- sign(gt[6])
 #		cells.dim = c(d[1], d[2]) # c(d[2],d[1])
-		co.x <- gt[1] + (offset[2] + half.cell[2]) * cellsize[1]
+# bug report Jose M. Blanco Moreno 091004
+		co.x <- gt[1] + ((offset[2]/(cellsize[1]/abs(gt[2]))) + 
+                    half.cell[2]) * cellsize[1]
 		co.y <- ifelse(ysign < 0, gt[4] + (ysign*((output.dim[1] + 
-			offset[1]) + (ysign*half.cell[1]))) * abs(cellsize[2]),
+# bug report Jose M. Blanco Moreno 091004
+			(offset[1]/(cellsize[2]/abs(gt[6]))) + 
+                        (ysign*half.cell[1])))) * abs(cellsize[2]),
 			gt[4] + (ysign*((offset[1]) + (ysign*half.cell[1]))) * 
 			abs(cellsize[2]))
 		cellcentre.offset <- c(x=co.x, y=co.y)
