@@ -50,6 +50,7 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 	# retrieve topology:
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
 	# [1] 178400     40      0 334000      0    -40
+        if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 

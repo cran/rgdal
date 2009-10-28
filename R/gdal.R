@@ -587,7 +587,7 @@ getGeoTransFunc <- function(dataset) {
   assertClass(dataset, 'GDALReadOnlyDataset')
 
   geoTrans <- .Call('RGDAL_GetGeoTransform', dataset, PACKAGE="rgdal")
-
+  if (attr(geoTrans, "CE_Failure")) warning("GeoTransform values not available")
   rotMat <- matrix(geoTrans[c(2, 3, 5, 6)], 2)
 
   offset <- geoTrans[c(1, 4)]

@@ -1163,20 +1163,24 @@ RGDAL_GetGeoTransform(SEXP sxpDataset) {
   GDALDataset *pDataset = getGDALDatasetPtr(sxpDataset);
 
   SEXP sxpGeoTrans = allocVector(REALSXP, 6);
+  SEXP ceFail = NEW_LOGICAL(1);
+  LOGICAL_POINTER(ceFail)[0] = FALSE;
 
   CPLErr err = pDataset->GetGeoTransform(REAL(sxpGeoTrans));
 
   if (err == CE_Failure) {
 
-    REAL(sxpGeoTrans)[0] = 0;
-    REAL(sxpGeoTrans)[1] = 1;
-    REAL(sxpGeoTrans)[2] = 0;
-    REAL(sxpGeoTrans)[3] = 0;
-    REAL(sxpGeoTrans)[4] = 0;
-    REAL(sxpGeoTrans)[5] = 1;
+    REAL(sxpGeoTrans)[0] = 0; // x-origin ul
+    REAL(sxpGeoTrans)[1] = 1; // x-resolution (pixel width)
+    REAL(sxpGeoTrans)[2] = 0; // x-oblique
+    REAL(sxpGeoTrans)[3] = (double) pDataset->GetRasterYSize();
+ // y-origin ul; 091028
+    REAL(sxpGeoTrans)[4] = 0; // y-oblique
+    REAL(sxpGeoTrans)[5] = -1; // y-resolution (pixel height); 091028 added sign
+    LOGICAL_POINTER(ceFail)[0] = TRUE;
 
   }
-
+  setAttrib(sxpGeoTrans, install("CE_Failure"), ceFail);
   return(sxpGeoTrans);
 
 }
