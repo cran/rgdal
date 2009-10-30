@@ -6,6 +6,7 @@ GDALinfo <- function(fname, silent=FALSE) {
 	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt <- .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
+        if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
         if (nbands < 1) {
             warning("no bands in dataset")
@@ -79,6 +80,7 @@ asGDALROD_SGDF <- function(from) {
 	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
+        if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	if (any(gt[c(3,5)] != 0.0)) stop("Diagonal grid not permitted")
 	data = getRasterData(x)
 	cellsize = abs(c(gt[2],gt[6]))
@@ -123,6 +125,7 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
+        if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	if (any(gt[c(3,5)] != 0.0)) stop("Diagonal grid not permitted")
 	data = getRasterData(x, offset=offset, 
 		region.dim=region.dim, output.dim=output.dim, ...)
@@ -183,6 +186,7 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
+        if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	# [1] 178400     40      0 334000      0    -40
 	if (any(gt[c(3,5)] != 0.0)) {
 		data = getRasterTable(x, band=band, offset=offset, 

@@ -21,6 +21,7 @@ open.SpatialGDAL = function(con, ..., silent = FALSE) {
 	p4s <- .Call("RGDAL_GetProjectionRef", grod, PACKAGE="rgdal")
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', grod, PACKAGE="rgdal")
+        if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	# [1] 178400     40      0 334000      0    -40
 	if (any(gt[c(3,5)] != 0.0)) 
 		stop("rotated grid cannot be read; try readGDAL to read as points")

@@ -1,7 +1,12 @@
+2009-10-28 12:33  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R, R/subs.R,
+	  src/gdal-bindings.cpp: reporting on GetGeoTransform failure
+
 2009-10-05 15:46  rsbivand
 
-	* R/sp_gdal.R, man/readGDAL.Rd: bug fix in grid parameters for
-	  offset, region and decimation together
+	* R/sp_gdal.R, man/readGDAL.Rd, ChangeLog, inst/ChangeLog: bug fix
+	  in grid parameters for offset, region and decimation together
 
 2009-10-04 21:30  rsbivand
 
