@@ -26,7 +26,7 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL, layer_options=NULL, ve
  if verbose=TRUE, a list of information about the attempted write operation
 }
 
-\note{Only a subset of possible data slot column classes may be written out; if the function returns an error that the data type is unknown, examine the classes and check that they are one of \code{c("numeric", "character", "factor", "POSIXt", "integer")}, and if not convert to such classes.
+\note{Only a subset of possible data slot column classes may be written out; if the function returns an error that the data type of stated columns is unknown, examine the classes and check that they are one of \code{c("numeric", "character", "factor", "POSIXt", "integer", "logical")}, and if not convert to such classes. Classes \code{c("factor", "POSIXt")} are converted to character strings, and \code{c("logical")} to integer internally.
 
 For writing with the KML driver, note that the geometries should be in geographical coordinates with datum WGS84.
 }
