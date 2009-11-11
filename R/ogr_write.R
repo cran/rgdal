@@ -14,12 +14,20 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     }
     if (!"data" %in% names(getSlots(class(obj)))) stop("obj of wrong class") 
     dfcls <- sapply(slot(obj, "data"), function(x) class(x)[1])
-    known <- c("numeric", "character", "factor", "POSIXt", "integer")
-    if (!all(dfcls %in% known)) stop("unknown data type")
-
+# fix for logical and better reporting Barry Rowlingson 091106
+    known <- c("numeric", "character", "factor", "POSIXt", "integer", "logical")
+    if (!all(dfcls %in% known)) 
+        stop("Can't convert columns of class: ",
+            paste(unique(dfcls[!dfcls %in% known]), collapse=","),
+            "; column names: ", paste(names(obj@data)[!dfcls %in% known],
+            collapse=","))
     dftof <- sapply(slot(obj, "data"), typeof)
-    known <- c("double", "character", "integer")
-    if (!all(dftof %in% known)) stop("unknown data type")
+    known <- c("double", "character", "integer", "logical")
+    if (!all(dftof %in% known))
+        stop("Can't convert columns of type: ", 
+            paste(unique(dftof[!dftof %in% known]),collapse=","), 
+            "; column names: ", paste(names(obj@data)[!dftof %in% known], 
+            collapse=","))
 
     nf <- length(dfcls)
     ldata <- vector(mode="list", length=nf)
@@ -39,6 +47,10 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "integer" && dftof[i] == "integer") {
             ldata[[i]] <- slot(obj, "data")[,i]
+            ogr_ftype[i] <- as.integer(0) #"OFTInteger"
+        } else if (dfcls[i] == "logical" && dftof[i] == "logical") {
+# fix for logical and better reporting Barry Rowlingson 091106
+            ldata[[i]] <- as.integer(slot(obj, "data")[,i])
             ogr_ftype[i] <- as.integer(0) #"OFTInteger"
         } else stop(paste(dfcls[i], dftof[i], "unknown data type"))
     }
