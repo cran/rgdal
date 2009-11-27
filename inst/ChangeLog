@@ -1,6 +1,11 @@
+2009-11-26 21:25  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/sp_gdal.R, src/gdal-bindings.cpp:
+	  adding metadata and subdatasets to GDALinfo
+
 2009-11-08 19:16  rsbivand
 
-	* R/AAA.R: fix unloading problem
+	* R/AAA.R, ChangeLog, inst/ChangeLog: fix unloading problem
 
 2009-11-08 18:13  rsbivand
 

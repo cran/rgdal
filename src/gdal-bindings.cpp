@@ -586,6 +586,34 @@ RGDAL_GetProjectionRef(SEXP sDataset) {
 
 }
 
+SEXP
+RGDAL_GetMetadata(SEXP sDataset, SEXP tag) {
+
+    char **papszMetadata;
+    SEXP ans;
+    int i, n, pc=0;
+
+    GDALDataset *pDataset = getGDALDatasetPtr(sDataset);
+
+    if (tag == R_NilValue) {
+        papszMetadata = pDataset->GetMetadata( NULL );
+    } else {
+        papszMetadata = pDataset->GetMetadata(CHAR(STRING_ELT(tag, 0)));
+    }
+
+    if (CSLCount(papszMetadata) == 0) return(R_NilValue);
+
+    for (n=0; papszMetadata[n] != NULL; n++);
+    PROTECT(ans = NEW_CHARACTER(n)); pc++;
+    for (i=0; i<n; i++)
+        SET_STRING_ELT(ans, i, COPY_TO_USER_STRING(papszMetadata[i]));
+
+    UNPROTECT(pc);
+    return(ans);
+}
+
+
+
 
 
 SEXP
