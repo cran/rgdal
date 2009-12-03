@@ -8,8 +8,12 @@ GDALinfo <- function(fname, silent=FALSE) {
 	gt <- .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	nbands <- .Call('RGDAL_GetRasterCount', x, PACKAGE="rgdal")
+        mdata <- .Call('RGDAL_GetMetadata', x, NULL, PACKAGE="rgdal")
+        subdsmdata <- .Call('RGDAL_GetMetadata', x, "SUBDATASETS",
+            PACKAGE="rgdal")
         if (nbands < 1) {
-            warning("no bands in dataset")
+#            warning("no bands in dataset")
+            df <- NULL
         } else {
             band <- 1:nbands
             GDType <- character(nbands)
@@ -48,6 +52,8 @@ GDALinfo <- function(fname, silent=FALSE) {
 	attr(res, "projection") <- p4s 
 	attr(res, "file") <- fname
         attr(res, "df") <- df
+        attr(res, "mdata") <- mdata
+        attr(res, "subdsmdata") <- subdsmdata
 	class(res) <- "GDALobj"
 	res
 }
@@ -66,8 +72,20 @@ print.GDALobj <- function(x, ...) {
 	cat("projection ", paste(strwrap(attr(x, "projection")),
 		collapse="\n"), "\n")
 	cat("file       ", attr(x, "file"), "\n")
-        cat("apparent band summary:\n")
-        print(attr(x, "df"))
+        if (!is.null(attr(x, "df"))) {
+            cat("apparent band summary:\n")
+            print(attr(x, "df"))
+        }
+        if (!is.null(attr(x, "mdata"))) {
+            cat("Metadata:\n")
+            cv <- attr(x, "mdata")
+            for (i in 1:length(cv)) cat(cv[i], "\n")
+        }
+        if (!is.null(attr(x, "subdsmdata"))) {
+            cat("Subdatasets:\n")
+            cv <- attr(x, "subdsmdata")
+            for (i in 1:length(cv)) cat(cv[i], "\n")
+        }
 	invisible(x)
 }
 
