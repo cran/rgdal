@@ -108,16 +108,13 @@ setMethod("[[", c("SpatialGDAL", "ANY", "missing"),
 )
 
 # avoid inheritance:
-setMethod("$", c("SpatialGDAL"
-, "character"
-#, "ANY"
-),
+setMethod("$", "SpatialGDAL",
     function(x, name)
         stop("use [[ with numeric index to select single band")
 )
 
 # avoid inheritance:
-setReplaceMethod("$", c("SpatialGDAL", "character", "ANY"),
+setReplaceMethod("$", "SpatialGDAL",
     function(x, name, value)
 		stop("no replacement method available")
 )
