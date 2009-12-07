@@ -10,10 +10,10 @@
 \alias{print.summary.SpatialGDAL}
 \alias{coerce,SpatialGDAL,SpatialGridDataFrame-method}
 \alias{coerce,SpatialGDAL,SpatialPixelsDataFrame-method}
-\alias{$,SpatialGDAL,character-method}
+\alias{$,SpatialGDAL-method}
 \alias{[<-,SpatialGDALWrite-method}
 \alias{[[,SpatialGDAL,ANY,missing-method}
-\alias{$<-,SpatialGDAL,character-method}
+\alias{$<-,SpatialGDAL-method}
 \alias{[[<-,SpatialGDAL,ANY,missing-method}
 
 \title{Class "SpatialGDAL" }

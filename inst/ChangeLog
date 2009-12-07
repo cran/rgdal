@@ -1,7 +1,16 @@
+2009-12-06 19:42  rsbivand
+
+	* DESCRIPTION, man/SpatialGDAL-class.Rd: S4 tidy
+
+2009-12-04 18:52  edzer
+
+	* R/sgdf_gdal.R, man/SpatialGDAL-class.Rd: changes to $ and $<-
+	  signatures, to make rgdal pass in recent R base on svn
+
 2009-11-26 21:25  rsbivand
 
-	* ChangeLog, DESCRIPTION, R/sp_gdal.R, src/gdal-bindings.cpp:
-	  adding metadata and subdatasets to GDALinfo
+	* ChangeLog, DESCRIPTION, R/sp_gdal.R, src/gdal-bindings.cpp,
+	  inst/ChangeLog: adding metadata and subdatasets to GDALinfo
 
 2009-11-08 19:16  rsbivand
 
