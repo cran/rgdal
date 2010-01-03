@@ -1,6 +1,11 @@
+2010-01-03 14:48  rsbivand
+
+	* R/ogr_write.R, DESCRIPTION: POSIXt as double in writeOGR
+
 2009-12-06 19:42  rsbivand
 
-	* DESCRIPTION, man/SpatialGDAL-class.Rd: S4 tidy
+	* DESCRIPTION, man/SpatialGDAL-class.Rd, ChangeLog, inst/ChangeLog:
+	  S4 tidy
 
 2009-12-04 18:52  edzer
 

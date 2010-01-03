@@ -45,6 +45,9 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         } else if (dfcls[i] == "POSIXt" && dftof[i] == "integer") {
             ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
             ogr_ftype[i] <- as.integer(4) #"OFTString"
+        } else if (dfcls[i] == "POSIXt" && dftof[i] == "double") {
+            ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
+            ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "integer" && dftof[i] == "integer") {
             ldata[[i]] <- slot(obj, "data")[,i]
             ogr_ftype[i] <- as.integer(0) #"OFTInteger"
