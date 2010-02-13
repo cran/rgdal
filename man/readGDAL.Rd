@@ -5,6 +5,7 @@
 \alias{create2GDAL}
 \alias{GDALinfo}
 \alias{print.GDALobj}
+\alias{GDALSpatialRef}
 \title{Read/write between GDAL grid maps and Spatial objects}
 \description{The functions read or write GDAL grid maps. They will set the spatial reference system if available. \code{GDALinfo} reports the size and other parameters of the dataset. \code{create2GDAL} creates a GDAL data set from a SpatialGridDataFrame object, in particular to be able to save to GDAL driver formats that only permit copying rather than creation.}
 \usage{ 
@@ -13,6 +14,7 @@ asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, copy_drivername = "GTiff")
 create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname = NULL)
 GDALinfo(fname, silent=FALSE)
+GDALSpatialRef(fname, silent=FALSE)
 }
 
 \arguments{
@@ -94,6 +96,7 @@ summary(SP27GTIF)
 image(SP27GTIF, col=grey(1:99/100))
 
 GDALinfo(system.file("pictures/cea.tif", package = "rgdal")[1])
+GDALSpatialRef(system.file("pictures/cea.tif", package = "rgdal")[1])
 cea <- readGDAL(system.file("pictures/cea.tif", package = "rgdal")[1], output.dim=c(100,100))
 summary(cea)
 image(cea, col=grey(1:99/100))

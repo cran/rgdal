@@ -1,8 +1,8 @@
-# Copyright 2006-9 Roger Bivand
+# Copyright 2006-2010 Roger Bivand
 
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
-	pointDropZ=FALSE, dropNULLGeometries=TRUE) {
+	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
@@ -63,6 +63,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             isNULL <- as.logical(geometry[[7]])[retain]
 	    gFeatures <- geometry[[5]][retain]
         }
+        rm(geometry);
+        gc(verbose = FALSE)
         if (any(isNULL)) {
             eType <- eType[!isNULL]
             with_z <- with_z[!isNULL]
@@ -91,6 +93,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	if (u_eType == 6) u_eType <- 3
 
 	data <- data.frame(dlist, row.names=fids)
+        rm(dlist)
+        gc(verbose = FALSE)
 	if (length(gFeatures) != length(fids)) stop("Feature mismatch")
 
         if (any(isNULL)) {
@@ -139,7 +143,18 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 #		data <- data.frame(dlist, row.names=fids)
 		res <- SpatialLinesDataFrame(SL, data)
 	} else if (u_eType == 3) { # polygons
-		if (u_with_z != 0) warning("Z-dimension discarded")
+            if (u_with_z != 0) warning("Z-dimension discarded")
+            if (useC) {
+#                plList <- .Call("make_polygonslist", gFeatures,
+#                    as.list(as.character(fids)), PACKAGE="rgdal")
+		n <- length(gFeatures)
+		plList <- vector(mode="list", length=n)
+		for (i in 1:n) {
+			plList[[i]] <- Polygons(.Call("make_Polygonlist",
+                            gFeatures[[i]], PACKAGE="rgdal"),
+                            ID=as.character(fids[i]))
+                    }
+            } else {
 		n <- length(gFeatures)
 		plList <- vector(mode="list", length=n)
 		for (i in 1:n) {
@@ -156,11 +171,17 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 				}
 				pllist[[j]] <- Polygon(cmat)
 			}
-			plList[[i]] <- Polygons(pllist, ID=as.character(fids[i]))
+			plList[[i]] <- Polygons(pllist,
+                            ID=as.character(fids[i]))
+                    }
 		}
+                rm(gFeatures)
+                gc(verbose = FALSE)
 		SP <- SpatialPolygons(plList, proj4string=CRS(p4s))
+                rm(plList)
+                gc(verbose = FALSE)
 #		data <- data.frame(dlist, row.names=fids)
-		res <- SpatialPolygonsDataFrame(SP, data)
+		res <- SpatialPolygonsDataFrame(SP, data, match.ID=FALSE)
 	} else stop(paste("Incompatible geometry:", u_eType))
 
 	res

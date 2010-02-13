@@ -39,6 +39,8 @@ export(spTransform, spTransform.SpatialPoints,
   spTransform.SpatialLinesDataFrame, spTransform.SpatialPolygons, 
   spTransform.SpatialPolygonsDataFrame)
 
+export(OGRSpatialRef, GDALSpatialRef)
+
 S3method(spTransform, SpatialPoints)
 S3method(spTransform, SpatialPointsDataFrame)
 S3method(spTransform, SpatialLines)
