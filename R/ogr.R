@@ -73,6 +73,7 @@ ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
   ogrinfo$deleted_geometries <- deleted_geometries
   ogrinfo$dsn <- dsn
   ogrinfo$layer <- layer
+  ogrinfo$p4s <- OGRSpatialRef(dsn, layer)
   class(ogrinfo) <- "ogrinfo"
   ogrinfo
 }
@@ -86,6 +87,7 @@ print.ogrinfo <- function(x, ...) {
     x$with_z+2, "dimensions\n")
   if (!is.null(x$null_geometries)) cat(x$null_geometries, "\n")
   if (!is.null(x$deleted_geometries)) cat(x$deleted_geometries, "\n")
+  if (nchar(x$p4s > 1)) cat(x$p4s, "\n")
   cat("Number of fields:", x$nitems, "\n")
   print(as.data.frame(x$iteminfo))
   invisible(x)
@@ -108,3 +110,9 @@ ogrDrivers <- function() {
   row.names(res) <- NULL
   res
 }
+
+"OGRSpatialRef" <- function(dsn, layer) {
+    .Call("ogrP4S", as.character(dsn), as.character(layer),
+        PACKAGE="rgdal")
+}
+

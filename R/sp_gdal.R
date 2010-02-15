@@ -347,3 +347,11 @@ toUnSigned <- function(x, base) {
     as.integer(x)
 }
 
+"GDALSpatialRef" <- function(fname, silent=FALSE) {
+	if (nchar(fname) == 0) stop("empty file name")
+	x <- GDAL.open(fname, silent=silent)
+        p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+	GDAL.close(x)
+        p4s
+}
+

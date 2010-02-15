@@ -1,6 +1,18 @@
+2010-02-14 21:05  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd, src/local_stubs.c,
+	  src/ogr_polygons.c, src/rgdal.h: first stage readOGR improvement
+
+2010-02-12 15:49  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/ogr.R, R/sp_gdal.R, man/readGDAL.Rd,
+	  man/readOGR.Rd, ChangeLog, inst/ChangeLog: adding direct access
+	  to spatial refs
+
 2010-01-03 14:48  rsbivand
 
-	* R/ogr_write.R, DESCRIPTION: POSIXt as double in writeOGR
+	* R/ogr_write.R, DESCRIPTION, ChangeLog, inst/ChangeLog: POSIXt as
+	  double in writeOGR
 
 2009-12-06 19:42  rsbivand
 
