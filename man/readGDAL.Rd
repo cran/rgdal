@@ -54,6 +54,8 @@ later on by e.g. using \code{\link[sp]{gridded-methods}(x)=TRUE}.
 }
 \note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
 
+\section{Warning}{Some raster files may have an erroneous positive y-axis resolution step, leading to the data being flipped on the y-axis. \code{readGDAL} will issue a warning: Y axis resolution positive, examine data for flipping, when the step is positive, but this need not mean that the data are flipped. Examine a display of the data compared with your knowledge of the file to determine whether this is the case (one known case is interpolation files created under Qgis up to February 2010 at least). To retreive the correct orientation, use \code{\link[sp]{flipVertical}}.}
+
 \seealso{ \code{\link[sp]{image}}, \code{\link[maptools]{asciigrid}} }
 
 \author{Edzer J.\ Pebesma, Roger Bivand}

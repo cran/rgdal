@@ -48,6 +48,7 @@ GDALinfo <- function(fname, silent=FALSE) {
             ll.y = offset.y, res.x = abs(gt[2]), res.y = abs(gt[6]),
             oblique.x = abs(gt[3]), oblique.y = abs(gt[5]))
 #### end modification
+	attr(res, "ysign") <- ysign
 	attr(res, "driver") <- dr 
 	attr(res, "projection") <- p4s 
 	attr(res, "file") <- fname
@@ -66,6 +67,7 @@ print.GDALobj <- function(x, ...) {
 	cat("origin.y       ", x[5], "\n")
 	cat("res.x      ", x[6], "\n")
 	cat("res.y      ", x[7], "\n")
+        cat("ysign      ", attr(x, "ysign"), "\n")
 	cat("oblique.x  ", x[8], "\n")
 	cat("oblique.y  ", x[9], "\n")
 	cat("driver     ", attr(x, "driver"), "\n")
@@ -223,6 +225,8 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 			cellsize <- span / rev(output.dim)
 		}
 		ysign <- sign(gt[6])
+                if (ysign > 0) 
+                    warning("Y axis resolution positive, examine data for flipping")
 #		cells.dim = c(d[1], d[2]) # c(d[2],d[1])
 # bug report Jose M. Blanco Moreno 091004
 		co.x <- gt[1] + ((offset[2]/(cellsize[1]/abs(gt[2]))) + 
