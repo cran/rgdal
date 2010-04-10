@@ -32,8 +32,8 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 	gdal.args$dataset = x
 	gdal.args$band = dots$band # NULL if not given
 	if (is.null(gdal.args$offset))
-		gdal.args$offset = c(0,0)
-#		gdal.args$offset = c(min(rows) - 1, min(cols) - 1)
+#		gdal.args$offset = c(0,0)
+		gdal.args$offset = c(min(rows) - 1, min(cols) - 1)
 	if (is.null(gdal.args$region.dim))
 		gdal.args$region.dim = c(max(rows) - gdal.args$offset[1], 
 			max(cols) - gdal.args$offset[2])

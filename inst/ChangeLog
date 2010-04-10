@@ -1,7 +1,38 @@
+2010-04-10 14:05  rsbivand
+
+	* configure.win: tidy
+
+2010-04-10 13:52  rsbivand
+
+	* ChangeLog, DESCRIPTION, inst/ChangeLog: windows build patches
+
+2010-04-10 13:43  rsbivand
+
+	* configure.win, src/Makevars.win: windows build patches
+
+2010-04-10 11:39  edzer
+
+	* DESCRIPTION, R/subs.R: version bump; corrected bug that made [
+	  read maps starting at (0,0) instead of the requested rectangular
+	  section only.
+
+2010-02-15 18:34  rsbivand
+
+	* man/readGDAL.Rd: adding flip warning
+
+2010-02-15 18:26  rsbivand
+
+	* R/sp_gdal.R: adding flip warning
+
+2010-02-14 21:09  rsbivand
+
+	* DESCRIPTION: first stage readOGR improvement
+
 2010-02-14 21:05  rsbivand
 
 	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd, src/local_stubs.c,
-	  src/ogr_polygons.c, src/rgdal.h: first stage readOGR improvement
+	  src/ogr_polygons.c, src/rgdal.h, ChangeLog, inst/ChangeLog: first
+	  stage readOGR improvement
 
 2010-02-12 15:49  rsbivand
 

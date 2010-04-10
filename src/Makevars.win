@@ -1,9 +1,14 @@
 include Makeconf.win
 
-GDAL_INC_DIR=${GDAL_HOME}/include
-GDAL_LIB_DIR=${GDAL_HOME}/lib
+GDAL_INC_DIR=$(GDAL_HOME)/include
+GDAL_LIB_DIR=$(GDAL_HOME)/lib
 
-PKG_CPPFLAGS=-I${GDAL_INC_DIR} -g ${OSGEO}
+# build changes BDR 100410
+PKG_CPPFLAGS=-I$(GDAL_INC_DIR) $(OSGEO)
 # -DRGDALDEBUG removed 081030 RSB
-PKG_LIBS=-L${GDAL_LIB_DIR} -lgdal -lproj
+PKG_LIBS=-L$(GDAL_LIB_DIR) -lgdal -lproj
+ifeq ($(strip $(WIN)),64)
+PKG_LIBS += -lexpat
+endif
+
 
