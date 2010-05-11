@@ -25,7 +25,8 @@ lines or \code{layer="track_points"} points.
 
 }
 \usage{
-readOGR(dsn, layer, verbose = TRUE, p4s=NULL, drop_unsupported_fields=FALSE,
+readOGR(dsn, layer, verbose = TRUE, p4s=NULL, 
+ stringsAsFactors=default.stringsAsFactors(), drop_unsupported_fields=FALSE,
  input_field_name_encoding=NULL, pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE)
 ogrInfo(dsn, layer, input_field_name_encoding=NULL)
@@ -40,6 +41,7 @@ OGRSpatialRef(dsn, layer)
   \item{layer}{layer name (varies by driver, may be a file name without extension)}
   \item{verbose}{report progress}
   \item{p4s}{PROJ4 string defining CRS, if default NULL, the value is read from the OGR data set} 
+  \item{stringsAsFactors}{logical: should character vectors be converted to factors? The \sQuote{factory-fresh} default is \code{TRUE}, but this can be changed by setting \code{\link{options}(stringsAsFactors = FALSE)} (see \code{link[base]{data.frame}}).}
   \item{drop\_unsupported\_fields}{default FALSE, if TRUE skip fields other than String, Integer, and Real; Date, Time and DateTime are converted to String}
   \item{input\_field\_name\_encoding}{default NULL; if not NULL, should be a valid encoding name for the source platform of the data source and layer, see \code{\link[base]{iconv}}}
   \item{pointDropZ}{default FALSE, if TRUE, discard third coordinates for point geometries; third coordinates are alway discarded for line and polygon geometries}
@@ -91,6 +93,10 @@ dsn <- system.file("vectors/ps_cant_31.MIF", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="ps_cant_31")
 ps_cant_31 <- readOGR(dsn=dsn, layer="ps_cant_31")
 summary(ps_cant_31)
+sapply(as(ps_cant_31, "data.frame"), class)
+ps_cant_31 <- readOGR(dsn=dsn, layer="ps_cant_31", stringsAsFactors=FALSE)
+summary(ps_cant_31)
+sapply(as(ps_cant_31, "data.frame"), class)
 dsn <- system.file("vectors/Up.tab", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="Up")
 Up <- readOGR(dsn=dsn, layer="Up")

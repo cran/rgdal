@@ -1,3 +1,12 @@
+2010-05-11 11:24  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd: adding stringsAsFactors
+	  to readOGR
+
+2010-04-10 14:11  rsbivand
+
+	* ChangeLog, inst/ChangeLog: windows build patches
+
 2010-04-10 14:05  rsbivand
 
 	* configure.win: tidy
