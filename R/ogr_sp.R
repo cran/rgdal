@@ -1,6 +1,7 @@
 # Copyright 2006-2010 Roger Bivand
 
-readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
+readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, 
+        stringsAsFactors=default.stringsAsFactors(),
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE) {
 	if (missing(dsn)) stop("missing dsn")
@@ -92,7 +93,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	if (u_eType == 5) u_eType <- 2
 	if (u_eType == 6) u_eType <- 3
 
-	data <- data.frame(dlist, row.names=fids)
+	data <- data.frame(dlist, row.names=fids,
+            stringsAsFactors=stringsAsFactors)
         rm(dlist)
         gc(verbose = FALSE)
 	if (length(gFeatures) != length(fids)) stop("Feature mismatch")
