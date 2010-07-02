@@ -93,12 +93,14 @@ setMethod("spTransform", signature("SpatialPointsDataFrame", "CRS"),
 
 
 setMethod("spTransform", signature("SpatialPixelsDataFrame", "CRS"), 
-	function(x, CRSobj, ...) 
-		spTransform(as(x, "SpatialPointsDataFrame"), CRSobj, ...))
+	function(x, CRSobj, ...) {
+                warning("Grid warping not available, coercing to points")
+		spTransform(as(x, "SpatialPointsDataFrame"), CRSobj, ...)})
 
 setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"), 
-	function(x, CRSobj, ...) 
-		spTransform(as(x, "SpatialPixelsDataFrame"), CRSobj, ...))
+	function(x, CRSobj, ...) {
+                warning("Grid warping not available, coercing to points")
+		spTransform(as(x, "SpatialPixelsDataFrame"), CRSobj, ...)})
 
 
 ".spTransform_Line" <- function(x, to_args, from_args, ii, jj) {

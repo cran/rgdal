@@ -4,7 +4,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     if (is.na(mch) || length(mch) > 1)
         stop(paste("No such driver:", driver))
     if (!drvs$write[mch]) stop("Chosen driver cannot create files")
-    if (driver == "KML") {
+    if (driver == "KML" || driver == "GPX") {
       if (is.na(is.projected(obj))) warning(paste("Unknown coordinate", 
         "reference system: for KML driver should be geographical"))
       else if (is.projected(obj)) warning(paste("Projected coordinate",
