@@ -28,7 +28,7 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL, layer_options=NULL, ve
 
 \note{Only a subset of possible data slot column classes may be written out; if the function returns an error that the data type of stated columns is unknown, examine the classes and check that they are one of \code{c("numeric", "character", "factor", "POSIXt", "integer", "logical")}, and if not convert to such classes. Classes \code{c("factor", "POSIXt")} are converted to character strings, and \code{c("logical")} to integer internally.
 
-For writing with the KML driver, note that the geometries should be in geographical coordinates with datum WGS84.
+For writing with the KML and GPX drivers, note that the geometries should be in geographical coordinates with datum WGS84.
 }
 \references{\url{http://www.gdal.org/ogr/}, \url{http://www.gdal.org/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
 \author{Roger Bivand}

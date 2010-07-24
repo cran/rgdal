@@ -1,3 +1,17 @@
+2010-07-02 15:37  rsbivand
+
+	* DESCRIPTION, R/project.R, man/spTransform-methods.Rd: add warning
+	  for grid coercion in spTransform
+
+2010-05-17 15:01  rsbivand
+
+	* R/ogr_write.R, man/writeOGR.Rd: added warning for
+	  non-geographical coordinates for GPX
+
+2010-05-11 11:38  rsbivand
+
+	* ChangeLog, inst/ChangeLog: adding stringsAsFactors to readOGR
+
 2010-05-11 11:24  rsbivand
 
 	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd: adding stringsAsFactors
