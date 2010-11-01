@@ -1,6 +1,0 @@
-.project
-*.so
-*.o
-config.status
-config.log
-Makevars

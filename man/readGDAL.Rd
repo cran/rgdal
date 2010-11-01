@@ -11,9 +11,9 @@
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5, 0.5), silent = FALSE)
 asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5))
-writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, copy_drivername = "GTiff")
-create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname = NULL)
-GDALinfo(fname, silent=FALSE)
+writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, copy_drivername = "GTiff", setStatistics=FALSE)
+create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname = NULL, setStatistics=FALSE)
+GDALinfo(fname, silent=FALSE, returnRAT=FALSE)
 GDALSpatialRef(fname, silent=FALSE)
 }
 
@@ -36,6 +36,8 @@ etc.) }
 \item{type}{ GDAL write data type (others than this default have not been tested) }
 \item{ mvFlag }{ missing value flag for output file }
 \item{options}{driver-specific options to be passed to the GDAL driver}
+\item{setStatistics}{default FALSE, if TRUE, attempt to set per-band statistics in the output file (driver-dependent)}
+\item{returnRAT}{default FALSE, if TRUE, return a list with a Raster Attribute Table or NULL for each band}
 %\item{clone}{if not NULL, a grid file to clone}
 }
 
@@ -91,6 +93,9 @@ gridded(meuse.grid) = ~x+y
 proj4string(meuse.grid) = CRS("+init=epsg:28992")
 fn <- tempfile()
 writeGDAL(meuse.grid["dist"], fn)
+GDALinfo(fn)
+writeGDAL(meuse.grid["dist"], fn, setStatistics=TRUE)
+GDALinfo(fn)
 mg2 <- readGDAL(fn)
 proj4string(mg2)
 SP27GTIF <- readGDAL(system.file("pictures/SP27GTIF.TIF", package = "rgdal")[1], output.dim=c(100,100))
