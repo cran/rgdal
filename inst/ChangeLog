@@ -1,3 +1,88 @@
+2010-11-05 11:29  rsbivand
+
+	* R/ogr_write.R: coerce gridded to points in writeOGR
+
+2010-11-05 11:16  rsbivand
+
+	* R/ogr_write.R: error messages in writeOGR
+
+2010-11-05 10:51  rsbivand
+
+	* R/sp_gdal.R, src/gdal-bindings.cpp: add names to RAT
+
+2010-11-04 22:55  rsbivand
+
+	* src/gdal-bindings.cpp: add names to RAT
+
+2010-11-01 20:54  rsbivand
+
+	* R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp: added return
+	  RAT to GDALinfo - default FALSE
+
+2010-11-01 11:32  rsbivand
+
+	* man/readGDAL.Rd: added set statistics to writeGDAL - default
+	  FALSE
+
+2010-11-01 11:30  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp:
+	  added set statistics to writeGDAL - default FALSE
+
+2010-09-14 09:04  rsbivand
+
+	* oChangeLog: add oChangeLog
+
+2010-09-14 09:02  rsbivand
+
+	* ChangeLog, DESCRIPTION, INDEX, NAMESPACE, R, R/AAA.R,
+	  R/Class-CRSx.R, R/SGDF2RGB.R, R/gdal.R, R/make_EPSG.R, R/ogr.R,
+	  R/ogr_sp.R, R/ogr_write.R, R/project.R, R/sgdf_gdal.R,
+	  R/sp_gdal.R, R/subs.R, R/zzz.R, cleanup, configure, configure.in,
+	  configure.win, inst, inst/ChangeLog, inst/OSGeo4W_test,
+	  inst/README, inst/README.windows, inst/pictures,
+	  inst/pictures/Rlogo.jpg, inst/pictures/SOURCES,
+	  inst/pictures/SP27GTIF.TIF, inst/pictures/big_int_arc_file.asc,
+	  inst/pictures/cea.tif, inst/pictures/erdas_spnad83.tif,
+	  inst/pictures/logo.jpg, inst/vectors, inst/vectors/SOURCES,
+	  inst/vectors/Up.dat, inst/vectors/Up.id, inst/vectors/Up.ind,
+	  inst/vectors/Up.map, inst/vectors/Up.tab,
+	  inst/vectors/airports.gml, inst/vectors/cities.dbf,
+	  inst/vectors/cities.htm, inst/vectors/cities.prj,
+	  inst/vectors/cities.sbn, inst/vectors/cities.sbx,
+	  inst/vectors/cities.shp, inst/vectors/cities.shx,
+	  inst/vectors/kiritimati_primary_roads.dbf,
+	  inst/vectors/kiritimati_primary_roads.prj,
+	  inst/vectors/kiritimati_primary_roads.sbn,
+	  inst/vectors/kiritimati_primary_roads.sbx,
+	  inst/vectors/kiritimati_primary_roads.shp,
+	  inst/vectors/kiritimati_primary_roads.shx,
+	  inst/vectors/ps_cant_31.MID, inst/vectors/ps_cant_31.MIF,
+	  inst/vectors/scot_BNG.dbf, inst/vectors/scot_BNG.prj,
+	  inst/vectors/scot_BNG.shp, inst/vectors/scot_BNG.shx,
+	  inst/vectors/test_trk2.gpx, inst/vectors/trin_inca_pl03.dbf,
+	  inst/vectors/trin_inca_pl03.shp, inst/vectors/trin_inca_pl03.shx,
+	  man, man/CRS-class.Rd, man/GDALDataset-class.Rd,
+	  man/GDALDriver-class.Rd, man/GDALMajorObject-class.Rd,
+	  man/GDALRasterBand-class.Rd, man/GDALReadOnlyDataset-class.Rd,
+	  man/GDALReadOnlyDataset-methods.Rd,
+	  man/GDALTransientDataset-class.Rd, man/RGB2PCT.Rd,
+	  man/SGDF2PCT.Rd, man/SpatialGDAL-class.Rd,
+	  man/closeDataset-methods.Rd, man/displayDataset.Rd,
+	  man/make_EPSG.Rd, man/projInfo.Rd, man/project.Rd,
+	  man/readGDAL.Rd, man/readOGR.Rd, man/showWKT.Rd,
+	  man/spTransform-methods.Rd, man/writeOGR.Rd, src,
+	  src/Makevars.in, src/Makevars.win, src/OGR_write.cpp,
+	  src/RGDAL.def, src/gdal-bindings.cpp, src/local_stubs.c,
+	  src/ogr_geom.cpp, src/ogr_polygons.c, src/ogr_proj.cpp,
+	  src/ogrdrivers.cpp, src/ogrsource.cpp, src/projectit.cpp,
+	  src/rgdal.h: copied from dumped trunk
+
+2010-09-10 09:42  stefan7th
+
+	* .: improved the README file and made some corrections to the
+	  index.php
+
 2010-07-02 15:37  rsbivand
 
 	* DESCRIPTION, R/project.R, man/spTransform-methods.Rd: add warning

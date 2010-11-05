@@ -1,5 +1,6 @@
 #include <gdal_priv.h>
 #include <gdal_alg.h>
+#include <gdal_rat.h>
 #include <cpl_string.h>
 #include <cpl_csv.h>
 #include <ogr_spatialref.h>
@@ -763,6 +764,111 @@ RGDAL_GetBandMetadataItem(SEXP sxpRasterBand, SEXP sxpItem, SEXP sxpDomain) {
 
 
 SEXP
+RGDAL_GetRAT(SEXP sxpRasterBand) {
+
+  SEXP ans, GFT_type, GFT_usage, nc_names;
+
+  int nc, nr, i, j, ival, np=0;
+  double val;
+  GDALRATFieldType *nc_types;
+  GDALRATFieldUsage *nc_usages;
+  const char *GFU_type_string[] = {"GFT_Integer",
+                                   "GFT_Real",
+                                   "GFT_String"};
+  const char *GFU_usage_string[] = {"GFU_Generic",
+                                    "GFU_PixelCount",
+                                    "GFU_Name",
+                                    "GFU_Min",
+                                    "GFU_Max",
+                                    "GFU_MinMax",
+                                    "GFU_Red",
+                                    "GFU_Green",
+                                    "GFU_Blue",
+                                    "GFU_Alpha",
+                                    "GFU_RedMin",
+                                    "GFU_GreenMin",
+                                    "GFU_BlueMin",
+                                    "GFU_AlphaMin",
+                                    "GFU_RedMax",
+                                    "GFU_GreenMax",
+                                    "GFU_BlueMax",
+                                    "GFU_AlphaMax",
+                                    "GFU_MaxCount"};
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+
+  const GDALRasterAttributeTable *pRAT = pRasterBand->GetDefaultRAT();
+
+  if (pRAT == NULL) return(R_NilValue);
+
+  nc = (int) pRAT->GetColumnCount();
+  PROTECT(ans = NEW_LIST(nc));np++;
+  PROTECT(nc_names = NEW_CHARACTER(nc));np++;
+  nc_types = (GDALRATFieldType *) R_alloc((size_t) nc,
+    sizeof(GDALRATFieldType));
+  nc_usages = (GDALRATFieldUsage *) R_alloc((size_t) nc,
+    sizeof(GDALRATFieldUsage));
+  nr = (int) pRAT->GetRowCount();
+
+  for (i=0; i<nc; i++) {
+    nc_types[i] = pRAT->GetTypeOfCol(i);
+    nc_usages[i] = pRAT->GetUsageOfCol(i);
+    SET_STRING_ELT(nc_names, i, COPY_TO_USER_STRING(pRAT->GetNameOfCol(i)));
+    if (nc_types[i] == GFT_Integer) {
+      SET_VECTOR_ELT(ans, i, NEW_INTEGER(nr));
+    } else if (nc_types[i] == GFT_Real) {
+      SET_VECTOR_ELT(ans, i, NEW_NUMERIC(nr));
+    } else if (nc_types[i] == GFT_String) {
+      SET_VECTOR_ELT(ans, i, NEW_CHARACTER(nr));
+    } else {
+      error("unknown column type");
+    }
+  }
+  for (i=0; i<nc; i++) {
+
+    if (nc_types[i] == GFT_Integer) {
+
+      for (j=0; j<nr; j++) {
+        ival = (int) pRAT->GetValueAsInt(j, i);
+        INTEGER_POINTER(VECTOR_ELT(ans, i))[j] = ival;
+      }
+      
+    } else if (nc_types[i] == GFT_Real) {
+
+      for (j=0; j<nr; j++) {
+        val = (double) pRAT->GetValueAsDouble(j, i);
+        NUMERIC_POINTER(VECTOR_ELT(ans, i))[j] = val;
+      }
+      
+    } else if (nc_types[i] == GFT_String) {
+
+      for (j=0; j<nr; j++) {
+        SET_STRING_ELT(VECTOR_ELT(ans, i), j,
+          COPY_TO_USER_STRING(pRAT->GetValueAsString(j, i)));
+      }
+      
+    }     
+
+  }
+  PROTECT(GFT_type = NEW_CHARACTER(nc));np++;
+  PROTECT(GFT_usage = NEW_CHARACTER(nc));np++;
+
+  for (i=0; i<nc; i++) {
+    SET_STRING_ELT(GFT_type, i,
+      COPY_TO_USER_STRING(GFU_type_string[nc_types[i]]));
+    SET_STRING_ELT(GFT_usage, i,
+      COPY_TO_USER_STRING(GFU_usage_string[nc_usages[i]]));
+  }
+
+  setAttrib(ans, install("GFT_type"), GFT_type);
+  setAttrib(ans, install("GFT_usage"), GFT_usage);
+  setAttrib(ans, R_NamesSymbol, nc_names);
+  
+  UNPROTECT(np);
+  return(ans);
+}
+
+SEXP
 RGDAL_GetBandMinimum(SEXP sxpRasterBand) {
 
   SEXP ans;
@@ -791,6 +897,43 @@ RGDAL_GetBandMaximum(SEXP sxpRasterBand) {
 }
 
 SEXP
+RGDAL_GetBandStatistics(SEXP sxpRasterBand, SEXP silent) {
+
+  CPLErr err;
+
+  SEXP ans;
+
+  double min, max, mean, sd;
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+
+  err = pRasterBand->GetStatistics(FALSE, FALSE, &min, &max, &mean, &sd);
+
+  if (err == CE_Failure) {
+	if (!LOGICAL_POINTER(silent)[0])
+            warning("statistics not supported by this driver");
+        return(R_NilValue);
+  }
+
+  if (err == CE_Warning) {
+	if (!LOGICAL_POINTER(silent)[0])
+    	    warning("statistics not supported by this driver");
+        return(R_NilValue);
+  }
+
+  PROTECT(ans = NEW_NUMERIC(4));
+  NUMERIC_POINTER(ans)[0] = min;
+  NUMERIC_POINTER(ans)[1] = max;
+  NUMERIC_POINTER(ans)[2] = mean;
+  NUMERIC_POINTER(ans)[3] = sd;
+
+  UNPROTECT(1);
+  return(ans);
+}
+
+
+
+SEXP
 RGDAL_GetBandType(SEXP sxpRasterBand) {
 
   SEXP ans;
@@ -803,6 +946,7 @@ RGDAL_GetBandType(SEXP sxpRasterBand) {
   UNPROTECT(1);
   return(ans);
 }
+
 
 SEXP
 RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
@@ -1223,6 +1367,23 @@ RGDAL_SetNoDataValue(SEXP sxpRasterBand, SEXP NoDataValue) {
 
   if (err == CE_Failure)
 	warning("setting of missing value not supported by this driver");
+
+  return(sxpRasterBand);
+
+}
+
+SEXP RGDAL_SetStatistics(SEXP sxpRasterBand, SEXP statistics) {
+
+  CPLErr err;
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+
+  err = pRasterBand->SetStatistics(NUMERIC_POINTER(statistics)[0],
+    NUMERIC_POINTER(statistics)[1], NUMERIC_POINTER(statistics)[2],
+    NUMERIC_POINTER(statistics)[3]);
+
+  if (err == CE_Failure)
+	warning("setting of statistics not supported by this driver");
 
   return(sxpRasterBand);
 
