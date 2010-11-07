@@ -1,3 +1,23 @@
+2010-11-07 17:37  rsbivand
+
+	* DESCRIPTION: tidy
+
+2010-11-07 17:31  rsbivand
+
+	* configure.win, src/Makevars.win: Windows static build config
+
+2010-11-06 20:20  rsbivand
+
+	* configure.win, src/Makevars.win: Windows static build config
+
+2010-11-05 19:32  rsbivand
+
+	* INDEX: tidy
+
+2010-11-05 19:05  rsbivand
+
+	* ChangeLog, inst/ChangeLog, svn2cl.xsl: tidy
+
 2010-11-05 11:29  rsbivand
 
 	* R/ogr_write.R: coerce gridded to points in writeOGR
