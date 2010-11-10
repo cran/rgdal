@@ -6,7 +6,8 @@
   The function is an interface with the OGR abstraction library for spatial vector data, allowing data to be written out using supported drivers. The drivers supported will depend on the local installation, and the capabilities of those drivers (many are read-only). The objects exported are SpatialPointsDataFrame, SpatialLinesDataFrame, or SpatialPolygonsDataFrame objects as defined in the sp package.
 }
 \usage{
-writeOGR(obj, dsn, layer, driver, dataset_options = NULL, layer_options=NULL, verbose = FALSE)
+writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
+ layer_options=NULL, verbose = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -49,7 +50,8 @@ cities2 <- readOGR(td, "cities")
 summary(cities2$POPULATION)
 all.equal(cities, cities2)
 \dontrun{if ("GML" \%in\% ogrDrivers()$name) {
-  airports <- try(readOGR(system.file("vectors/airports.gml", package = "rgdal")[1], "airports"))
+  airports <- try(readOGR(system.file("vectors/airports.gml",
+    package = "rgdal")[1], "airports"))
   if (class(airports) != "try-error") {
     writeOGR(cities, paste(td, "cities.gml", sep="/"), "cities", driver="GML")
     cities3 <- readOGR(paste(td, "cities.gml", sep="/"), "cities")
@@ -65,7 +67,8 @@ if ("KML" \%in\% ogrDrivers()$name) {
   writeOGR(meuse_ll["zinc"], paste(td, "meuse.kml", sep="/"), "zinc", "KML")
 }
 list.files(td)
-roads <- readOGR(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")
+roads <- readOGR(system.file("vectors", package = "rgdal")[1],
+ "kiritimati_primary_roads")
 summary(roads)
 writeOGR(roads, td, "roads", driver="MapInfo File")
 roads2 <- readOGR(paste(td, "roads.tab", sep="/"), "roads")
@@ -76,7 +79,8 @@ writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File")
 list.files(td)
 scot_BNG2 <- readOGR(paste(td, "scot_BNG.tab", sep="/"), "scot_BNG")
 summary(scot_BNG2)
-writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File", dataset_options="FORMAT=MIF")
+writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File",
+ dataset_options="FORMAT=MIF")
 list.files(td)
 scot_BNG3 <- readOGR(paste(td, "scot_BNG.mif", sep="/"), "scot_BNG")
 summary(scot_BNG3)

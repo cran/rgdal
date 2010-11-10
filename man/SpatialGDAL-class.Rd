@@ -50,7 +50,8 @@ the GDAL file.
 \usage{
 \method{open}{SpatialGDAL}(con, \dots, silent = FALSE)
 \method{close}{SpatialGDAL}(con, \dots)
-copy.SpatialGDAL(dataset, fname, driver = getDriver(dataset@grod), strict = FALSE, options = NULL, silent = FALSE)
+copy.SpatialGDAL(dataset, fname, driver = getDriver(dataset@grod),
+ strict = FALSE, options = NULL, silent = FALSE)
 }
 \arguments{
 \item{con}{ file name of grid map for opening, SpatialGDAL object for closing }

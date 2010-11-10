@@ -22,7 +22,9 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE) {
             Bmax <- numeric(nbands)
             Bmn <- numeric(nbands)
             Bsd <- numeric(nbands)
-            Pix <- character(nbands)
+#            Pix <- character(nbands)
+            hasNoDataValues <- logical(nbands)
+            NoDataValues <- numeric(nbands)
             if (returnRAT) RATlist <- vector(mode="list", length=nbands)
             for (i in seq(along = band)) {
 
@@ -45,11 +47,21 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE) {
                 if (returnRAT) {
                     RATi <- .Call("RGDAL_GetRAT", raster, PACKAGE="rgdal")
                     if (!is.null(RATi)) RATlist[[i]] <- RATi
-                 }
+                }
+                NDV <- .Call("RGDAL_GetBandNoDataValue", raster,
+                    PACKAGE="rgdal")
+                if (is.null(NDV)) {
+                    hasNoDataValues[i] <- FALSE
+                } else {
+                    hasNoDataValues[i] <- TRUE
+                    NoDataValues[i] <- NDV[1]
+                }
 #                Pix[i] <- .Call("RGDAL_GetBandMetadataItem",
 #                    raster, "PIXELTYPE", "IMAGE_STRUCTURE", PACKAGE="rgdal")
             }
-            df <- data.frame(GDType=GDType, Bmin=Bmin, Bmax=Bmax, Bmean=Bmn, Bsd=Bsd)
+            df <- data.frame(GDType=GDType, Bmin=Bmin, Bmax=Bmax, Bmean=Bmn,
+                Bsd=Bsd, hasNoDataValue=hasNoDataValues,
+                NoDataValue=NoDataValues)
         }
         
 	GDAL.close(x)
@@ -328,6 +340,11 @@ create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag =
 	if (is.na(match(type, .GDALDataTypes)))
             stop(paste("Invalid type:", type, "not in:",
                 paste(.GDALDataTypes, collapse="\n")))
+# mvFlag issues Robert Hijmans 101109
+        if (is.na(mvFlag)) {
+            if (type %in% c('Byte', 'UInt16', 'Int16'))
+                warning(paste("mvFlag=NA unsuitable for type", type))
+        }
 #	d.dim = dim(as.matrix(dataset[1])) RSB 081106
 	gp = gridparameters(dataset)
 	cellsize = gp$cellsize

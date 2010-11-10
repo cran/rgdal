@@ -26,8 +26,9 @@ lines or \code{layer="track_points"} points.
 }
 \usage{
 readOGR(dsn, layer, verbose = TRUE, p4s=NULL, 
- stringsAsFactors=default.stringsAsFactors(), drop_unsupported_fields=FALSE,
- input_field_name_encoding=NULL, pointDropZ=FALSE, dropNULLGeometries=TRUE,
+ stringsAsFactors=default.stringsAsFactors(), 
+ drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
+ pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE)
 ogrInfo(dsn, layer, input_field_name_encoding=NULL)
 ogrFIDs(dsn, layer)

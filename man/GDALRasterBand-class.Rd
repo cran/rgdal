@@ -35,7 +35,8 @@ getRasterData(dataset, band = NULL, offset = c(0, 0),
               region.dim = dim(dataset), output.dim = region.dim,
               interleave = c(0, 0), as.is = FALSE) 
 
-getRasterTable(dataset, band = NULL, offset = c(0, 0), region.dim = dim(dataset))
+getRasterTable(dataset, band = NULL, offset = c(0, 0), 
+  region.dim = dim(dataset))
 
 getProjectionRef(dataset)
 

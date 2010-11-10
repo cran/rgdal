@@ -3,7 +3,8 @@
 \title{Display a GDAL dataset}
 \description{Display a GDAL dataset allowing for subscenes and decimation, allowing very large images to be browsed}
 \usage{
-displayDataset(x, offset=c(0, 0), region.dim=dim(x), reduction = 1, band = 1, col = NULL, reset.par = TRUE, max.dim = 500, ...)
+displayDataset(x, offset=c(0, 0), region.dim=dim(x), reduction = 1, 
+  band = 1, col = NULL, reset.par = TRUE, max.dim = 500, ...)
 }
 \arguments{
   \item{x}{a three-band GDALReadOnlyDataset object}
