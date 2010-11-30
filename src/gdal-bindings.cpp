@@ -1038,6 +1038,26 @@ RGDAL_PutRasterData(SEXP sxpRasterBand, SEXP sxpData, SEXP sxpOffset) {
 }
 
 SEXP
+RGDAL_GetBandNoDataValue(SEXP sxpRasterBand) {
+
+  GDALRasterBand *pRasterBand = getGDALRasterPtr(sxpRasterBand);
+  SEXP res;
+  int hasNoDataValue;
+  double noDataValue = pRasterBand->GetNoDataValue(&hasNoDataValue);
+
+  if (hasNoDataValue) {
+    PROTECT(res = NEW_NUMERIC(1));
+    NUMERIC_POINTER(res)[0] = noDataValue;
+  } else {
+    return(R_NilValue);
+  }
+
+  UNPROTECT(1);
+  return(res);
+
+}
+
+SEXP
 RGDAL_GetRasterData(SEXP sxpRasterBand,
 		    SEXP sxpRegion,
 		    SEXP sxpDimOut,
@@ -1157,9 +1177,18 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
 
   }
 
-  int hasNoDataValue, offset;
+  int hasNoDataValue;
 
-  double noDataValue = pRasterBand->GetNoDataValue(&hasNoDataValue);
+  double noDataValue;
+
+  SEXP NDV = RGDAL_GetBandNoDataValue(sxpRasterBand);
+
+  if (NDV == R_NilValue) {
+    hasNoDataValue = FALSE;
+  } else {
+    hasNoDataValue = TRUE;
+    noDataValue = NUMERIC_POINTER(NDV)[0];
+  }
 
   int i;
 
@@ -1214,6 +1243,14 @@ RGDAL_GetRasterData(SEXP sxpRasterBand,
 
     }
 
+  } else {
+    if (uRType == REALSXP && pRasterBand->GetRasterDataType() == GDT_Float32) {
+        for (i = 0; i < LENGTH(sRStorage); ++i)
+	  if (ISNAN(REAL(sRStorage)[i])) {
+	    REAL(sRStorage)[i] = NA_REAL;
+	  }
+      
+    }
   }
 
   UNPROTECT(pc);

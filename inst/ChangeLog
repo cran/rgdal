@@ -1,3 +1,27 @@
+2010-11-12 12:12  rsbivand
+
+	* man/readGDAL.Rd: tidy help files; add writeGDAL options= details
+
+2010-11-12 12:07  rsbivand
+
+	* man/CRS-class.Rd, man/GDALRasterBand-class.Rd, man/SGDF2PCT.Rd,
+	  man/SpatialGDAL-class.Rd, man/displayDataset.Rd, man/project.Rd,
+	  man/readGDAL.Rd, man/readOGR.Rd, man/spTransform-methods.Rd,
+	  man/writeOGR.Rd: tidy help files; add writeGDAL options= details
+
+2010-11-11 14:28  rsbivand
+
+	* ChangeLog, inst/ChangeLog: mvFlag warnings
+
+2010-11-11 14:27  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp:
+	  mvFlag warnings
+
+2010-11-07 17:38  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2010-11-07 17:37  rsbivand
 
 	* DESCRIPTION: tidy

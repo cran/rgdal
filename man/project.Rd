@@ -29,7 +29,8 @@ project(xy, proj, inv = FALSE)
 
 \examples{
 data(state)
-res <- project(cbind(state.center$x, state.center$y), "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100")
+res <- project(cbind(state.center$x, state.center$y),
+ "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100")
 res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100", inv=TRUE)
 summary(res1 - cbind(state.center$x, state.center$y))
 plot(cbind(state.center$x, state.center$y), asp=1, type="n")

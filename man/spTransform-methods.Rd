@@ -66,7 +66,8 @@ state.ll83 <- spTransform(states, CRS("+proj=longlat +ellps=GRS80"))
 summary(state.ll83)
 state.merc <- spTransform(states, CRS=CRS("+proj=merc +ellps=GRS80"))
 summary(state.merc)
-state.merc <- spTransform(states, CRS=CRS("+proj=merc +ellps=GRS80 +units=us-mi"))
+state.merc <- spTransform(states,
+ CRS=CRS("+proj=merc +ellps=GRS80 +units=us-mi"))
 summary(state.merc)
 if (projNAD()) {
 states <- data.frame(state.x77, state.center)
@@ -94,8 +95,10 @@ summary(meuse)
 meuse.utm <- spTransform(meuse, CRS("+proj=utm +zone=32 +datum=WGS84"))
 summary(meuse.utm)
 cbind(coordinates(meuse), coordinates(meuse.utm))
-kiritimati_primary_roads <- readOGR(system.file("vectors", package = "rgdal")[1], "kiritimati_primary_roads")
-kiritimati_primary_roads_ll <- spTransform(kiritimati_primary_roads, CRS("+proj=longlat +datum=WGS84"))
+kiritimati_primary_roads <- readOGR(system.file("vectors",
+ package = "rgdal")[1], "kiritimati_primary_roads")
+kiritimati_primary_roads_ll <- spTransform(kiritimati_primary_roads,
+ CRS("+proj=longlat +datum=WGS84"))
 opar <- par(mfrow=c(1,2))
 plot(kiritimati_primary_roads, axes=TRUE)
 plot(kiritimati_primary_roads_ll, axes=TRUE, las=1)

@@ -55,7 +55,8 @@ summary(RGB)
 meuse.grid$red <- RGB[,1]
 meuse.grid$green <- RGB[,2]
 meuse.grid$blue <- RGB[,3]
-cols <- SGDF2PCT(meuse.grid[c("red", "green", "blue")], ncolors=10, adjust.bands=FALSE)
+cols <- SGDF2PCT(meuse.grid[c("red", "green", "blue")], ncolors=10,
+ adjust.bands=FALSE)
 is.na(cols$idx) <- is.na(meuse.grid$dist)
 meuse.grid$idx <- cols$idx
 image(meuse.grid, "idx", col=cols$ct)

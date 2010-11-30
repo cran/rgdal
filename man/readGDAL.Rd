@@ -7,39 +7,88 @@
 \alias{print.GDALobj}
 \alias{GDALSpatialRef}
 \title{Read/write between GDAL grid maps and Spatial objects}
-\description{The functions read or write GDAL grid maps. They will set the spatial reference system if available. \code{GDALinfo} reports the size and other parameters of the dataset. \code{create2GDAL} creates a GDAL data set from a SpatialGridDataFrame object, in particular to be able to save to GDAL driver formats that only permit copying rather than creation.}
+
+\description{The functions read or write GDAL grid maps. They will set
+the spatial reference system if available. \code{GDALinfo} reports the
+size and other parameters of the dataset. \code{create2GDAL} creates
+a GDAL data set from a SpatialGridDataFrame object, in particular to
+be able to save to GDAL driver formats that only permit copying rather
+than creation.}
 \usage{ 
-readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5, 0.5), silent = FALSE)
-asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5))
-writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, copy_drivername = "GTiff", setStatistics=FALSE)
-create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname = NULL, setStatistics=FALSE)
+readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ...,
+ half.cell=c(0.5, 0.5), silent = FALSE)
+asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ...,
+ half.cell=c(0.5,0.5))
+writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32",
+ mvFlag = NA, options=NULL, copy_drivername = "GTiff", setStatistics=FALSE)
+create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA,
+ options=NULL, fname = NULL, setStatistics=FALSE)
 GDALinfo(fname, silent=FALSE, returnRAT=FALSE)
 GDALSpatialRef(fname, silent=FALSE)
 }
 
 \arguments{
-\item{fname}{ file name of grid map; in \code{create2GDAL} provides a way to pass through a file name with driver-required extension for sensitive drivers }
+\item{fname}{ file name of grid map; in \code{create2GDAL} provides a way 
+to pass through a file name with driver-required extension for sensitive 
+drivers }
 \item{x}{A GDALReadOnlyDataset object}
-\item{offset}{Number of rows and columns from the origin (usually the upper left corner) to begin reading from; presently ordered (y,x) - this may change}
-\item{region.dim}{The number of rows and columns to read from the dataset; presently ordered (y,x) - this may change}
-\item{output.dim}{The number of rows and columns to return in the created object using GDAL's method to take care of image decimation / replication; presently ordered (y,x) - this may change}
+\item{offset}{Number of rows and columns from the origin (usually the upper 
+left corner) to begin reading from; presently ordered (y,x) - this may change}
+\item{region.dim}{The number of rows and columns to read from the dataset; 
+presently ordered (y,x) - this may change}
+\item{output.dim}{The number of rows and columns to return in the created 
+object using GDAL's method to take care of image decimation / replication; 
+presently ordered (y,x) - this may change}
 \item{band}{if missing, all bands are read}
-\item{p4s}{PROJ4 string defining CRS, if default (NULL), the value is read from the GDAL data set} 
-\item{half.cell}{Used to adjust the intra-cell offset from corner to centre, usually as default, but may be set to c=(0,0) if needed; presently ordered (y,x) - this may change}
-\item{silent}{ logical; if TRUE, comment and non-fatal CPL driver errors suppressed }
+\item{p4s}{PROJ4 string defining CRS, if default (NULL), the value is read 
+from the GDAL data set} 
+\item{half.cell}{Used to adjust the intra-cell offset from corner to centre, 
+usually as default, but may be set to c=(0,0) if needed; presently ordered (y,x) - this may change}
+\item{silent}{ logical; if TRUE, comment and non-fatal CPL driver errors 
+suppressed }
 \item{...}{ arguments passed to either \code{getRasterData}, or
 \code{getRasterTable}, depending on rotation angles (see below);
 see the rgdal documentation for the available options (subsetting
 etc.) }
-\item{dataset}{ object of class \link[sp]{SpatialGridDataFrame-class} or \link[sp]{SpatialPixelsDataFrame-class}}
-\item{drivername, copy_drivername}{ GDAL driver name; if the chosen driver does not support dataset creation, an attempt is made to use the \code{copy_drivername} driver to create a dataset, and \code{copyDatset} to copy to the target driver }
-\item{type}{ GDAL write data type (others than this default have not been tested) }
-\item{ mvFlag }{ missing value flag for output file }
-\item{options}{driver-specific options to be passed to the GDAL driver}
-\item{setStatistics}{default FALSE, if TRUE, attempt to set per-band statistics in the output file (driver-dependent)}
-\item{returnRAT}{default FALSE, if TRUE, return a list with a Raster Attribute Table or NULL for each band}
+\item{dataset}{ object of class \link[sp]{SpatialGridDataFrame-class} or 
+\link[sp]{SpatialPixelsDataFrame-class}}
+\item{drivername, copy_drivername}{ GDAL driver name; if the chosen driver 
+does not support dataset creation, an attempt is made to use the 
+\code{copy_drivername} driver to create a dataset, and \code{copyDatset} 
+to copy to the target driver }
+\item{type}{ GDAL write data type, one of: \sQuote{Byte}, \sQuote{Int16}, 
+\sQuote{Int32}, \sQuote{Float32}, \sQuote{Float64}; \sQuote{UInt16}, 
+\sQuote{UInt32} are available but have not been tests }
+\item{ mvFlag }{default NA, missing value flag for output file; the default 
+value works for \sQuote{Int32}, \sQuote{Float32}, \sQuote{Float64}, but 
+suitable in-range value that fits the data type should be used for other 
+data types, for example 255 for \sQuote{Byte}, -32768 for \sQuote{Int16}, 
+and so on; see Details below.}
+\item{options}{driver-specific options to be passed to the GDAL driver; 
+see Details below}
+\item{setStatistics}{default FALSE, if TRUE, attempt to set per-band 
+statistics in the output file (driver-dependent)}
+\item{returnRAT}{default FALSE, if TRUE, return a list with a Raster 
+Attribute Table or NULL for each band}
 %\item{clone}{if not NULL, a grid file to clone}
 }
+\details{In \code{writeGDAL}, if types other than \sQuote{Int32},
+\sQuote{Float32}, \sQuote{Float64} are used, the \dQuote{mvFlag}
+argument should be used to set a no data value other than the default
+NA. Note that the flag only replaces NA values in the data being exported
+with the value of the argument - it does not mark data values equal to
+\dQuote{mvFlag} as missing. The value is stored in the file being written
+in driver-specific ways, and may be used when the file is read. When the
+default \dQuote{mvFlag=NA} is used, no NoDataValue is written to the file,
+and the input data is written as is.
+
+Also in \code{writeGDAL}, the \dQuote{options} argument may be
+used to pass a character vector of one or more options to the
+driver, for example \sQuote{options=\dQuote{INTERLEAVE=PIXEL}},
+or \sQuote{options=c(\dQuote{INTERLEAVE=PIXEL},
+\dQuote{COMPRESS=DEFLATE})}. Typical cases are given in the examples
+below; it may also be necessary in some cases to escape quotation markes
+if included in the string passed to the driver.}
 
 \value{
 \code{read.GDAL} returns the data in the file as a Spatial object. 
@@ -54,9 +103,21 @@ data, being of class \link[sp]{SpatialPointsDataFrame-class}. If the points
 are on a 45 or 90 degree rotated grid, you can try to enforce gridding
 later on by e.g. using \code{\link[sp]{gridded-methods}(x)=TRUE}.
 }
-\note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
+\note{Non-fatal CPL errors may be displayed for some drivers, currently
+for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data
+has been read correctly, but the contents of the info directory did not
+meet the specifications used to reverse engineer the driver used in GDAL
+(see \url{http://trac.osgeo.org/gdal/ticket/3031})}
 
-\section{Warning}{Some raster files may have an erroneous positive y-axis resolution step, leading to the data being flipped on the y-axis. \code{readGDAL} will issue a warning: Y axis resolution positive, examine data for flipping, when the step is positive, but this need not mean that the data are flipped. Examine a display of the data compared with your knowledge of the file to determine whether this is the case (one known case is interpolation files created under Qgis up to February 2010 at least). To retreive the correct orientation, use \code{\link[sp]{flipVertical}}.}
+\section{Warning}{Some raster files may have an erroneous positive
+y-axis resolution step, leading to the data being flipped on the
+y-axis. \code{readGDAL} will issue a warning: Y axis resolution
+positive, examine data for flipping, when the step is positive, but
+this need not mean that the data are flipped. Examine a display of the
+data compared with your knowledge of the file to determine whether this
+is the case (one known case is interpolation files created under Qgis
+up to February 2010 at least). To retreive the correct orientation,
+use \code{\link[sp]{flipVertical}}.}
 
 \seealso{ \code{\link[sp]{image}}, \code{\link[maptools]{asciigrid}} }
 
@@ -98,17 +159,20 @@ writeGDAL(meuse.grid["dist"], fn, setStatistics=TRUE)
 GDALinfo(fn)
 mg2 <- readGDAL(fn)
 proj4string(mg2)
-SP27GTIF <- readGDAL(system.file("pictures/SP27GTIF.TIF", package = "rgdal")[1], output.dim=c(100,100))
+SP27GTIF <- readGDAL(system.file("pictures/SP27GTIF.TIF", 
+package = "rgdal")[1], output.dim=c(100,100))
 summary(SP27GTIF)
 image(SP27GTIF, col=grey(1:99/100))
 
 GDALinfo(system.file("pictures/cea.tif", package = "rgdal")[1])
 GDALSpatialRef(system.file("pictures/cea.tif", package = "rgdal")[1])
-cea <- readGDAL(system.file("pictures/cea.tif", package = "rgdal")[1], output.dim=c(100,100))
+cea <- readGDAL(system.file("pictures/cea.tif", package = "rgdal")[1], 
+output.dim=c(100,100))
 summary(cea)
 image(cea, col=grey(1:99/100))
 fn <- system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1]
-erdas_spnad83 <- readGDAL(fn, offset=c(50, 100), region.dim=c(400, 400), output.dim=c(100,100))
+erdas_spnad83 <- readGDAL(fn, offset=c(50, 100), region.dim=c(400, 400), 
+output.dim=c(100,100))
 summary(erdas_spnad83)
 image(erdas_spnad83, col=grey(1:99/100))
 erdas_spnad83a <- readGDAL(fn, offset=c(50, 100), region.dim=c(400, 400))
@@ -119,7 +183,11 @@ gridparameters(erdas_spnad83a)
 tf <- tempfile()
 writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte", options=NULL)
 all.equal(erdas_spnad83, readGDAL(tf))
-writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte", options="INTERLEAVE=PIXEL")
+writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte", 
+options="INTERLEAVE=PIXEL")
+all.equal(erdas_spnad83, readGDAL(tf))
+writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte",
+options=c("INTERLEAVE=PIXEL", "COMPRESS=DEFLATE"))
 all.equal(erdas_spnad83, readGDAL(tf))
 
 x <- GDAL.open(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1])
