@@ -35,10 +35,11 @@ getGDALDriverNames()
 gdalDrivers()
 getDriverName(driver)
 getDriverLongName(driver)
-getGDALVersionInfo()
+getGDALVersionInfo(str = "--version")
 }
 \arguments{
   \item{driver}{An object inheriting from class 'GDALDriver'}
+  \item{str}{A string, may be one of \code{"--version"}, \code{"VERSION_NUM"}, \code{"RELEASE_DATE"}, \code{"RELEASE_NAME"}}
 }
 
 \details{

@@ -30,10 +30,14 @@ SGDF2PCT <- function(x, ncolors=256, adjust.bands=TRUE) {
 		band = as.matrix(x[i])
 		if (any(is.na(band))) have_NAs <- TRUE
 		if (!is.numeric(band)) stop("Numeric bands required")
-		if (adjust.bands) {
-			bmax <- max(band)
-			bmin <- min(band)
-			if (bmax == bmin) bmax <- bmin + ncolors
+# 101213 Michael Sumner
+		if (adjust.bands || have_NAs) {
+			bmax <- max(band, na.rm = TRUE)
+			bmin <- min(band, na.rm = TRUE)
+			if (bmax == bmin) {
+                            if (ncolors < 256) bmax <- bmin + ncolors
+                            else bmax <- bmin + 1
+                        }
 			band <- floor((band - bmin)/((bmax-bmin)/(255)))
 		} else {
 			if (!is.integer(band)) 
@@ -45,7 +49,8 @@ SGDF2PCT <- function(x, ncolors=256, adjust.bands=TRUE) {
 		storage.mode(band) <- "integer"
 		putRasterData(GTiff3B, band, i)
 	}
-	if (have_NAs) ncolors <- ncolors + 1
+# 101213 Michael Sumner
+#	if (have_NAs) ncolors <- ncolors + 1
 	dx <- RGB2PCT(GTiff3B, band=1:3, ncolors=ncolors, set.ctab=FALSE)
 	GDAL.close(GTiff3B)
 	output <- getRasterData(dx$dataset, band=1)

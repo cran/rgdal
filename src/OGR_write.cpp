@@ -23,6 +23,8 @@ SEXP OGR_write(SEXP inp)
 //  in code there
 
     OGRSFDriver *poDriver;
+    OGRDataSource *poDS;
+    OGRLayer *poLayer;
     char **papszCreateOptions = NULL;
     char **papszCreateOptionsLayer = NULL;
     SEXP ans, oCard;
@@ -49,8 +51,6 @@ SEXP OGR_write(SEXP inp)
         Rprintf("option %d: %s\n", i, CSLGetField(papszCreateOptions, i));
 #endif
 
-    OGRDataSource *poDS;
-
     poDS = poDriver->CreateDataSource( CHAR(STRING_ELT(VECTOR_ELT(inp,
         1), 0)), papszCreateOptions );
     if( poDS == NULL )
@@ -61,7 +61,6 @@ SEXP OGR_write(SEXP inp)
 
 //  define layer characteristics
 
-    OGRLayer *poLayer;
     SEXP obj = VECTOR_ELT(inp, 0);
     int nobs = INTEGER_POINTER(VECTOR_ELT(inp, 4))[0];
 // const added 070604 RSB

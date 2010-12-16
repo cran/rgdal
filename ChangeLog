@@ -1,3 +1,33 @@
+2010-12-16 13:10  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/ogr_write.R, inst/README,
+	  man/GDALDriver-class.Rd, man/writeOGR.Rd, src/OGR_write.cpp,
+	  src/gdal-bindings.cpp, src/ogrsource.cpp: adding layer deletion
+	  for GDAL 1.8
+
+2010-12-14 11:39  rsbivand
+
+	* ChangeLog, inst/ChangeLog: adding layer deletion for GDAL 1.8
+
+2010-12-14 11:39  rsbivand
+
+	* DESCRIPTION, R/ogr_write.R, inst/vectors/airports.gml,
+	  man/writeOGR.Rd, src/ogrsource.cpp: adding layer deletion for
+	  GDAL 1.8
+
+2010-12-13 11:38  rsbivand
+
+	* R/SGDF2RGB.R: adding na.rm in SGDF2PCT
+
+2010-11-18 07:53  rsbivand
+
+	* .Rbuildignore: add .Rbuildignore
+
+2010-11-12 12:12  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy help files; add writeGDAL
+	  options= details
+
 2010-11-12 12:12  rsbivand
 
 	* man/readGDAL.Rd: tidy help files; add writeGDAL options= details

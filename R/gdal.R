@@ -31,8 +31,9 @@ getDescription <- function(object) {
 
 }
 
-getGDALVersionInfo <- function() {
-    .Call("RGDAL_GDALVersionInfo", PACKAGE="rgdal")
+getGDALVersionInfo <- function(str="--version") {
+    stopifnot(is.character(str))
+    .Call("RGDAL_GDALVersionInfo", str, PACKAGE="rgdal")
 }
 
 getGDAL_DATA_Path <- function() {
