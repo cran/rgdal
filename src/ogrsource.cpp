@@ -372,6 +372,66 @@ extern "C" {
     return(ans);
   }
 
+SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
+    OGRLayer *poLayer;
+    OGRDataSource *poDS;
+    OGRSFDriver *poDriver;
+    int iLayer = -1;
+    int flag = 0;
+
+    poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
+                CHAR(STRING_ELT(ogrDriver, 0)) );
+    if (poDriver == NULL) {
+        error("Driver not available");
+    }
+
+    poDS = poDriver->Open(CHAR(STRING_ELT(ogrSource, 0)), 
+	TRUE);
+
+    if (poDS==NULL)
+        error("Cannot open data source for update");
+
+    for(iLayer = 0; iLayer < poDS->GetLayerCount(); iLayer++) {
+        poLayer = poDS->GetLayer(iLayer);
+/* poLayer->GetLayerDefn()->GetName() is poLayer->GetName() from 1.8 */
+        if (poLayer != NULL && EQUAL(poLayer->GetLayerDefn()->GetName(),
+            CHAR(STRING_ELT(Layer, 0)))) {
+            flag = 1;
+            break;
+        }
+    }
+
+    if (flag != 0) {
+        if (poDS->DeleteLayer(iLayer) != OGRERR_NONE) {
+            OGRDataSource::DestroyDataSource(poDS);
+            error("ogrDeleteLayer: failed to delete layer");
+        }
+    } else {
+        warning("ogrDeleteLayer: no such layer");
+    }
+    OGRDataSource::DestroyDataSource(poDS);
+    return(R_NilValue);
+}
+
+SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver) {
+    OGRSFDriver *poDriver;
+
+    poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
+                CHAR(STRING_ELT(ogrDriver, 0)) );
+    if (poDriver == NULL) {
+        error("Driver not available");
+    }
+    if (poDriver->TestCapability(ODrCDeleteDataSource)) {
+        if (poDriver->DeleteDataSource(CHAR(STRING_ELT(ogrSource, 0)))
+            != OGRERR_NONE) {
+            error("Data source could not be deleted");
+        }
+    } else {
+        error("This driver not capable of data source deletion");
+    }
+    return(R_NilValue);
+}
+
 //}
 
 

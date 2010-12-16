@@ -189,11 +189,11 @@ RGDAL_Init(void) {
 }
 
 SEXP
-RGDAL_GDALVersionInfo(void) {
+RGDAL_GDALVersionInfo(SEXP str) {
     SEXP ans;
 
     PROTECT(ans=NEW_CHARACTER(1));
-    SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(GDALVersionInfo( "--version" )));
+    SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(GDALVersionInfo(asString(str))));
 
     UNPROTECT(1);
 

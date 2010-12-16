@@ -7,7 +7,7 @@
 }
 \usage{
 writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
- layer_options=NULL, verbose = FALSE)
+ layer_options=NULL, verbose = FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,6 +18,9 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
   \item{dataset_options}{a character vector of options, which vary by driver, and should be treated as experimental}
   \item{layer_options}{a character vector of options, which vary by driver, and should be treated as experimental}
   \item{verbose}{if TRUE, returns a list of information about the attempted write operation}
+  \item{check_exists}{default NULL, which tests for the GDAL version, and sets FALSE if < 1.8.0, or TRUE for >= 1.8.0}
+  \item{overwrite_layer}{default FALSE, if TRUE and \code{check_exists=TRUE}, delete the existing layer of the same name from the data source before writing the new layer; this will delete data and must be used with extreme caution, its behaviour varies between drivers, and accommodates changes that may appear in GDAL 1.8}
+  \item{delete_dsn}{default FALSE, may be set to TRUE if \code{overwrite_layer} reports that the data source cannot be updated; this will delete data and must be used with extreme caution, its behaviour varies between drivers, and accommodates changes that may appear in GDAL 1.8}
 }
 \details{
   Working out which combination of dsn, layer, and driver (and option) values give the desired output takes time and care, and is constrained by the ability of drivers to write output; many are read-only. Use of the references given is highly advisable, with searches in the archives of other software using GDAL/OGR.
@@ -30,6 +33,9 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
 \note{Only a subset of possible data slot column classes may be written out; if the function returns an error that the data type of stated columns is unknown, examine the classes and check that they are one of \code{c("numeric", "character", "factor", "POSIXt", "integer", "logical")}, and if not convert to such classes. Classes \code{c("factor", "POSIXt")} are converted to character strings, and \code{c("logical")} to integer internally.
 
 For writing with the KML and GPX drivers, note that the geometries should be in geographical coordinates with datum WGS84.
+}
+\section{Warning}{
+The \code{overwrite_layer} and \code{delete_dsn} arguments are provided only for experienced script writers who need to be able to destroy data, for example during repetetive simulation runs. They should never be used by anyone who is not confident about deleting files.
 }
 \references{\url{http://www.gdal.org/ogr/}, \url{http://www.gdal.org/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
 \author{Roger Bivand}
