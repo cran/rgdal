@@ -98,7 +98,7 @@ setMethod('initialize', 'GDALReadOnlyDataset',
             if (is.null(handle)) {
 	      if (nchar(filename) == 0) stop("empty file name")
               silent <- as.logical(silent)
-              if (length(silent) != 1 || is.na(silent) || !is.logical(silent))
+              if (length(silent) != 1L || is.na(silent) || !is.logical(silent))
                   stop("options(warn) not set")
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset', as.character(filename), 
@@ -118,7 +118,7 @@ setMethod('initialize', 'GDALDataset',
             if (is.null(handle)) {
 	      if (nchar(filename) == 0) stop("empty file name")
               silent <- as.logical(silent)
-              if (length(silent) != 1 || is.na(silent) || !is.logical(silent))
+              if (length(silent) != 1L || is.na(silent) || !is.logical(silent))
                   stop("options(warn) not set")
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset', as.character(filename), 
@@ -359,7 +359,7 @@ getRasterTable <- function(dataset,
 
   rasterData <- getRasterData(dataset, band,
                               offset = offset,
-                              region = region.dim)
+                              region.dim = region.dim)
 
   if (is.null(band)) {
 
@@ -435,7 +435,7 @@ getRasterData <- function(dataset,
   
   }
 
-  if (length(band) == 1) x <- drop(x)
+  if (length(band) == 1L) x <- drop(x)
 
   if (!as.is) {
   
@@ -448,15 +448,31 @@ getRasterData <- function(dataset,
     catNames <- .Call('RGDAL_GetCategoryNames', raster, PACKAGE="rgdal")
   
     if (!is.null(catNames)) {
-      levels <- rep(min(x):max(x), len = length(catNames))
-      x <- array(factor(x, levels, catNames), dim = dim(x),
+      ux <- unique(x)
+      if (length(ux) == length(catNames)) {
+        levels <- sort(ux)
+        x <- array(factor(x, levels, catNames), dim = dim(x),
                  dimnames = dimnames(x))
+      } else {
+        warning("Assign CategoryNames manually, level/label length mismatch")
+      }
     }
 
   }
 
   x
 
+}
+
+getCategoryNames <- function(dataset, band = 1) {
+
+  assertClass(dataset, 'GDALReadOnlyDataset')
+
+  raster <- getRasterBand(dataset, band)
+  
+  catNames <- .Call('RGDAL_GetCategoryNames', raster, PACKAGE="rgdal")
+
+  catNames
 }
 
 getColorTable <- function(dataset, band = 1) {
@@ -467,7 +483,7 @@ getColorTable <- function(dataset, band = 1) {
   
   ctab <- .Call('RGDAL_GetColorTable', raster, PACKAGE="rgdal") / 255
 
-  if (length(ctab) == 0) return(NULL)
+  if (length(ctab) == 0L) return(NULL)
 
   if (.Call('RGDAL_GetColorInterp', raster, PACKAGE="rgdal") == 'Palette')
     switch(.Call('RGDAL_GetPaletteInterp', raster, PACKAGE="rgdal"),  

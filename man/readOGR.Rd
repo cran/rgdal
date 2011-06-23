@@ -29,7 +29,7 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  stringsAsFactors=default.stringsAsFactors(), 
  drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
- useC=TRUE)
+ useC=TRUE, disambiguateFIDs=FALSE)
 ogrInfo(dsn, layer, input_field_name_encoding=NULL)
 ogrFIDs(dsn, layer)
 ogrDrivers()
@@ -48,6 +48,7 @@ OGRSpatialRef(dsn, layer)
   \item{pointDropZ}{default FALSE, if TRUE, discard third coordinates for point geometries; third coordinates are alway discarded for line and polygon geometries}
   \item{dropNULLGeometries}{default TRUE, drop both declared NULL geometries, and empty geometries with no coordinates; if FALSE, return a data frame with the attribute values of the NULL and empty geometries}
   \item{useC}{default TRUE, if FALSE use original interpreted code in a loop}
+  \item{disambiguateFIDs}{default FALSE, if TRUE, and FID values are not unique, they will be set to unique values 1:N for N features; problem observed in GML files}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }

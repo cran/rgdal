@@ -15,7 +15,7 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 		cols = 1:d[2]
 	else
 		cols = j
-	if (length(dots) > 0) {
+	if (length(dots) > 0L) {
 		# fish for an unnamed argument, and rename it bands
 		m  = match(names(dots),  c(""))
 		if (any(!is.na(m))) 
@@ -63,7 +63,7 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 		data = do.call(getRasterData, gdal.args)
 		# subset data:
 		d = dim(data) # rows=nx, cols=ny
-		if (length(d) == 3) {
+		if (length(d) == 3L) {
 			if (!is.null(gdal.args$band))
 				band = gdal.args$band
 			else
@@ -89,7 +89,7 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 #		gdal.args$offset[2])* cellsize[1], 
 #			y = gt[4] - (d[2] - 0.5) * abs(cellsize[2]))
 		grid = GridTopology(cellcentre.offset, cellsize, cells.dim)
-		if (length(d) == 2)
+		if (length(d) == 2L)
 			df = data.frame(band1 = as.vector(data))
 		else {
 			df = as.vector(data[,,1])

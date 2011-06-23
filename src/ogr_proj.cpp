@@ -13,6 +13,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <Rdefines.h>
+#include "rgdal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,10 +25,16 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
     char *pszSRS_WKT = NULL;
     SEXP ans;
 
-    if (hSRS.importFromProj4(CHAR(STRING_ELT(p4s, 0))) != OGRERR_NONE)
+    installErrorHandler();
+    if (hSRS.importFromProj4(CHAR(STRING_ELT(p4s, 0))) != OGRERR_NONE) {
+        uninstallErrorHandlerAndTriggerError();
 	error("Can't parse PROJ.4-style parameter string");
+    }
+    uninstallErrorHandlerAndTriggerError();
+    installErrorHandler();
     if (INTEGER_POINTER(esri)[0] == 1) hSRS.morphToESRI();
     hSRS.exportToWkt(&pszSRS_WKT);
+    uninstallErrorHandlerAndTriggerError();
 
     PROTECT(ans=NEW_CHARACTER(1));
     SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszSRS_WKT));
@@ -47,13 +54,17 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer) {
     char *pszProj4 = NULL;
     SEXP ans;
 
+    installErrorHandler();
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrsourcename, 0)), 
 	FALSE, &poDriver);
+    uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
       error("Cannot open file");
     }
+    installErrorHandler();
     poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(Layer, 0)));
+    uninstallErrorHandlerAndTriggerError();
 
     if(poLayer == NULL){
       error("Cannot open layer");
@@ -61,9 +72,12 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer) {
 
     PROTECT(ans=NEW_CHARACTER(1));
 
+    installErrorHandler();
     hSRS = poLayer->GetSpatialRef();
+    uninstallErrorHandlerAndTriggerError();
 
     if (hSRS != NULL) {
+        installErrorHandler();
 	hSRS->morphFromESRI();
         if (hSRS->exportToProj4(&pszProj4) != OGRERR_NONE) {
 //	    SET_VECTOR_ELT(ans, 0, NA_STRING);
@@ -72,10 +86,13 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer) {
 //	    SET_VECTOR_ELT(ans, 0, COPY_TO_USER_STRING(pszProj4));
             SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszProj4));
 	}
+        uninstallErrorHandlerAndTriggerError();
 //    } else SET_VECTOR_ELT(ans, 0, NA_STRING);
       } else SET_STRING_ELT(ans, 0, NA_STRING);
 
+    installErrorHandler();
     delete poDS;
+    uninstallErrorHandlerAndTriggerError();
     UNPROTECT(1);
     return(ans);
 }

@@ -6,6 +6,7 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 //}
+#include "rgdal.h"
 
 
 
@@ -23,11 +24,14 @@ extern "C" {
     SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("write"));
     setAttrib(ans, R_NamesSymbol, ansnames);
 
+    installErrorHandler();
     OGRSFDriverRegistrar *poR = OGRSFDriverRegistrar::GetRegistrar();
     n = poR->GetDriverCount();
+    uninstallErrorHandlerAndTriggerError();
     SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(n));
     SET_VECTOR_ELT(ans, 1, NEW_LOGICAL(n));
 
+    installErrorHandler();
     for (i=0; i < n; i++) {
       OGRSFDriver *poDriver = poR->GetDriver(i);
 //      SET_VECTOR_ELT(sxpDriverList, i,
@@ -36,6 +40,7 @@ extern "C" {
       LOGICAL_POINTER(VECTOR_ELT(ans, 1))[i] = 
         poDriver->TestCapability(ODrCCreateDataSource);
     }
+    uninstallErrorHandlerAndTriggerError();
 
     UNPROTECT(pc);
     return(ans);

@@ -48,15 +48,15 @@ ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
   }        
   u_eType <- unique(sort(eType))
   u_with_z <- unique(sort(with_z))
-  if (length(u_with_z) != 1) stop(
+  if (length(u_with_z) != 1L) stop(
     paste("Multiple # dimensions:", 
       paste((u_with_z + 2), collapse=":")))
   if (u_with_z < 0 || u_with_z > 1) stop(
     paste("Invalid # dimensions:", (u_with_z + 2)))
-  if (length(u_eType) > 2) stop(
+  if (length(u_eType) > 2L) stop(
     paste("Multiple incompatible geometries:", 
       paste(u_eType, collapse=":")))
-  if (length(u_eType) == 2) {
+  if (length(u_eType) == 2L) {
     if (u_eType[1] == 2 && u_eType[2] == 5) u_eType = 2
     else if (u_eType[1] == 3 && u_eType[2] == 6) u_eType = 3
     else stop(paste("Multiple incompatible geometries:", 

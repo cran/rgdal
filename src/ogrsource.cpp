@@ -23,12 +23,13 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 //}
+#include "rgdal.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define EJP
+//#define EJP
 
 // extern "C" {
   SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer){
@@ -46,26 +47,34 @@ extern "C" {
   /*  OGRGeometry *poGeom;*/
     OGRSFDriver *poDriver;
 
+    installErrorHandler();
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrsourcename, 0)), 
 	FALSE, &poDriver);
+    uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
       error("Cannot open file");
     }
 
+    installErrorHandler();
     poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(Layer, 0)));
+    uninstallErrorHandlerAndTriggerError();
 
     if(poLayer == NULL){
       error("Cannot open layer");
     }
 
+    installErrorHandler();
     nFIDs   = poLayer->GetFeatureCount();
+    uninstallErrorHandlerAndTriggerError();
 
     // allocate a list for return values   
     PROTECT(ans=allocVector(VECSXP,4)); pc++;
 
     PROTECT(drv=allocVector(STRSXP,1)); pc++;
+    installErrorHandler();
     SET_STRING_ELT(drv, 0, mkChar(poDriver->GetName()));
+    uninstallErrorHandlerAndTriggerError();
     SET_VECTOR_ELT(ans,3,drv);
 
     // store number of FIDs
@@ -75,8 +84,10 @@ extern "C" {
 
 
     // store other stuff....
+    installErrorHandler();
     poDefn = poLayer->GetLayerDefn();
     nFields =  poDefn->GetFieldCount();
+    uninstallErrorHandlerAndTriggerError();
 
     // store number of fields
     PROTECT(vec=allocVector(INTSXP,1)); pc++;
@@ -88,6 +99,7 @@ extern "C" {
     PROTECT(itemwidth=allocVector(INTSXP,nFields)); pc++;
     PROTECT(itemTypeNames=allocVector(STRSXP,nFields)); pc++;
 
+    installErrorHandler();
     for(iField=0;iField<nFields;iField++){
       OGRFieldDefn *poField = poDefn->GetFieldDefn(iField);
       SET_STRING_ELT(itemnames,iField,mkChar(poField->GetNameRef()));
@@ -96,6 +108,7 @@ extern "C" {
       SET_STRING_ELT(itemTypeNames,iField,mkChar(poField->GetFieldTypeName(
         poField->GetType())));
     }
+    uninstallErrorHandlerAndTriggerError();
     PROTECT(itemlist=allocVector(VECSXP,4)); pc++;
     SET_VECTOR_ELT(itemlist,0,itemnames);
     SET_VECTOR_ELT(itemlist,1,itemtype);
@@ -128,33 +141,45 @@ extern "C" {
   OGRFeature *poFeature;
   OGRSFDriver *poDriver;
 
+  installErrorHandler();
   poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(filename, 0)), 
 	FALSE, &poDriver);
+  uninstallErrorHandlerAndTriggerError();
 
   if(poDS==NULL){
     error("Cannot open file");
   }
 
+  installErrorHandler();
   poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(layer, 0)));
+  uninstallErrorHandlerAndTriggerError();
 
   if(poLayer == NULL){
     error("Cannot open layer");
   }
+  installErrorHandler();
   nFeatures=poLayer->GetFeatureCount();
+  uninstallErrorHandlerAndTriggerError();
 
   PROTECT(fids=allocVector(INTSXP,nFeatures)); pc++;
   PROTECT(nf = NEW_INTEGER(1)); pc++;
   INTEGER_POINTER(nf)[0] = nFeatures;
   PROTECT(ii = NEW_INTEGER(1)); pc++;
 
+  installErrorHandler();
   poLayer->ResetReading();
+  uninstallErrorHandlerAndTriggerError();
+
 
   i=0;
+  installErrorHandler();
   while( (poFeature = poLayer->GetNextFeature()) != NULL ){
     INTEGER(fids)[i]=poFeature->GetFID();
     i++;
     delete poFeature;
   }
+  uninstallErrorHandlerAndTriggerError();
+
   INTEGER_POINTER(ii)[0] = i;
   setAttrib(fids, install("nf"), nf);
   setAttrib(fids, install("i"), ii);
@@ -185,12 +210,15 @@ extern "C" {
 
     nRows=length(FIDs);
     // get field data from layer
+    installErrorHandler();
     poDefn = poLayer->GetLayerDefn();
     poField = poDefn->GetFieldDefn(iField);
+    uninstallErrorHandlerAndTriggerError();
     if(poField == NULL){
       error("Error getting field %d ",iField);
     }
     // allocate an object for the result depending on the feature type:
+    installErrorHandler();
     switch(poField->GetType()){
     case OFTInteger:
       PROTECT(ans=allocVector(INTSXP,nRows));
@@ -211,25 +239,31 @@ extern "C" {
 	PROTECT(ans=allocVector(STRSXP,nRows));
 	break;
     default:
-      error("unsupported field type: %s",poField->GetFieldTypeName(
-        poField->GetType()));
+        const char *desc = poField->GetFieldTypeName(poField->GetType());
+        uninstallErrorHandlerAndTriggerError();
+        error("unsupported field type: %s", desc);
+	break;
     }
+    uninstallErrorHandlerAndTriggerError();
 
     // now go over each row and retrieve data. iRow is an index in a 
     // vector of FIDs
-#ifndef EJP
+/*#ifndef EJP
+    installErrorHandler();
     for(iRow=0;iRow<nRows;iRow++){
       poFeature=poLayer->GetFeature(INTEGER(FIDs)[iRow]);
       if(poFeature == NULL){
 	error("Error getting feature FID: %d",(INTEGER(FIDs)[iRow]));
       }
     }
-#else
+    uninstallErrorHandlerAndTriggerError();
+#else*/
     // EJP, changed into:
+    installErrorHandler();
     poLayer->ResetReading();
     iRow = 0;
     while((poFeature = poLayer->GetNextFeature()) != NULL) {
-#endif
+//#endif
       // now get the value using the right type:
       switch(poField->GetType()){
       case OFTInteger:
@@ -265,18 +299,20 @@ extern "C" {
 
       default:
         delete poFeature;
+        uninstallErrorHandlerAndTriggerError();
 	error("Unsupported field type. should have been caught before");
       }
       delete poFeature;
-#ifdef EJP
+//#ifdef EJP
       // according to tutorial: OGRFeature::DestroyFeature(poFeature);
       // see comment FW in OGR tutorial: We could just "delete" it, 
       // but this can cause problems in windows builds where the GDAL DLL 
       // has a different "heap" from the main program. To be on the safe 
       // side we use a GDAL function to delete the feature.
       iRow++;
-#endif
+//#endif
     }
+    uninstallErrorHandlerAndTriggerError();
     UNPROTECT(1);
     return(ans);
   }

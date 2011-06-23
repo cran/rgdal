@@ -1,7 +1,7 @@
 writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE) {
     drvs <- ogrDrivers()
     mch <- match(driver, drvs$name)
-    if (is.na(mch) || length(mch) > 1)
+    if (is.na(mch) || length(mch) > 1L)
         stop(paste("No such driver:", driver))
     if (!drvs$write[mch]) stop("Chosen driver cannot create files")
     if (driver == "KML" || driver == "GPX") {

@@ -1,3 +1,83 @@
+2011-07-02 17:30  rsbivand
+
+	* tests/tests.R, tests/tests.Rout.save: clean tests
+
+2011-07-01 19:33  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2011-06-29 07:25  rsbivand
+
+	* configure: configure to autoconf 2.66
+
+2011-06-29 06:37  rsbivand
+
+	* configure, configure.in: correct headers for tests in
+	  configure.in
+
+2011-06-28 18:05  rsbivand
+
+	* configure, configure.in: revert configure to autoconf 2.59
+
+2011-06-24 17:56  rsbivand
+
+	* tests, tests/tests.R, tests/tests.Rout.save: adding fail tests
+
+2011-06-23 12:57  rsbivand
+
+	* DESCRIPTION, src/OGR_write.cpp, src/gdal-bindings.cpp,
+	  src/ogr_geom.cpp, src/ogr_proj.cpp, src/ogrdrivers.cpp,
+	  src/ogrsource.cpp, src/projectit.cpp: progressing error handling
+
+2011-06-22 19:48  rsbivand
+
+	* R/ogr_sp.R, man/readOGR.Rd, src/rgdal.h: adding disambiguateFIDs
+	  to readOGR
+
+2011-06-11 06:57  rsbivand
+
+	* R/gdal.R, src/local_stubs.c: touch local_stubs.c
+
+2011-03-14 19:11  rsbivand
+
+	* src/gdal-bindings.cpp, src/rgdal.h: first stage error handling
+	  modifications - incomplete
+
+2011-02-24 14:40  rsbivand
+
+	* R/SGDF2RGB.R, R/gdal.R, R/ogr.R, R/ogr_sp.R, R/ogr_write.R,
+	  R/project.R, R/sgdf_gdal.R, R/sp_gdal.R, R/subs.R: making length
+	  comparisons literal integers
+
+2011-02-24 06:57  rsbivand
+
+	* src/projectit.cpp: make printed messages into count-based
+	  warnings
+
+2011-02-23 14:41  rsbivand
+
+	* DESCRIPTION, R/project.R, configure, configure.in,
+	  src/projectit.cpp: Adding CTX handling for non-API proj4 calls
+
+2011-02-18 19:59  rsbivand
+
+	* DESCRIPTION, R/AAA.R, src/gdal-bindings.cpp: change set error
+	  handler to push/pop on load/unload
+
+2011-01-21 10:43  rsbivand
+
+	* R/gdal.R, R/sp_gdal.R, man/readGDAL.Rd: adding Category names
+	  support to GDALinfo
+
+2011-01-21 08:03  rsbivand
+
+	* DESCRIPTION, src/gdal-bindings.cpp: list/string issue in
+	  RGDAL_GetCategoryNames
+
+2010-12-16 13:20  rsbivand
+
+	* ChangeLog, inst/ChangeLog: adding layer deletion for GDAL 1.8
+
 2010-12-16 13:10  rsbivand
 
 	* DESCRIPTION, R/gdal.R, R/ogr_write.R, inst/README,
