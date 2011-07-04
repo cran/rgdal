@@ -153,7 +153,7 @@ setReplaceMethod("[", "SpatialGDALWrite", function(x, i, j, ..., value) {
 	if (length(i) * length(j) != length(value))
 		stop("lengths do not match")
 	dots = list(...)
-	if (length(dots) > 0)
+	if (length(dots) > 0L)
 		band = dots[[1]]
 	else
 		band = 1

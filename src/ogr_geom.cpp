@@ -11,6 +11,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <Rdefines.h>
+#include "rgdal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,18 +41,27 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
     SEXP ans;
     SEXP ansnames;
 
+    installErrorHandler();
     Ogr_ds = OGROpen(CHAR(STRING_ELT(dsn, 0)), FALSE, NULL);
-    if (Ogr_ds == NULL) error("Cannot open data source");
+    if (Ogr_ds == NULL) {
+        uninstallErrorHandlerAndTriggerError();
+        error("Cannot open data source");
+    }
+    uninstallErrorHandlerAndTriggerError();
 
+    installErrorHandler();
     navailable_layers = OGR_DS_GetLayerCount(Ogr_ds);
+    uninstallErrorHandlerAndTriggerError();
 
     j=-1;
+    installErrorHandler();
     for (i = 0; i < navailable_layers; i++) {
 	Ogr_layer =  OGR_DS_GetLayer( Ogr_ds, i );
 	Ogr_featuredefn = OGR_L_GetLayerDefn(Ogr_layer);
 	if (strcmp((char *)OGR_FD_GetName(Ogr_featuredefn), 
 	    CHAR(STRING_ELT(layer, 0))) == 0) j = i; 
     }
+    uninstallErrorHandlerAndTriggerError();
 
     if (j < 0) error("Layer not found");
 
@@ -68,21 +78,29 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 
     SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(1));
 //    SET_VECTOR_ELT(VECTOR_ELT(ans, 0), 0,
+    installErrorHandler();
     SET_STRING_ELT(VECTOR_ELT(ans, 0), 0, 
 	COPY_TO_USER_STRING(OGR_DS_GetName(Ogr_ds)));
+    uninstallErrorHandlerAndTriggerError();
 
+    installErrorHandler();
     Ogr_layer =  OGR_DS_GetLayer(Ogr_ds, j);
     Ogr_featuredefn = OGR_L_GetLayerDefn(Ogr_layer);
+    uninstallErrorHandlerAndTriggerError();
 
     SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(1));
 //    SET_VECTOR_ELT(VECTOR_ELT(ans, 1), 0, 
+    installErrorHandler();
     SET_STRING_ELT(VECTOR_ELT(ans, 1), 0,
 	COPY_TO_USER_STRING((char *)OGR_FD_GetName(Ogr_featuredefn)));
+    uninstallErrorHandlerAndTriggerError();
     SET_VECTOR_ELT(ans, 2, NEW_INTEGER(1));
 
 /* was projection */
 
+    installErrorHandler();
     nf = OGR_L_GetFeatureCount(Ogr_layer, 1);
+    uninstallErrorHandlerAndTriggerError();
 
     SET_VECTOR_ELT(ans, 3, NEW_INTEGER(nf));
     SET_VECTOR_ELT(ans, 4, NEW_LIST(nf));
@@ -90,6 +108,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
     SET_VECTOR_ELT(ans, 6, NEW_INTEGER(nf));
 
     i=0;
+    installErrorHandler();
     while( (Ogr_feature = OGR_L_GetNextFeature(Ogr_layer)) != NULL ) {
 	    /* Geometry */
 	Ogr_geometry = OGR_F_GetGeometryRef(Ogr_feature);
@@ -104,7 +123,6 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 	    dim = OGR_G_GetCoordinateDimension(Ogr_geometry);
 	    if (dim > 2) 
 		with_z = 1;
-/*	} */
         eType = wkbFlatten(OGR_G_GetGeometryType(Ogr_geometry));
 
 	INTEGER_POINTER(VECTOR_ELT(ans, 3))[i] =  eType;
@@ -250,7 +268,10 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
       }
       i++;
     }
+    uninstallErrorHandlerAndTriggerError();
+    installErrorHandler();
     OGR_DS_Destroy(Ogr_ds);
+    uninstallErrorHandlerAndTriggerError();
     UNPROTECT(pc);
 
     return(ans);
@@ -278,18 +299,27 @@ SEXP R_OGR_types(SEXP dsn, SEXP layer)
     SEXP ans;
     SEXP ansnames;
 
+    installErrorHandler();
     Ogr_ds = OGROpen(CHAR(STRING_ELT(dsn, 0)), FALSE, NULL);
-    if (Ogr_ds == NULL) error("Cannot open data source");
+    if (Ogr_ds == NULL) {
+        uninstallErrorHandlerAndTriggerError();
+        error("Cannot open data source");
+    }
+    uninstallErrorHandlerAndTriggerError();
 
+    installErrorHandler();
     navailable_layers = OGR_DS_GetLayerCount(Ogr_ds);
+    uninstallErrorHandlerAndTriggerError();
 
     j=-1;
+    installErrorHandler();
     for (i = 0; i < navailable_layers; i++) {
 	Ogr_layer =  OGR_DS_GetLayer( Ogr_ds, i );
 	Ogr_featuredefn = OGR_L_GetLayerDefn(Ogr_layer);
 	if (strcmp((char *)OGR_FD_GetName(Ogr_featuredefn), 
 	    CHAR(STRING_ELT(layer, 0))) == 0) j = i; 
     }
+    uninstallErrorHandlerAndTriggerError();
 
     if (j < 0) error("Layer not found");
 
@@ -305,27 +335,36 @@ SEXP R_OGR_types(SEXP dsn, SEXP layer)
 
     SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(1));
 //    SET_VECTOR_ELT(VECTOR_ELT(ans, 0), 0,
+    installErrorHandler();
     SET_STRING_ELT(VECTOR_ELT(ans, 0), 0, 
 	COPY_TO_USER_STRING(OGR_DS_GetName(Ogr_ds)));
+    uninstallErrorHandlerAndTriggerError();
 
+    installErrorHandler();
     Ogr_layer =  OGR_DS_GetLayer(Ogr_ds, j);
     Ogr_featuredefn = OGR_L_GetLayerDefn(Ogr_layer);
+    uninstallErrorHandlerAndTriggerError();
 
     SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(1));
 //    SET_VECTOR_ELT(VECTOR_ELT(ans, 1), 0, 
+    installErrorHandler();
     SET_STRING_ELT(VECTOR_ELT(ans, 1), 0,
 	COPY_TO_USER_STRING((char *)OGR_FD_GetName(Ogr_featuredefn)));
+    uninstallErrorHandlerAndTriggerError();
     SET_VECTOR_ELT(ans, 2, NEW_INTEGER(1));
 
 /* was projection */
 
+    installErrorHandler();
     nf = OGR_L_GetFeatureCount(Ogr_layer, 1);
+    uninstallErrorHandlerAndTriggerError();
 
     SET_VECTOR_ELT(ans, 3, NEW_INTEGER(nf));
     SET_VECTOR_ELT(ans, 4, NEW_INTEGER(nf));
     SET_VECTOR_ELT(ans, 5, NEW_INTEGER(nf));
 
     i=0;
+    installErrorHandler();
     while( (Ogr_feature = OGR_L_GetNextFeature(Ogr_layer)) != NULL ) {
 	    /* Geometry */
 	Ogr_geometry = OGR_F_GetGeometryRef(Ogr_feature);
@@ -353,7 +392,10 @@ SEXP R_OGR_types(SEXP dsn, SEXP layer)
 	i++;
       
     }
+    uninstallErrorHandlerAndTriggerError();
+    installErrorHandler();
     OGR_DS_Destroy(Ogr_ds);
+    uninstallErrorHandlerAndTriggerError();
     UNPROTECT(pc);
 
     return(ans);

@@ -44,5 +44,6 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
     Sys.setenv("PROJ_LIB"=get(".rgdal_old.PROJ_LIB", envir=.RGDAL_CACHE))
     Sys.setenv("GDAL_DATA"=get(".rgdal_old.GDAL_DATA", envir=.RGDAL_CACHE))
   }
+  .Call('RGDAL_Exit', PACKAGE="rgdal")
 }
 

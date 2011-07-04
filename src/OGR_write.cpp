@@ -8,6 +8,7 @@
 
 #include <Rdefines.h> 
 #include <R.h>  
+#include "rgdal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,8 +33,10 @@ SEXP OGR_write(SEXP inp)
 
     PROTECT(ans = NEW_CHARACTER(1)); pc++;
 
+    installErrorHandler();
     poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
                 CHAR(STRING_ELT(VECTOR_ELT(inp, 3), 0)) );
+    uninstallErrorHandlerAndTriggerError();
     if( poDriver == NULL )
     {
         error("Driver not available");
@@ -44,20 +47,28 @@ SEXP OGR_write(SEXP inp)
 
     SEXP sOpts = VECTOR_ELT(inp, 9);
 
+    installErrorHandler();
     for (i=0; i < length(sOpts); i++) papszCreateOptions = CSLAddString( 
         papszCreateOptions, CHAR(STRING_ELT(sOpts, i)) );
+    uninstallErrorHandlerAndTriggerError();
 #ifdef RGDALDEBUG
+    installErrorHandler();
     for (i=0; i < CSLCount(papszCreateOptions); i++)
         Rprintf("option %d: %s\n", i, CSLGetField(papszCreateOptions, i));
+    uninstallErrorHandlerAndTriggerError();
 #endif
 
+    installErrorHandler();
     poDS = poDriver->CreateDataSource( CHAR(STRING_ELT(VECTOR_ELT(inp,
         1), 0)), papszCreateOptions );
+    uninstallErrorHandlerAndTriggerError();
     if( poDS == NULL )
     {
         error( "Creation of output file failed" );
     }
+    installErrorHandler();
     CSLDestroy(papszCreateOptions);
+    uninstallErrorHandlerAndTriggerError();
 
 //  define layer characteristics
 
@@ -113,11 +124,15 @@ SEXP OGR_write(SEXP inp)
 
     SEXP sxpOpts = VECTOR_ELT(inp, 10);
 
+    installErrorHandler();
     for (i=0; i < length(sxpOpts); i++) papszCreateOptionsLayer = CSLAddString( 
         papszCreateOptionsLayer, CHAR(STRING_ELT(sxpOpts, i)) );
+    uninstallErrorHandlerAndTriggerError();
 #ifdef RGDALDEBUG
+    installErrorHandler();
     for (i=0; i < CSLCount(papszCreateOptionsLayer); i++)
         Rprintf("option %d: %s\n", i, CSLGetField(papszCreateOptionsLayer, i));
+    uninstallErrorHandlerAndTriggerError();
 #endif
 
     SEXP p4s = GET_SLOT(obj, install("proj4string"));
@@ -126,21 +141,34 @@ SEXP OGR_write(SEXP inp)
 
     if (strcmp(PROJ4, "NA")) {
             OGRSpatialReference hSRS = NULL;
-            if (hSRS.importFromProj4(PROJ4) != OGRERR_NONE)
+            installErrorHandler();
+            if (hSRS.importFromProj4(PROJ4) != OGRERR_NONE) {
+                uninstallErrorHandlerAndTriggerError();
 	        error("Can't parse PROJ.4-style parameter string");
+            }
+            uninstallErrorHandlerAndTriggerError();
+            installErrorHandler();
             if (!strcmp(CHAR(STRING_ELT(VECTOR_ELT(inp, 3), 0)),
                 "ESRI Shapefile")) hSRS.morphToESRI();
+            uninstallErrorHandlerAndTriggerError();
+            installErrorHandler();
             poLayer = poDS->CreateLayer( CHAR(STRING_ELT(VECTOR_ELT(inp, 2),
                 0)), &hSRS, wkbtype, papszCreateOptionsLayer );
+            uninstallErrorHandlerAndTriggerError();
 
-    } else poLayer = poDS->CreateLayer( CHAR(STRING_ELT(VECTOR_ELT(inp, 2),
-        0)), NULL, wkbtype, papszCreateOptionsLayer );
-
+    } else {
+        installErrorHandler();
+        poLayer = poDS->CreateLayer( CHAR(STRING_ELT(VECTOR_ELT(inp, 2),
+            0)), NULL, wkbtype, papszCreateOptionsLayer );
+        uninstallErrorHandlerAndTriggerError();
+    }
     if( poLayer == NULL )
     {
         error( "Layer creation failed" );
     }
+    installErrorHandler();
     CSLDestroy(papszCreateOptionsLayer);
+    uninstallErrorHandlerAndTriggerError();
 
 // create fields in layer
 
@@ -156,13 +184,16 @@ SEXP OGR_write(SEXP inp)
                 (OGRFieldType) OGR_type);
             error( "Unknown field type" );
         }
+        installErrorHandler();
         OGRFieldDefn oField( CHAR(STRING_ELT(fld_names, i)),
             (OGRFieldType)  OGR_type);
 // RSB 081009 FIXME - not working yet, integer flips to real in shapefile
         if (OGR_type == 0) oField.SetPrecision(0);
         if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
+            uninstallErrorHandlerAndTriggerError();
             error( "Creating Name field failed" );
         }
+        uninstallErrorHandlerAndTriggerError();
     }
 
     SEXP ldata = VECTOR_ELT(inp, 8);
@@ -177,6 +208,7 @@ SEXP OGR_write(SEXP inp)
         if (INTEGER_POINTER(dim)[0] != nobs)
             error("number of objects mismatch");
 
+        installErrorHandler();
         for (i=0; i<nobs; i++) {
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
@@ -197,6 +229,7 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+        uninstallErrorHandlerAndTriggerError();
 
 // Line data
 
@@ -206,6 +239,7 @@ SEXP OGR_write(SEXP inp)
         if (length(lns) != nobs)
             error("number of objects mismatch");
 
+        installErrorHandler();
 	for (i=0; i<nobs; i++) {
 
             OGRFeature *poFeature;
@@ -233,6 +267,7 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+        uninstallErrorHandlerAndTriggerError();
 
 // Multi line data
 
@@ -243,6 +278,7 @@ SEXP OGR_write(SEXP inp)
             error("number of objects mismatch");
         SEXP Lns;
         int Lns_l;
+        installErrorHandler();
 	for (i=0; i<nobs; i++) {
 
             OGRFeature *poFeature;
@@ -283,6 +319,7 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+        uninstallErrorHandlerAndTriggerError();
 
 // Polygon data
 
@@ -292,6 +329,7 @@ SEXP OGR_write(SEXP inp)
         if (length(lns) != nobs)
             error("number of objects mismatch");
 
+        installErrorHandler();
 	for (i=0; i<nobs; i++) {
 
             OGRFeature *poFeature;
@@ -323,6 +361,7 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+        uninstallErrorHandlerAndTriggerError();
 
 // Multi polygon data
 
@@ -334,6 +373,7 @@ SEXP OGR_write(SEXP inp)
             error("number of objects mismatch");
         SEXP Lns;
         int Lns_l;
+        installErrorHandler();
 	for (i=0; i<nobs; i++) {
 
             OGRFeature *poFeature;
@@ -378,10 +418,13 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         } // i 
+        uninstallErrorHandlerAndTriggerError();
 
     } // multiPolygon 
 
+    installErrorHandler();
     OGRDataSource::DestroyDataSource( poDS );
+    uninstallErrorHandlerAndTriggerError();
 
     UNPROTECT(pc);
     return(ans);
@@ -392,6 +435,7 @@ void wrtDF(int i, int nf, SEXP fld_names, SEXP ldata,
      SEXP ogr_ftype, OGRFeature* poFeature) {
      int j, OGR_type;
      for (j=0; j<nf; j++) {
+         installErrorHandler();
          OGR_type = INTEGER_POINTER(ogr_ftype)[j];
          if (OGR_type == 2) {
              if (!ISNA(NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i]))
@@ -406,6 +450,7 @@ void wrtDF(int i, int nf, SEXP fld_names, SEXP ldata,
                   poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
                       INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
          }
+         uninstallErrorHandlerAndTriggerError();
      }         
 }
 

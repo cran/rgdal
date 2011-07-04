@@ -1,7 +1,7 @@
 SGDF2PCT <- function(x, ncolors=256, adjust.bands=TRUE) {
 	if (!inherits(x, "SpatialGridDataFrame")) 
 		stop("SpatialGridDataFrame required")
-	if (length(names(slot(x, "data"))) != 3)
+	if (length(names(slot(x, "data"))) != 3L)
 		stop("Three data columns (red, green, blue) required")
 	if (ncolors > 256) {
 		warning("ncolors reset to maximum 256")
@@ -64,7 +64,7 @@ SGDF2PCT <- function(x, ncolors=256, adjust.bands=TRUE) {
 vec2RGB <- function(vec, breaks, col) {
 	if (!is.numeric(vec)) stop("vec must be numeric")
 	if (!is.vector(vec)) stop("vec must be a vector")
-	if (length(col) != (length(breaks)-1)) 
+	if (length(col) != (length(breaks)-1L)) 
 		stop("length of col must be one less than length of breaks")
 	idvec <- findInterval(vec, breaks, all.inside=TRUE)
 	rgb_col <- col2rgb(col)

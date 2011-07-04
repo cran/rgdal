@@ -1,7 +1,9 @@
 # Copyright (c) 2003-8 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
 
 getPROJ4VersionInfo <- function() {
-    .Call("PROJ4VersionInfo", PACKAGE="rgdal")
+    res0 <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")
+    res <- paste(res0[[1]], ", [PJ_VERSION: ", res0[[2]], "]", sep="")
+    res
 }
 
 getPROJ4libPath <- function() {
@@ -17,7 +19,7 @@ projNAD <- function() {
 
     if (!is.numeric(xy)) stop("xy not numeric")
     if (is.matrix(xy)) nc <- dim(xy)[1]
-    else if (length(xy) == 2) nc <- 1
+    else if (length(xy) == 2L) nc <- 1
     else stop("xy malformed")
     if(!inv) {
       res <- .C("project",

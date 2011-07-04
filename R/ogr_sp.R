@@ -3,7 +3,8 @@
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, 
         stringsAsFactors=default.stringsAsFactors(),
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
-	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE) {
+	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
+        disambiguateFIDs=FALSE) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
@@ -36,6 +37,15 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             retain <- NULL
         }
         attributes(fids) <- NULL
+# suggestion by Dylan Beaudette 110620
+        non_unique_fids <- max(table(fids)) > 1
+        if (non_unique_fids) {
+            if (disambiguateFIDs) {
+                fids <- seq_along(fids) # if present, make new FIDs
+            } else {
+                stop("FIDs not unique")
+            }
+        }
 	if (verbose) {
 		cat("OGR data source with driver:", ogr_info$driver, "\n")
 		cat("Source: \"", dsn, '\", layer: \"', layer, "\"", '\n',
@@ -72,15 +82,15 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         }        
 	u_eType <- unique(sort(eType))
 	u_with_z <- unique(sort(with_z))
-	if (length(u_with_z) != 1) stop(
+	if (length(u_with_z) != 1L) stop(
 		paste("Multiple # dimensions:", 
 			paste((u_with_z + 2), collapse=":")))
 	if (u_with_z < 0 || u_with_z > 1) stop(
 		paste("Invalid # dimensions:", (u_with_z + 2)))
-	if (length(u_eType) > 2) stop(
+	if (length(u_eType) > 2L) stop(
 		paste("Multiple incompatible geometries:", 
 			paste(u_eType, collapse=":")))
-	if (length(u_eType) == 2) {
+	if (length(u_eType) == 2L) {
 		if (u_eType[1] == 2 && u_eType[2] == 5) u_eType = 2
 		else if (u_eType[1] == 3 && u_eType[2] == 6) u_eType = 3
 		else stop(paste("Multiple incompatible geometries:", 

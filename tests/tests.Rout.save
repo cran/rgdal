@@ -1,0 +1,81 @@
+
+R version 2.13.0 (2011-04-13)
+Copyright (C) 2011 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(rgdal)
+Loading required package: sp
+Geospatial Data Abstraction Library extensions to R successfully loaded
+Loaded GDAL runtime: GDAL 1.8.0, released 2011/01/12
+Path to GDAL shared files: /usr/local/share/gdal
+Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
+Path to PROJ.4 shared files: (autodetected)
+> logo <- system.file("pictures/Rlogo.jpg", package="rgdal")[1]
+> x <- GDAL.open(logo)
+> try(getRasterData(x, band=4))
+Error : Null external pointer
+
+> GDAL.close(x)
+> logoo <- paste(logo, "o", sep="")
+> try(GDAL.open(logo))
+An object of class "GDALReadOnlyDataset"
+Slot "handle":
+<pointer: 0xdf3a330>
+
+> try(GDAL.close(x))
+> try(new('GDALDriver', "GeoTIFF"))
+Error in .local(.Object, ...) : No driver registered with name: GeoTIFF
+
+> fn <- system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1]
+> x <- GDALinfo(fn)
+Warning message:
+statistics not supported by this driver 
+> try(erdas_spnad83 <- readGDAL(fn, offset=c(500, 1000), region.dim=c(400, 400), silent=TRUE))
+Error : Failure during raster IO
+
+> try(erdas_spnad83 <- readGDAL(fn, region.dim=c(4000, 400), silent=TRUE))
+Error : Failure during raster IO
+
+> x <- readGDAL(fn, silent=TRUE)
+> tf <- tempfile()
+> try(writeGDAL(x, tf, drivername="GTiff", type="Byte", options="INTERLEAVE=PIXIL"))
+Error in .local(.Object, ...) : Unable to create dataset
+
+In addition: Warning message:
+In create2GDAL(dataset = dataset, drivername = drivername, type = type,  :
+  mvFlag=NA unsuitable for type Byte
+> try(writeGDAL(x, tf, drivername="GeoTiff", type="Byte"))
+Error in .local(.Object, ...) : No driver registered with name: GeoTiff
+
+In addition: Warning message:
+In create2GDAL(dataset = dataset, drivername = drivername, type = type,  :
+  mvFlag=NA unsuitable for type Byte
+> dsn <- system.file("vectors", package = "rgdal")[1]
+> x <- try(ogrInfo(dsn=dsn, layer="citis"))
+Error in ogrInfo(dsn = dsn, layer = "citis") : Cannot open layer
+> try(OGRSpatialRef(dsn=dsn, layer="scot_BMG"))
+Error in OGRSpatialRef(dsn = dsn, layer = "scot_BMG") : Cannot open layer
+> dsn <- system.file("vectors/test_trk2.gpx", package = "rgdal")[1]
+> try(readOGR(dsn=dsn, layer="trucks", verbose=FALSE))
+Error in ogrInfo(dsn = dsn, layer = layer, input_field_name_encoding = input_field_name_encoding) : 
+  Cannot open layer
+> cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities", verbose=FALSE)
+> td <- tempdir()
+> try(writeOGR(cities, td, "cities", driver="ESRI_Shapefile"))
+Error in writeOGR(cities, td, "cities", driver = "ESRI_Shapefile") : 
+  No such driver: ESRI_Shapefile
+> 
+> 
