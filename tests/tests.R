@@ -1,4 +1,4 @@
-library(rgdal)
+suppressPackageStartupMessages(library(rgdal))
 logo <- system.file("pictures/Rlogo.jpg", package="rgdal")[1]
 x <- GDAL.open(logo)
 try(getRasterData(x, band=4))

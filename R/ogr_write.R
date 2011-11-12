@@ -20,6 +20,9 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     if (!"data" %in% names(getSlots(class(obj))))
         stop("obj must be a SpatialPointsDataFrame, SpatialLinesDataFrame or\n    SpatialPolygonsDataFrame") 
     dfcls <- sapply(slot(obj, "data"), function(x) class(x)[1])
+    dfcls <- gsub("POSIXct", "POSIXt", dfcls)
+    dfcls <- gsub("POSIXlt", "POSIXt", dfcls)
+    dfcls <- gsub("Date", "POSIXt", dfcls)
 # fix for logical and better reporting Barry Rowlingson 091106
     known <- c("numeric", "character", "factor", "POSIXt", "integer", "logical")
     if (!all(dfcls %in% known)) 
