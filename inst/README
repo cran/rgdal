@@ -1,3 +1,60 @@
+Summary of rgdal installation and drivers
+
+The CRAN rgdal source package will work with the installed GDAL,
+with all its drivers, where the availability of drivers is the user's
+responsibility. This applies to OSX and Linux where the user installs
+GDAL from source. If the user on OSX or Linux installs a GDAL binary,
+s/he will get the drivers in that binary (and its dependencies), for
+example KyngChaos GDAL frameworks for OSX.
+
+On Windows, building GDAL from source for further linking to rgdal
+involves a choice of compilers too, as FWTools and its newer variant
+OSGeo4W use Visual C++, so the rgdal C/C++ source code also needs to
+be compiled and linked with the same compilers. This is described in
+the README.windows file in rgdal - not necessarily updated, the file
+describes approaches that worked when they were tried.
+
+OSX Frameworks, Debian/ubuntu and Fedora, and FWTools/OSGeo4W binary
+GDAL distributions are all somewhat fragile, because updating them may
+break the rgdal installed package. This happened on CRAN in mid-2011
+for Debian, and happens regularly with Ubuntu. Very few Windows users
+appear to bother to extend their drivers beyond the CRAN binary.
+
+The CRAN Windows and CRAN extras OSX binaries are built static - all the
+above are dynamically linked and susceptible to trouble if a change in an
+upstream binary dependency isn't reflected downstream. The static builds
+remove the external dependencies, and "freeze" rgdal/GDAL/Proj.4/Expat.
+Expat gives read/write KML and GPX vector drivers for OGR.
+
+Building static means that the subset of drivers will work independently
+of any changes, so are more robust. For a long time, Windows GDAL
+etc. DLLs were copied into the distributed Windows rgdal binary. The
+underlying Windows GDAL etc. libraries are compiled and linked using the
+MinGW compilers used for R itself, avoiding the complication of using
+Visual C++ (which uses different conventions for stack handling).
+
+For additional drivers, users of the CRAN Windows and CRAN extras OSX
+binaries can either convert to an available GDAL driver externally,
+read using CRAN Windows rgdal binary - here you factor out mismatches,
+especially 32/64-bit questions among others, and can check the stages of
+the workflow. You can script the first step in R through system(). The
+PATH environment variable will need setting correctly to detect the
+external software properly.
+
+Alternatively, on the Windows platform one can use Visual C++ to install
+rgdal linking to OSGeo4W or FWTools, but may trip over R 64-bit not
+matching a 32-bit compiler and/or 32-bit external dependencies. FWTools is
+declared to be 32-bit, I cannot see what OSGeo4W claims to be. The details
+of cases where this has worked are given in the README.windows file.
+
+I belive that the first alternative is much more reliable on the Windows
+platform, and avoids deployment problems, Users can use R either 32-bit
+or 64-bit, because the file conversion is done outside R. Deploying R
+with rgdal/raster is done in the standard way, as is FWTools or OSGeo4W
+(the latter's installer is inconvenient for installing in a lab from a
+platform image).
+
+
 Installing the R source rgdal package
 
 In order to install the R source rgdal package, you should first have

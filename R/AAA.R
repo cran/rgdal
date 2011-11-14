@@ -8,8 +8,8 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
 
 #.First.lib <- function(lib, pkg) {
 .onLoad <- function(lib, pkg) {
-  require(methods, quietly = TRUE, warn.conflicts = FALSE)
-  require("sp")
+#  require(methods, quietly = TRUE, warn.conflicts = FALSE)
+#  require("sp")
   assign(".rgdal_old.PROJ_LIB", Sys.getenv("PROJ_LIB"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.GDAL_DATA", Sys.getenv("GDAL_DATA"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.NEEDED", FALSE, envir=.RGDAL_CACHE)

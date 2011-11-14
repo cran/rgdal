@@ -1,3 +1,39 @@
+2011-11-12 19:59  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/ogr_write.R: rename POSIXct, POSIXlt,
+	  Date class to POSIXt in writeOGR
+
+2011-10-20 07:43  rsbivand
+
+	* DESCRIPTION: add OSX binary verbatim
+
+2011-07-08 10:43  edzer
+
+	* man/llgrid.Rd: added offset example
+
+2011-07-08 10:42  edzer
+
+	* R/llgrid.R: now offset is passed on to grid_at
+
+2011-07-08 09:06  rsbivand
+
+	* ChangeLog, inst/ChangeLog: add side to gridat call
+
+2011-07-08 09:05  rsbivand
+
+	* R/llgrid.R, man/llgrid.Rd, tests/tests.R, tests/tests.Rout.save:
+	  add side to gridat call
+
+2011-07-06 13:38  edzer
+
+	* DESCRIPTION, NAMESPACE, R/llgrid.R, man/llgrid.Rd: version bump;
+	  added llgridlines() function for plotting long/lat grid
+	  lines over a projected object.
+
+2011-07-02 17:31  rsbivand
+
+	* ChangeLog, inst/ChangeLog: clean tests
+
 2011-07-02 17:30  rsbivand
 
 	* tests/tests.R, tests/tests.Rout.save: clean tests
