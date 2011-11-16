@@ -1,5 +1,5 @@
-10fd05c9cf4403b51245a89934c5b427 *ChangeLog
-81e74cb90602291fa390a969c045c992 *DESCRIPTION
+15f71145fb7f1e4b8b2d6eed70310d48 *ChangeLog
+61b06a937debef0a76ce5d38653cdeb5 *DESCRIPTION
 68181d526bc646d0648ed97f57fc94b5 *NAMESPACE
 22017ee9e61d3ca582cfb9920074218b *R/AAA.R
 3284ff91e63c7fd22fb002f0c455947b *R/Class-CRSx.R
@@ -9,7 +9,7 @@ fa0a7e5b799889a7b1d489ffa01ce04d *R/gdal.R
 1e35e72d5beaea4a6f7d238528f9544d *R/make_EPSG.R
 fe23b6be10e52234137eb12272343c3a *R/ogr.R
 39c59242a3d1fc1f19b5b129de400f6c *R/ogr_sp.R
-69335227dc33722a58ed0cad804cb449 *R/ogr_write.R
+ac2a2555ce4e54b55d8dd1aebe0869c8 *R/ogr_write.R
 8bbe3860c0752eb1b6707bfcdb1f4acc *R/project.R
 a3831d15d2b7bdc82a958ab5dbd9ef77 *R/sgdf_gdal.R
 75b072025b85adfdbb876b81467f4326 *R/sp_gdal.R
@@ -19,7 +19,7 @@ a3831d15d2b7bdc82a958ab5dbd9ef77 *R/sgdf_gdal.R
 bb8cf4875b6d14950c281048529e1824 *configure
 4020e3f0a13b49da8bbdae69f1b81e1b *configure.in
 e1b43035478e9717169b4364edde3555 *configure.win
-10fd05c9cf4403b51245a89934c5b427 *inst/ChangeLog
+15f71145fb7f1e4b8b2d6eed70310d48 *inst/ChangeLog
 550df3cdafa4386c13a184068eb4c4e5 *inst/OSGeo4W_test
 e058192a7b3ab9d608c3c0621fc717a4 *inst/README
 91d92de7f2a2868aa6df396134992c9f *inst/README.windows
