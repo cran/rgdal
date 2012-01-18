@@ -1,5 +1,5 @@
-60930e305230f16160e35450dbc5c0cb *ChangeLog
-08bb482c441360bc6914f3f9ee759afc *DESCRIPTION
+07c47d4c0b34342c4ce5b0803d8fe93c *ChangeLog
+22b20ce293307b220a17a946f67a0838 *DESCRIPTION
 946a5d9447b1b27912c073b31578a611 *NAMESPACE
 22017ee9e61d3ca582cfb9920074218b *R/AAA.R
 3284ff91e63c7fd22fb002f0c455947b *R/Class-CRSx.R
@@ -19,7 +19,7 @@ a3831d15d2b7bdc82a958ab5dbd9ef77 *R/sgdf_gdal.R
 bb8cf4875b6d14950c281048529e1824 *configure
 4020e3f0a13b49da8bbdae69f1b81e1b *configure.in
 e1b43035478e9717169b4364edde3555 *configure.win
-60930e305230f16160e35450dbc5c0cb *inst/ChangeLog
+07c47d4c0b34342c4ce5b0803d8fe93c *inst/ChangeLog
 550df3cdafa4386c13a184068eb4c4e5 *inst/OSGeo4W_test
 e058192a7b3ab9d608c3c0621fc717a4 *inst/README
 91d92de7f2a2868aa6df396134992c9f *inst/README.windows
@@ -92,7 +92,7 @@ f8db51b6ebae19c450517d5971df6094 *src/local_stubs.c
 bfb8211b155fa96d22cba7de69acf4e0 *src/ogr_polygons.c
 4a6ebf8444edcb41354fbb8e12fe2874 *src/ogr_proj.cpp
 9aae6fedc8e770a5ad18b9b26177dd9e *src/ogrdrivers.cpp
-b7e8aa6f779818291795e2bea8616bfa *src/ogrsource.cpp
+8d73a881ee2d74861cb43c414e627803 *src/ogrsource.cpp
 857aef1f4fcb425e5e13dfdf36add4a8 *src/projectit.cpp
 1e671477dc0b1de131ac949ea01e628b *src/rgdal.h
 6632ac3208e607417506be5bbb0705ff *tests/tests.R
