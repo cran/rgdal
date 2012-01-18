@@ -116,3 +116,12 @@ ogrDrivers <- function() {
         PACKAGE="rgdal")
 }
 
+ogrListLayers <- function(dsn) {
+  if (missing(dsn)) stop("missing dsn")
+  if (nchar(dsn) == 0) stop("empty name")
+  layers <- .Call("ogrListLayers", as.character(dsn), PACKAGE = "rgdal")
+  n <- length(layers)
+  attr(layers, "driver") <- layers[n]
+  layers <- layers[-n]
+  layers
+}

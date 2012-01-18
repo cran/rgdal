@@ -4,5 +4,5 @@ GDAL_INC_DIR=$(GDAL_HOME)/include
 GDAL_LIB_DIR=$(GDAL_HOME)/lib
 
 PKG_CPPFLAGS=-I$(GDAL_INC_DIR) $(OSGEO)
-PKG_LIBS=-L$(GDAL_LIB_DIR) -lgdal -lproj -lexpat
+PKG_LIBS=-L$(GDAL_LIB_DIR) -lgdal -lproj -lexpat -lodbc32 -lodbccp32
 

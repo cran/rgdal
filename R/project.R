@@ -21,6 +21,9 @@ projNAD <- function() {
     if (is.matrix(xy)) nc <- dim(xy)[1]
     else if (length(xy) == 2L) nc <- 1
     else stop("xy malformed")
+# 111216 RSB
+    stopifnot(is.character(proj))
+    stopifnot(length(proj) == 1)
     if(!inv) {
       res <- .C("project",
                 as.integer(nc),

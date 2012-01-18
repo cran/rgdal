@@ -5,6 +5,7 @@
 \alias{ogrFIDs}
 \alias{ogrDrivers}
 \alias{OGRSpatialRef}
+\alias{ogrListLayers}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Read OGR vector maps into Spatial objects}
 \description{
@@ -34,6 +35,7 @@ ogrInfo(dsn, layer, input_field_name_encoding=NULL)
 ogrFIDs(dsn, layer)
 ogrDrivers()
 OGRSpatialRef(dsn, layer)
+ogrListLayers(dsn)
 \method{print}{ogrinfo}(x, ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -75,6 +77,7 @@ From 0.6-10, attempts are made to detect deleted features still present in the l
 \examples{
 ogrDrivers()
 dsn <- system.file("vectors", package = "rgdal")[1]
+ogrListLayers(dsn)
 ogrInfo(dsn=dsn, layer="cities")
 cities <- readOGR(dsn=dsn, layer="cities")
 summary(cities)
