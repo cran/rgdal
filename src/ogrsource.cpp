@@ -539,7 +539,7 @@ SEXP ogrListLayers (SEXP ogrSource) {
             uninstallErrorHandlerAndTriggerError();
             error("Cannot open layer");
         }
-        SET_STRING_ELT(ans, i, mkChar(poLayer->GetName()));
+        SET_STRING_ELT(ans, i, mkChar(poLayer->GetLayerDefn()->GetName()));
         uninstallErrorHandlerAndTriggerError();
     }
 
