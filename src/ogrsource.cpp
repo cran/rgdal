@@ -118,7 +118,8 @@ extern "C" {
 
     UNPROTECT(pc);
 
-    delete poDS;
+    OGRDataSource::DestroyDataSource( poDS );
+//    delete poDS;
     return(ans);
 
   }
@@ -176,7 +177,8 @@ extern "C" {
   while( (poFeature = poLayer->GetNextFeature()) != NULL ){
     INTEGER(fids)[i]=poFeature->GetFID();
     i++;
-    delete poFeature;
+    OGRFeature::DestroyFeature( poFeature );
+//    delete poFeature;
   }
   uninstallErrorHandlerAndTriggerError();
 
@@ -184,7 +186,8 @@ extern "C" {
   setAttrib(fids, install("nf"), nf);
   setAttrib(fids, install("i"), ii);
 
-  delete poDS;
+  OGRDataSource::DestroyDataSource( poDS );
+//  delete poDS;
 
   UNPROTECT(pc);
   return(fids);
@@ -298,11 +301,13 @@ extern "C" {
 	break;
 
       default:
-        delete poFeature;
+        OGRFeature::DestroyFeature( poFeature );
+//        delete poFeature;
         uninstallErrorHandlerAndTriggerError();
 	error("Unsupported field type. should have been caught before");
       }
-      delete poFeature;
+      OGRFeature::DestroyFeature( poFeature );
+//      delete poFeature;
 //#ifdef EJP
       // according to tutorial: OGRFeature::DestroyFeature(poFeature);
       // see comment FW in OGR tutorial: We could just "delete" it, 
@@ -333,14 +338,18 @@ extern "C" {
     OGRSFDriver *poDriver;
     int iField;
     // open the data source layer or error
+    installErrorHandler();
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource,0)), 
       FALSE, &poDriver);
+    uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
       error("Cannot open file");
     }
 
+    installErrorHandler();
     poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(Layer, 0)));
+    uninstallErrorHandlerAndTriggerError();
 
     if(poLayer == NULL){
       error("Cannot open layer");
@@ -349,11 +358,16 @@ extern "C" {
     // reserve a list for the result
     PROTECT(ans=allocVector(VECSXP,length(iFields)));
     // now set each element of the list
+    installErrorHandler();
     for(iField=0;iField<length(iFields);iField++){
       SET_VECTOR_ELT(ans,iField,ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField]));
     }
+    uninstallErrorHandlerAndTriggerError();
     // clean up and return
-    delete poDS;
+    installErrorHandler();
+    OGRDataSource::DestroyDataSource( poDS );
+//    delete poDS;
+    uninstallErrorHandlerAndTriggerError();
     UNPROTECT(1);
     return(ans);
   }
@@ -375,37 +389,48 @@ extern "C" {
     OGRFeatureDefn *poDefn;
     OGRSFDriver *poDriver;
 
+    installErrorHandler();
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource,0)), 
 	FALSE, &poDriver);
+    uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
       error("Cannot open file");
     }
 
+    installErrorHandler();
     poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(Layer, 0)));
+    uninstallErrorHandlerAndTriggerError();
 
     if(poLayer == NULL){
       error("Cannot open layer");
     }
+    installErrorHandler();
     poDefn = poLayer->GetLayerDefn();
+    uninstallErrorHandlerAndTriggerError();
+    installErrorHandler();
     for( int iAttr = 0; iAttr < poDefn->GetFieldCount(); iAttr++ )
       {
 	OGRFieldDefn    *poField = poDefn->GetFieldDefn( iAttr );
 	
-	printf( "%s: %s (%d.%d)\n",
+	Rprintf( "%s: %s (%d.%d)\n",
 		poField->GetNameRef(),
 		poField->GetFieldTypeName( poField->GetType() ),
 		poField->GetWidth(),
 		poField->GetPrecision() );
       }
+    uninstallErrorHandlerAndTriggerError();
     
     
-    PROTECT(ans=allocVector(INTSXP,1));
-    INTEGER(ans)[0]=999;
+//    PROTECT(ans=allocVector(INTSXP,1));
+//    INTEGER(ans)[0]=999;
     
-    delete poDS;
-    UNPROTECT(1);
-    return(ans);
+    installErrorHandler();
+    OGRDataSource::DestroyDataSource( poDS );
+//    delete poDS;
+    uninstallErrorHandlerAndTriggerError();
+//    UNPROTECT(1);
+    return(R_NilValue);
   }
 
 SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
@@ -415,18 +440,23 @@ SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     int iLayer = -1;
     int flag = 0;
 
+    installErrorHandler();
     poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
                 CHAR(STRING_ELT(ogrDriver, 0)) );
+    uninstallErrorHandlerAndTriggerError();
     if (poDriver == NULL) {
         error("Driver not available");
     }
 
+    installErrorHandler();
     poDS = poDriver->Open(CHAR(STRING_ELT(ogrSource, 0)), 
 	TRUE);
+    uninstallErrorHandlerAndTriggerError();
 
     if (poDS==NULL)
         error("Cannot open data source for update");
 
+    installErrorHandler();
     for(iLayer = 0; iLayer < poDS->GetLayerCount(); iLayer++) {
         poLayer = poDS->GetLayer(iLayer);
 /* poLayer->GetLayerDefn()->GetName() is poLayer->GetName() from 1.8 */
@@ -436,36 +466,94 @@ SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
             break;
         }
     }
+    uninstallErrorHandlerAndTriggerError();
 
+    installErrorHandler();
     if (flag != 0) {
         if (poDS->DeleteLayer(iLayer) != OGRERR_NONE) {
             OGRDataSource::DestroyDataSource(poDS);
+            uninstallErrorHandlerAndTriggerError();
             error("ogrDeleteLayer: failed to delete layer");
         }
     } else {
         warning("ogrDeleteLayer: no such layer");
     }
     OGRDataSource::DestroyDataSource(poDS);
+    uninstallErrorHandlerAndTriggerError();
     return(R_NilValue);
 }
 
 SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver) {
     OGRSFDriver *poDriver;
 
+    installErrorHandler();
     poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
                 CHAR(STRING_ELT(ogrDriver, 0)) );
+    uninstallErrorHandlerAndTriggerError();
     if (poDriver == NULL) {
         error("Driver not available");
     }
+    installErrorHandler();
     if (poDriver->TestCapability(ODrCDeleteDataSource)) {
         if (poDriver->DeleteDataSource(CHAR(STRING_ELT(ogrSource, 0)))
             != OGRERR_NONE) {
+            uninstallErrorHandlerAndTriggerError();
             error("Data source could not be deleted");
         }
     } else {
         error("This driver not capable of data source deletion");
     }
+    uninstallErrorHandlerAndTriggerError();
     return(R_NilValue);
+}
+
+
+SEXP ogrListLayers (SEXP ogrSource) {
+    OGRDataSource *poDS;
+    OGRSFDriver *poDriver;
+    OGRLayer *poLayer;
+    int i, nlayers;
+    SEXP ans;
+    int pc=0;
+
+    installErrorHandler();
+    poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource, 0)), 
+	FALSE, &poDriver);
+    uninstallErrorHandlerAndTriggerError();
+
+    if(poDS==NULL){
+      error("Cannot open data source");
+    }
+
+    installErrorHandler();
+    nlayers = poDS->GetLayerCount();
+    uninstallErrorHandlerAndTriggerError();
+
+    PROTECT(ans=NEW_CHARACTER(nlayers+1)); pc++;
+
+    for (i=0; i<nlayers; i++) {
+        installErrorHandler();
+        poLayer = poDS->GetLayer(i);
+
+        if(poLayer == NULL){
+            uninstallErrorHandlerAndTriggerError();
+            error("Cannot open layer");
+        }
+        SET_STRING_ELT(ans, i, mkChar(poLayer->GetName()));
+        uninstallErrorHandlerAndTriggerError();
+    }
+
+    installErrorHandler();
+    SET_STRING_ELT(ans, nlayers, mkChar(poDriver->GetName()));
+    uninstallErrorHandlerAndTriggerError();
+
+    installErrorHandler();
+    OGRDataSource::DestroyDataSource( poDS );
+    uninstallErrorHandlerAndTriggerError();
+
+    UNPROTECT(pc);
+    return(ans);
+
 }
 
 //}
