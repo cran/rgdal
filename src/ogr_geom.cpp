@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
+SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments)
 {
 
     OGRDataSourceH Ogr_ds;
@@ -36,10 +36,15 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 /*    char *pszProj4 = NULL;*/
 
     int pc=0;
-    int nf, mp_count;
+    int nf, mp_count, mp_count_k0;
+    int do_comments;
+    SEXP Hole;
 
     SEXP ans;
     SEXP ansnames;
+
+    do_comments = INTEGER_POINTER(comments)[0];
+    PROTECT(Hole = NEW_INTEGER(1)); pc++;
 
     installErrorHandler();
     Ogr_ds = OGROpen(CHAR(STRING_ELT(dsn, 0)), FALSE, NULL);
@@ -65,8 +70,8 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 
     if (j < 0) error("Layer not found");
 
-    PROTECT(ans = NEW_LIST(7)); pc++;
-    PROTECT(ansnames = NEW_CHARACTER(7)); pc++;
+    PROTECT(ans = NEW_LIST(8)); pc++;
+    PROTECT(ansnames = NEW_CHARACTER(8)); pc++;
     SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("dsn"));
     SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("layer"));
     SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("proj4string"));
@@ -74,6 +79,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
     SET_STRING_ELT(ansnames, 4, COPY_TO_USER_STRING("crdlist"));
     SET_STRING_ELT(ansnames, 5, COPY_TO_USER_STRING("with_z"));
     SET_STRING_ELT(ansnames, 6, COPY_TO_USER_STRING("isNULL"));
+    SET_STRING_ELT(ansnames, 7, COPY_TO_USER_STRING("polygonIntComments"));
     setAttrib(ans, R_NamesSymbol, ansnames);
 
     SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(1));
@@ -106,6 +112,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
     SET_VECTOR_ELT(ans, 4, NEW_LIST(nf));
     SET_VECTOR_ELT(ans, 5, NEW_INTEGER(nf));
     SET_VECTOR_ELT(ans, 6, NEW_INTEGER(nf));
+    SET_VECTOR_ELT(ans, 7, NEW_LIST(nf));
 
     i=0;
     installErrorHandler();
@@ -185,6 +192,11 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 		    j), 0, NEW_NUMERIC(np));
 	        SET_VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4), i), 
 		    j), 1, NEW_NUMERIC(np));
+// added hole reporting since #0 is defined exterior, rest interior
+                if (j == 0) INTEGER_POINTER(Hole)[0] = 0;
+                else INTEGER_POINTER(Hole)[0] = 1;
+                setAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4), i), j),
+                    install("hole"), Hole);
 
                 for(k = 0; k < np; k++) {
 	            NUMERIC_POINTER(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(
@@ -195,6 +207,13 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
               } 
 	    }
             if (jcnt == 0) INTEGER_POINTER(VECTOR_ELT(ans, 6))[i] = 1;
+// added comment since #0 is defined exterior, rest interior
+            if (jcnt > 0 && do_comments) {
+              SET_VECTOR_ELT(VECTOR_ELT(ans, 7), i, NEW_INTEGER(nr));
+              INTEGER_POINTER(VECTOR_ELT(VECTOR_ELT(ans, 7), i))[0] = 0;
+              for (j=1; j<nr; j++)
+                INTEGER_POINTER(VECTOR_ELT(VECTOR_ELT(ans, 7), i))[j] = ROFFSET;
+            }
           } else INTEGER_POINTER(VECTOR_ELT(ans, 6))[i] = 1;
 	} else if (eType == wkbMultiLineString) {
 	  nm = OGR_G_GetGeometryCount(Ogr_geometry);
@@ -231,6 +250,9 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 		mp_count += nr;
 	    }
 	    SET_VECTOR_ELT(VECTOR_ELT(ans, 4), i, NEW_LIST(mp_count));
+// added comment since #0 is defined exterior, rest interior
+            if (do_comments)
+              SET_VECTOR_ELT(VECTOR_ELT(ans, 7), i, NEW_INTEGER(mp_count));
 	    mp_count = 0;
             jcnt = 0;
 	    for(j = 0; j < nm; j++) {
@@ -256,6 +278,20 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer)
 			    VECTOR_ELT(ans, 4), i), mp_count), 1))[km] = 
 			    OGR_G_GetY(hRing, km);
 	              }
+// added hole reporting since #0 is defined exterior, rest interior
+                      if (k == 0) INTEGER_POINTER(Hole)[0] = 0;
+                      else INTEGER_POINTER(Hole)[0] = 1;
+                      setAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4),
+                        i), mp_count), install("hole"), Hole);
+                      if (k == 0) mp_count_k0 = mp_count;
+// added comment since #0 is defined exterior, rest interior
+                      if (do_comments) {
+                        if (k == 0) 
+                          INTEGER_POINTER(VECTOR_ELT(VECTOR_ELT(ans,
+                            7), i))[mp_count] = 0;
+                        else INTEGER_POINTER(VECTOR_ELT(VECTOR_ELT(ans,
+                            7), i))[mp_count] = mp_count_k0 + ROFFSET;
+                      }
 		      mp_count++;
                     }
                   }

@@ -7,9 +7,12 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     if (driver == "KML" || driver == "GPX") {
       if (is.na(is.projected(obj))) warning(paste("Unknown coordinate", 
         "reference system: for KML driver should be geographical"))
-      else if (is.projected(obj)) warning(paste("Projected coordinate",
+      else if (is.projected(obj)) {
+# added brackets 120330
+         warning(paste("Projected coordinate",
         "reference system: for KML driver should be geographical"))
-      proj4string(obj) <- CRS(as.character(NA))
+        proj4string(obj) <- CRS(as.character(NA))
+      }
 # fix for over-eager internal checking in the KML driver 090114
     }
     stopifnot(inherits(obj, "Spatial"))
