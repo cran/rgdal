@@ -9,6 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#define ROFFSET 1
 #define SP_XPORT(x) RGDAL_ ## x
 #include "sp.h"
 

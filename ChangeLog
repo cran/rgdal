@@ -1,3 +1,78 @@
+2012-04-24 11:25  rsbivand
+
+	* configure, configure.ac: tidying configure
+
+2012-04-23 16:20  rsbivand
+
+	* configure: more configure updates
+
+2012-04-23 16:19  rsbivand
+
+	* configure: more configure updates
+
+2012-04-23 16:17  rsbivand
+
+	* configure.ac: more configure updates
+
+2012-04-23 09:34  rsbivand
+
+	* configure, configure.ac: change C tests LIBS and CPPFLAGS for
+	  proj in configure
+
+2012-04-22 12:44  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-04-22 12:43  rsbivand
+
+	* configure, configure.ac: correct if nesting in configure
+
+2012-04-22 12:29  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-04-22 12:29  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: correct if nesting in
+	  configure
+
+2012-04-21 11:07  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-04-21 11:06  rsbivand
+
+	* configure, configure.ac: add data readability tests to
+	  configure.ac
+
+2012-04-20 14:32  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-04-20 14:32  rsbivand
+
+	* configure, configure.ac: tidy
+
+2012-04-20 14:26  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-04-20 14:25  rsbivand
+
+	* DESCRIPTION, configure, configure.ac, configure.in,
+	  src/Makevars.in: upgrading configure
+
+2012-04-16 13:11  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R, man/readOGR.Rd,
+	  src/local_stubs.c, src/ogr_geom.cpp, src/ogr_polygons.c,
+	  src/rgdal.h: extracting OGC SFS comments for Polygons from input
+	  geometry order
+
+2012-01-18 14:57  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-01-18 14:56  rsbivand
 
 	* DESCRIPTION, src/ogrsource.cpp: extend ogrListLayers() < OGR 1.8

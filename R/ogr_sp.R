@@ -1,10 +1,10 @@
-# Copyright 2006-2010 Roger Bivand
+# Copyright 2006-2012 Roger Bivand
 
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, 
         stringsAsFactors=default.stringsAsFactors(),
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
-        disambiguateFIDs=FALSE) {
+        disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
@@ -62,17 +62,20 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 		as.integer(fids), iflds, PACKAGE="rgdal")
 	names(dlist) <- make.names(fldnms ,unique=TRUE)
 	geometry <- .Call("R_OGR_CAPI_features", as.character(dsn), 
-		as.character(layer), PACKAGE="rgdal")
+		as.character(layer), comments=addCommentsToPolygons,
+                PACKAGE="rgdal")
 	if (is.null(retain)) {
 	    eType <- geometry[[4]]
 	    with_z <- geometry[[6]]
             isNULL <- as.logical(geometry[[7]])
 	    gFeatures <- geometry[[5]]
+            gComments <- geometry[[8]]
         } else {
 	    eType <- geometry[[4]][retain]
 	    with_z <- geometry[[6]][retain]
             isNULL <- as.logical(geometry[[7]])[retain]
 	    gFeatures <- geometry[[5]][retain]
+            gComments <- geometry[[8]][retain]
         }
         rm(geometry);
         gc(verbose = FALSE)
@@ -162,9 +165,14 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 		n <- length(gFeatures)
 		plList <- vector(mode="list", length=n)
 		for (i in 1:n) {
-			plList[[i]] <- Polygons(.Call("make_Polygonlist",
-                            gFeatures[[i]], PACKAGE="rgdal"),
+			iG <- gFeatures[[i]]
+                        thisPL <- Polygons(.Call("make_Polygonlist",
+                            iG, PACKAGE="rgdal"),
                             ID=as.character(fids[i]))
+                        if (addCommentsToPolygons) 
+                            comment(thisPL) <- paste(gComments[[i]],
+                                collapse=" ")
+			plList[[i]] <- thisPL
                     }
             } else {
 		n <- length(gFeatures)
@@ -183,8 +191,11 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 				}
 				pllist[[j]] <- Polygon(cmat)
 			}
-			plList[[i]] <- Polygons(pllist,
-                            ID=as.character(fids[i]))
+                        thisPL <- Polygons(pllist, ID=as.character(fids[i]))
+                        if (addCommentsToPolygons) 
+                            comment(thisPL) <- paste(gComments[[i]],
+                                collapse=" ")
+			plList[[i]] <- thisPL
                     }
 		}
                 rm(gFeatures)

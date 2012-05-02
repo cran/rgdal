@@ -56,7 +56,9 @@ SEXP make_Polygon(SEXP jG) {
     }
 
     PROTECT(ihole = NEW_INTEGER(1)); pc++;
-    INTEGER_POINTER(ihole)[0] = NA_INTEGER;
+//    INTEGER_POINTER(ihole)[0] = NA_INTEGER;
+    INTEGER_POINTER(ihole)[0] = INTEGER_POINTER(getAttrib(jG,
+        install("hole")))[0];
     PROTECT(n = NEW_INTEGER(1)); pc++;
     if (copy1) INTEGER_POINTER(n)[0] = nn+1;
     else INTEGER_POINTER(n)[0] = nn;
