@@ -134,13 +134,13 @@ fi
 rm -f gdal_test errors.txt gdal_test.c
 
 
-GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/epsg.wkt"
-AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/epsg.wkt readable)
+GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
+AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/pcs.csv readable)
 if test -r "${GDAL_DATA_TEST_FILE}" ; then
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([epsg.wkt not found in GDAL data directory.])
+  AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
 fi
 
 # PROJ.4

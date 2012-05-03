@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the Geospatial Data Abstraction Library
-Version: 0.7-10
-Date: 2012-04-22
+Version: 0.7-11
+Date: 2012-05-03
 Depends: R (>= 2.10.0), methods, sp (>= 0.9-99)
 LinkingTo: sp
 LazyLoad: yes
@@ -30,6 +30,6 @@ SystemRequirements: for building from source: GDAL >= 1.6.0 library
         frameworks built by William Kyngesburye at
         http://www.kyngchaos.com/ may be used for source installs on
         OSX.
-Packaged: 2012-04-26 16:56:06 UTC; rsb
+Packaged: 2012-05-03 09:35:46 UTC; rsb
 Repository: CRAN
-Date/Publication: 2012-05-02 12:33:35
+Date/Publication: 2012-05-03 10:40:14
