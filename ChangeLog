@@ -1,3 +1,16 @@
+2012-05-03 09:34  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: switch share/gdal test to
+	  pcs.csv
+
+2012-04-26 16:54  rsbivand
+
+	* configure, configure.ac: more configure updates
+
+2012-04-24 11:25  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-04-24 11:25  rsbivand
 
 	* configure, configure.ac: tidying configure
