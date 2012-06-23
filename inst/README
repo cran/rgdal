@@ -20,7 +20,7 @@ break the rgdal installed package. This happened on CRAN in mid-2011
 for Debian, and happens regularly with Ubuntu. Very few Windows users
 appear to bother to extend their drivers beyond the CRAN binary.
 
-The CRAN Windows and CRAN extras OSX binaries are built static - all the
+The CRAN Windows and CRAN OSX binaries are built static - all the
 above are dynamically linked and susceptible to trouble if a change in an
 upstream binary dependency isn't reflected downstream. The static builds
 remove the external dependencies, and "freeze" rgdal/GDAL/Proj.4/Expat.
@@ -33,9 +33,9 @@ underlying Windows GDAL etc. libraries are compiled and linked using the
 MinGW compilers used for R itself, avoiding the complication of using
 Visual C++ (which uses different conventions for stack handling).
 
-For additional drivers, users of the CRAN Windows and CRAN extras OSX
+For additional drivers, users of the CRAN Windows and CRAN OSX
 binaries can either convert to an available GDAL driver externally,
-read using CRAN Windows rgdal binary - here you factor out mismatches,
+read using CRAN rgdal binary - here you factor out mismatches,
 especially 32/64-bit questions among others, and can check the stages of
 the workflow. You can script the first step in R through system(). The
 PATH environment variable will need setting correctly to detect the

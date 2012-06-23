@@ -1,3 +1,20 @@
+2012-06-23 14:24  rsbivand
+
+	* DESCRIPTION, inst/README: remove extras from OSX installation
+	  description
+
+2012-06-14 16:18  rsbivand
+
+	* DESCRIPTION, R/sp_gdal.R: lower left origin
+
+2012-05-03 11:53  rsbivand
+
+	* R/project.R: carry over comment in spTransform
+
+2012-05-03 09:35  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-05-03 09:34  rsbivand
 
 	* DESCRIPTION, configure, configure.ac: switch share/gdal test to
