@@ -196,6 +196,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 	for (i in 1:n) output[[i]] <- .spTransform_Polygon(input[[i]], 
 		to_args=to_args, from_args=from_args, ii=ii, jj=i)
 	res <- Polygons(output, ID)
+        if (!is.null(comment(x))) comment(res) <- comment(x)
 	res
 }
 

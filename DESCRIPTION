@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the Geospatial Data Abstraction Library
-Version: 0.7-11
-Date: 2012-05-03
+Version: 0.7-12
+Date: 2012-06-23
 Depends: R (>= 2.10.0), methods, sp (>= 0.9-99)
 LinkingTo: sp
 LazyLoad: yes
@@ -13,11 +13,8 @@ Description: Provides bindings to Frank Warmerdam's Geospatial Data
         installed first. Both GDAL raster and OGR vector map data can
         be imported into R, and GDAL raster data and OGR vector data
         exported. Use is made of classes defined in the sp package.
-        Windows binaries (including GDAL, PROJ.4 and Expat) are
-        provided on CRAN. Mac Intel OS X binaries (including GDAL,
-        PROJ.4 and Expat) are not provided on CRAN, but can be
-        installed from the CRAN Extras repository with:
-        setRepositories(ind=1:2); install.packages('rgdal').
+        Windows and Mac Intel OS X binaries (including GDAL, PROJ.4 and
+        Expat) are provided on CRAN.
 Author: Timothy H. Keitt <tkeitt@mail.utexas.edu>, Roger Bivand
         <Roger.Bivand@nhh.no>, Edzer Pebesma
         <edzer.pebesma@uni-muenster.de>, Barry Rowlingson
@@ -30,6 +27,6 @@ SystemRequirements: for building from source: GDAL >= 1.6.0 library
         frameworks built by William Kyngesburye at
         http://www.kyngchaos.com/ may be used for source installs on
         OSX.
-Packaged: 2012-05-03 09:35:46 UTC; rsb
+Packaged: 2012-06-23 14:26:25 UTC; rsb
 Repository: CRAN
-Date/Publication: 2012-05-03 10:40:14
+Date/Publication: 2012-06-23 14:37:25
