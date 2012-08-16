@@ -165,7 +165,7 @@ void project(int *n, double *xlon, double *ylat, double *x, double *y, char **pr
   pj_free(pj);
 }
 
-void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char **projarg){
+void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char **projarg, int *ob_tran){
 
   /* call the _inverse_ projection specified by the string projarg,
   * returning longitude and lat in xlon and ylat vectors, given the
@@ -187,6 +187,10 @@ void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char 
     } else {
       p.u=x[i];
       p.v=y[i];
+      if (*ob_tran) {
+        p.u *= DEG_TO_RAD;
+        p.v *= DEG_TO_RAD;
+      }
       p = pj_inv(p, pj);
       if (p.u == HUGE_VAL || ISNAN(p.u)) {
             nwarn++;
@@ -201,7 +205,8 @@ void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char 
   pj_free(pj);
 }
 
-SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
+SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y,
+       SEXP use_ob_tran) {
 
 	/* interface to pj_transform() to be able to use longlat proj
 	 * and datum transformation in an SEXP format */
@@ -227,7 +232,7 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 		yy[i] = NUMERIC_POINTER(y)[i];
 		zz[i] = (double) 0;
 	}
-	if ( pj_is_latlong(fromPJ) ) {
+	if ( pj_is_latlong(fromPJ) || LOGICAL_POINTER(use_ob_tran)[0]) {
 		for (i=0; i < n; i++) {
        			 xx[i] *= DEG_TO_RAD;
        			 yy[i] *= DEG_TO_RAD;

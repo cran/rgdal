@@ -122,7 +122,7 @@ use \code{\link[sp]{flipVertical}}.}
 
 \seealso{ \code{\link[sp]{image}}, \code{\link[maptools]{asciigrid}} }
 
-\author{Edzer J.\ Pebesma, Roger Bivand}
+\author{Edzer Pebesma, Roger Bivand}
 
 \examples{
 library(grid)

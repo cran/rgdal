@@ -34,12 +34,18 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
             "; column names: ", paste(names(obj@data)[!dfcls %in% known],
             collapse=","))
     dftof <- sapply(slot(obj, "data"), typeof)
-    known <- c("double", "character", "integer", "logical")
+    known <- c("double", "character", "integer", "logical", "list")
     if (!all(dftof %in% known))
         stop("Can't convert columns of type: ", 
             paste(unique(dftof[!dftof %in% known]),collapse=","), 
             "; column names: ", paste(names(obj@data)[!dftof %in% known], 
             collapse=","))
+    if (any("list" %in% dftof)) {
+         whch <- dfcls[which(dftof == "list")] != "POSIXt"
+         if (any(whch)) 
+             stop("Can't convert columns of type list:",
+                 paste(names(obj@data)[whch], collapse=","))
+    }
 
     if (is.null(check_exists)) {
         if (getGDALVersionInfo("VERSION_NUM") >= "1800") {
@@ -88,6 +94,9 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
             ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "POSIXt" && dftof[i] == "double") {
+            ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
+            ogr_ftype[i] <- as.integer(4) #"OFTString"
+        } else if (dfcls[i] == "POSIXt" && dftof[i] == "list") {
             ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "integer" && dftof[i] == "integer") {

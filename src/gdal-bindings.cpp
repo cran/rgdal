@@ -7,6 +7,8 @@
 #include <ogrsf_frmts.h>
 #include <cpl_error.h>
 
+#include <gdal_version.h>
+
 // R headers moved outside extern "C" 070808 RSB re. note from BDR
 // #ifdef __cplusplus
 // extern "C" {
@@ -251,6 +253,23 @@ RGDAL_GDALVersionInfo(SEXP str) {
 }
 
 SEXP
+RGDAL_GDALCheckVersion() {
+    SEXP ans;
+
+    PROTECT(ans=NEW_LOGICAL(1));
+
+    installErrorHandler();
+    LOGICAL_POINTER(ans)[0] = GDALCheckVersion(GDAL_VERSION_MAJOR,
+        GDAL_VERSION_MINOR, NULL);
+    uninstallErrorHandlerAndTriggerError();
+
+    UNPROTECT(1);
+
+    return(ans);
+}
+
+
+SEXP
 RGDAL_GDAL_DATA_Info(void) {
     SEXP ans;
 
@@ -408,7 +427,9 @@ RGDAL_CloseHandle(SEXP sxpHandle) {
   installErrorHandler();
   if (pDataset != NULL) {
 
-    pDataset->~GDALDataset();
+// Even Roualt 120816
+      GDALClose((GDALDatasetH)pDataset);
+//    pDataset->~GDALDataset();
 
     R_ClearExternalPtr(sxpHandle);
 

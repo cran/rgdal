@@ -65,7 +65,7 @@ copy.SpatialGDAL(dataset, fname, driver = getDriver(dataset@grod),
 }
 \note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
 
-\author{ Edzer J. Pebesma, \email{e.pebesma@geo.uu.nl} }
+\author{ Edzer Pebesma, \email{edzer.pebesma@uni-muenster.de} }
 
 \seealso{
   \code{\link[sp]{SpatialGridDataFrame-class}}, which is actually sub-classed.
