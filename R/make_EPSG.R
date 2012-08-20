@@ -1,7 +1,7 @@
 make_EPSG <- function(file) {
         if (missing(file)) {
             tf <- tempfile()
-            n <- .Call("PROJcopyEPSG", tf, package="rgdal")
+            n <- .Call("PROJcopyEPSG", tf, PACKAGE="rgdal")
             if (n > 0) file <- tf
             else stop("Error opening epsg file")
         }

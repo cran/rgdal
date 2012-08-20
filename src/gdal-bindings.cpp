@@ -253,7 +253,7 @@ RGDAL_GDALVersionInfo(SEXP str) {
 }
 
 SEXP
-RGDAL_GDALCheckVersion() {
+RGDAL_GDALCheckVersion(void) {
     SEXP ans;
 
     PROTECT(ans=NEW_LOGICAL(1));
