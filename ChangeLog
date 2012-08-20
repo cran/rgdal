@@ -1,3 +1,18 @@
+2012-08-20 19:24  rsbivand
+
+	* R/gdal.R, R/make_EPSG.R, src/gdal-bindings.cpp, src/init.c,
+	  src/rgdal.h: adding R_registerRoutines
+
+2012-08-20 15:59  rsbivand
+
+	* DESCRIPTION, R/project.R, man/project.Rd,
+	  man/spTransform-methods.Rd, src/projectit.cpp: ob_tran to/from
+	  corrections
+
+2012-08-19 18:24  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-08-19 18:21  rsbivand
 
 	* R/AAA.R: tidy message

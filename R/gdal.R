@@ -521,7 +521,7 @@ RGB2PCT <- function(x, band, driver.name = 'MEM',
                 getRasterBand(dithered),
                 as.integer(ncolors),
                 as.logical(set.ctab),
-                package = "rgdal") / 255
+                PACKAGE = "rgdal") / 255
 
   if (set.ctab)
     dithered

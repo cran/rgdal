@@ -126,7 +126,7 @@ PROJcopyEPSG(SEXP tf) {
     return(ans);
 }
 
-void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg){
+void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg, int *ob_tran){
 
   /* call the _forward_ projection specified by the string projarg,
   * using longitude and lat from xlon and ylat vectors, return
@@ -155,6 +155,10 @@ void project(int *n, double *xlon, double *ylat, double *x, double *y, char **pr
       if (p.u == HUGE_VAL || ISNAN(p.u)) {
               nwarn++;
 /*	      Rprintf("projected point not finite\n");*/
+      }
+      if (*ob_tran) {
+        p.u *= RAD_TO_DEG;
+        p.v *= RAD_TO_DEG;
       }
       x[i]=p.u;
       y[i]=p.v;
@@ -205,16 +209,21 @@ void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char 
   pj_free(pj);
 }
 
-SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y,
-       SEXP use_ob_tran) {
+SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 
 	/* interface to pj_transform() to be able to use longlat proj
 	 * and datum transformation in an SEXP format */
 
-	int i, n, nwarn=0;
+	int i, n, nwarn=0, ob_tran;
 	double *xx, *yy, *zz;
 	projPJ fromPJ, toPJ;
+        SEXP use_ob_tran = getAttrib(npts, install("ob_tran"));
 	SEXP res;
+
+        if (use_ob_tran == R_NilValue) ob_tran = 0;
+        else if (INTEGER_POINTER(use_ob_tran)[0] == 1) ob_tran = 1;
+        else if (INTEGER_POINTER(use_ob_tran)[0] == -1) ob_tran = -1;
+        else ob_tran = 0;
 	
 	if (!(fromPJ = pj_init_plus(CHAR(STRING_ELT(fromargs, 0))))) 
 		error(pj_strerrno(*pj_get_errno_ref()));
@@ -232,7 +241,7 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y,
 		yy[i] = NUMERIC_POINTER(y)[i];
 		zz[i] = (double) 0;
 	}
-	if ( pj_is_latlong(fromPJ) || LOGICAL_POINTER(use_ob_tran)[0]) {
+	if ( pj_is_latlong(fromPJ) || ob_tran == 1) {
 		for (i=0; i < n; i++) {
        			 xx[i] *= DEG_TO_RAD;
        			 yy[i] *= DEG_TO_RAD;
@@ -249,15 +258,22 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y,
 	SET_STRING_ELT(VECTOR_ELT(res, 3), 0, 
 		COPY_TO_USER_STRING(pj_get_def(toPJ, 0)));
 
-	if( pj_transform( fromPJ, toPJ, (long) n, 0, xx, yy, zz ) != 0 ) {
+        if (ob_tran != 0) {
+	    if( pj_transform( toPJ, fromPJ, (long) n, 0, xx, yy, zz ) != 0 ) {
 		pj_free(fromPJ); pj_free(toPJ);
-/*		Rprintf("error in pj_transform\n"); */
 		error("error in pj_transform: %s",
                     pj_strerrno(*pj_get_errno_ref()));
-	}
+	    }
+        } else {
+	    if( pj_transform( fromPJ, toPJ, (long) n, 0, xx, yy, zz ) != 0 ) {
+		pj_free(fromPJ); pj_free(toPJ);
+		error("error in pj_transform: %s",
+                    pj_strerrno(*pj_get_errno_ref()));
+	    }
+        }
 
         pj_free(fromPJ); pj_free(toPJ);
-	if ( pj_is_latlong(toPJ) ) {
+	if ( pj_is_latlong(toPJ) || ob_tran == -1) {
 		for (i=0; i < n; i++) {
                		xx[i] *= RAD_TO_DEG;
                		yy[i] *= RAD_TO_DEG;

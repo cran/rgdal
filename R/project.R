@@ -1,4 +1,4 @@
-# Copyright (c) 2003-8 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
+# Copyright (c) 2003-12 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
 
 getPROJ4VersionInfo <- function() {
     res0 <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")
@@ -24,13 +24,16 @@ projNAD <- function() {
 # 111216 RSB
     stopifnot(is.character(proj))
     stopifnot(length(proj) == 1)
+    stopifnot(is.logical(inv))
+# 120816 RSB
     stopifnot(is.logical(use_ob_tran))
     if (use_ob_tran) {
         gp <- grep("proj=ob_tran", proj)
         if (length(gp) == 0) {
             use_ob_tran <- FALSE
             warning("project: use_ob_tran set FALSE")
-        }
+# 120820 RSB
+        } else inv <- !inv
     }
     if(!inv) {
       res <- .C("project",
@@ -40,6 +43,7 @@ projNAD <- function() {
                 x=double(nc),
                 y=double(nc),
                 proj,
+                as.integer(use_ob_tran),
                 NAOK=TRUE,
                 PACKAGE="rgdal")
     } else {
@@ -71,21 +75,29 @@ if (!isGeneric("spTransform"))
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
           if (dots$use_ob_tran) {
-            gp <- grep("proj=ob_tran", proj4string(x))
-            if (length(gp) == 0) {
-              use_ob_tran <- FALSE
+            gpf <- grep("proj=ob_tran", CRSargs(CRSobj))
+            gpi <- grep("proj=ob_tran", proj4string(x))
+            if (length(gpf) == 0 && length(gpi) == 0) {
+              use_ob_tran <- 0L
               warning("project: use_ob_tran set FALSE")
-            } else use_ob_tran <- TRUE
-          } else use_ob_tran <- FALSE
-        } else use_ob_tran <- FALSE
+            } else {
+              if (length(gpf) > 0) use_ob_tran <- -1L
+              else use_ob_tran <- 1L
+            }
+          } else {
+            use_ob_tran <- 0L
+          }
+        } else {
+          use_ob_tran <- 0L
+        }
 	crds <- coordinates(x)
 	crds.names <- dimnames(crds)[[2]] # crds is matrix
 	if (ncol(crds) != 2) 	
 		warning("Only x- and y-coordinates are being transformed")
 	n <- nrow(crds)
+        attr(n, "ob_tran") <- use_ob_tran
 	res <- .Call("transform", proj4string(x), CRSargs(CRSobj), n,
-		as.double(crds[,1]), as.double(crds[,2]), use_ob_tran,
-		PACKAGE="rgdal")
+		as.double(crds[,1]), as.double(crds[,2]), PACKAGE="rgdal")
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
@@ -132,8 +144,9 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
                 use_ob_tran=use_ob_tran) {
 	crds <- slot(x, "coords")
 	n <- nrow(crds)
+        attr(n, "ob_tran") <- use_ob_tran
 	res <- .Call("transform", from_args, to_args, n,
-		as.double(crds[,1]), as.double(crds[,2]), use_ob_tran,
+		as.double(crds[,1]), as.double(crds[,2]),
 		PACKAGE="rgdal")
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
@@ -175,13 +188,21 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
           if (dots$use_ob_tran) {
-            gp <- grep("proj=ob_tran", proj4string(x))
-            if (length(gp) == 0) {
-              use_ob_tran <- FALSE
+            gpf <- grep("proj=ob_tran", CRSargs(CRSobj))
+            gpi <- grep("proj=ob_tran", proj4string(x))
+            if (length(gpf) == 0 && length(gpi) == 0) {
+              use_ob_tran <- 0L
               warning("project: use_ob_tran set FALSE")
-            } else use_ob_tran <- TRUE
-          } else use_ob_tran <- FALSE
-        } else use_ob_tran <- FALSE
+            } else {
+              if (length(gpf) > 0) use_ob_tran <- 1L
+              else use_ob_tran <- -1L
+            }
+          } else {
+            use_ob_tran <- 0L
+          }
+        } else {
+          use_ob_tran <- 0L
+        }
 	input <- slot(x, "lines")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
@@ -208,8 +229,9 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
                 use_ob_tran=use_ob_tran) {
 	crds <- slot(x, "coords")
 	n <- nrow(crds)
+        attr(n, "ob_tran") <- use_ob_tran
 	res <- .Call("transform", from_args, to_args, n,
-		as.double(crds[,1]), as.double(crds[,2]), use_ob_tran,
+		as.double(crds[,1]), as.double(crds[,2]),
 		PACKAGE="rgdal")
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
@@ -250,13 +272,21 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
           if (dots$use_ob_tran) {
-            gp <- grep("proj=ob_tran", proj4string(x))
-            if (length(gp) == 0) {
-              use_ob_tran <- FALSE
+            gpf <- grep("proj=ob_tran", CRSargs(CRSobj))
+            gpi <- grep("proj=ob_tran", proj4string(x))
+            if (length(gpf) == 0 && length(gpi) == 0) {
+              use_ob_tran <- 0L
               warning("project: use_ob_tran set FALSE")
-            } else use_ob_tran <- TRUE
-          } else use_ob_tran <- FALSE
-        } else use_ob_tran <- FALSE
+            } else {
+              if (length(gpf) > 0) use_ob_tran <- 1L
+              else use_ob_tran <- -1L
+            }
+          } else {
+            use_ob_tran <- 0L
+          }
+        } else {
+          use_ob_tran <- 0L
+        }
 	input <- slot(x, "polygons")
 	n <- length(input)
 	output <- vector(mode="list", length=n)

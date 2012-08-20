@@ -54,7 +54,7 @@ Note that warnings about different projections may be issued when the PROJ.4 lib
 
 Also note that re-projection and/or datum transformation will usually not work for regular grids. The term used for similar operations for regular grids is warping, which involved resampling to a regular grid in the target coordinate reference system.
 
-The methods may take an optional argument \dQuote{use_ob_tran}, default FALSE, if TRUE and \dQuote{+proj=ob_tran} and inv=TRUE, use General Oblique Transformation with from/to projection reversal, meeting a need pointed out by Martin Ivanov (2012-08-15)
+The methods may take an optional argument \dQuote{use_ob_tran}, default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal (the user oblique transforms from longlat to oblique forward rather than inverse as suggested in PROJ.4 mailing list postings); these changes are intended to meet a need pointed out by Martin Ivanov (2012-08-15).
 }
 
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
@@ -123,16 +123,15 @@ text(coordinates(grdtxt_BNG),
    labels=parse(text=as.character(grdtxt_BNG$labels)))
 par(opar)
 crds <- matrix(data=c(9.05, 48.52), ncol=2)
-spPoint <- SpatialPoints(coords=crds*(pi/180),
- proj4string=CRS(paste("+proj=ob_tran +o_proj=longlat +o_lon_p=-162",
- "+o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")))
-spTransform(spPoint, CRS("+proj=longlat +ellps=sphere +no_defs"))
 spPoint <- SpatialPoints(coords=crds,
- proj4string=CRS(paste("+proj=ob_tran +o_proj=longlat +o_lon_p=-162",
- "+o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")))
-spTransform(spPoint, CRS("+proj=longlat +ellps=sphere +no_defs"),
+ proj4string=CRS("+proj=longlat +ellps=sphere +no_defs"))
+a <- spTransform(spPoint, CRS(paste("+proj=ob_tran +o_proj=longlat",
+ "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")),
  use_ob_tran=TRUE)
+a
 #should be (-5.917698  -1.87195)
+spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
+ use_ob_tran=TRUE)
 #added after posting by Martin Ivanov
 }
 
