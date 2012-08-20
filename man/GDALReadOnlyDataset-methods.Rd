@@ -32,7 +32,7 @@ derived from row/column selection values.
 An GDALReadOnlyDataset object can be coerced directly to a SpatialGridDataFrame
 }
 
-\author{Edzer J. Pebesma}
+\author{Edzer Pebesma}
 
 \seealso{See also \code{\link{readGDAL}} \code{\link{GDALDriver-class}},
 \code{\link{GDALDataset-class}}, \code{\link{GDALTransientDataset-class}},

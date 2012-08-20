@@ -128,6 +128,8 @@ fi
 fi
 
 if test "${gdalok}" = no; then
+   cat errors.txt
+   AC_MSG_NOTICE([Install failure: compilation and/or linkage problems.])
    AC_MSG_ERROR([GDALAllRegister not found in libgdal.])
 fi
 

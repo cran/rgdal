@@ -1,3 +1,41 @@
+2012-08-19 18:21  rsbivand
+
+	* R/AAA.R: tidy message
+
+2012-08-16 11:28  rsbivand
+
+	* src/gdal-bindings.cpp: remove ~ delete
+
+2012-08-16 10:05  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/project.R,
+	  man/GDALDriver-class.Rd, src/gdal-bindings.cpp: correct
+	  use_ob_tran
+
+2012-08-15 18:56  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/project.R,
+	  man/GDALDriver-class.Rd, man/project.Rd,
+	  man/spTransform-methods.Rd, src/gdal-bindings.cpp,
+	  src/projectit.cpp: support for ob_tran reversal
+
+2012-08-15 08:44  edzer
+
+	* man/GDALReadOnlyDataset-methods.Rd, man/SpatialGDAL-class.Rd,
+	  man/readGDAL.Rd: updated name and email addresses
+
+2012-07-05 17:06  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: configure messages
+
+2012-06-25 07:53  rsbivand
+
+	* R/ogr_write.R: accept POSIXlt as list for writeOGR
+
+2012-06-23 14:25  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-06-23 14:24  rsbivand
 
 	* DESCRIPTION, inst/README: remove extras from OSX installation
