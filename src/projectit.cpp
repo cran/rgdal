@@ -139,7 +139,7 @@ void project(int *n, double *xlon, double *ylat, double *x, double *y, char **pr
   
   if (!(pj = pj_init_plus(*projarg))) 
     error(pj_strerrno(*pj_get_errno_ref()));
-/*  Rprintf("%s\n", pj_get_def(pj, 0));*/
+/*Rprintf("pj_fwd: %s\n", pj_get_def(pj, 0));*/
 
   for (i=0; i<*n; i++) {
     /* preserve NAs and NaNs. Allow Infs, since maybe proj can handle them. */
@@ -182,7 +182,7 @@ void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char 
   
   if (!(pj = pj_init_plus(*projarg)))
     error(pj_strerrno(*pj_get_errno_ref()));
-/*  Rprintf("%s\n", pj_get_def(pj, 0));*/
+/*Rprintf("pj_inv: %s\n", pj_get_def(pj, 0));*/
 
   for(i=0;i<*n;i++){
     if(ISNAN(x[i]) || ISNAN(y[i])){

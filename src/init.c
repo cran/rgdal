@@ -6,7 +6,7 @@
 
 static const R_CMethodDef CEntries[] = {
     {"project", (DL_FUNC) &project, 7},
-    {"project_inv", (DL_FUNC) &project, 7},
+    {"project_inv", (DL_FUNC) &project_inv, 7},
     {NULL, NULL, 0} 
 };
 
