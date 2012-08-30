@@ -1,3 +1,29 @@
+2012-08-30 08:24  rsbivand
+
+	* man/project.Rd, man/spTransform-methods.Rd, tests/test_proj.R,
+	  tests/test_proj.Rout.save: add projection tests
+
+2012-08-30 06:53  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-08-30 06:51  rsbivand
+
+	* DESCRIPTION: tidy
+
+2012-08-29 19:14  rsbivand
+
+	* src/init.c, src/projectit.cpp: fix init.c bug for project_inv
+
+2012-08-23 17:37  rsbivand
+
+	* DESCRIPTION, R/project.R, man/spTransform-methods.Rd: more
+	  ob_tran fixes
+
+2012-08-20 19:29  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-08-20 19:24  rsbivand
 
 	* R/gdal.R, R/make_EPSG.R, src/gdal-bindings.cpp, src/init.c,

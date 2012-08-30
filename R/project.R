@@ -141,7 +141,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 
 
 ".spTransform_Line" <- function(x, to_args, from_args, ii, jj,
-                use_ob_tran=use_ob_tran) {
+                use_ob_tran) {
 	crds <- slot(x, "coords")
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
@@ -163,7 +163,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 #setMethod("spTransform", signature("Sline", "CRS"), spTransform.Sline)
 
 ".spTransform_Lines" <- function(x, to_args, from_args, ii,
-                use_ob_tran=use_ob_tran) {
+                use_ob_tran) {
 	ID <- slot(x, "ID")
 	input <- slot(x, "Lines")
 	n <- length(input)
@@ -194,8 +194,8 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
               use_ob_tran <- 0L
               warning("project: use_ob_tran set FALSE")
             } else {
-              if (length(gpf) > 0) use_ob_tran <- 1L
-              else use_ob_tran <- -1L
+              if (length(gpf) > 0) use_ob_tran <- -1L
+              else use_ob_tran <- 1L
             }
           } else {
             use_ob_tran <- 0L
@@ -226,7 +226,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 
 
 ".spTransform_Polygon" <- function(x, to_args, from_args, ii, jj,
-                use_ob_tran=use_ob_tran) {
+                use_ob_tran) {
 	crds <- slot(x, "coords")
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
@@ -247,7 +247,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 
 
 ".spTransform_Polygons" <- function(x, to_args, from_args, ii,
-                use_ob_tran=use_ob_tran) {
+                use_ob_tran) {
 	ID <- slot(x, "ID")
 	input <- slot(x, "Polygons")
 	n <- length(input)
@@ -278,8 +278,8 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
               use_ob_tran <- 0L
               warning("project: use_ob_tran set FALSE")
             } else {
-              if (length(gpf) > 0) use_ob_tran <- 1L
-              else use_ob_tran <- -1L
+              if (length(gpf) > 0) use_ob_tran <- -1L
+              else use_ob_tran <- 1L
             }
           } else {
             use_ob_tran <- 0L
