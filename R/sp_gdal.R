@@ -335,11 +335,15 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
             tds.copy <- copyDataset(tds.create, driver=drivername, fname=fname)
             GDAL.close(tds.create)
 	    saveDataset(tds.copy, fname, options=options)
+# RSB 120921
+            GDAL.close(tds.copy)
         } else {
 	    tds.out <- create2GDAL(dataset=dataset, drivername=drivername, 
 		type=type, mvFlag=mvFlag, options=options, fname=fname,
                 setStatistics=setStatistics)
 	    saveDataset(tds.out, fname, options=options)
+# RSB 120921
+            GDAL.close(tds.out)
         }
 # RSB 081030 GDAL.close cleanup
 #	tmp.obj <- saveDataset(tds.out, fname, options=options)
