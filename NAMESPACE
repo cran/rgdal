@@ -1,3 +1,4 @@
+# useDynLib(rgdal, .registration = TRUE, .fixes = "GDAL_")
 useDynLib(rgdal)
 
 import(methods)

@@ -13,9 +13,9 @@ extern "C" {
 #define SP_XPORT(x) RGDAL_ ## x
 #include "sp.h"
 
-SEXP make_Polygonlist(SEXP iG);
+SEXP make_Polygonlist(SEXP iG, SEXP iGc);
 
-SEXP make_Polygon(SEXP jG);
+SEXP make_Polygon(SEXP jG, SEXP jGc);
 
 static CPLErr saved_eErrClass = CE_None;
 static int saved_err_no = 0;
@@ -97,7 +97,7 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer);
 SEXP ogrListLayers (SEXP ogrSource);
 SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields);
 SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments);
-SEXP make_Polygonlist(SEXP iG);
+//SEXP make_Polygonlist(SEXP iG);
 SEXP p4s_to_wkt(SEXP p4s, SEXP esri);
 SEXP OGR_write(SEXP inp);
 SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver);

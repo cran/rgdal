@@ -38,13 +38,13 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments)
     int pc=0;
     int nf, mp_count, mp_count_k0;
     int do_comments;
-    SEXP Hole;
+//    SEXP Hole;
 
     SEXP ans;
     SEXP ansnames;
 
     do_comments = INTEGER_POINTER(comments)[0];
-    PROTECT(Hole = NEW_INTEGER(1)); pc++;
+//    PROTECT(Hole = NEW_INTEGER(1)); pc++;
 
     installErrorHandler();
     Ogr_ds = OGROpen(CHAR(STRING_ELT(dsn, 0)), FALSE, NULL);
@@ -193,11 +193,15 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments)
 	        SET_VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4), i), 
 		    j), 1, NEW_NUMERIC(np));
 // added hole reporting since #0 is defined exterior, rest interior
-                if (j == 0) INTEGER_POINTER(Hole)[0] = 0;
-                else INTEGER_POINTER(Hole)[0] = 1;
-                setAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4), i), j),
-                    install("hole"), Hole);
-
+//                if (j == 0) INTEGER_POINTER(Hole)[0] = 0;
+//                else INTEGER_POINTER(Hole)[0] = 1;
+//                if (!do_comments) INTEGER_POINTER(Hole)[0] = NA_INTEGER;
+//                setAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4), i), j),
+//                   install("hole"), Hole);
+//if (i == 1L) Rprintf("wkbPolygon i %d j %d Hole %d\n", i, j, INTEGER_POINTER(Hole)[0]);
+//                Hole = getAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4),
+//                    i), j), install("hole"));
+// appear to need to retrieve Hole attribute 121016
                 for(k = 0; k < np; k++) {
 	            NUMERIC_POINTER(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(
 		        ans, 4), i), j), 0))[k] = OGR_G_GetX(hRing, k);
@@ -279,10 +283,14 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments)
 			    OGR_G_GetY(hRing, km);
 	              }
 // added hole reporting since #0 is defined exterior, rest interior
-                      if (k == 0) INTEGER_POINTER(Hole)[0] = 0;
-                      else INTEGER_POINTER(Hole)[0] = 1;
-                      setAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4),
-                        i), mp_count), install("hole"), Hole);
+//                      if (k == 0) INTEGER_POINTER(Hole)[0] = 0;
+//                      else INTEGER_POINTER(Hole)[0] = 1;
+//                      if (!do_comments) INTEGER_POINTER(Hole)[0] = NA_INTEGER;
+//                      setAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans, 4),
+//                        i), mp_count), install("hole"), Hole);
+//                      Hole = getAttrib(VECTOR_ELT(VECTOR_ELT(VECTOR_ELT(ans,
+//                        4), i), mp_count), install("hole"));
+// appear to need to retrieve Hole attribute 121016
                       if (k == 0) mp_count_k0 = mp_count;
 // added comment since #0 is defined exterior, rest interior
                       if (do_comments) {

@@ -1,4 +1,4 @@
-GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE) {
+GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent)
 	d <- dim(x)[1:2]
@@ -18,33 +18,44 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
         } else {
             band <- 1:nbands
             GDType <- character(nbands)
-            Bmin <- numeric(nbands)
-            Bmax <- numeric(nbands)
-            Bmn <- numeric(nbands)
-            Bsd <- numeric(nbands)
-#            Pix <- character(nbands)
             hasNoDataValues <- logical(nbands)
             NoDataValues <- numeric(nbands)
+            blockSize1 <- integer(nbands)
+            blockSize2 <- integer(nbands)
+            if (returnStats) {
+              Bmin <- rep(as.numeric(NA), nbands)
+              Bmax <- rep(as.numeric(NA), nbands)
+              Bmn <- rep(as.numeric(NA), nbands)
+              Bsd <- rep(as.numeric(NA), nbands)
+            }
+#            Pix <- character(nbands)
             if (returnRAT) RATlist <- vector(mode="list", length=nbands)
             if (returnCategoryNames)
                 CATlist <- vector(mode="list", length=nbands)
+            if (returnColorTable)
+                colTabs <- vector(mode="list", length=nbands)
             for (i in seq(along = band)) {
 
                 raster <- getRasterBand(x, band[i])
                 GDType[i] <- .GDALDataTypes[(.Call("RGDAL_GetBandType",
                     raster, PACKAGE="rgdal"))+1]
-                statsi <- .Call("RGDAL_GetBandStatistics", raster, silent,
+                bs <- getRasterBlockSize(raster)
+                blockSize1[i] <- bs[1]
+                blockSize2[i] <- bs[2]
+                if (returnStats) {
+                  statsi <- .Call("RGDAL_GetBandStatistics", raster, silent,
                     PACKAGE="rgdal")
-                if (is.null(statsi)) {
+                  if (is.null(statsi)) {
                     Bmin[i] <- .Call("RGDAL_GetBandMinimum", raster,
                         PACKAGE="rgdal")
                     Bmax[i] <- .Call("RGDAL_GetBandMaximum", raster,
                         PACKAGE="rgdal")
-                } else {
+                  } else {
                     Bmin[i] <- statsi[1]
                     Bmax[i] <- statsi[2]
                     Bmn[i] <- statsi[3]
                     Bsd[i] <- statsi[4]
+                  }
                 }
                 if (returnRAT) {
                     RATi <- .Call("RGDAL_GetRAT", raster, PACKAGE="rgdal")
@@ -54,6 +65,9 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
                     CATi <- .Call("RGDAL_GetCategoryNames", raster,
                         PACKAGE="rgdal")
                     if (!is.null(CATi)) CATlist[[i]] <- CATi
+                }
+                if (returnColorTable) {
+                    colTabs[[i]] <- getBandColorTable(raster)
                 }
                 NDV <- .Call("RGDAL_GetBandNoDataValue", raster,
                     PACKAGE="rgdal")
@@ -66,9 +80,11 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
 #                Pix[i] <- .Call("RGDAL_GetBandMetadataItem",
 #                    raster, "PIXELTYPE", "IMAGE_STRUCTURE", PACKAGE="rgdal")
             }
-            df <- data.frame(GDType=GDType, Bmin=Bmin, Bmax=Bmax, Bmean=Bmn,
-                Bsd=Bsd, hasNoDataValue=hasNoDataValues,
-                NoDataValue=NoDataValues)
+            df <- data.frame(GDType=GDType, hasNoDataValue=hasNoDataValues,
+                NoDataValue=NoDataValues, blockSize1=blockSize1,
+                blockSize2=blockSize2)
+            if (returnStats) df <- cbind(df, data.frame(Bmin=Bmin,
+                Bmax=Bmax, Bmean=Bmn, Bsd=Bsd))
         }
         
 	GDAL.close(x)
@@ -89,10 +105,12 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
 	attr(res, "projection") <- p4s 
 	attr(res, "file") <- fname
         attr(res, "df") <- df
+        attr(res, "sdf") <- returnStats
         attr(res, "mdata") <- mdata
         attr(res, "subdsmdata") <- subdsmdata
         if (returnRAT) attr(res, "RATlist") <- RATlist
         if (returnCategoryNames) attr(res, "CATlist") <- CATlist
+        if (returnColorTable) attr(res, "ColorTables") <- colTabs
 	class(res) <- "GDALobj"
 	res
 }
@@ -114,7 +132,11 @@ print.GDALobj <- function(x, ...) {
 	cat("file       ", attr(x, "file"), "\n")
         if (!is.null(attr(x, "df"))) {
             cat("apparent band summary:\n")
-            print(attr(x, "df"))
+            print(attr(x, "df")[,1:5])
+        }
+        if (attr(x, "sdf")) {
+            cat("apparent band statistics:\n")
+            print(attr(x, "df")[,6:9])
         }
         if (!is.null(attr(x, "mdata"))) {
             cat("Metadata:\n")
@@ -147,6 +169,11 @@ print.GDALobj <- function(x, ...) {
             cat("Category names:\n")
             print(CATs)            
         }
+        if (!is.null(attr(x, "ColorTables"))
+            && length(attr(x, "ColorTables")) > 0)
+            cat("Colour tables returned for bands:",
+              paste(which(sapply(attr(x, "ColorTables"),
+              function(x) !is.null(x))), collapse=" "), "\n")
 	invisible(x)
 }
 

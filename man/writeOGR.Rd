@@ -83,7 +83,7 @@ scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1], "scot_BNG")
 summary(scot_BNG)
 writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File")
 list.files(td)
-scot_BNG2 <- readOGR(paste(td, "scot_BNG.tab", sep="/"), "scot_BNG")
+scot_BNG2 <- readOGR(paste(td, "scot_BNG.tab", sep="/"), "scot_BNG", addCommentsToPolygons=FALSE)
 summary(scot_BNG2)
 writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File",
  dataset_options="FORMAT=MIF")
