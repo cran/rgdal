@@ -23,7 +23,7 @@ writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32",
  mvFlag = NA, options=NULL, copy_drivername = "GTiff", setStatistics=FALSE)
 create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA,
  options=NULL, fname = NULL, setStatistics=FALSE)
-GDALinfo(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE)
+GDALinfo(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE)
 GDALSpatialRef(fname, silent=FALSE)
 }
 
@@ -71,6 +71,8 @@ statistics in the output file (driver-dependent)}
 \item{returnRAT}{default FALSE, if TRUE, return a list with a Raster 
 Attribute Table or NULL for each band}
 \item{returnCategoryNames}{default FALSE, if TRUE, return a list with a character vector of CategoryNames or NULL for each band}
+\item{returnStats}{default TRUE, return band-wise statistics if avaliable (from 0.7-20 set to NA if not available)}
+\item{returnColorTable}{default FALSE; if TRUE return band-wise colour tables in a list attribute \dQuote{ColorTables}}
 %\item{clone}{if not NULL, a grid file to clone}
 }
 \details{In \code{writeGDAL}, if types other than \sQuote{Int32},

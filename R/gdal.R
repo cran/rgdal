@@ -479,12 +479,8 @@ getCategoryNames <- function(dataset, band = 1) {
   catNames
 }
 
-getColorTable <- function(dataset, band = 1) {
+getBandColorTable <- function(raster) {
 
-  assertClass(dataset, 'GDALReadOnlyDataset')
-
-  raster <- getRasterBand(dataset, band)
-  
   ctab <- .Call('RGDAL_GetColorTable', raster, PACKAGE="rgdal") / 255
 
   if (length(ctab) == 0L) return(NULL)
@@ -498,6 +494,15 @@ getColorTable <- function(dataset, band = 1) {
   else
     gray(ctab[,1])
 
+}
+
+getColorTable <- function(dataset, band = 1) {
+
+  assertClass(dataset, 'GDALReadOnlyDataset')
+
+  raster <- getRasterBand(dataset, band)
+  
+  getBandColorTable(raster)
 }
 
 RGB2PCT <- function(x, band, driver.name = 'MEM',
@@ -640,5 +645,30 @@ getRasterBlockSize <- function(raster) {
   
   .Call('RGDAL_GetRasterBlockSize', raster, PACKAGE="rgdal")
   
+}
+
+# thin wrappers 121001 Robert J. Hijmans
+
+.gd_SetNoDataValue <- function(object, NAflag) {
+.Call("RGDAL_SetNoDataValue", object, as.double(NAflag), PACKAGE="rgdal")
+}
+
+
+.gd_SetGeoTransform <- function(object, geotrans) {
+   .Call("RGDAL_SetGeoTransform", object, geotrans, PACKAGE="rgdal")
+}
+
+
+.gd_SetProject <- function(object, proj4string) {
+    .Call("RGDAL_SetProject", object, proj4string, PACKAGE="rgdal")
+}
+
+
+.gd_SetStatistics <- function(object, statistics) {
+.Call("RGDAL_SetStatistics", object, as.double(statistics), PACKAGE="rgdal")
+}
+
+.gd_transform <- function(projfrom, projto, n, x, y) {
+.Call("transform", projfrom, projto, n, x, y, PACKAGE="rgdal")
 }
 

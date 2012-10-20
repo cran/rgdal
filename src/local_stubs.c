@@ -1,4 +1,4 @@
 /* use same define in package's own header file */
 #define SP_XPORT(x) RGDAL_ ## x
 #include "sp_xports.c"
-/* touch 120415 */
+/* touch 121019 */

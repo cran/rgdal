@@ -58,7 +58,7 @@ static R_CallMethodDef CallEntries[] = {
     {"ogrListLayers", (DL_FUNC) &ogrListLayers, 1},
     {"ogrDataFrame", (DL_FUNC) &ogrDataFrame, 4},
     {"R_OGR_CAPI_features", (DL_FUNC) &R_OGR_CAPI_features, 3},
-    {"make_Polygonlist", (DL_FUNC) &make_Polygonlist, 1},
+    {"make_Polygonlist", (DL_FUNC) &make_Polygonlist, 2},
     {"p4s_to_wkt", (DL_FUNC) &p4s_to_wkt, 2},
     {"OGR_write", (DL_FUNC) &OGR_write, 1},
     {"ogrDeleteLayer", (DL_FUNC) &ogrDeleteLayer, 3},
