@@ -10,6 +10,8 @@
 \alias{getRasterBlockSize}
 \alias{toSigned}
 \alias{toUnSigned}
+\alias{get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84}
+\alias{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84}
 \title{Class "GDALRasterBand"}
 \description{Returns a two-dimensional array with data from a raster band, used internally within functions}
 \section{Objects from the Class}{
@@ -38,7 +40,7 @@ getRasterData(dataset, band = NULL, offset = c(0, 0),
 getRasterTable(dataset, band = NULL, offset = c(0, 0), 
   region.dim = dim(dataset))
 
-getProjectionRef(dataset)
+getProjectionRef(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = NULL)
 
 getRasterBand(dataset, band = 1)
 
@@ -47,6 +49,9 @@ getRasterBlockSize(raster)
 toSigned(x, base)
 
 toUnSigned(x, base)
+
+get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84()
+set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84(value)
 
 }
 \arguments{
@@ -65,6 +70,8 @@ toUnSigned(x, base)
   \item{raster}{An object of class GDALRasterBand}
   \item{x}{integer variable for conversion}
   \item{base}{If Byte input, 8, if Int16 or UInt16, 16}
+  \item{OVERRIDE_PROJ_DATUM_WITH_TOWGS84}{logical value, default NULL, which case the cached option set by \code{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84} is used. Ignored if the GDAL version is less than \dQuote{1.8.0} or if the envirnment variable is already set}
+  \item{value}{logical value to set OVERRIDE_PROJ_DATUM_WITH_TOWGS84}
 }
 
 \details{
@@ -86,6 +93,8 @@ toUnSigned(x, base)
 
   }
 }
+
+\note{The OVERRIDE_PROJ_DATUM_WITH_TOWGS84 argument is used to revert GDAL behaviour to pre-1.8.0 status; from 1.8.0, any input datum may be discarded if the input also includes a towgs84 tag in conversion to the PROJ.4 representation, see \url{http://trac.osgeo.org/gdal/ticket/4880} and \url{http://lists.osgeo.org/pipermail/gdal-dev/2012-November/034550.html}. The cached value of OVERRIDE_PROJ_DATUM_WITH_TOWGS84 will also be used in \code{open.SpatialGDAL}, \code{sub.GDROD}, and \code{asGDALROD_SGDF}, which do not have a suitable argument}
 
 
 \author{Timothy H. Keitt, modified by Roger Bivand}

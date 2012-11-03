@@ -20,7 +20,7 @@ exportClass(SpatialGDAL, SpatialGDALWrite)
 
 export(project, make_EPSG, projInfo, getPROJ4VersionInfo, getPROJ4libPath,
   projNAD)
-export(CRSargs)
+export(CRSargs, checkCRSArgs)
 export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
 export(getGDALDriverNames, getDriverName, getDriverLongName, gdalDrivers)
 export(getDescription)
@@ -42,6 +42,9 @@ export(spTransform, spTransform.SpatialPoints,
   spTransform.SpatialPolygonsDataFrame)
 
 export(OGRSpatialRef, GDALSpatialRef)
+
+export(get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84,
+ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
 
 S3method(spTransform, SpatialPoints)
 S3method(spTransform, SpatialPointsDataFrame)

@@ -18,7 +18,8 @@ open.SpatialGDAL = function(con, ..., silent = FALSE) {
 		cat(paste(con, "has GDAL driver", getDriverName(getDriver(grod)),"\n"))
 		cat(paste("and has", d[1], "rows and", d[2], "columns\n"))
 	}
-	p4s <- .Call("RGDAL_GetProjectionRef", grod, PACKAGE="rgdal")
+#	p4s <- .Call("RGDAL_GetProjectionRef", grod, PACKAGE="rgdal")
+	p4s <- getProjectionRef(grod, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', grod, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")

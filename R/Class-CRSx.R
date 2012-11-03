@@ -33,3 +33,6 @@
 	} else return(as.character(NA))
 }
 
+checkCRSArgs <- function(uprojargs) {
+  .Call("checkCRSArgs", uprojargs, PACKAGE="rgdal")
+}
