@@ -51,7 +51,8 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
 	# [1] 178400     40      0 334000      0    -40
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
-	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+#	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 
 	# retrieve data:

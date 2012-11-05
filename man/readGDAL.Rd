@@ -16,15 +16,15 @@ be able to save to GDAL driver formats that only permit copying rather
 than creation.}
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ...,
- half.cell=c(0.5, 0.5), silent = FALSE)
+ half.cell=c(0.5, 0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ...,
- half.cell=c(0.5,0.5))
+ half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32",
  mvFlag = NA, options=NULL, copy_drivername = "GTiff", setStatistics=FALSE)
 create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA,
  options=NULL, fname = NULL, setStatistics=FALSE)
-GDALinfo(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE)
-GDALSpatialRef(fname, silent=FALSE)
+GDALinfo(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
+GDALSpatialRef(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 }
 
 \arguments{
@@ -46,6 +46,7 @@ from the GDAL data set}
 usually as default, but may be set to c=(0,0) if needed; presently ordered (y,x) - this may change}
 \item{silent}{ logical; if TRUE, comment and non-fatal CPL driver errors 
 suppressed }
+\item{OVERRIDE_PROJ_DATUM_WITH_TOWGS84}{logical value, default NULL, which case the cached option set by \code{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84} is used. Ignored if the GDAL version is less than \dQuote{1.8.0} or if the envirnment variable is already set; see \code{\link{getProjectionRef}} for further details}
 \item{...}{ arguments passed to either \code{getRasterData}, or
 \code{getRasterTable}, depending on rotation angles (see below);
 see the rgdal documentation for the available options (subsetting

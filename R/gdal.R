@@ -327,12 +327,28 @@ setMethod('dim', 'GDALReadOnlyDataset',
               c(nrows, ncols)
           })
 
-getProjectionRef <- function(dataset) {
+getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
 
   assertClass(dataset, 'GDALReadOnlyDataset')
 
-  noquote(.Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal"))
-
+  vs <- strsplit(strsplit(getGDALVersionInfo(), ",")[[1]][1], " ")[[1]][2]
+  env_absent <- nchar(Sys.getenv("OVERRIDE_PROJ_DATUM_WITH_TOWGS84")) == 0
+  if ((vs > "1.8.0") && env_absent) {
+    if (is.null(OVERRIDE_PROJ_DATUM_WITH_TOWGS84))
+      OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84()
+    stopifnot(is.logical(OVERRIDE_PROJ_DATUM_WITH_TOWGS84))
+    stopifnot(length(OVERRIDE_PROJ_DATUM_WITH_TOWGS84) == 1)
+    if (!OVERRIDE_PROJ_DATUM_WITH_TOWGS84) {
+      Sys.setenv("OVERRIDE_PROJ_DATUM_WITH_TOWGS84"="NO")
+      res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
+      Sys.unsetenv("OVERRIDE_PROJ_DATUM_WITH_TOWGS84")
+    } else {
+      res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
+    }
+  } else {
+    res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
+  }
+  res
 }
 
 putRasterData <- function(dataset,
@@ -672,3 +688,13 @@ getRasterBlockSize <- function(raster) {
 .Call("transform", projfrom, projto, n, x, y, PACKAGE="rgdal")
 }
 
+get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- function() {
+  get("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", envir=.RGDAL_CACHE)
+}
+
+set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- function(value) {
+        stopifnot(is.logical(value))
+        stopifnot(length(value) == 1)
+        assign("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", value, envir = .RGDAL_CACHE)
+        get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84()
+}

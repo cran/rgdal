@@ -1,9 +1,10 @@
-GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE) {
+GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent)
 	d <- dim(x)[1:2]
         dr <- getDriverName(getDriver(x))
-	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+#	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt <- .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure") && !silent)
@@ -183,7 +184,8 @@ asGDALROD_SGDF <- function(from) {
 	half.cell <- c(0.5,0.5)
 	offset <- c(0,0)
 	output.dim <- d[1:2]
-	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+#	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
@@ -213,7 +215,7 @@ asGDALROD_SGDF <- function(from) {
 
 setAs("GDALReadOnlyDataset", "SpatialGridDataFrame", asGDALROD_SGDF)
 
-asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5)) {
+asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
 	if (!extends(class(x), "GDALReadOnlyDataset"))
 		stop("x must be or extend a GDALReadOnlyDataset")
 	d = dim(x)
@@ -228,7 +230,8 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 
 # suggestion by Paul Hiemstra 070817
 	if (is.null(p4s)) 
-	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+#	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
@@ -264,7 +267,7 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 	return(data)
 }
 
-readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE) {
+readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x = GDAL.open(fname, silent=silent)
 	d = dim(x)
@@ -289,7 +292,8 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 	}
 # suggestion by Paul Hiemstra 070817
 	if (is.null(p4s)) 
-	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+#	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
@@ -458,10 +462,11 @@ toUnSigned <- function(x, base) {
     as.integer(x)
 }
 
-"GDALSpatialRef" <- function(fname, silent=FALSE) {
+"GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent)
-        p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+#        p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
+        p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
 	GDAL.close(x)
         p4s
 }

@@ -3,7 +3,7 @@
 \alias{getPROJ4VersionInfo}
 \alias{getPROJ4libPath}
 \alias{projNAD}
-\alias{checkCRSArgs}
+%\alias{checkCRSArgs}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{List PROJ.4 tag information}
 \description{
