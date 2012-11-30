@@ -1,3 +1,44 @@
+2012-11-30 16:51  rsbivand
+
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: bug in readOGR
+	  when layer has no fields
+
+2012-11-29 17:40  rsbivand
+
+	* tests/tests.Rout.save: tidy
+
+2012-11-29 09:46  rsbivand
+
+	* R/AAA.R, configure, configure.ac, tests/tests.Rout.save: add SVN
+	  revision start message
+
+2012-11-26 21:50  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: shapefile DBF encoding etc
+	  issues
+
+2012-11-24 21:07  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R, configure.ac,
+	  man/readOGR.Rd: shapefile DBF encoding etc issues
+
+2012-11-07 15:46  rsbivand
+
+	* src/OGR_write.cpp: tidy
+
+2012-11-07 12:05  rsbivand
+
+	* R/ogr_write.R, man/writeOGR.Rd, src/OGR_write.cpp: added
+	  morphToESRI argument to writeOGR to permit user control
+
+2012-11-05 08:40  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-11-05 08:38  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-11-03 13:45  rsbivand
 
 	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/sgdf_gdal.R,

@@ -31,8 +31,16 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
   gdl <- getGDAL_DATA_Path()
   pl <- getPROJ4libPath()
   if (nchar(pl) == 0) pl <- "(autodetected)"
+  fn <- system.file("SVN_VERSION", package="rgeos")
+  if (file.exists(fn)) {
+    svn_version <- scan(system.file("SVN_VERSION", package="rgeos"),
+      what=character(1), sep="\n", quiet=TRUE)
+  } else {
+    svn_version <- "(unknown)"
+  }
 
-  Smess <- paste('Geospatial Data Abstraction Library ',
+  Smess <- paste('rgdal: (SVN revision ', svn_version, ')\n',
+    'Geospatial Data Abstraction Library ',
     'extensions to R successfully loaded\n',
     'Loaded GDAL runtime: ', rver, ifelse(ver_ok, '\n',
     '\n   but rgdal build and GDAL runtime not in sync:\n   ... consider re-installing rgdal!!\n'),

@@ -7,7 +7,7 @@
 }
 \usage{
 writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
- layer_options=NULL, verbose = FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE)
+ layer_options=NULL, verbose = FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,6 +21,7 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
   \item{check_exists}{default NULL, which tests for the GDAL version, and sets FALSE if < 1.8.0, or TRUE for >= 1.8.0}
   \item{overwrite_layer}{default FALSE, if TRUE and \code{check_exists=TRUE}, delete the existing layer of the same name from the data source before writing the new layer; this will delete data and must be used with extreme caution, its behaviour varies between drivers, and accommodates changes that may appear in GDAL 1.8}
   \item{delete_dsn}{default FALSE, may be set to TRUE if \code{overwrite_layer} reports that the data source cannot be updated; this will delete data and must be used with extreme caution, its behaviour varies between drivers, and accommodates changes that may appear in GDAL 1.8}
+  \item{morphToESRI}{default NULL, in which case set TRUE if driver is \dQuote{ESRI Shapefile} or FALSE otherwise; may be used to override this default}
 }
 \details{
   Working out which combination of dsn, layer, and driver (and option) values give the desired output takes time and care, and is constrained by the ability of drivers to write output; many are read-only. Use of the references given is highly advisable, with searches in the archives of other software using GDAL/OGR.
