@@ -1,4 +1,4 @@
-writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE) {
+writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL) {
     drvs <- ogrDrivers()
     mch <- match(driver, drvs$name)
     if (is.na(mch) || length(mch) > 1L)
@@ -76,6 +76,10 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
             }
         }
     }
+    if (is.null(morphToESRI))
+        morphToESRI <- ifelse(driver == "ESRI Shapefile", TRUE, FALSE)
+    stopifnot(is.logical(morphToESRI))
+    stopifnot(length(morphToESRI) == 1)
 
     nf <- length(dfcls)
     ldata <- vector(mode="list", length=nf)
@@ -116,6 +120,10 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
             if (any(nchar(fld_names) > 10)) 
                 fld_names <- abbreviate(fld_names, minlength=5)
         }
+# fix for dots in DBF field names 121124
+        if (length(wh. <- grep("\\.", fld_names) > 0)) {
+            fld_names[wh.] <- gsub("\\.", "_", fld_names[wh.])
+        }
     }
     if (length(fld_names) != length(unique(fld_names)))
        stop("Non-unique field names")
@@ -124,13 +132,15 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     pre <- list(obj, as.character(dsn), as.character(layer), 
         as.character(driver), as.integer(nobj), nf,
         as.character(fld_names), as.integer(ogr_ftype), ldata, 
-        as.character(dataset_options), as.character(layer_options))
+        as.character(dataset_options), as.character(layer_options),
+        as.logical(morphToESRI))
     res <- .Call("OGR_write", pre, PACKAGE="rgdal")
     if (verbose) {
         res <- list(object_type=res, output_dsn=dsn, output_layer=layer,
             output_diver=driver, output_n=nobj, output_nfields=nf,
             output_fields=fld_names, output_fclasses=ogr_ftype, 
-            dataset_options=dataset_options, layer_options=layer_options)
+            dataset_options=dataset_options, layer_options=layer_options,
+            morphToESRI=morphToESRI)
         return(res)
     } 
 }

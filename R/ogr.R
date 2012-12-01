@@ -1,5 +1,5 @@
 # Copyright 2003 (c) Barry Rowlingson
-# Modified 2006-9 Roger Bivand
+# Modified 2006-12 Roger Bivand
 ###
 ###
 ###  Routines for ogr layer data source 
@@ -7,14 +7,36 @@
 ###
 
 #
-ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
+ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL){
   if (missing(dsn)) stop("missing dsn")
   if (nchar(dsn) == 0) stop("empty name")
   if (missing(layer)) stop("missing layer")
   if (nchar(layer) == 0) stop("empty name")
 # a list with various ogr data source information
+  
+  use_iconv <- ifelse(as.integer(getGDALVersionInfo("VERSION_NUM")) < 1900L,
+    TRUE, FALSE)
+  if (!is.null(encoding)) {
+    stopifnot(is.character(encoding))
+    stopifnot(length(encoding) == 1)
+  }
+  if (!is.null(input_field_name_encoding)) {
+    warning("input_field_name_encoding= deprecated, use encoding=")
+    stopifnot(is.character(input_field_name_encoding))
+    stopifnot(length(input_field_name_encoding) == 1)
+    if (!is.null(encoding) && (encoding != input_field_name_encoding))
+       stop("encoding and input_field_name_encoding differ")
+    if (is.null(encoding)) encoding <- input_field_name_encoding
+  }
+  if (!use_iconv && !is.null(encoding) && Sys.getenv("SHAPE_ENCODING") == "") {
+    Sys.setenv("SHAPE_ENCODING"=encoding)
+  }
   ogrinfo <- .Call("ogrInfo",as.character(dsn), as.character(layer),
     PACKAGE = "rgdal")
+  if (!use_iconv && !is.null(encoding) && Sys.getenv("SHAPE_ENCODING") ==
+    encoding) {
+    Sys.unsetenv("SHAPE_ENCODING")
+  }
   fids <- ogrFIDs(dsn=dsn, layer=layer)
   if (attr(fids, "i") != attr(fids, "nf")) {
      retain <- 1:attr(fids, "i")
@@ -63,10 +85,16 @@ ogrInfo <- function(dsn, layer, input_field_name_encoding=NULL){
       paste(u_eType, collapse=":")))
   }
   names(ogrinfo) <- c("nrows","nitems","iteminfo","driver")
+  if (ogrinfo$driver == "ESRI Shapefile") {
+      con <- file(paste(dsn, .Platform$file.sep, layer, ".dbf", sep=""), "rb")
+      vr <- readBin(con, "raw", n=32L)
+      ldid <- as.integer(vr[30])
+      attr(ogrinfo, "LDID") <- ldid
+      close(con)
+  }
   names(ogrinfo$iteminfo) <- c("name","type","length","typeName")
-  if (!is.null(input_field_name_encoding)) 
-    ogrinfo$iteminfo$name <- iconv(ogrinfo$iteminfo$name,
-      from=input_field_name_encoding)
+  if (use_iconv && !is.null(encoding))
+    ogrinfo$iteminfo$name <- iconv(ogrinfo$iteminfo$name, from=encoding)
   ogrinfo$eType <- u_eType
   ogrinfo$with_z <- u_with_z
   ogrinfo$null_geometries <- null_geometries
@@ -88,8 +116,9 @@ print.ogrinfo <- function(x, ...) {
   if (!is.null(x$null_geometries)) cat(x$null_geometries, "\n")
   if (!is.null(x$deleted_geometries)) cat(x$deleted_geometries, "\n")
   if (nchar(x$p4s > 1)) cat(x$p4s, "\n")
+  if (!is.null(attr(x, "LDID"))) cat("LDID:", attr(x, "LDID"), "\n")
   cat("Number of fields:", x$nitems, "\n")
-  print(as.data.frame(x$iteminfo))
+  if (x$nitems > 0) print(as.data.frame(x$iteminfo))
   invisible(x)
 }
 

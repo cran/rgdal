@@ -1,8 +1,8 @@
 
-R version 2.13.0 (2011-04-13)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
-Platform: i686-pc-linux-gnu (32-bit)
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -27,7 +27,7 @@ Error : Null external pointer
 > try(GDAL.open(logo))
 An object of class "GDALReadOnlyDataset"
 Slot "handle":
-<pointer: 0x8925c28>
+<pointer: 0x181ac140>
 
 > try(GDAL.close(x))
 > try(new('GDALDriver', "GeoTIFF"))
@@ -64,7 +64,7 @@ Error in ogrInfo(dsn = dsn, layer = "citis") : Cannot open layer
 Error in OGRSpatialRef(dsn = dsn, layer = "scot_BMG") : Cannot open layer
 > dsn <- system.file("vectors/test_trk2.gpx", package = "rgdal")[1]
 > try(readOGR(dsn=dsn, layer="trucks", verbose=FALSE))
-Error in ogrInfo(dsn = dsn, layer = layer, input_field_name_encoding = input_field_name_encoding) : 
+Error in ogrInfo(dsn = dsn, layer = layer, encoding = encoding) : 
   Cannot open layer
 > cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities", verbose=FALSE)
 > td <- tempdir()
@@ -73,3 +73,6 @@ Error in writeOGR(cities, td, "cities", driver = "ESRI_Shapefile") :
   No such driver: ESRI_Shapefile
 > 
 > 
+> proc.time()
+   user  system elapsed 
+  0.970   0.057   1.022 
