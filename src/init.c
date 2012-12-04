@@ -63,6 +63,7 @@ static R_CallMethodDef CallEntries[] = {
     {"OGR_write", (DL_FUNC) &OGR_write, 1},
     {"ogrDeleteLayer", (DL_FUNC) &ogrDeleteLayer, 3},
     {"ogrDeleteDataSource", (DL_FUNC) &ogrDeleteDataSource, 2},
+    {"ogrCheckExists", (DL_FUNC) &ogrCheckExists, 2},
     {"PROJ4VersionInfo", (DL_FUNC) &PROJ4VersionInfo, 0},
     {"PROJ4NADsInstalled", (DL_FUNC) &PROJ4NADsInstalled, 0},
     {"transform", (DL_FUNC) &transform, 5},

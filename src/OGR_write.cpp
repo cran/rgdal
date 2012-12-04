@@ -64,6 +64,10 @@ SEXP OGR_write(SEXP inp)
     uninstallErrorHandlerAndTriggerError();
     if( poDS == NULL )
     {
+        installErrorHandler();
+        OGRDataSource::DestroyDataSource( poDS );
+        CSLDestroy(papszCreateOptions);
+        uninstallErrorHandlerAndTriggerError();
         error( "Creation of output file failed" );
     }
     installErrorHandler();
@@ -90,8 +94,12 @@ SEXP OGR_write(SEXP inp)
     if (wkbtype == wkbLineString) {
 
         SEXP lns = GET_SLOT(obj, install("lines"));
-        if (length(lns) != nobs)
+        if (length(lns) != nobs) {
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
+        }
         PROTECT(oCard = NEW_INTEGER(nobs)); pc++;
         int multi=0, Lns_l;
 	for (i=0; i<nobs; i++) {
@@ -105,8 +113,12 @@ SEXP OGR_write(SEXP inp)
     if (wkbtype == wkbPolygon) {
 
         SEXP pls = GET_SLOT(obj, install("polygons"));
-        if (length(pls) != nobs)
+        if (length(pls) != nobs) {
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
+        }
         PROTECT(oCard = NEW_INTEGER(nobs)); pc++;
         int multi=0, Pls_l;
 	for (i=0; i<nobs; i++) {
@@ -143,6 +155,7 @@ SEXP OGR_write(SEXP inp)
             OGRSpatialReference hSRS = NULL;
             installErrorHandler();
             if (hSRS.importFromProj4(PROJ4) != OGRERR_NONE) {
+                OGRDataSource::DestroyDataSource( poDS );
                 uninstallErrorHandlerAndTriggerError();
 	        error("Can't parse PROJ.4-style parameter string");
             }
@@ -165,6 +178,9 @@ SEXP OGR_write(SEXP inp)
     }
     if( poLayer == NULL )
     {
+        installErrorHandler();
+        OGRDataSource::DestroyDataSource( poDS );
+        uninstallErrorHandlerAndTriggerError();
         error( "Layer creation failed" );
     }
     installErrorHandler();
@@ -183,6 +199,9 @@ SEXP OGR_write(SEXP inp)
         if (OGR_type != 0 && OGR_type != 2 && OGR_type != 4) {
             Rprintf("%s %d\n", CHAR(STRING_ELT(fld_names, i)), 
                 (OGRFieldType) OGR_type);
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error( "Unknown field type" );
         }
         installErrorHandler();
@@ -191,6 +210,7 @@ SEXP OGR_write(SEXP inp)
 // RSB 081009 FIXME - not working yet, integer flips to real in shapefile
         if (OGR_type == 0) oField.SetPrecision(0);
         if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
+            OGRDataSource::DestroyDataSource( poDS );
             uninstallErrorHandlerAndTriggerError();
             error( "Creating Name field failed" );
         }
@@ -206,8 +226,12 @@ SEXP OGR_write(SEXP inp)
         crds = GET_SLOT(obj, install("coords"));
         dim = getAttrib(crds, install("dim"));
         int z=INTEGER_POINTER(dim)[1];
-        if (INTEGER_POINTER(dim)[0] != nobs)
+        if (INTEGER_POINTER(dim)[0] != nobs) {
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
+        }
 
         installErrorHandler();
         for (i=0; i<nobs; i++) {
@@ -225,6 +249,9 @@ SEXP OGR_write(SEXP inp)
             poFeature->SetGeometry( &pt ); 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to create feature" );
             } 
 
@@ -237,8 +264,12 @@ SEXP OGR_write(SEXP inp)
     } else if (wkbtype == wkbLineString) {
 
         SEXP lns = GET_SLOT(obj, install("lines"));
-        if (length(lns) != nobs)
+        if (length(lns) != nobs) {
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
+        }
 
         installErrorHandler();
 	for (i=0; i<nobs; i++) {
@@ -259,10 +290,16 @@ SEXP OGR_write(SEXP inp)
                                    NUMERIC_POINTER(crds)[j+ncrds] );
 
             if( poFeature->SetGeometry( &OGRln ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to set geometry" );
             } 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to create feature" );
             } 
 
@@ -275,8 +312,12 @@ SEXP OGR_write(SEXP inp)
     } else if (wkbtype == wkbMultiLineString) {
 
         SEXP lns = GET_SLOT(obj, install("lines"));
-        if (length(lns) != nobs)
+        if (length(lns) != nobs) {
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
+        }
         SEXP Lns;
         int Lns_l;
         installErrorHandler();
@@ -306,15 +347,24 @@ SEXP OGR_write(SEXP inp)
                                        NUMERIC_POINTER(crds)[j+ncrds] );
 
                 if( OGRlns.addGeometry( &OGRln ) != OGRERR_NONE ) {
+                   installErrorHandler();
+                   OGRDataSource::DestroyDataSource( poDS );
+                   uninstallErrorHandlerAndTriggerError();
                     error( "Failed to add line" );
                 } 
             }
 
             if( poFeature->SetGeometry( &OGRlns ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to set geometry" );
             } 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to create feature" );
             } 
 
@@ -327,8 +377,12 @@ SEXP OGR_write(SEXP inp)
     } else if (wkbtype == wkbPolygon) {
 
         SEXP lns = GET_SLOT(obj, install("polygons"));
-        if (length(lns) != nobs)
+        if (length(lns) != nobs) {
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
+        }
 
         installErrorHandler();
 	for (i=0; i<nobs; i++) {
@@ -353,10 +407,16 @@ SEXP OGR_write(SEXP inp)
             OGRply.addRing( &OGRlr );
 
             if( poFeature->SetGeometry( &OGRply ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to set geometry" );
             } 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to create feature" );
             } 
 
@@ -370,8 +430,12 @@ SEXP OGR_write(SEXP inp)
 	// Rprintf("Yes, multipolygons...\n");
 
         SEXP lns = GET_SLOT(obj, install("polygons"));
-        if (length(lns) != nobs)
+        if (length(lns) != nobs) {
+            installErrorHandler();
+            OGRDataSource::DestroyDataSource( poDS );
+            uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
+        }
         SEXP Lns;
         int Lns_l;
         installErrorHandler();
@@ -405,6 +469,9 @@ SEXP OGR_write(SEXP inp)
             } // k
 
              if( poFeature->SetGeometry( &OGRply ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to set geometry" );
             } 
 
@@ -414,6 +481,9 @@ SEXP OGR_write(SEXP inp)
 		poFeature->StealGeometry() ) );
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+               installErrorHandler();
+               OGRDataSource::DestroyDataSource( poDS );
+               uninstallErrorHandlerAndTriggerError();
                error( "Failed to create feature" );
             } 
 

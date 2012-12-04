@@ -1,3 +1,47 @@
+2012-12-08 17:19  rsbivand
+
+	* configure, configure.ac: version in configure
+
+2012-12-08 17:02  rsbivand
+
+	* R/AAA.R, configure, configure.ac, inst/README: versions in
+	  configure
+
+2012-12-04 10:17  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-12-04 10:16  rsbivand
+
+	* R/ogr_write.R, src/init.c, src/ogrsource.cpp, src/rgdal.h: add
+	  ogrCheckExists C++ function
+
+2012-12-04 08:46  rsbivand
+
+	* R/ogr_write.R: destroy DSN object on open failure in ogrInfo
+
+2012-12-04 08:31  rsbivand
+
+	* src/OGR_write.cpp: destroy DSN object on open failure in ogrInfo
+
+2012-12-04 08:17  rsbivand
+
+	* DESCRIPTION, src/ogrsource.cpp: destroy DSN object on open
+	  failure in ogrInfo
+
+2012-12-03 20:07  rsbivand
+
+	* src/Makevars.win: add -liconv to Makevars.win
+
+2012-12-03 18:43  rsbivand
+
+	* DESCRIPTION, R/AAA.R: rgeos not rgdal SVN
+
+2012-11-30 19:30  rsbivand
+
+	* ChangeLog, inst/ChangeLog: bug in readOGR when layer has no
+	  fields
+
 2012-11-30 16:51  rsbivand
 
 	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: bug in readOGR
