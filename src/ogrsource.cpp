@@ -53,6 +53,10 @@ extern "C" {
     uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
+      installErrorHandler();
+      OGRDataSource::DestroyDataSource( poDS );
+      uninstallErrorHandlerAndTriggerError();
+//    delete poDS;
       error("Cannot open file");
     }
 
@@ -61,6 +65,10 @@ extern "C" {
     uninstallErrorHandlerAndTriggerError();
 
     if(poLayer == NULL){
+      installErrorHandler();
+      OGRDataSource::DestroyDataSource( poDS );
+      uninstallErrorHandlerAndTriggerError();
+//    delete poDS;
       error("Cannot open layer");
     }
 
@@ -432,6 +440,61 @@ extern "C" {
 //    UNPROTECT(1);
     return(R_NilValue);
   }
+
+
+SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
+    OGRLayer *poLayer;
+    OGRDataSource *poDS;
+    OGRSFDriver *poDriver;
+    SEXP ans, drv;
+    int pc=0;
+    PROTECT(ans=NEW_LOGICAL(1)); pc++;
+
+    installErrorHandler();
+    poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource, 0)), 
+	FALSE, &poDriver);
+    uninstallErrorHandlerAndTriggerError();
+
+    if (poDS==NULL){
+      installErrorHandler();
+      OGRDataSource::DestroyDataSource( poDS );
+      uninstallErrorHandlerAndTriggerError();
+//    delete poDS;
+      LOGICAL_POINTER(ans)[0] = FALSE;
+      UNPROTECT(pc);
+      return(ans);
+    }
+
+    installErrorHandler();
+    poLayer = poDS->GetLayerByName(CHAR(STRING_ELT(Layer, 0)));
+    uninstallErrorHandlerAndTriggerError();
+
+    if (poLayer == NULL){
+      installErrorHandler();
+      OGRDataSource::DestroyDataSource( poDS );
+      uninstallErrorHandlerAndTriggerError();
+//    delete poDS;
+      LOGICAL_POINTER(ans)[0] = FALSE;
+      UNPROTECT(pc);
+      return(ans);
+    }
+
+    LOGICAL_POINTER(ans)[0] = TRUE;
+    
+    PROTECT(drv=allocVector(STRSXP,1)); pc++;
+    installErrorHandler();
+    SET_STRING_ELT(drv, 0, mkChar(poDriver->GetName()));
+    uninstallErrorHandlerAndTriggerError();
+    setAttrib(ans, install("driver"), drv);
+
+    installErrorHandler();
+    OGRDataSource::DestroyDataSource( poDS );
+    uninstallErrorHandlerAndTriggerError();
+//    delete poDS;
+    UNPROTECT(pc);
+    return(ans);
+}
+
 
 SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     OGRLayer *poLayer;

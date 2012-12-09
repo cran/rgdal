@@ -1,5 +1,6 @@
 # dnl Process this file with autoconf to produce a configure script.
-AC_INIT(rgdal, 0.7-23, Roger.Bivand@nhh.no)
+define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 | tr -d '\n'"]))dnl
+AC_INIT(rgdal, [pkgversion], Roger.Bivand@nhh.no)
 AC_CONFIG_SRCDIR(src/gdal-bindings.cpp)
 
 # find R home and set correct compiler + flags
@@ -16,6 +17,16 @@ RBIN="${R_HOME}/bin/R"
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
+
+AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
+
+SVN_VERSION=`svnversion -n '.'`
+if test "${?}" && test "${SVN_VERSION}" != "exported"; then
+  echo "${SVN_VERSION}" > inst/SVN_VERSION
+else
+  SVN_VERSION=`cat inst/SVN_VERSION | tr -d '\n'`
+fi
+AC_MSG_NOTICE([svn revision: ${SVN_VERSION}])
 
 #GDAL
 
@@ -376,10 +387,6 @@ AC_SUBST([PKG_LIBS], ["${PKG_LIBS} -lproj"])
 
 AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 AC_MSG_NOTICE([Package LIBS: ${PKG_LIBS}])
-
-if test -e ".svn" ; then
-  svnversion -n > inst/SVN_VERSION
-fi
 
 AC_CONFIG_FILES(src/Makevars)
 AC_OUTPUT

@@ -99,6 +99,12 @@ from source, or to download just the source NAD files, and run nad2bin on
 each required, placing the output files in /usr/share/proj, as described
 in the nad2bin manual page.
 
+Success has been reported in December 2012 on Ubuntu in installing rgdal 
+from source with:
+
+sudo apt-get install-dev libgdal1
+sudo apt-get install-dev libproj
+
 For OSX users, either install PROJ.4 and GDAL/OGR from source, then
 install the rgdal source package, or use the comprehensive frameworks
 provided by William Kyngesburye:

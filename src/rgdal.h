@@ -102,6 +102,7 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri);
 SEXP OGR_write(SEXP inp);
 SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver);
 SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver);
+SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer);
 SEXP PROJ4VersionInfo(void);
 SEXP PROJ4NADsInstalled(void);
 SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y);
