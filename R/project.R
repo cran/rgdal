@@ -107,7 +107,7 @@ if (!isGeneric("spTransform"))
 	# make sure coordinate names are set back:
 	crds[,1:2] <- cbind(res[[1]], res[[2]])
 	dimnames(crds)[[2]] <- crds.names
-	x <- SpatialPoints(coords=crds, proj4string=CRS(res[[4]]))
+	x <- SpatialPoints(coords=crds, proj4string=CRSobj)
 	x
 }
 setMethod("spTransform", signature("SpatialPoints", "CRS"), spTransform.SpatialPoints)

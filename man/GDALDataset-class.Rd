@@ -40,7 +40,7 @@ saveDatasetAs(dataset, filename, driver = NULL, options=NULL)
   \item{band}{The band number (1-based) to read from}
   \item{offset}{Number of rows and columns from the origin (usually the
     upper left corner) to begin reading from}
-  \item{filename}{name of file to contain raster data object}
+  \item{filename}{name of file to contain raster data object; will be normalized with \code{\link{normalizePath}}}
   \item{returnNewObj}{until and including 0.5-27, \code{saveDataset} returned an invisible copy of the new file handle, which was then only finalized when the garbage collector ran. The old behaviour can be retained by setting to FALSE, the default behaviour is to close the hande and not return it.}
   \item{driver}{GDAL driver name to use for saving raster data object}
   \item{strict}{TRUE if the copy must be strictly equivalent, or more normally FALSE indicating that the copy may adapt as needed for the output format}

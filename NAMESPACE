@@ -46,6 +46,8 @@ export(OGRSpatialRef, GDALSpatialRef)
 export(get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84,
  set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
 
+export(getCPLConfigOption, setCPLConfigOption)
+
 S3method(spTransform, SpatialPoints)
 S3method(spTransform, SpatialPointsDataFrame)
 S3method(spTransform, SpatialLines)

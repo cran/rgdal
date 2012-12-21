@@ -1,11 +1,11 @@
 Package: rgdal
 Title: Bindings for the Geospatial Data Abstraction Library
-Version: 0.7-25
-Date: 2012-12-04
-Depends: R (>= 2.10.0), methods, sp (>= 0.9-99)
+Version: 0.8-01
+Date: 2012-12-21
+Depends: R (>= 2.13.0), methods, sp (>= 1.0-4)
 LinkingTo: sp
 Description: Provides bindings to Frank Warmerdam's Geospatial Data
-        Abstraction Library (GDAL) (>= 1.6.0) and access to
+        Abstraction Library (GDAL) (>= 1.7.1) and access to
         projection/transformation operations from the PROJ.4 library.
         The GDAL and PROJ.4 libraries are external to the package, and,
         when installing the package from source, must be correctly
@@ -20,12 +20,12 @@ Author: Timothy H. Keitt <tkeitt@mail.utexas.edu>, Roger Bivand
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 License: GPL (>= 2)
 URL: http://www.gdal.org, https://r-forge.r-project.org/projects/rgdal/
-SystemRequirements: for building from source: GDAL >= 1.6.0 library
+SystemRequirements: for building from source: GDAL >= 1.7.1 library
         from http://trac.osgeo.org/gdal/wiki/DownloadSource and PROJ.4
         (proj >= 4.4.9) from http://trac.osgeo.org/proj/; GDAL OSX
         frameworks built by William Kyngesburye at
         http://www.kyngchaos.com/ may be used for source installs on
         OSX.
-Packaged: 2012-12-08 17:26:32 UTC; rsb
+Packaged: 2012-12-21 19:36:35 UTC; rsb
 Repository: CRAN
-Date/Publication: 2012-12-09 17:52:57
+Date/Publication: 2012-12-21 22:33:24

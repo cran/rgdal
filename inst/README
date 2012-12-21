@@ -118,5 +118,20 @@ R CMD INSTALL --configure-args="" rgdal_*.tar.gz
 
 with the correct configure-args for your platform, or install the GDAL
 framework with dependencies first, then an rgdal binary from the same
-site.
+site. A set of configure arguments reported to work by Don McQueen in 
+December 2012 is:
+
+ --with-gdal-config=/Library/Frameworks/GDAL.framework/unix/bin/gdal-config
+ --with-proj-include=/Library/Frameworks/PROJ.framework/unix/include
+ --with-proj-lib=/Library/Frameworks/PROJ.framework/unix/lib
+
+where
+
+ --with-proj-data=/Library/Frameworks/PROJ.framework/unix/share/proj
+
+may be added if:
+
+ --with-data-copy=yes
+
+to make a local copy of the PROJ.4 data files within the R binary package.
 

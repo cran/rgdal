@@ -7,15 +7,17 @@
 ###
 
 #
-ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL){
+ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
+  use_iconv=NULL) {
   if (missing(dsn)) stop("missing dsn")
   if (nchar(dsn) == 0) stop("empty name")
   if (missing(layer)) stop("missing layer")
   if (nchar(layer) == 0) stop("empty name")
 # a list with various ogr data source information
   
-  use_iconv <- ifelse(as.integer(getGDALVersionInfo("VERSION_NUM")) < 1900L,
-    TRUE, FALSE)
+  if (is.null(use_iconv))
+    use_iconv <- ifelse(as.integer(getGDALVersionInfo("VERSION_NUM")) < 1900L,
+      TRUE, FALSE)
   if (!is.null(encoding)) {
     stopifnot(is.character(encoding))
     stopifnot(length(encoding) == 1)
@@ -28,14 +30,14 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL){
        stop("encoding and input_field_name_encoding differ")
     if (is.null(encoding)) encoding <- input_field_name_encoding
   }
-  if (!use_iconv && !is.null(encoding) && Sys.getenv("SHAPE_ENCODING") == "") {
-    Sys.setenv("SHAPE_ENCODING"=encoding)
+  if (!use_iconv && !is.null(encoding)) {
+    oSE <- getCPLConfigOption("SHAPE_ENCODING")
+    tull <- setCPLConfigOption("SHAPE_ENCODING", encoding)
   }
   ogrinfo <- .Call("ogrInfo",as.character(dsn), as.character(layer),
     PACKAGE = "rgdal")
-  if (!use_iconv && !is.null(encoding) && Sys.getenv("SHAPE_ENCODING") ==
-    encoding) {
-    Sys.unsetenv("SHAPE_ENCODING")
+  if (!use_iconv && !is.null(encoding)) {
+    tull <- setCPLConfigOption("SHAPE_ENCODING", oSE)
   }
   fids <- ogrFIDs(dsn=dsn, layer=layer)
   if (attr(fids, "i") != attr(fids, "nf")) {

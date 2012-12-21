@@ -70,11 +70,11 @@ else
 fi
 
 AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
-AC_MSG_CHECKING([GDAL version > 1.5.4])
+AC_MSG_CHECKING([GDAL version >= 1.7.1])
 GDAL_VER_DOT=`echo $GDAL_VERSION | tr -d "."`
-if test ${GDAL_VER_DOT} -lt 160 ; then
+if test ${GDAL_VER_DOT} -lt 171 ; then
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([upgrade GDAL to 1.6.0 or later])
+  AC_MSG_ERROR([upgrade GDAL to 1.7.1 or later])
 else
   AC_MSG_RESULT(yes)
 fi

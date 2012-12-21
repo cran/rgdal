@@ -1,3 +1,81 @@
+2012-12-21 19:24  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R: subset gComment by !isNULL in readOGR()
+
+2012-12-19 13:12  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_sp.R,
+	  man/GDALDriver-class.Rd, src/gdal-bindings.cpp,
+	  vignettes/OGR_shape_encoding.Rnw: first cut at encoding vignette
+
+2012-12-18 10:03  rsbivand
+
+	* man/GDALDataset-class.Rd: adding normalizePath in GDAL interface
+
+2012-12-18 09:51  rsbivand
+
+	* DESCRIPTION, R/gdal.R, configure, configure.ac: adding
+	  normalizePath in GDAL interface
+
+2012-12-17 10:26  rsbivand
+
+	* inst/etc, inst/etc/point.cpg, inst/etc/point.dbf,
+	  inst/etc/point.prj, inst/etc/point.shp, inst/etc/point.shx,
+	  inst/etc/point_LinuxGDAL.RData, inst/etc/point_WinCRAN.RData,
+	  vignettes, vignettes/OGR_shape_encoding.Rnw: starting encoding
+	  vignette
+
+2012-12-14 10:02  rsbivand
+
+	* inst/README: added OSX note to README
+
+2012-12-13 11:50  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/ogr_sp.R, R/ogr_write.R,
+	  man/readOGR.Rd, man/writeOGR.Rd: detecting GDAL iconv;
+	  CPLConfigOption access
+
+2012-12-12 20:54  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, man/GDALDriver-class.Rd: detecting GDAL
+	  iconv; CPLConfigOption access
+
+2012-12-12 20:33  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, src/gdal-bindings.cpp,
+	  src/init.c, src/rgdal.h: detecting GDAL iconv; CPLConfigOption
+	  access
+
+2012-12-12 13:49  rsbivand
+
+	* R/ogr_sp.R: permitting use of old shapelib DBF code to avoid
+	  encoding issues for shapefiles
+
+2012-12-11 20:36  rsbivand
+
+	* R/ogr_sp.R, R/ogr_write.R: permitting use of old shapelib DBF
+	  code to avoid encoding issues for shapefiles
+
+2012-12-11 20:30  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/ogr.R, R/ogr_sp.R, R/ogr_write.R,
+	  man/readOGR.Rd, man/writeOGR.Rd, tests/tests.Rout.save:
+	  permitting use of old shapelib DBF code to avoid encoding issues
+	  for shapefiles
+
+2012-12-08 19:31  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2012-12-08 19:30  rsbivand
+
+	* DESCRIPTION, R/Class-CRSx.R, R/project.R, src/projectit.cpp:
+	  remove leading space returned by pj_get_def
+
+2012-12-08 17:23  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2012-12-08 17:19  rsbivand
 
 	* configure, configure.ac: version in configure
