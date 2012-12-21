@@ -45,6 +45,8 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
     'Loaded GDAL runtime: ', rver, ifelse(ver_ok, '\n',
     '\n   but rgdal build and GDAL runtime not in sync:\n   ... consider re-installing rgdal!!\n'),
     paste("Path to GDAL shared files: ", gdl[1], sep=""), "\n",
+    ifelse(GDAL_iconv(), "",
+        paste("GDAL does not use iconv for recoding strings.\n")),
     'Loaded PROJ.4 runtime: ', getPROJ4VersionInfo(), '\n',
     paste("Path to PROJ.4 shared files: ", pl[1], sep=""), "\n", sep="")
   packageStartupMessage(Smess, appendLF = FALSE)

@@ -27,12 +27,14 @@
 	if (!is.na(object@projargs)) {
 		res <- (.Call("checkCRSArgs", object@projargs, 
 			PACKAGE="rgdal")[[2]])
-		return(paste(unique(unlist(strsplit(res, " "))), 
-			collapse=" "))
-
+                res <- paste(unique(unlist(strsplit(res, " "))), 
+			collapse=" ")
+                return(sub("^\\s+", "", res))
 	} else return(as.character(NA))
 }
 
 checkCRSArgs <- function(uprojargs) {
-  .Call("checkCRSArgs", uprojargs, PACKAGE="rgdal")
+  res <- .Call("checkCRSArgs", uprojargs, PACKAGE="rgdal")
+  res[[2]] <- sub("^\\s+", "", res[[2]])
+  res
 }

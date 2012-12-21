@@ -30,8 +30,10 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  stringsAsFactors=default.stringsAsFactors(), 
  drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
- useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL)
-ogrInfo(dsn, layer, encoding=NULL, input_field_name_encoding=NULL)
+ useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
+ encoding=NULL, use_iconv=NULL)
+ogrInfo(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
+ use_iconv=NULL)
 ogrFIDs(dsn, layer)
 ogrDrivers()
 OGRSpatialRef(dsn, layer)
@@ -52,7 +54,8 @@ ogrListLayers(dsn)
   \item{useC}{default TRUE, if FALSE use original interpreted code in a loop}
   \item{disambiguateFIDs}{default FALSE, if TRUE, and FID values are not unique, they will be set to unique values 1:N for N features; problem observed in GML files}
   \item{addCommentsToPolygons}{default TRUE, may be set FALSE for legacy behaviour; used to indicate which interior rings are holes in which exterior rings in conformance with OGC SFS specifications}
-  \item{encoding}{default NULL, if set to a character string, the driver is \dQuote{ESRI Shapefile}, and the environment variable SHAPE_ENCODING is not already set, it is passed to the environment variable immediately before reading the DBF of a shapefile, and unset afterwards.}
+  \item{encoding}{default NULL, if set to a character string, and the driver is \dQuote{ESRI Shapefile}, it is passed to the CPL Option \dQuote{SHAPE_ENCODING} immediately before reading the DBF of a shapefile. The empty character string \dQuote{} turns off OGR's encoding functionality, and may be used when GDAL is not built with iconv support.}
+  \item{use_iconv}{default NULL, in which case the use of iconv is controlled by the GDAL version (TRUE < 1.9). If set to a logical value, this test will be overridden.}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }

@@ -5,6 +5,7 @@
 #include <cpl_string.h>
 #include <cpl_csv.h>
 #include <cpl_error.h>
+#include <cpl_conv.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -85,7 +86,9 @@ SEXP RGDAL_GetBandNoDataValue(SEXP sxpRasterBand);
 SEXP RGDAL_SetStatistics(SEXP sxpRasterBand, SEXP statistics);
 
 SEXP RGDAL_GetRAT(SEXP sxpRasterBand);
-
+SEXP RGDAL_CPLSetConfigOption(SEXP inOption, SEXP value);
+SEXP RGDAL_CPLGetConfigOption(SEXP inOption);
+SEXP RGDAL_CPL_RECODE_ICONV(void);
 
 SEXP checkCRSArgs(SEXP args);
 SEXP PROJcopyEPSG(SEXP tf);

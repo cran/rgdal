@@ -1780,6 +1780,49 @@ RGDAL_GenCMap(SEXP input1, SEXP input2, SEXP input3, SEXP output, SEXP nColors, 
 	
 }
 
+// CPLGetConfigOption( const char *pszKey, const char *pszDefault )
+
+SEXP RGDAL_CPLGetConfigOption(SEXP inOption) {
+    installErrorHandler();
+    if (CPLGetConfigOption(asString(inOption), NULL) == NULL) {
+        uninstallErrorHandlerAndTriggerError();
+        return(R_NilValue);
+    }
+    SEXP res;
+    PROTECT(res=NEW_CHARACTER(1));
+    installErrorHandler();
+    SET_STRING_ELT(res, 0,
+        COPY_TO_USER_STRING(CPLGetConfigOption(asString(inOption), NULL)));
+    uninstallErrorHandlerAndTriggerError();
+    UNPROTECT(1);
+    return(res);
+}
+
+// CPLSetConfigOption( const char *pszKey, const char *pszValue )
+
+SEXP RGDAL_CPLSetConfigOption(SEXP inOption, SEXP value) {
+    installErrorHandler();
+    if (value == R_NilValue)
+        CPLSetConfigOption(asString(inOption), NULL);
+    else
+        CPLSetConfigOption(asString(inOption), asString(value));
+    uninstallErrorHandlerAndTriggerError();
+    return(R_NilValue);
+}
+
+SEXP RGDAL_CPL_RECODE_ICONV(void) {
+    SEXP ans;
+    PROTECT(ans=NEW_LOGICAL(1));
+#ifdef CPL_RECODE_ICONV
+    LOGICAL_POINTER(ans)[0] = TRUE;
+#else /* CPL_RECODE_ICONV */
+    LOGICAL_POINTER(ans)[0] = FALSE;
+#endif /* CPL_RECODE_ICONV */
+    UNPROTECT(1);
+    return(ans);
+}
+
+
 #ifdef __cplusplus
 }
 #endif
