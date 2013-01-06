@@ -209,17 +209,19 @@ void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char 
   pj_free(pj);
 }
 
-SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
+SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 
 	/* interface to pj_transform() to be able to use longlat proj
 	 * and datum transformation in an SEXP format */
 
-	int i, n, nwarn=0, ob_tran;
+	int i, n, nwarn=0, ob_tran, have_z;
 	double *xx, *yy, *zz;
 	projPJ fromPJ, toPJ;
         SEXP use_ob_tran = getAttrib(npts, install("ob_tran"));
 	SEXP res;
 
+        if (z == R_NilValue) have_z = 0;
+        else have_z = 1;
         if (use_ob_tran == R_NilValue) ob_tran = 0;
         else if (INTEGER_POINTER(use_ob_tran)[0] == 1) ob_tran = 1;
         else if (INTEGER_POINTER(use_ob_tran)[0] == -1) ob_tran = -1;
@@ -234,12 +236,12 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 	n = INTEGER_POINTER(npts)[0];
 	xx = (double *) R_alloc((long) n, sizeof(double));
 	yy = (double *) R_alloc((long) n, sizeof(double));
-	zz = (double *) R_alloc((long) n, sizeof(double));
+	if (have_z) zz = (double *) R_alloc((long) n, sizeof(double));
 
 	for (i=0; i < n; i++) {
 		xx[i] = NUMERIC_POINTER(x)[i];
 		yy[i] = NUMERIC_POINTER(y)[i];
-		zz[i] = (double) 0;
+		if (have_z) zz[i] = NUMERIC_POINTER(z)[i];
 	}
 	if ( pj_is_latlong(fromPJ) || ob_tran == 1) {
 		for (i=0; i < n; i++) {
@@ -248,28 +250,55 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 		}
 	}
 
-	PROTECT(res = NEW_LIST(4));
+	if (have_z) PROTECT(res = NEW_LIST(5));
+        else PROTECT(res = NEW_LIST(4));
 	SET_VECTOR_ELT(res, 0, NEW_NUMERIC(n));
 	SET_VECTOR_ELT(res, 1, NEW_NUMERIC(n));
-	SET_VECTOR_ELT(res, 2, NEW_CHARACTER(1));
-	SET_STRING_ELT(VECTOR_ELT(res, 2), 0, 
+	if (have_z) {
+            SET_VECTOR_ELT(res, 2, NEW_NUMERIC(n));
+            SET_VECTOR_ELT(res, 3, NEW_CHARACTER(1));
+	    SET_STRING_ELT(VECTOR_ELT(res, 3), 0, 
 		COPY_TO_USER_STRING(pj_get_def(fromPJ, 0)));
-	SET_VECTOR_ELT(res, 3, NEW_CHARACTER(1));
-	SET_STRING_ELT(VECTOR_ELT(res, 3), 0, 
+	    SET_VECTOR_ELT(res, 4, NEW_CHARACTER(1));
+	    SET_STRING_ELT(VECTOR_ELT(res, 4), 0, 
 		COPY_TO_USER_STRING(pj_get_def(toPJ, 0)));
+        } else {
+            SET_VECTOR_ELT(res, 2, NEW_CHARACTER(1));
+	    SET_STRING_ELT(VECTOR_ELT(res, 2), 0, 
+		COPY_TO_USER_STRING(pj_get_def(fromPJ, 0)));
+	    SET_VECTOR_ELT(res, 3, NEW_CHARACTER(1));
+	    SET_STRING_ELT(VECTOR_ELT(res, 3), 0, 
+		COPY_TO_USER_STRING(pj_get_def(toPJ, 0)));
+        }
 
         if (ob_tran != 0) {
-	    if( pj_transform( toPJ, fromPJ, (long) n, 0, xx, yy, zz ) != 0 ) {
+	    if (have_z) {
+              if(pj_transform(toPJ, fromPJ, (long) n, 0, xx, yy, zz) != 0) {
 		pj_free(fromPJ); pj_free(toPJ);
 		error("error in pj_transform: %s",
                     pj_strerrno(*pj_get_errno_ref()));
-	    }
+	      }
+            } else {
+              if(pj_transform(toPJ, fromPJ, (long) n, 0, xx, yy, NULL) != 0) {
+		pj_free(fromPJ); pj_free(toPJ);
+		error("error in pj_transform: %s",
+                    pj_strerrno(*pj_get_errno_ref()));
+	      }
+            }
         } else {
-	    if( pj_transform( fromPJ, toPJ, (long) n, 0, xx, yy, zz ) != 0 ) {
+	    if (have_z) {
+	      if(pj_transform(fromPJ, toPJ, (long) n, 0, xx, yy, zz) != 0) {
 		pj_free(fromPJ); pj_free(toPJ);
 		error("error in pj_transform: %s",
                     pj_strerrno(*pj_get_errno_ref()));
-	    }
+	      }
+            } else {
+	      if(pj_transform(fromPJ, toPJ, (long) n, 0, xx, yy, NULL) != 0) {
+		pj_free(fromPJ); pj_free(toPJ);
+		error("error in pj_transform: %s",
+                    pj_strerrno(*pj_get_errno_ref()));
+	      }
+            }
         }
 
         pj_free(fromPJ); pj_free(toPJ);
@@ -279,7 +308,19 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
                		yy[i] *= RAD_TO_DEG;
             	}
 	}
-	for (i=0; i < n; i++) {
+        if (have_z) {
+	    for (i=0; i < n; i++) {
+		if (xx[i] == HUGE_VAL || yy[i] == HUGE_VAL || zz[i] == HUGE_VAL
+		    || ISNAN(xx[i]) || ISNAN(yy[i]) || ISNAN(zz[i])) {
+                    nwarn++;
+/*		    Rprintf("transformed point not finite\n");*/
+		}
+		NUMERIC_POINTER(VECTOR_ELT(res, 0))[i] = xx[i];
+		NUMERIC_POINTER(VECTOR_ELT(res, 1))[i] = yy[i];
+		NUMERIC_POINTER(VECTOR_ELT(res, 2))[i] = zz[i];
+	    }
+        } else {
+	    for (i=0; i < n; i++) {
 		if (xx[i] == HUGE_VAL || yy[i] == HUGE_VAL 
 		    || ISNAN(xx[i]) || ISNAN(yy[i])) {
                     nwarn++;
@@ -287,7 +328,8 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y) {
 		}
 		NUMERIC_POINTER(VECTOR_ELT(res, 0))[i] = xx[i];
 		NUMERIC_POINTER(VECTOR_ELT(res, 1))[i] = yy[i];
-	}
+	    }
+        }
 
         if (nwarn > 0) warning("%d projected point(s) not finite", nwarn);
 	UNPROTECT(1);
@@ -355,6 +397,12 @@ struct PJ_DATUMS {
     char    *comments; /* EPSG code, etc */
 };
 struct PJ_DATUMS *pj_get_datums_ref( void ); 
+struct PJ_UNITS {
+	char	*id;	/* units keyword */
+	char	*to_meter;	/* multiply by value to get meters */
+	char	*name;	/* comments */
+};
+struct PJ_UNITS *pj_get_units_ref( void );
 
 SEXP projInfo(SEXP type) {
     SEXP ans;
@@ -434,6 +482,31 @@ SEXP projInfo(SEXP type) {
 		COPY_TO_USER_STRING(ld->defn));
             SET_STRING_ELT(VECTOR_ELT(ans, 3), n, 
 		COPY_TO_USER_STRING(ld->comments));
+            n++;
+        }
+
+    } else if (INTEGER_POINTER(type)[0] == 3) {
+        PROTECT(ans = NEW_LIST(3)); pc++;
+        PROTECT(ansnames = NEW_CHARACTER(3)); pc++;
+        SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("id"));
+        SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("to_meter"));
+        SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("name"));
+        setAttrib(ans, R_NamesSymbol, ansnames);
+
+        struct PJ_UNITS *ld;
+        for (ld = pj_get_units_ref(); ld->id ; ++ld) n++;
+        SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 2, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 3, NEW_CHARACTER(n));
+        n=0;
+        for (ld = pj_get_units_ref(); ld->id ; ++ld) {
+            SET_STRING_ELT(VECTOR_ELT(ans, 0), n, 
+		COPY_TO_USER_STRING(ld->id));
+            SET_STRING_ELT(VECTOR_ELT(ans, 1), n, 
+		COPY_TO_USER_STRING(ld->to_meter));
+            SET_STRING_ELT(VECTOR_ELT(ans, 2), n, 
+		COPY_TO_USER_STRING(ld->name));
             n++;
         }
 

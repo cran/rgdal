@@ -388,7 +388,7 @@ getRasterTable <- function(dataset,
 
   rasterData <- getRasterData(dataset, band,
                               offset = offset,
-                              region.dim = region.dim)
+                              region.dim = region.dim, list_out=TRUE)
 
   if (is.null(band)) {
 
@@ -402,7 +402,7 @@ getRasterTable <- function(dataset,
 
   }
 
-  dim(rasterData) <- c(region.dim, nbands)
+#  dim(rasterData) <- c(region.dim, nbands)
 
   geoTrans <- getGeoTransFunc(dataset)
 
@@ -414,16 +414,19 @@ getRasterTable <- function(dataset,
 
   out <- geoTrans(x.i, y.i)
 
-  out <- cbind(out$x, out$y)
-  
-  for (b in band) { 
-    vec <- as.numeric(rasterData[, , b])
-    out <- cbind(out, vec)
-  }
+#  out <- cbind(out$x, out$y)
+  out <- data.frame(x=out$x, y=out$y)
+  rasterData <- as.data.frame(rasterData)
 
-  out <- as.data.frame(out)
+#  for (b in band) { 
+#    vec <- as.numeric(rasterData[, , b])
+#    out <- cbind(out, vec)
+#  }
+
+#  out <- as.data.frame(out)
     
-  names(out) <- c('x', 'y', paste('band', 1:nbands, sep = ''))
+#  names(out) <- c('x', 'y', paste('band', 1:nbands, sep = ''))
+  out <- cbind(out, rasterData)
 
   out
 
@@ -435,62 +438,81 @@ getRasterData <- function(dataset,
                           region.dim = dim(dataset),
                           output.dim = region.dim,
                           interleave = c(0, 0),
-                          as.is = FALSE) {
+                          as.is = FALSE, list_out=FALSE) {
 
-  assertClass(dataset, 'GDALReadOnlyDataset')
+    assertClass(dataset, 'GDALReadOnlyDataset')
 
-  offset <- rep(offset, length.out = 2)
-  region.dim <- rep(region.dim, length.out = 2)
-  output.dim <- rep(output.dim, length.out = 2)
-  interleave <- rep(interleave, length.out = 2)
+    offset <- rep(offset, length.out = 2)
+    region.dim <- rep(region.dim, length.out = 2)
+    output.dim <- rep(output.dim, length.out = 2)
+    interleave <- rep(interleave, length.out = 2)
 
-  nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
-  if (nbands < 1) stop("no bands in dataset")
+    nbands <- .Call('RGDAL_GetRasterCount', dataset, PACKAGE="rgdal")
+    if (nbands < 1) stop("no bands in dataset")
 
-  if (is.null(band)) band <- 1:nbands
+    if (is.null(band)) band <- 1:nbands
   
-  x <- array(dim = as.integer(c(rev(output.dim), length(band))))
+    x <- array(dim = as.integer(c(rev(output.dim), length(band))))
+    for (i in seq(along = band)) {
 
+        raster <- getRasterBand(dataset, band[i])
 
-  for (i in seq(along = band)) {
-
-    raster <- getRasterBand(dataset, band[i])
-
-    x[,,i] <- .Call('RGDAL_GetRasterData', raster,
+        x[,,i] <- .Call('RGDAL_GetRasterData', raster,
                       as.integer(c(offset, region.dim)),
                       as.integer(output.dim),
                       as.integer(interleave),
                       PACKAGE="rgdal")
   
-  }
-
-  if (length(band) == 1L) x <- drop(x)
-
-  if (!as.is) {
-  
-    scale <- .Call('RGDAL_GetScale', raster, PACKAGE="rgdal")
-    offset <- .Call('RGDAL_GetOffset', raster, PACKAGE="rgdal")
-
-    if (scale != 1) x <- x * scale
-    if (offset != 0) x <- x + offset
-    
-    catNames <- .Call('RGDAL_GetCategoryNames', raster, PACKAGE="rgdal")
-  
-    if (!is.null(catNames)) {
-      ux <- unique(x)
-      if (length(ux) == length(catNames)) {
-        levels <- sort(ux)
-        x <- array(factor(x, levels, catNames), dim = dim(x),
-                 dimnames = dimnames(x))
-      } else {
-        warning("Assign CategoryNames manually, level/label length mismatch")
-      }
     }
+    if (!as.is) {
+        for (i in seq(along = band)) {
 
-  }
+            raster <- getRasterBand(dataset, band[i])
+            scale <- .Call('RGDAL_GetScale', raster, PACKAGE="rgdal")
+            offset <- .Call('RGDAL_GetOffset', raster, PACKAGE="rgdal")
 
-  x
+            if (scale != 1) x[,,i] <- x[,,i] * scale
+            if (offset != 0) x[,,i] <- x[,,i] + offset
+        }
+    }
+    if (!list_out) {
+        if (length(band) == 1L) x <- drop(x)
+        return(x)
+    } else {
+        X <- vector(mode="list", length=length(band))
+        names(X) <- paste("band", 1:length(band), sep="")
 
+        for (i in seq(along = band)) {
+
+            X[[i]] <- as.vector(x[,,i])
+
+            if (!as.is) {
+  
+                raster <- getRasterBand(dataset, band[i])
+    
+                catNames <- .Call('RGDAL_GetCategoryNames', raster,
+                    PACKAGE="rgdal")
+  
+                if (!is.null(catNames)) {
+                    ux <- sort(unique(na.omit(X[[i]])))
+                    lCN <- length(catNames)
+                    levels <- ((1:lCN)-1)
+                    back_incls <- ux %in% levels
+                    if (all(back_incls)) {
+                        X[[i]] <- factor(X[[i]], levels=levels, labels=catNames)
+                        if (!get("silent", envir=.RGDAL_CACHE)) {
+                            cat("Input level values and names\n")
+                            cat(paste(levels, " ", catNames, "\n", sep=""),
+                                sep="")
+                        }
+                    } else {
+                        warning("Assign CategoryNames manually, level/label mismatch")
+                    }
+                }
+            }
+        }
+        return(X)
+    }
 }
 
 getCategoryNames <- function(dataset, band = 1) {
@@ -587,6 +609,7 @@ displayDataset <- function(x, offset = c(0, 0), region.dim = dim(x),
   image.data <- getRasterData(x, band[1], offset,
                               region.dim, plot.dim,
                               as.is = TRUE)
+#  image.data <- array(image.data[[1]], t(plot.dim))
 
   if (is.null(col)) {
     
@@ -693,8 +716,31 @@ getRasterBlockSize <- function(raster) {
 .Call("RGDAL_SetStatistics", object, as.double(statistics), PACKAGE="rgdal")
 }
 
-.gd_transform <- function(projfrom, projto, n, x, y) {
-.Call("transform", projfrom, projto, n, x, y, PACKAGE="rgdal")
+.gd_SetRasterColorTable <- function(object, icT) {
+    if (!is.matrix(icT)) {
+        stopifnot(is.character(icT))
+        icT <- t(col2rgb(icT))
+    }
+    stopifnot(is.matrix(icT))
+    stopifnot(storage.mode(icT) == "integer")
+    ricT <- nrow(icT)
+    cicT <- ncol(icT)
+    stopifnot(cicT == 3 || cicT == 4)
+    .Call("RGDAL_SetRasterColorTable", object, icT, ricT, cicT,
+        PACKAGE = "rgdal")
+}
+
+.gd_SetCategoryNames <- function(object, icN) {
+    stopifnot(is.character(icN))
+    .Call("RGDAL_SetCategoryNames", object, icN, PACKAGE = "rgdal")
+}
+
+
+.gd_transform <- function(projfrom, projto, n, x, y, z=NULL) {
+  if (is.null(z)) .Call("transform", projfrom, projto, n, x, y, NULL,
+      PACKAGE="rgdal")
+  else .Call("transform", projfrom, projto, n, x, y, z,
+      PACKAGE="rgdal")
 }
 
 get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- function() {

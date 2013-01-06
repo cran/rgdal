@@ -45,7 +45,7 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 	if (is.null(gdal.args$interleave))
 		gdal.args$interleave = c(0, 0)
 	if (is.null(gdal.args$as.is))
-		gdal.args$as.is = FALSE
+		gdal.args$as.is = TRUE
 	
 	# retrieve topology:
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
@@ -61,6 +61,8 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 		data = do.call(getRasterTable, gdal.args)
 		coordinates(data) = c(1,2)
 	} else {
+	        if (is.null(gdal.args$list_out))
+		    gdal.args$list_out = FALSE
 		data = do.call(getRasterData, gdal.args)
 		# subset data:
 		d = dim(data) # rows=nx, cols=ny

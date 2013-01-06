@@ -21,10 +21,14 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
     assign(".rgdal_OSGeo4W", Sys.getenv("OSGEO4W_ROOT"), envir=.RGDAL_CACHE)
   }
   assign("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", TRUE, envir=.RGDAL_CACHE)
+  assign("silent", TRUE, envir=.RGDAL_CACHE)
 
   library.dynam('rgdal', pkg, lib)
 
   .Call('RGDAL_Init', PACKAGE="rgdal")
+}
+
+.onAttach <- function(lib, pkg) {
   ver_ok <- getGDALCheckVersion()
   rver <- getGDALVersionInfo()
 
@@ -38,7 +42,8 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
     svn_version <- "(unknown)"
   }
 
-  Smess <- paste('rgdal: version: ', utils::packageVersion("rgdal"),
+  Smess <- paste('rgdal: version: ',
+    utils::packageDescription("rgdal")$Version,
     ', (SVN revision ', svn_version, ')\n',
     'Geospatial Data Abstraction Library ',
     'extensions to R successfully loaded\n',

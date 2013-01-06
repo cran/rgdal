@@ -84,6 +84,8 @@ SEXP RGDAL_GetBandMinimum(SEXP sxpRasterBand);
 SEXP RGDAL_GetBandMaximum(SEXP sxpRasterBand);
 SEXP RGDAL_GetBandNoDataValue(SEXP sxpRasterBand);
 SEXP RGDAL_SetStatistics(SEXP sxpRasterBand, SEXP statistics);
+SEXP RGDAL_SetRasterColorTable(SEXP raster, SEXP icT, SEXP ricT, SEXP cicT);
+SEXP RGDAL_SetCategoryNames(SEXP sxpRasterBand, SEXP sxpNames);
 
 SEXP RGDAL_GetRAT(SEXP sxpRasterBand);
 SEXP RGDAL_CPLSetConfigOption(SEXP inOption, SEXP value);
@@ -108,7 +110,7 @@ SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver);
 SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer);
 SEXP PROJ4VersionInfo(void);
 SEXP PROJ4NADsInstalled(void);
-SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y);
+SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z);
 SEXP projInfo(SEXP type);
 void project(int *n, double *xlon, double *ylat, double *x, double *y,
   char **projarg, int *ob_tran);
