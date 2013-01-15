@@ -55,6 +55,8 @@ Note that warnings about different projections may be issued when the PROJ.4 lib
 Also note that re-projection and/or datum transformation will usually not work for regular grids. The term used for similar operations for regular grids is warping, which involved resampling to a regular grid in the target coordinate reference system.
 
 The methods may take an optional argument \dQuote{use_ob_tran}, default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal (the user oblique transforms from longlat to oblique forward rather than inverse as suggested in PROJ.4 mailing list postings); these changes are intended to meet a need pointed out by Martin Ivanov (2012-08-15).
+
+If a SpatialPoints object has three dimensions, the third will also be transformed, with the metric of the third dimension assumed to be meters if the vertical units metric is not given in the projection description with +vunits= or +vto_meter= (which is 1.0 by default) \url{http://trac.osgeo.org/proj/wiki/GenParms#VerticalUnits}.
 }
 
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
@@ -157,6 +159,11 @@ use_ob_tran=TRUE);
 bbox(spPolygons_tr)
 bbox(spTransform(spPolygons_tr, CRS("+proj=longlat"), use_ob_tran=TRUE))
 #added after posting by Martin Ivanov
+data(nor2k)
+summary(nor2k)
+nor2kNGO <- spTransform(nor2k, CRS("+init=epsg:4273"))
+summary(nor2kNGO)
+all.equal(coordinates(nor2k)[,3], coordinates(nor2kNGO)[,3])
 }
 
 \keyword{methods}

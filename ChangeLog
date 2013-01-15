@@ -1,3 +1,65 @@
+2013-01-15 07:08  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-01-07 18:53  rsbivand
+
+	* inst/pictures/test_envi_class.envi,
+	  inst/pictures/test_envi_class.hdr: add JG ENVI example
+
+2013-01-07 18:46  rsbivand
+
+	* R/gdal.R, R/subs.R: major changes in getRasterData to ensure
+	  correct return of factors, FALSE by default
+
+2013-01-07 16:22  rsbivand
+
+	* R/gdal.R, R/sp_gdal.R, R/subs.R, man/GDALRasterBand-class.Rd,
+	  man/readGDAL.Rd: major changes in getRasterData to ensure correct
+	  return of factors, FALSE by default
+
+2013-01-06 11:06  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/gdal.R, R/sp_gdal.R,
+	  man/GDALRasterBand-class.Rd, man/readGDAL.Rd: adding ENVI color
+	  table example
+
+2013-01-03 11:09  rsbivand
+
+	* R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp, src/init.c,
+	  src/rgdal.h: add color table and cat. names to writeGDAL
+
+2013-01-02 15:40  rsbivand
+
+	* DESCRIPTION, R/project.R, man/projInfo.Rd, src/projectit.cpp:
+	  added proj units listing
+
+2013-01-02 15:01  rsbivand
+
+	* R/gdal.R: adding 3D point transform
+
+2013-01-02 14:54  rsbivand
+
+	* R/project.R, data, data/nor2k.rda, man/nor2k.Rd,
+	  man/spTransform-methods.Rd, src/init.c, src/projectit.cpp,
+	  src/rgdal.h: adding 3D point transform
+
+2013-01-01 17:56  rsbivand
+
+	* configure, configure.ac: configure test for svnversion
+
+2012-12-26 15:09  edzer
+
+	* DESCRIPTION: version bump
+
+2012-12-21 20:55  rsbivand
+
+	* R/AAA.R: tidy
+
+2012-12-21 19:36  rsbivand
+
+	* ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
+
 2012-12-21 19:24  rsbivand
 
 	* DESCRIPTION, R/ogr_sp.R: subset gComment by !isNULL in readOGR()

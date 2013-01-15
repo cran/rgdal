@@ -1725,6 +1725,43 @@ RGDAL_SetProject(SEXP sxpDataset, SEXP proj4string) {
   return(sxpDataset);
 }
 
+SEXP RGDAL_SetRasterColorTable(SEXP raster, SEXP icT, SEXP ricT, SEXP cicT) {
+
+    int i, nr=INTEGER_POINTER(ricT)[0], nc=INTEGER_POINTER(cicT)[0];
+    GDALRasterBand* target = getGDALRasterPtr(raster);
+		
+    installErrorHandler();
+    GDALColorTableH ctab = GDALCreateColorTable(GPI_RGB);
+    uninstallErrorHandlerAndTriggerError();
+
+    for (i=0; i<nr; i++) {
+
+        GDALColorEntry ce;
+
+        ce.c1 = (GByte) INTEGER_POINTER(icT)[i];
+        ce.c2 = (GByte) INTEGER_POINTER(icT)[i+nr];
+        ce.c3 = (GByte) INTEGER_POINTER(icT)[i+(nr*2)];
+        if (nc == 3) ce.c4 = 255;
+        else ce.c4 = (GByte) INTEGER_POINTER(icT)[i+(nr*3)];
+
+        installErrorHandler();
+        GDALSetColorEntry (ctab, i, &ce);
+        uninstallErrorHandlerAndTriggerError();
+    }
+
+    installErrorHandler();
+    int err = GDALSetRasterColorTable(target, ctab);
+	
+    if (err == CE_Failure) {
+        uninstallErrorHandlerAndTriggerError();
+        warning("Unable to set color table");
+    }
+    uninstallErrorHandlerAndTriggerError();
+
+    return(raster);
+
+}
+
 SEXP
 RGDAL_GenCMap(SEXP input1, SEXP input2, SEXP input3, SEXP output, SEXP nColors, SEXP setCMap) {
 	

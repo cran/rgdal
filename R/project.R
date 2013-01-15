@@ -92,20 +92,33 @@ if (!isGeneric("spTransform"))
         }
 	crds <- coordinates(x)
 	crds.names <- dimnames(crds)[[2]] # crds is matrix
-	if (ncol(crds) != 2) 	
-		warning("Only x- and y-coordinates are being transformed")
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
-	res <- .Call("transform", proj4string(x), CRSargs(CRSobj), n,
-		as.double(crds[,1]), as.double(crds[,2]), PACKAGE="rgdal")
-	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
+        if (ncol(crds) == 2) {
+	    res <- .Call("transform", proj4string(x), CRSargs(CRSobj), n,
+		as.double(crds[,1]), as.double(crds[,2]), NULL, PACKAGE="rgdal")
+	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
 		print(cbind(crds, res[[1]], res[[2]])[k,])
 		stop(paste("failure in points", paste(k, collapse=":")))
-	}
+	    }
+	    crds[,1:2] <- cbind(res[[1]], res[[2]])
+        } else {
+	    res <- .Call("transform", proj4string(x), CRSargs(CRSobj), n,
+		as.double(crds[,1]), as.double(crds[,2]), as.double(crds[,3]),
+                PACKAGE="rgdal")
+	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))
+                || any(!is.finite(res[[3]]))) {
+		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]])
+                    || !is.finite(res[[3]]))
+		cat("non finite transformation detected:\n")
+		print(cbind(crds, res[[1]], res[[2]], res[[3]])[k,])
+		stop(paste("failure in points", paste(k, collapse=":")))
+	    }
+	    crds[,1:3] <- cbind(res[[1]], res[[2]], res[[3]])
+        }
 	# make sure coordinate names are set back:
-	crds[,1:2] <- cbind(res[[1]], res[[2]])
 	dimnames(crds)[[2]] <- crds.names
 	x <- SpatialPoints(coords=crds, proj4string=CRSobj)
 	x
@@ -146,7 +159,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
 	res <- .Call("transform", from_args, to_args, n,
-		as.double(crds[,1]), as.double(crds[,2]),
+		as.double(crds[,1]), as.double(crds[,2]), NULL,
 		PACKAGE="rgdal")
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
@@ -231,7 +244,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
 	res <- .Call("transform", from_args, to_args, n,
-		as.double(crds[,1]), as.double(crds[,2]),
+		as.double(crds[,1]), as.double(crds[,2]), NULL,
 		PACKAGE="rgdal")
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
@@ -309,7 +322,7 @@ setMethod("spTransform", signature("SpatialPolygons", "CRS"), spTransform.Spatia
 setMethod("spTransform", signature("SpatialPolygonsDataFrame", "CRS"), spTransform.SpatialPolygonsDataFrame)
 
 projInfo <- function(type="proj") {
-    opts <- c("proj", "ellps", "datum")
+    opts <- c("proj", "ellps", "datum", "units")
     if (!(type %in% opts)) stop("unknown type")
     t <- as.integer(match(type[1], opts) - 1)
     if (is.na(t)) stop("unknown type")

@@ -20,8 +20,12 @@ RBIN="${R_HOME}/bin/R"
 
 AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
 
-SVN_VERSION=`svnversion -n '.'`
-if test "${?}" && test "${SVN_VERSION}" != "exported"; then
+AC_CHECK_FILE([/usr/bin/svnversion],
+ [SVN_VERSION=`svnversion -n '.'`],
+ [SVN_VERSION=""])
+
+#SVN_VERSION=`svnversion -n '.'`
+if test "${SVN_VERSION}" != "exported" && test -n "${SVN_VERSION}"; then
   echo "${SVN_VERSION}" > inst/SVN_VERSION
 else
   SVN_VERSION=`cat inst/SVN_VERSION | tr -d '\n'`

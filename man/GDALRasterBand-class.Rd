@@ -35,7 +35,7 @@ Class \code{"GDALMajorObject"}, directly.
 \usage{
 getRasterData(dataset, band = NULL, offset = c(0, 0),
               region.dim = dim(dataset), output.dim = region.dim,
-              interleave = c(0, 0), as.is = FALSE) 
+              interleave = c(0, 0), as.is = FALSE, list_out=FALSE) 
 
 getRasterTable(dataset, band = NULL, offset = c(0, 0), 
   region.dim = dim(dataset))
@@ -67,6 +67,7 @@ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84(value)
     needed}
   \item{as.is}{If false, scale the data to its natural units; if the
     case of thematic data, return the data as factors}
+  \item{list_out}{default FALSE, return array, if TRUE, return a list of vector bands}
   \item{raster}{An object of class GDALRasterBand}
   \item{x}{integer variable for conversion}
   \item{base}{If Byte input, 8, if Int16 or UInt16, 16}
@@ -76,7 +77,7 @@ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84(value)
 
 \details{
   \describe{
-    \item{\code{getRasterData}:}{retrieves data from the dataset as array.}
+    \item{\code{getRasterData}:}{retrieves data from the dataset as an array or list of bands; will try to convert relevant bands to factor if category names are available in the GDAL driver when returning a list.}
     
     \item{\code{getRasterTable}:}{retrieves data from the dataset as data frame.}
     
