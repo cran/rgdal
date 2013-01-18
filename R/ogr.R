@@ -88,7 +88,9 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
   }
   names(ogrinfo) <- c("nrows","nitems","iteminfo","driver")
   if (ogrinfo$driver == "ESRI Shapefile") {
-      con <- file(paste(dsn, .Platform$file.sep, layer, ".dbf", sep=""), "rb")
+      DSN <- dsn
+      if (!file.info(DSN)$isdir) DSN <- dirname(normalizePath(dsn))
+      con <- file(paste(DSN, .Platform$file.sep, layer, ".dbf", sep=""), "rb")
       vr <- readBin(con, "raw", n=32L)
       ldid <- as.integer(vr[30])
       attr(ogrinfo, "LDID") <- ldid

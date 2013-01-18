@@ -1,3 +1,16 @@
+2013-01-18 12:03  rsbivand
+
+	* DESCRIPTION, R/ogr.R, man/readOGR.Rd: fix file dsn bug
+	  ogrInfo/ESRI Shapefile
+
+2013-01-15 07:25  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-01-15 07:21  rsbivand
+
+	* R/AAA.R: move startup messages to .onAttach
+
 2013-01-15 07:08  rsbivand
 
 	* ChangeLog, inst/ChangeLog: tidy
