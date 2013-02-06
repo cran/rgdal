@@ -35,7 +35,7 @@ extern "C" {
   SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer){
     // return FIDs, nFields, fieldInfo
 
-    SEXP ans,vec,/*mat,*/drv;
+    SEXP ans,vec,/*mat,*/drv, dvec;
     SEXP itemlist, itemnames, itemwidth, itemtype, itemTypeNames;
     /*SEXP geotype;*/
 
@@ -77,7 +77,7 @@ extern "C" {
     uninstallErrorHandlerAndTriggerError();
 
     // allocate a list for return values   
-    PROTECT(ans=allocVector(VECSXP,4)); pc++;
+    PROTECT(ans=allocVector(VECSXP,5)); pc++;
 
     PROTECT(drv=allocVector(STRSXP,1)); pc++;
     installErrorHandler();
@@ -101,6 +101,17 @@ extern "C" {
     PROTECT(vec=allocVector(INTSXP,1)); pc++;
     INTEGER(vec)[0]=nFields;
     SET_VECTOR_ELT(ans,1,vec);
+    installErrorHandler();
+    OGREnvelope oExt;
+    if (poLayer->GetExtent(&oExt, TRUE) == OGRERR_NONE) {
+        PROTECT(dvec=allocVector(REALSXP,4)); pc++;
+        REAL(dvec)[0] = oExt.MinX;
+        REAL(dvec)[1] = oExt.MinY;
+        REAL(dvec)[2] = oExt.MaxX;
+        REAL(dvec)[3] = oExt.MaxY;
+        SET_VECTOR_ELT(ans,4,dvec);
+    }
+    uninstallErrorHandlerAndTriggerError();
     
     PROTECT(itemnames=allocVector(STRSXP,nFields)); pc++;
     PROTECT(itemtype=allocVector(INTSXP,nFields)); pc++;

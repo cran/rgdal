@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the Geospatial Data Abstraction Library
-Version: 0.8-4
-Date: 2013-01-18
+Version: 0.8-5
+Date: 2013-02-06
 Depends: R (>= 2.13.0), methods, sp (>= 1.0-4)
 LinkingTo: sp
 Description: Provides bindings to Frank Warmerdam's Geospatial Data
@@ -14,10 +14,11 @@ Description: Provides bindings to Frank Warmerdam's Geospatial Data
         exported. Use is made of classes defined in the sp package.
         Windows and Mac Intel OS X binaries (including GDAL, PROJ.4 and
         Expat) are provided on CRAN.
-Author: Timothy H. Keitt <tkeitt@mail.utexas.edu>, Roger Bivand
-        <Roger.Bivand@nhh.no>, Edzer Pebesma
-        <edzer.pebesma@uni-muenster.de>, Barry Rowlingson
-Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
+Authors@R: c( person("Roger", "Bivand", role = c("cre", "aut"), email =
+        "Roger.Bivand@nhh.no"), person("Keitt", "Tim", role = "aut"),
+        person("Rowlingson", "Barry", role = "aut"), person("Edzer",
+        "Pebesma", role = "ctb"), person("Sumner", "Michael", role =
+        "ctb"), person("Hijmans", "Robert", role = "ctb"))
 License: GPL (>= 2)
 URL: http://www.gdal.org, https://r-forge.r-project.org/projects/rgdal/
 SystemRequirements: for building from source: GDAL >= 1.7.1 library
@@ -26,6 +27,10 @@ SystemRequirements: for building from source: GDAL >= 1.7.1 library
         frameworks built by William Kyngesburye at
         http://www.kyngchaos.com/ may be used for source installs on
         OSX.
-Packaged: 2013-01-18 14:19:08 UTC; rsb
+Packaged: 2013-02-06 16:51:36 UTC; rsb
+Author: Roger Bivand [cre, aut], Keitt Tim [aut], Rowlingson Barry
+        [aut], Edzer Pebesma [ctb], Sumner Michael [ctb], Hijmans
+        Robert [ctb]
+Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2013-01-18 15:52:15
+Date/Publication: 2013-02-06 18:49:09

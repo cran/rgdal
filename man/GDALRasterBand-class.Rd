@@ -71,7 +71,7 @@ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84(value)
   \item{raster}{An object of class GDALRasterBand}
   \item{x}{integer variable for conversion}
   \item{base}{If Byte input, 8, if Int16 or UInt16, 16}
-  \item{OVERRIDE_PROJ_DATUM_WITH_TOWGS84}{logical value, default NULL, which case the cached option set by \code{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84} is used. Ignored if the GDAL version is less than \dQuote{1.8.0} or if the envirnment variable is already set}
+  \item{OVERRIDE_PROJ_DATUM_WITH_TOWGS84}{logical value, default NULL, which case the cached option set by \code{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84} is used. Ignored if the GDAL version is less than \dQuote{1.8.0} or if the CPLConfigOption variable is already set}
   \item{value}{logical value to set OVERRIDE_PROJ_DATUM_WITH_TOWGS84}
 }
 
