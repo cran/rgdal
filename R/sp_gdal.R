@@ -1,4 +1,4 @@
-GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
+GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent)
 	d <- dim(x)[1:2]
@@ -35,6 +35,14 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
                 CATlist <- vector(mode="list", length=nbands)
             if (returnColorTable)
                 colTabs <- vector(mode="list", length=nbands)
+				
+#RH 4feb2013
+            if (returnScaleOffset) {
+                scaleOffset <- matrix(0, ncol=2, nrow=nbands)
+                colnames(scaleOffset) <- c('scale', 'offset')
+            }
+				
+	
             for (i in seq(along = band)) {
 
                 raster <- getRasterBand(x, band[i])
@@ -70,6 +78,15 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
                 if (returnColorTable) {
                     colTabs[[i]] <- getBandColorTable(raster)
                 }
+				
+#RH 4feb2013
+                if (returnScaleOffset) {
+                    scaleOffset[i,1] <- .Call('RGDAL_GetScale', raster,
+                        PACKAGE="rgdal")
+                    scaleOffset[i,2] <- .Call('RGDAL_GetOffset', raster,
+                        PACKAGE="rgdal")
+                }
+				
                 NDV <- .Call("RGDAL_GetBandNoDataValue", raster,
                     PACKAGE="rgdal")
                 if (is.null(NDV)) {
@@ -112,6 +129,9 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
         if (returnRAT) attr(res, "RATlist") <- RATlist
         if (returnCategoryNames) attr(res, "CATlist") <- CATlist
         if (returnColorTable) attr(res, "ColorTables") <- colTabs
+		
+#RH 4feb2013    
+        if (returnScaleOffset) attr(res, "ScaleOffset") <- scaleOffset
 	class(res) <- "GDALobj"
 	res
 }
@@ -138,6 +158,15 @@ print.GDALobj <- function(x, ...) {
         if (attr(x, "sdf")) {
             cat("apparent band statistics:\n")
             print(attr(x, "df")[,6:9])
+        }
+        if (!is.null(attr(x, "ScaleOffset"))) {
+            somat <- attr(x, "ScaleOffset")
+            rws <- which(somat[,1] != 1 | somat[,2] != 0)
+            if (any(rws)) {
+                cat("ScaleOffset:\n")
+                rownames(somat) <- paste("band", 1:nrow(somat), sep="")
+                print(somat[rws,])
+            }
         }
         if (!is.null(attr(x, "mdata"))) {
             cat("Metadata:\n")

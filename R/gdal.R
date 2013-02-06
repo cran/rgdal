@@ -341,16 +341,16 @@ getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
   assertClass(dataset, 'GDALReadOnlyDataset')
 
   vs <- strsplit(strsplit(getGDALVersionInfo(), ",")[[1]][1], " ")[[1]][2]
-  env_absent <- nchar(Sys.getenv("OVERRIDE_PROJ_DATUM_WITH_TOWGS84")) == 0
+  env_absent <- is.null(getCPLConfigOption("OVERRIDE_PROJ_DATUM_WITH_TOWGS84"))
   if ((vs > "1.8.0") && env_absent) {
     if (is.null(OVERRIDE_PROJ_DATUM_WITH_TOWGS84))
       OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84()
     stopifnot(is.logical(OVERRIDE_PROJ_DATUM_WITH_TOWGS84))
     stopifnot(length(OVERRIDE_PROJ_DATUM_WITH_TOWGS84) == 1)
     if (!OVERRIDE_PROJ_DATUM_WITH_TOWGS84) {
-      Sys.setenv("OVERRIDE_PROJ_DATUM_WITH_TOWGS84"="NO")
+      setCPLConfigOption("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", "NO")
       res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
-      Sys.unsetenv("OVERRIDE_PROJ_DATUM_WITH_TOWGS84")
+      setCPLConfigOption("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", NULL)
     } else {
       res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
     }

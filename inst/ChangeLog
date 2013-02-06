@@ -1,3 +1,78 @@
+2013-02-05 19:01  rhijmans
+
+	* man/readGDAL.Rd:
+
+2013-02-05 18:58  rhijmans
+
+	* inst/pictures/scaleoffset.dat, inst/pictures/scaleoffset.vrt,
+	  man/readGDAL.Rd:
+
+2013-02-05 18:24  rhijmans
+
+	* R/sp_gdal.R:
+
+2013-02-05 18:04  rsbivand
+
+	* R/sp_gdal.R: add returnScaleOffset to GDALinfo
+
+2013-02-05 17:57  rsbivand
+
+	* R/sp_gdal.R, man/readGDAL.Rd: add returnScaleOffset to GDALinfo
+
+2013-02-05 00:54  rhijmans
+
+	* R/sp_gdal.R: added "returnScaleOffset" to GDALinfo. Currently
+	  always TRUE, but should become an argument
+
+2013-02-04 19:50  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-02-04 19:49  rsbivand
+
+	* DESCRIPTION: tidy
+
+2013-02-04 19:45  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-02-04 19:45  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-02-04 19:44  rsbivand
+
+	* DESCRIPTION: tidy
+
+2013-01-29 20:52  edzer
+
+	* DESCRIPTION: updated Date field, to trigger rebuild on r-forge.
+
+2013-01-28 12:12  rsbivand
+
+	* R/ogr.R: add extent to ogrInfo
+
+2013-01-28 12:04  rsbivand
+
+	* src/ogrsource.cpp: add extent to ogrInfo
+
+2013-01-28 11:51  rsbivand
+
+	* R/ogr.R, src/ogrsource.cpp: add extent to ogrInfo
+
+2013-01-27 16:29  rsbivand
+
+	* DESCRIPTION, R/gdal.R, man/GDALRasterBand-class.Rd,
+	  man/readGDAL.Rd: tidy
+
+2013-01-18 14:43  edzer
+
+	* configure: PACKAGE_VERSION now matches package version
+
+2013-01-18 12:04  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2013-01-18 12:03  rsbivand
 
 	* DESCRIPTION, R/ogr.R, man/readOGR.Rd: fix file dsn bug

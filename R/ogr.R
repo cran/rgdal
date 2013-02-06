@@ -86,7 +86,7 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
     else stop(paste("Multiple incompatible geometries:", 
       paste(u_eType, collapse=":")))
   }
-  names(ogrinfo) <- c("nrows","nitems","iteminfo","driver")
+  names(ogrinfo) <- c("nrows","nitems","iteminfo","driver","extent")
   if (ogrinfo$driver == "ESRI Shapefile") {
       DSN <- dsn
       if (!file.info(DSN)$isdir) DSN <- dirname(normalizePath(dsn))
@@ -117,9 +117,11 @@ print.ogrinfo <- function(x, ...) {
     "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
   cat("Feature type:", paste(WKB[x$eType], collapse=", "), "with",
     x$with_z+2, "dimensions\n")
+  if (!is.null(x$extent)) cat("Extent: (", x$extent[1], " ",
+    x$extent[2], ") - (", x$extent[3], " ", x$extent[4], ")\n", sep="")
   if (!is.null(x$null_geometries)) cat(x$null_geometries, "\n")
   if (!is.null(x$deleted_geometries)) cat(x$deleted_geometries, "\n")
-  if (nchar(x$p4s > 1)) cat(x$p4s, "\n")
+  if ((nchar(x$p4s) > 1) && !is.na(x$p4s)) cat("CRS:", x$p4s, "\n")
   if (!is.null(attr(x, "LDID"))) cat("LDID:", attr(x, "LDID"), "\n")
   cat("Number of fields:", x$nitems, "\n")
   if (x$nitems > 0) print(as.data.frame(x$iteminfo))
