@@ -194,7 +194,7 @@ extern "C" {
   i=0;
   installErrorHandler();
   while( (poFeature = poLayer->GetNextFeature()) != NULL ){
-    INTEGER(fids)[i]=poFeature->GetFID();
+    INTEGER(fids)[i]= (int) poFeature->GetFID();
     i++;
     OGRFeature::DestroyFeature( poFeature );
 //    delete poFeature;
@@ -401,8 +401,8 @@ extern "C" {
 extern "C" {
 #endif
 // extern "C" {
-  SEXP OGRFeatureInfo (SEXP ogrSource, SEXP Layer){
-    SEXP ans;
+/*  SEXP OGRFeatureInfo (SEXP ogrSource, SEXP Layer){ unused function
+    SEXP ans=NULL;
     OGRLayer *poLayer;
     OGRDataSource *poDS;
     OGRFeatureDefn *poDefn;
@@ -450,7 +450,7 @@ extern "C" {
     uninstallErrorHandlerAndTriggerError();
 //    UNPROTECT(1);
     return(R_NilValue);
-  }
+  }*/
 
 
 SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
