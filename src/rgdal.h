@@ -15,12 +15,7 @@ extern "C" {
 #include "sp.h"
 
 SEXP make_Polygonlist(SEXP iG, SEXP iGc);
-
 SEXP make_Polygon(SEXP jG, SEXP jGc);
-
-static CPLErr saved_eErrClass = CE_None;
-static int saved_err_no = 0;
-static char saved_error_msg[2048];
 
 void installErrorHandler();
 void uninstallErrorHandlerAndTriggerError();

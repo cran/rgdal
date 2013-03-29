@@ -39,6 +39,10 @@ extern "C" {
 #define GDAL_COMPLEX_TYPE GDT_CFloat64
 #endif
 
+static CPLErr saved_eErrClass = CE_None;
+static int saved_err_no = 0;
+static char saved_error_msg[2048];
+
 static SEXP
 mkString_safe(const char *string) {
 

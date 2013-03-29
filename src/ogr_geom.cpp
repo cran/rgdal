@@ -132,7 +132,7 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments)
 		with_z = 1;
         eType = wkbFlatten(OGR_G_GetGeometryType(Ogr_geometry));
 
-	INTEGER_POINTER(VECTOR_ELT(ans, 3))[i] =  eType;
+	INTEGER_POINTER(VECTOR_ELT(ans, 3))[i] =  (int) eType;
 	INTEGER_POINTER(VECTOR_ELT(ans, 5))[i] =  with_z;
 
 	if (eType == wkbPoint) {
@@ -428,7 +428,7 @@ SEXP R_OGR_types(SEXP dsn, SEXP layer)
 
 	if (eType == wkbUnknown || eType == wkbNone) isNULL = 1;
 
-	INTEGER_POINTER(VECTOR_ELT(ans, 3))[i] = eType;
+	INTEGER_POINTER(VECTOR_ELT(ans, 3))[i] = (int) eType;
 	INTEGER_POINTER(VECTOR_ELT(ans, 4))[i] = with_z;
 	INTEGER_POINTER(VECTOR_ELT(ans, 5))[i] = isNULL;
 

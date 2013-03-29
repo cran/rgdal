@@ -17,6 +17,10 @@ RBIN="${R_HOME}/bin/R"
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
+# AC_SUBST([CC],["clang"])
+# AC_SUBST([CXX],["clang++"])
+AC_MSG_NOTICE([CC: ${CC}])
+AC_MSG_NOTICE([CXX: ${CXX}])
 
 AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
 
@@ -104,12 +108,12 @@ fi
 
 NEED_DEPS=no
 LIBS="${INLIBS} ${PKG_LIBS}"
-[cat > gdal_test.c <<_EOCONF
+[cat > gdal_test.cc <<_EOCONF
 #include <gdal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-main() {
+int main() {
 GDALAllRegister();
 }
 #ifdef __cplusplus
@@ -118,7 +122,7 @@ GDALAllRegister();
 _EOCONF]
 
 AC_MSG_CHECKING(gdal: linking with --libs only)
-${CXX} ${CPPFLAGS} -o gdal_test gdal_test.c ${LIBS} 2> errors.txt
+${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cc ${LIBS} 2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdalok=no
 AC_MSG_RESULT(no)
@@ -130,7 +134,7 @@ if test "${gdalok}" = no; then
 AC_MSG_CHECKING(gdal: linking with --libs and --dep-libs)
 LIBS="${LIBS} ${GDAL_DEP_LIBS}"
 gdalok=yes
-${CXX} ${CPPFLAGS} -o gdal_test gdal_test.c ${LIBS} 2>> errors.txt
+${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cc ${LIBS} 2>> errors.txt
 if test `echo $?` -ne 0 ; then
 gdalok=no
 fi
@@ -148,7 +152,7 @@ if test "${gdalok}" = no; then
    AC_MSG_ERROR([GDALAllRegister not found in libgdal.])
 fi
 
-rm -f gdal_test errors.txt gdal_test.c
+rm -f gdal_test errors.txt gdal_test.cc
 
 
 GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"

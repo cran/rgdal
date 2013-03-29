@@ -234,9 +234,9 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 		error(pj_strerrno(*pj_get_errno_ref()));
 	
 	n = INTEGER_POINTER(npts)[0];
-	xx = (double *) R_alloc((long) n, sizeof(double));
-	yy = (double *) R_alloc((long) n, sizeof(double));
-	if (have_z) zz = (double *) R_alloc((long) n, sizeof(double));
+	xx = (double *) R_alloc((size_t) n, sizeof(double));
+	yy = (double *) R_alloc((size_t) n, sizeof(double));
+	if (have_z) zz = (double *) R_alloc((size_t) n, sizeof(double));
 
 	for (i=0; i < n; i++) {
 		xx[i] = NUMERIC_POINTER(x)[i];
@@ -405,7 +405,7 @@ struct PJ_UNITS {
 struct PJ_UNITS *pj_get_units_ref( void );
 
 SEXP projInfo(SEXP type) {
-    SEXP ans;
+    SEXP ans=NULL;
     SEXP ansnames;
     int n=0, pc=0;
 
