@@ -1,7 +1,6 @@
 
-R version 2.15.2 (2012-10-26) -- "Trick or Treat"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.0 (2013-04-03) -- "Masked Marvel"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,9 +26,11 @@ Error : Null external pointer
 > try(GDAL.open(logo))
 An object of class "GDALReadOnlyDataset"
 Slot "handle":
-<pointer: 0x3a1b170>
+<pointer: 0x21860a90>
 
 > try(GDAL.close(x))
+Error in getDescription(dataset) : Null external pointer
+
 > try(new('GDALDriver', "GeoTIFF"))
 Error in .local(.Object, ...) : No driver registered with name: GeoTIFF
 
@@ -75,4 +76,4 @@ Error in writeOGR(cities, td, "cities", driver = "ESRI_Shapefile") :
 > 
 > proc.time()
    user  system elapsed 
-  0.694   0.023   0.722 
+  1.056   0.056   1.158 

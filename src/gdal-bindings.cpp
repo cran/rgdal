@@ -389,10 +389,10 @@ deleteFile(GDALDriver *pDriver, const char *filename) {
 
   installErrorHandler();
   if (strcmp(GDALGetDriverLongName( pDriver ), "In Memory Raster") != 0) {
-      CPLErr eErr = pDriver->Delete(filename);
-
-    if (eErr == CE_Failure)
-      warning("Failed to delete dataset: %s\n", filename);
+//      CPLErr eErr = pDriver->Delete(filename);
+    GDALDeleteDataset((GDALDriverH) pDriver, filename);
+/*    if (eErr == CE_Failure)
+      warning("Failed to delete dataset: %s\n", filename);*/
   }
   uninstallErrorHandlerAndTriggerError();
 
@@ -411,6 +411,8 @@ RGDAL_DeleteFile(SEXP sxpDriver, SEXP sxpFileName) {
   GDALDriver *pDriver = getGDALDriverPtr(sxpDriver);
 
   const char *filename = asString(sxpFileName);
+
+//  GDALDeleteDataset((GDALDriverH) pDriver, filename);
 
   deleteFile(pDriver, filename);
 
@@ -461,16 +463,23 @@ RGDAL_DeleteHandle(SEXP sxpHandle) {
   if (pDataset == NULL) return(R_NilValue);
 
   installErrorHandler();
+
   GDALDriver *pDriver = pDataset->GetDriver();
 
   const char *filename = pDataset->GetDescription();
+// Rprintf("file: %s\n", filename);
 
-  RGDAL_CloseHandle(sxpHandle);
+  GDALDeleteDataset((GDALDriverH) pDriver, filename);
 
-/* FIXME path name problem to temporary file */
-#ifndef OSGEO4W
+/*  GDALClose((GDALDatasetH) pDataset);
+ FIXME path name problem to temporary file */
+/* #ifndef OSGEO4W
   deleteFile(pDriver, filename);
-#endif
+#endif */
+
+  R_ClearExternalPtr(sxpHandle);
+//  RGDAL_CloseHandle(sxpHandle);
+
   uninstallErrorHandlerAndTriggerError();
   return(R_NilValue);
 
