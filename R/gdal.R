@@ -319,8 +319,17 @@ GDAL.open <- function(filename, read.only = TRUE, silent = FALSE) {
 }
 
 GDAL.close <- function(dataset) {
+            filename <- getDescription(dataset)
+            isTrans <- is(dataset, "GDALTransientDataset")
             .setCollectorFun(slot(dataset, 'handle'), NULL)
             .Call('RGDAL_CloseDataset', dataset, PACKAGE="rgdal")
+            if (isTrans) {
+                basen <- basename(filename)
+                dirn <- dirname(filename)
+                lf <- list.files(path=dirn, pattern=basen)
+                flf <- paste(dirn, lf, sep="/")
+                unlink(flf)
+            }
             invisible(gc())
 }
 

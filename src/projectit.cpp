@@ -301,13 +301,14 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
             }
         }
 
-        pj_free(fromPJ); pj_free(toPJ);
+        pj_free(fromPJ);
 	if ( pj_is_latlong(toPJ) || ob_tran == -1) {
 		for (i=0; i < n; i++) {
                		xx[i] *= RAD_TO_DEG;
                		yy[i] *= RAD_TO_DEG;
             	}
 	}
+        pj_free(toPJ);
         if (have_z) {
 	    for (i=0; i < n; i++) {
 		if (xx[i] == HUGE_VAL || yy[i] == HUGE_VAL || zz[i] == HUGE_VAL

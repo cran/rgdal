@@ -36,10 +36,10 @@ export(displayDataset)
 export(open.SpatialGDAL, copy.SpatialGDAL)
 export(llgridlines)
 
-export(spTransform, spTransform.SpatialPoints, 
-  spTransform.SpatialPointsDataFrame, spTransform.SpatialLines, 
-  spTransform.SpatialLinesDataFrame, spTransform.SpatialPolygons, 
-  spTransform.SpatialPolygonsDataFrame)
+#export(spTransform, spTransform.SpatialPoints, 
+#  spTransform.SpatialPointsDataFrame, spTransform.SpatialLines, 
+#  spTransform.SpatialLinesDataFrame, spTransform.SpatialPolygons, 
+#  spTransform.SpatialPolygonsDataFrame)
 
 export(OGRSpatialRef, GDALSpatialRef)
 
@@ -48,12 +48,12 @@ export(get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84,
 
 export(getCPLConfigOption, setCPLConfigOption)
 
-S3method(spTransform, SpatialPoints)
-S3method(spTransform, SpatialPointsDataFrame)
-S3method(spTransform, SpatialLines)
-S3method(spTransform, SpatialLinesDataFrame)
-S3method(spTransform, SpatialPolygons)
-S3method(spTransform, SpatialPolygonsDataFrame)
+#S3method(spTransform, SpatialPoints)
+#S3method(spTransform, SpatialPointsDataFrame)
+#S3method(spTransform, SpatialLines)
+#S3method(spTransform, SpatialLinesDataFrame)
+#S3method(spTransform, SpatialPolygons)
+#S3method(spTransform, SpatialPolygonsDataFrame)
 S3method(print, GDALobj)
 S3method(print, ogrinfo)
 S3method(close, SpatialGDAL)
