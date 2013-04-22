@@ -81,6 +81,7 @@ SEXP RGDAL_GetBandNoDataValue(SEXP sxpRasterBand);
 SEXP RGDAL_SetStatistics(SEXP sxpRasterBand, SEXP statistics);
 SEXP RGDAL_SetRasterColorTable(SEXP raster, SEXP icT, SEXP ricT, SEXP cicT);
 SEXP RGDAL_SetCategoryNames(SEXP sxpRasterBand, SEXP sxpNames);
+SEXP isGDALObjPtrNULL(SEXP sxpObj);
 
 SEXP RGDAL_GetRAT(SEXP sxpRasterBand);
 SEXP RGDAL_CPLSetConfigOption(SEXP inOption, SEXP value);

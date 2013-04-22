@@ -4,7 +4,7 @@ useDynLib(rgdal)
 import(methods)
 import(sp)
 
-exportMethods(spTransform)
+#exportMethods(spTransform)
 exportMethods(closeDataset)
 exportMethods(initialize)
 exportMethods(summary)
