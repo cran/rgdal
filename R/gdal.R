@@ -307,6 +307,14 @@ deleteDataset <- function(dataset) {
 
 }
 
+isObjPtrNULL <- function(ptr) {
+
+  stopifnot(is(ptr, "GDALMajorObject"))
+
+  .Call("isGDALObjPtrNULL", ptr, PACKAGE="rgdal")
+
+}
+
 GDAL.open <- function(filename, read.only = TRUE, silent = FALSE) {
   
 	res <- if(read.only)
@@ -319,8 +327,11 @@ GDAL.open <- function(filename, read.only = TRUE, silent = FALSE) {
 }
 
 GDAL.close <- function(dataset) {
-            filename <- getDescription(dataset)
             isTrans <- is(dataset, "GDALTransientDataset")
+            if (isTrans) {
+                if (isObjPtrNULL(dataset)) stop("object already closed")
+                filename <- getDescription(dataset)
+            }
             .setCollectorFun(slot(dataset, 'handle'), NULL)
             .Call('RGDAL_CloseDataset', dataset, PACKAGE="rgdal")
             if (isTrans) {

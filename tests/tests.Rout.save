@@ -29,8 +29,6 @@ Slot "handle":
 <pointer: 0x21860a90>
 
 > try(GDAL.close(x))
-Error in getDescription(dataset) : Null external pointer
-
 > try(new('GDALDriver', "GeoTIFF"))
 Error in .local(.Object, ...) : No driver registered with name: GeoTIFF
 

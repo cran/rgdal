@@ -86,6 +86,23 @@ getGDALObjPtr(SEXP sxpObj) {
 
 }
 
+SEXP isGDALObjPtrNULL(SEXP sxpObj) {
+
+  SEXP sxpHandle = getObjHandle(sxpObj);
+  SEXP res;
+  PROTECT(res = NEW_LOGICAL(1));
+  LOGICAL_POINTER(res)[0] = FALSE;
+
+  void *extPtr = R_ExternalPtrAddr(sxpHandle);
+
+  if (extPtr == NULL) LOGICAL_POINTER(res)[0] = TRUE;
+
+  UNPROTECT(1);
+
+  return(res);
+
+}
+
 static GDALDriver*
 getGDALDriverPtr(SEXP sxpDriver) {
 

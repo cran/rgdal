@@ -1,3 +1,21 @@
+2013-04-22 11:20  rsbivand
+
+	* R/gdal.R, src/gdal-bindings.cpp, src/init.c, src/rgdal.h,
+	  tests/tests.Rout.save: spgrass6 work-around
+
+2013-04-22 09:02  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-04-22 09:02  rsbivand
+
+	* DESCRIPTION, NAMESPACE, configure: removing
+	  exportMethods(spTransform)
+
+2013-04-20 17:40  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2013-04-20 17:39  rsbivand
 
 	* tests/tests.Rout.save: tidy
