@@ -128,20 +128,27 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     if (length(fld_names) != length(unique(fld_names)))
        stop("Non-unique field names")
     nobj <- nrow(slot(obj, "data"))
+# add FIDs 130502
+    owarn <- options("warn")
+    options("warn"=-1L)
+    FIDs <- as.integer(row.names(obj))
+    if (any(is.na(FIDs))) FIDS <- as.integer(0:(nobj-1))
+    options("warn"=owarn$warn)
     
     pre <- list(obj, as.character(dsn), as.character(layer), 
         as.character(driver), as.integer(nobj), nf,
         as.character(fld_names), as.integer(ogr_ftype), ldata, 
         as.character(dataset_options), as.character(layer_options),
-        as.logical(morphToESRI))
+        as.logical(morphToESRI), as.integer(FIDs))
     res <- .Call("OGR_write", pre, PACKAGE="rgdal")
     if (verbose) {
         res <- list(object_type=res, output_dsn=dsn, output_layer=layer,
             output_diver=driver, output_n=nobj, output_nfields=nf,
             output_fields=fld_names, output_fclasses=ogr_ftype, 
             dataset_options=dataset_options, layer_options=layer_options,
-            morphToESRI=morphToESRI)
+            morphToESRI=morphToESRI, FIDs=FIDs)
         return(res)
+# add FIDs 130502
     } 
 }
 
