@@ -1,3 +1,32 @@
+2013-05-02 10:59  rsbivand
+
+	* DESCRIPTION: Add FIDs to OGR write
+
+2013-05-02 10:58  rsbivand
+
+	* R/ogr_write.R, src/OGR_write.cpp: Add FIDs to OGR write
+
+2013-05-02 09:49  rsbivand
+
+	* R/ogr_write.R, src/OGR_write.cpp: Add FIDs to OGR write
+
+2013-04-26 09:36  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-04-26 09:35  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: Kirill Müller's reversion
+	  to GDAL 1.6.3
+
+2013-04-22 19:48  edzer
+
+	* DESCRIPTION: version bump.
+
+2013-04-22 11:21  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2013-04-22 11:20  rsbivand
 
 	* R/gdal.R, src/gdal-bindings.cpp, src/init.c, src/rgdal.h,
