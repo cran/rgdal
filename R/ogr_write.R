@@ -132,7 +132,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     owarn <- options("warn")
     options("warn"=-1L)
     FIDs <- as.integer(row.names(obj))
-    if (any(is.na(FIDs))) FIDS <- as.integer(0:(nobj-1))
+    if (any(is.na(FIDs))) FIDs <- as.integer(0:(nobj-1))
     options("warn"=owarn$warn)
     
     pre <- list(obj, as.character(dsn), as.character(layer), 

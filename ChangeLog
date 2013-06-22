@@ -1,3 +1,36 @@
+2013-06-22 13:59  rsbivand
+
+	* DESCRIPTION, man/readOGR.Rd, man/writeOGR.Rd: tidy
+
+2013-05-23 19:29  edzer
+
+	* man/spTransform-methods.Rd: out-commented spTransform(ANY)
+	  method, as it is not defined anyway (sp now does this)
+
+2013-05-23 14:18  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-05-23 14:17  rsbivand
+
+	* man/readGDAL.Rd: fixs FIDs typo
+
+2013-05-23 14:08  rsbivand
+
+	* DESCRIPTION, R/ogr_write.R: fixs FIDs typo
+
+2013-05-07 07:54  rsbivand
+
+	* R/ogr_sp.R: provide polygon geometry error output with useC=FALSE
+
+2013-05-05 08:02  rsbivand
+
+	* configure, configure.ac: add Unversioned directory to svn version
+
+2013-05-02 11:00  rsbivand
+
+	* ChangeLog, inst/ChangeLog: Add FIDs to OGR write
+
 2013-05-02 10:59  rsbivand
 
 	* DESCRIPTION: Add FIDs to OGR write

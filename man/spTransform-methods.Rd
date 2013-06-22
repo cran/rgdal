@@ -3,7 +3,7 @@
 \title{ Methods for Function spTransform for map projection and datum transformation in package "rgdal" }
 \alias{spTransform-methods}
 \alias{spTransform}
-\alias{spTransform,ANY-method}
+%\alias{spTransform,ANY-method}
 \alias{spTransform,SpatialPoints,CRS-method}
 \alias{spTransform,SpatialPointsDataFrame,CRS-method}
 \alias{spTransform,SpatialPixelsDataFrame,CRS-method}

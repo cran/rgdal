@@ -7,7 +7,8 @@
 }
 \usage{
 writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
- layer_options=NULL, verbose = FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL)
+ layer_options=NULL, verbose = FALSE, check_exists=NULL,
+ overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
