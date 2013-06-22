@@ -241,7 +241,14 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
                                   warning(paste("Ring closed in Polygons",
 				    i, "Polygon", j))
 				}
-				pllist[[j]] <- Polygon(cmat)
+				t0 <- try(pllist[[j]] <- Polygon(cmat),
+                                    silent=TRUE)
+                                if (class(t0) == "try-error") {
+                                     print(cmat)
+                                     print(t0)
+                                     stop("i: ", i, ", j: ", j,
+                                       ", Polygon error exit")
+                                }
 			}
                         thisPL <- Polygons(pllist, ID=as.character(fids[i]))
                         if (addCommentsToPolygons) {

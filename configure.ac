@@ -29,7 +29,7 @@ AC_CHECK_FILE([/usr/bin/svnversion],
  [SVN_VERSION=""])
 
 #SVN_VERSION=`svnversion -n '.'`
-if test "${SVN_VERSION}" != "exported" && test -n "${SVN_VERSION}"; then
+if test "${SVN_VERSION}" != "exported" && test -n "${SVN_VERSION}" && test "${SVN_VERSION}" != "Unversioned directory"; then
   echo "${SVN_VERSION}" > inst/SVN_VERSION
 else
   SVN_VERSION=`cat inst/SVN_VERSION | tr -d '\n'`

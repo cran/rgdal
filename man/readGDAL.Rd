@@ -158,7 +158,7 @@ y = readGDAL(system.file("pictures/Rlogo.jpg", package = "rgdal")[1], band=1)
 summary(y)
 y = readGDAL(system.file("pictures/Rlogo.jpg", package = "rgdal")[1])
 summary(y)
-spplot(y, zcol=1:3, names.attr=c("red","green","blue"), 
+spplot(y, names.attr=c("red","green","blue"), 
 	col.regions=grey(0:100/100),
 	main="example of three-layer (RGB) raster image", as.table=TRUE)
 data(meuse.grid)
