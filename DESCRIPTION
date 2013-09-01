@@ -1,24 +1,19 @@
 Package: rgdal
 Title: Bindings for the Geospatial Data Abstraction Library
-Version: 0.8-10
-Date: 2013-06-22
-Depends: R (>= 2.13.0), methods, sp (>= 1.0-9)
+Version: 0.8-11
+Date: 2013-09-01
+Depends: R (>= 2.14.0), methods, sp (>= 1.0-9)
 LinkingTo: sp
-Description: Provides bindings to Frank Warmerdam's Geospatial Data
-        Abstraction Library (GDAL) (>= 1.6.3) and access to
-        projection/transformation operations from the PROJ.4 library.
-        The GDAL and PROJ.4 libraries are external to the package, and,
-        when installing the package from source, must be correctly
-        installed first. Both GDAL raster and OGR vector map data can
-        be imported into R, and GDAL raster data and OGR vector data
-        exported. Use is made of classes defined in the sp package.
-        Windows and Mac Intel OS X binaries (including GDAL, PROJ.4 and
-        Expat) are provided on CRAN.
-Authors@R: c( person("Roger", "Bivand", role = c("cre", "aut"), email =
-        "Roger.Bivand@nhh.no"), person("Tim", "Keitt", role = "aut"),
-        person("Barry", "Rowlingson", role = "aut"), person("Edzer",
-        "Pebesma", role = "ctb"), person("Michael", "Sumner", role =
-        "ctb"), person("Robert", "Hijmans", role = "ctb"))
+Description: Provides bindings to Frank Warmerdam's Geospatial Data Abstraction Library (GDAL) (>= 1.6.3) and access to projection/transformation operations from the PROJ.4 library. The GDAL and PROJ.4 libraries are external to the package, and, when installing the package from source, must be correctly installed first. Both GDAL raster and OGR vector map data can be imported into R, and GDAL raster data and OGR vector data exported. Use is made of classes defined in the sp package. Windows and Mac Intel OS X binaries (including GDAL, PROJ.4 and Expat) are provided on CRAN. 
+Authors@R: c(
+	person("Roger", "Bivand", role = c("cre", "aut"), email = "Roger.Bivand@nhh.no"),
+	person("Tim", "Keitt", role = "aut"),
+	person("Barry", "Rowlingson", role = "aut"),
+	person("Edzer", "Pebesma", role = "ctb"),
+	person("Michael", "Sumner", role = "ctb"),
+	person("Robert", "Hijmans", role = "ctb"))
+Author: Tim Keitt, Barry Rowlingson and Roger Bivand
+Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 License: GPL (>= 2)
 URL: http://www.gdal.org, https://r-forge.r-project.org/projects/rgdal/
 SystemRequirements: for building from source: GDAL >= 1.6.3 library
@@ -27,11 +22,7 @@ SystemRequirements: for building from source: GDAL >= 1.6.3 library
         frameworks built by William Kyngesburye at
         http://www.kyngchaos.com/ may be used for source installs on
         OSX.
-Packaged: 2013-06-22 14:03:00 UTC; rsb
-Author: Roger Bivand [cre, aut], Tim Keitt [aut], Barry Rowlingson
-        [aut], Edzer Pebesma [ctb], Michael Sumner [ctb], Robert
-        Hijmans [ctb]
-Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
+Packaged: 2013-09-01 17:41:16 UTC; rsb
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-06-22 17:27:55
+Date/Publication: 2013-09-01 21:18:35

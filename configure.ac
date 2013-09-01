@@ -230,6 +230,18 @@ else
   AC_MSG_RESULT(yes)
 fi
 
+
+AC_ARG_WITH([proj-share],
+    AC_HELP_STRING([--with-proj-share=SHARE_PATH],
+               [the location of proj metadata files]),
+               [proj_share_path=$withval])
+if test [ -n "$proj_share_path" ] ; then
+    AC_MSG_NOTICE([PROJ_LIB: ${proj_share_path}])
+fi
+
+
+
+
 if test ${proj_version} -eq 1; then
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
@@ -261,9 +273,14 @@ _EOCONF]
 fi
 
 ${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS}
-./proj_conf_test
+if test [ -n "$proj_share_path" ] ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
 
-proj_share=`echo $?`
 AC_MSG_CHECKING(PROJ.4: epsg found and readable)
 if test ${proj_share} -eq 1 ; then
     AC_MSG_RESULT(no)
@@ -279,7 +296,8 @@ if test "$STOP" = "stop" ; then
     echo "Either install missing proj support files, for example"
     echo "the proj-nad and proj-epsg RPMs on systems using RPMs,"
     echo "or if installed but not autodetected, set PROJ_LIB to the"
-    echo "correct path."
+    echo "correct path, and if need be use the --with-proj-share="
+    echo "configure argument."
     exit 1
 fi
 
@@ -315,9 +333,14 @@ _EOCONF]
 fi
 
 ${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS}
-./proj_conf_test
+if test [ -n "$proj_share_path" ] ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
 
-proj_share=`echo $?`
 AC_MSG_CHECKING(PROJ.4: conus found and readable)
 if test ${proj_share} -eq 1 ; then
     WARN="warn"
