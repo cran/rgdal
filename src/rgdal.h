@@ -33,6 +33,7 @@ SEXP RGDAL_GetDriverShortName(SEXP sxpDriver);
 SEXP RGDAL_GetDriverLongName(SEXP sxpDriver);
 
 SEXP RGDAL_CloseHandle(SEXP sxpHandle);
+//SEXP RGDAL_DeleteHandle(SEXP sxpHandle);
 
 SEXP RGDAL_OpenDataset(SEXP filename, SEXP read_only, SEXP silent);
 SEXP RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,

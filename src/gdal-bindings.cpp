@@ -486,6 +486,8 @@ RGDAL_DeleteHandle(SEXP sxpHandle) {
   const char *filename = pDataset->GetDescription();
 // Rprintf("file: %s\n", filename);
 
+// 131105 Even Roualt idea
+  GDALClose((GDALDatasetH) pDataset);
   GDALDeleteDataset((GDALDriverH) pDriver, filename);
 
 /*  GDALClose((GDALDatasetH) pDataset);
