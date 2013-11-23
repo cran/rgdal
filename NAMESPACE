@@ -35,6 +35,8 @@ export(GDALinfo, print.GDALobj, getGDALVersionInfo, getGDALCheckVersion, getGDAL
 export(displayDataset)
 export(open.SpatialGDAL, copy.SpatialGDAL)
 export(llgridlines)
+export(GDALcall)
+export(rawTransform)
 
 #export(spTransform, spTransform.SpatialPoints, 
 #  spTransform.SpatialPointsDataFrame, spTransform.SpatialLines, 
