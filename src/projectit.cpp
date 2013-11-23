@@ -15,6 +15,13 @@ extern "C" {
 #endif
 /* #include <projects.h> */
 #include <proj_api.h>
+/* BDR 131123 */
+#ifndef P4CTX
+#if PJ_VERSION >= 480
+# define P4CTX 1
+#endif
+#endif
+
 #ifdef P4CTX
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #else
