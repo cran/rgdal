@@ -482,16 +482,21 @@ RGDAL_DeleteHandle(SEXP sxpHandle) {
   installErrorHandler();
 
   GDALDriver *pDriver = pDataset->GetDriver();
+// 131202 ASAN fix
+  const char *desc = GDALGetDriverShortName( pDriver );
+//Rprintf("Driver short name %s\n", desc);
+  GDALDriver *pDriver1 = (GDALDriver *) GDALGetDriverByName(desc);
 
-  const char *filename = pDataset->GetDescription();
-// Rprintf("file: %s\n", filename);
+  char *filename = strdup(pDataset->GetDescription());
+//Rprintf("file: %s\n", filename);
 
 // 131105 Even Roualt idea
   GDALClose((GDALDatasetH) pDataset);
-  GDALDeleteDataset((GDALDriverH) pDriver, filename);
+//Rprintf("after GDALClose\n");
+  GDALDeleteDataset((GDALDriverH) pDriver1, filename);
+//Rprintf("after GDALDeleteDataset\n");
+  free(filename);
 
-/*  GDALClose((GDALDatasetH) pDataset);
- FIXME path name problem to temporary file */
 /* #ifndef OSGEO4W
   deleteFile(pDriver, filename);
 #endif */
