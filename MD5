@@ -1,5 +1,5 @@
-815e688cfa64e012a73f5446ef27300e *ChangeLog
-57ee067e2d170d72c0f6330aae76ace0 *DESCRIPTION
+7a2c2beeb5468fc425172ba1fae45f7e *ChangeLog
+41e5c07a3fe0366c5a642c52f65bb206 *DESCRIPTION
 a2244597f2dfa4abfe971acaddab7589 *NAMESPACE
 9e915b8b72d5417f36d3150f35d311c6 *R/AAA.R
 bccec03fa00f00bb16aa9c925da57851 *R/Class-CRSx.R
@@ -22,14 +22,14 @@ ccd4f76521391bb5ab693d6727c61e1d *R/make_EPSG.R
 9d2c46245d61078fe91efaa7e6163e75 *configure.ac
 e1b43035478e9717169b4364edde3555 *configure.win
 50c09c2c2c757e8015c50d5d59521a9c *data/nor2k.rda
-815e688cfa64e012a73f5446ef27300e *inst/ChangeLog
+7a2c2beeb5468fc425172ba1fae45f7e *inst/ChangeLog
 550df3cdafa4386c13a184068eb4c4e5 *inst/OSGeo4W_test
 92371716098b1e97cc5abab85107246b *inst/README
 91d92de7f2a2868aa6df396134992c9f *inst/README.windows
-aed3d3de6c6d9d7adc39bfcc0138beb3 *inst/SVN_VERSION
+07221593caeb86844b0c2b406cb17b2e *inst/SVN_VERSION
 9d82e9e61742c8326babd38650406dbf *inst/doc/OGR_shape_encoding.R
 fd3f59a7ce14b4bdb6a8184543e1114f *inst/doc/OGR_shape_encoding.Rnw
-7c19f79f047f450cf587bef88b73a797 *inst/doc/OGR_shape_encoding.pdf
+a75e99fa53cc19f8922e0da4189b7530 *inst/doc/OGR_shape_encoding.pdf
 22ac3c5a5bf0b520d281c122d1490650 *inst/etc/point.cpg
 15ba967b418e0a2745b40cc8d0dd913c *inst/etc/point.dbf
 d4166c4468b2506bb2cb0fc7fd53c811 *inst/etc/point.prj
@@ -106,7 +106,7 @@ b9d869d125e18d6f05c1de7ff4e95d9b *src/Makevars.in
 7d810c473aed3abf495524517e1169ca *src/Makevars.win
 3655113683fb56bb084ad465c3777701 *src/OGR_write.cpp
 4b43843cac36a7031fc1a106930bd589 *src/RGDAL.def
-a494c92dd86f3199abfd1e90451cb9aa *src/gdal-bindings.cpp
+ba47e059676e1316ee45833a4c41b3a8 *src/gdal-bindings.cpp
 d784c1acd1cb17decece4bc935af0ddb *src/init.c
 9e72cb3140169d11043307308eeca59e *src/local_stubs.c
 92fe0d5cc43d8a80f2eec9d84d5bd3b9 *src/ogr_geom.cpp
