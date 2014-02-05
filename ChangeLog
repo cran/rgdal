@@ -1,3 +1,14 @@
+2014-02-05 19:54  rsbivand
+
+	* DESCRIPTION,
+	  configure, configure.ac, src/projectit.cpp: prepare for
+	  PROJ 4.9.0
+
+2013-12-02 12:05  rsbivand
+
+	* ChangeLog,
+	  inst/ChangeLog: tidy
+
 2013-12-02 12:04  rsbivand
 
 	* DESCRIPTION,

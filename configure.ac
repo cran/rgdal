@@ -212,22 +212,24 @@ PKG_LIBS="${PKG_LIBS} -lproj"
 #include <proj_api.h>
 
 int main() {
-    if (PJ_VERSION >= 480) exit(1);
+    printf("%d\n", PJ_VERSION);
     exit(0);
 }
 _EOCONF]
 
 ${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS}
-./proj_conf_test
 
-proj_version=`echo $?`
+proj_version=`./proj_conf_test`
 
-AC_MSG_CHECKING(PROJ.4 Version 4.7 or earlier)
-if test ${proj_version} -eq 1; then
-  AC_MSG_RESULT(no)
-  AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=${proj_version} ${PKG_CPPFLAGS}"])
+if test ${proj_version} -eq 480; then
+  AC_MSG_NOTICE([PROJ.4 version: 4.8.0])
+  AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
+else if test ${proj_version} -ge 490; then
+  AC_MSG_NOTICE([PROJ.4 version: > 4.8.0])
+  AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
 else
-  AC_MSG_RESULT(yes)
+  AC_MSG_NOTICE([PROJ.4 version: < 4.8.0])
+fi
 fi
 
 
@@ -242,17 +244,29 @@ fi
 
 
 
-if test ${proj_version} -eq 1; then
+if test ${proj_version} -ge 480; then
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
+#if PJ_VERSION == 480
 FILE *pj_open_lib(projCtx, const char *, const char *);
+#endif
 
 int main() {
+#if PJ_VERSION <= 480
     FILE *fp;
-    fp = pj_open_lib(pj_get_default_ctx(), "epsg", "rb");
+#else
+    PAFile fp;
+#endif
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "epsg", "rb");
     if (fp == NULL) exit(1);
+#if PJ_VERSION <= 480
     fclose(fp);
+#else
+    pj_ctx_fclose(ctx, fp);
+#endif
     exit(0);
 }
 _EOCONF]
@@ -302,17 +316,29 @@ if test "$STOP" = "stop" ; then
 fi
 
 
-if test ${proj_version} -eq 1; then
+if test ${proj_version} -ge 480; then
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
+#if PJ_VERSION == 480
 FILE *pj_open_lib(projCtx, const char *, const char *);
+#endif
 
 int main() {
+#if PJ_VERSION <= 480
     FILE *fp;
-    fp = pj_open_lib(pj_get_default_ctx(), "conus", "rb");
+#else
+    PAFile fp;
+#endif
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "conus", "rb");
     if (fp == NULL) exit(1);
+#if PJ_VERSION <= 480
     fclose(fp);
+#else
+    pj_ctx_fclose(ctx, fp);
+#endif
     exit(0);
 }
 _EOCONF]
