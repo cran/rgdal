@@ -22,10 +22,12 @@ extern "C" {
 #endif
 #endif
 
-#ifdef P4CTX
+#if PJ_VERSION == 480
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #else
+#if PJ_VERSION < 480
 FILE *pj_open_lib(const char *, const char *);
+#endif
 #endif
 
 SEXP
@@ -47,23 +49,35 @@ PROJ4VersionInfo(void) {
 SEXP
 PROJ4NADsInstalled(void) {
     SEXP ans;
+#ifdef P4CTX
+    projCtx ctx;
+#endif
 #ifdef OSGEO4W
     PROTECT(ans=NEW_LOGICAL(1));
     LOGICAL_POINTER(ans)[0] = TRUE;
 #else
+#if PJ_VERSION <= 480
     FILE *fp;
+#else
+    PAFile fp;
+#endif
 
     PROTECT(ans=NEW_LOGICAL(1));
 
 #ifdef P4CTX
-    fp = pj_open_lib(pj_get_default_ctx(), "conus", "rb");
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "conus", "rb");
 #else
     fp = pj_open_lib("conus", "rb");
 #endif
     if (fp == NULL) LOGICAL_POINTER(ans)[0] = FALSE;
     else {
         LOGICAL_POINTER(ans)[0] = TRUE;
+#if PJ_VERSION <= 480
         fclose(fp);
+#else
+        pj_ctx_fclose(ctx, fp);
+#endif
     }
 #endif /* OSGEO4W */
     UNPROTECT(1);
@@ -77,9 +91,17 @@ SEXP
 PROJcopyEPSG(SEXP tf) {
     SEXP ans;
 
-    FILE *fp, *fptf;
+#if PJ_VERSION <= 480
+    FILE *fp;
+#else
+    PAFile fp;
+#endif
+    FILE *fptf;
     char buf[MAX_LINE_LEN+1];   /* input buffer */
     int i=0;
+#ifdef P4CTX
+    projCtx ctx;
+#endif
 
     PROTECT(ans=NEW_INTEGER(1));
     INTEGER_POINTER(ans)[0] = 0;
@@ -90,7 +112,8 @@ PROJcopyEPSG(SEXP tf) {
 
 #ifndef OSGEO4W
 #ifdef P4CTX
-    fp = pj_open_lib(pj_get_default_ctx(), "epsg", "rb");
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "epsg", "rb");
 #else
     fp = pj_open_lib("epsg", "rb");
 #endif
@@ -100,31 +123,43 @@ PROJcopyEPSG(SEXP tf) {
         fptf = fopen(CHAR(STRING_ELT(tf, 0)), "wb");
         if (fptf == NULL) {
             INTEGER_POINTER(ans)[0] = 0;
+#if PJ_VERSION <= 480
             fclose(fp);
+#else
+            pj_ctx_fclose(ctx, fp);
+#endif
             UNPROTECT(1);
             return(ans);
         }
         /* copy from fp to fptf */
         /* copy source file to target file, line by line. */
-        while (fgets(buf, MAX_LINE_LEN+1, fp)) {
+// pj_ctx_fgets()
+        while (
+#if PJ_VERSION <= 480
+            fgets(buf, MAX_LINE_LEN+1, fp)
+#else
+            pj_ctx_fgets(ctx, buf, MAX_LINE_LEN+1, fp)
+#endif
+            != NULL) {
 	    if (fputs(buf, fptf) == EOF) {  /* error writing data */
                 INTEGER_POINTER(ans)[0] = 0;
+#if PJ_VERSION <= 480
                 fclose(fp);
+#else
+                pj_ctx_fclose(ctx, fp);
+#endif
                 fclose(fptf);
                 UNPROTECT(1);
                 return(ans);
 	    }
             i++;
         }
-        if (!feof(fp)) { /* fgets failed _not_ due to encountering EOF */
-            INTEGER_POINTER(ans)[0] = 0;
-            fclose(fp);
-            fclose(fptf);
-            UNPROTECT(1);
-            return(ans);
-        }
         INTEGER_POINTER(ans)[0] = i;
+#if PJ_VERSION <= 480
         fclose(fp);
+#else
+        pj_ctx_fclose(ctx, fp);
+#endif
         fclose(fptf);
     }
     
