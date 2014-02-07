@@ -47,6 +47,13 @@ CRSargs(CRS(paste("+proj=stere +lat_0=52.15616055555555",
 "+units=m")))
 # see http://trac.osgeo.org/gdal/ticket/1987
 CRSargs(CRS("+init=epsg:28992"))
+crs <- CRS("+init=epsg:28992")
+CRSargs(CRS(CRSargs(crs)))
+library(sp)
+data(meuse)
+coordinates(meuse) <- c("x", "y")
+proj4string(meuse) <- CRS("+init=epsg:28992")
+CRSargs(CRS(proj4string(meuse)))
 }
 \keyword{classes}
 \keyword{spatial}

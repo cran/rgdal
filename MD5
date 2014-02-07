@@ -1,8 +1,8 @@
 a365dc1bc2756a011e8fffb8939f7f84 *ChangeLog
-b091bf1af372b6f8be51e5d0945c7daa *DESCRIPTION
+20ab344f82654b374e5e3a38ad9c2940 *DESCRIPTION
 a2244597f2dfa4abfe971acaddab7589 *NAMESPACE
 9e915b8b72d5417f36d3150f35d311c6 *R/AAA.R
-bccec03fa00f00bb16aa9c925da57851 *R/Class-CRSx.R
+d0bdd3b304d2167d73b040f03216017e *R/Class-CRSx.R
 d6078fad1113b61e077016f8dae13904 *R/SGDF2RGB.R
 b9270cb08daa4f843fc6654c3f6a5d06 *R/gdal.R
 11f8551c09c3cc2706dd590be119c57c *R/llgrid.R
@@ -29,7 +29,7 @@ a365dc1bc2756a011e8fffb8939f7f84 *inst/ChangeLog
 973a0eb3eb8c9e853c7109f891fd85a5 *inst/SVN_VERSION
 9d82e9e61742c8326babd38650406dbf *inst/doc/OGR_shape_encoding.R
 fd3f59a7ce14b4bdb6a8184543e1114f *inst/doc/OGR_shape_encoding.Rnw
-6d9ffa2bdc5af152518372c1d6308f45 *inst/doc/OGR_shape_encoding.pdf
+c6cfbb5675064bdebb66f75fc1528760 *inst/doc/OGR_shape_encoding.pdf
 22ac3c5a5bf0b520d281c122d1490650 *inst/etc/point.cpg
 15ba967b418e0a2745b40cc8d0dd913c *inst/etc/point.dbf
 d4166c4468b2506bb2cb0fc7fd53c811 *inst/etc/point.prj
@@ -78,7 +78,7 @@ ebd64c5cf881e85e82d9976dab1de0f0 *inst/vectors/scot_BNG.shp
 da10b29d77d449bc13527b91f91f5b40 *inst/vectors/trin_inca_pl03.dbf
 0fc315b50c593e0799154e9f485a6b14 *inst/vectors/trin_inca_pl03.shp
 9e41de7999a3baeb6eb327c9cc0047a0 *inst/vectors/trin_inca_pl03.shx
-d12d65a77d5a626597908023b6f835b1 *man/CRS-class.Rd
+8e461f85445bce0ad4742b41405df3c2 *man/CRS-class.Rd
 da4cc806a12f0c08d904cce61a694772 *man/GDALDataset-class.Rd
 541854bca4538edee47530602abbb719 *man/GDALDriver-class.Rd
 7f97b04d3d4065709492f999b2678ec6 *man/GDALMajorObject-class.Rd
@@ -107,15 +107,15 @@ b9d869d125e18d6f05c1de7ff4e95d9b *src/Makevars.in
 3655113683fb56bb084ad465c3777701 *src/OGR_write.cpp
 4b43843cac36a7031fc1a106930bd589 *src/RGDAL.def
 ba47e059676e1316ee45833a4c41b3a8 *src/gdal-bindings.cpp
-d784c1acd1cb17decece4bc935af0ddb *src/init.c
+4ccec422b3d62d8a029739dea163819e *src/init.c
 9e72cb3140169d11043307308eeca59e *src/local_stubs.c
 92fe0d5cc43d8a80f2eec9d84d5bd3b9 *src/ogr_geom.cpp
 039ce896543de04969a3ebaedef3c1e7 *src/ogr_polygons.c
 4a6ebf8444edcb41354fbb8e12fe2874 *src/ogr_proj.cpp
 9aae6fedc8e770a5ad18b9b26177dd9e *src/ogrdrivers.cpp
 657aece0c91e7a4f1261188c4c792609 *src/ogrsource.cpp
-00f1d6fba7bad611a157274107c4df3a *src/projectit.cpp
-35ad947995f540e02ea6bc8449cbfa90 *src/rgdal.h
+a1986c96ea8f41fbd5a41602b637d231 *src/projectit.cpp
+ae52a197def530a295b43d3df15c9be2 *src/rgdal.h
 61faab91e1c6f9b1b890ef376cb24279 *tests/test_proj.R
 d903f17bc1d8d10b3c1ad78a560c3fb7 *tests/test_proj.Rout.save
 6632ac3208e607417506be5bbb0705ff *tests/tests.R

@@ -89,7 +89,7 @@ SEXP RGDAL_CPLSetConfigOption(SEXP inOption, SEXP value);
 SEXP RGDAL_CPLGetConfigOption(SEXP inOption);
 SEXP RGDAL_CPL_RECODE_ICONV(void);
 
-SEXP checkCRSArgs(SEXP args);
+SEXP checkCRSArgs(SEXP args, SEXP init_found);
 SEXP PROJcopyEPSG(SEXP tf);
 SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer);
 SEXP R_OGR_types(SEXP dsn, SEXP layer);

@@ -15,7 +15,7 @@ static R_CallMethodDef CallEntries[] = {
 
     {"RGDAL_Init", (DL_FUNC) &RGDAL_Init, 0},
     {"RGDAL_Exit", (DL_FUNC) &RGDAL_Exit, 0},
-    {"checkCRSArgs", (DL_FUNC) &checkCRSArgs, 1},
+    {"checkCRSArgs", (DL_FUNC) &checkCRSArgs, 2},
     {"RGDAL_GetDescription", (DL_FUNC) &RGDAL_GetDescription, 1},
     {"RGDAL_GDALVersionInfo", (DL_FUNC) &RGDAL_GDALVersionInfo, 1},
     {"RGDAL_GDALCheckVersion", (DL_FUNC) &RGDAL_GDALCheckVersion, 0},

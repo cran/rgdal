@@ -25,8 +25,7 @@
 	if (!is(object, "CRS")) stop("not a CRS object")
 
 	if (!is.na(object@projargs)) {
-		res <- (.Call("checkCRSArgs", object@projargs, 
-			PACKAGE="rgdal")[[2]])
+		res <- (checkCRSArgs(object@projargs)[[2]])
                 res <- paste(unique(unlist(strsplit(res, " "))), 
 			collapse=" ")
                 return(sub("^\\s+", "", res))
@@ -34,7 +33,8 @@
 }
 
 checkCRSArgs <- function(uprojargs) {
-  res <- .Call("checkCRSArgs", uprojargs, PACKAGE="rgdal")
+  init_found <- isTRUE(grep("init", uprojargs) != 0L)
+  res <- .Call("checkCRSArgs", uprojargs, init_found, PACKAGE="rgdal")
   res[[2]] <- sub("^\\s+", "", res[[2]])
   res
 }

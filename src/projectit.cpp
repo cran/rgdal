@@ -379,7 +379,7 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 	return(res);
 }
 
-SEXP checkCRSArgs(SEXP args) {
+SEXP checkCRSArgs(SEXP args, SEXP init_found) {
 	SEXP res;
 	projPJ pj;
         char cbuf[512], cbuf1[512], c;
@@ -388,12 +388,15 @@ SEXP checkCRSArgs(SEXP args) {
 	SET_VECTOR_ELT(res, 0, NEW_LOGICAL(1));
 	SET_VECTOR_ELT(res, 1, NEW_CHARACTER(1));
 	LOGICAL_POINTER(VECTOR_ELT(res, 0))[0] = FALSE;
-	
+        if (LOGICAL_POINTER(init_found)[0] && PJ_VERSION == 490) {
+            pj = pj_init_plus("+init=epsg:4326");
+	//pj_set_errno(0);
+	}
 	if (!(pj = pj_init_plus(CHAR(STRING_ELT(args, 0))))) {
 
 		SET_STRING_ELT(VECTOR_ELT(res, 1), 0, 
 			COPY_TO_USER_STRING(pj_strerrno(*pj_get_errno_ref())));
-		
+		pj_free(pj);
 		UNPROTECT(1);
 		return(res);
 	}
@@ -412,7 +415,7 @@ SEXP checkCRSArgs(SEXP args) {
         }
 	
 	LOGICAL_POINTER(VECTOR_ELT(res, 0))[0] = TRUE;
-	
+	pj_free(pj);
 	UNPROTECT(1);
 	return(res);
 }
