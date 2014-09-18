@@ -57,6 +57,8 @@ Also note that re-projection and/or datum transformation will usually not work f
 The methods may take an optional argument \dQuote{use_ob_tran}, default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal (the user oblique transforms from longlat to oblique forward rather than inverse as suggested in PROJ.4 mailing list postings); these changes are intended to meet a need pointed out by Martin Ivanov (2012-08-15).
 
 If a SpatialPoints object has three dimensions, the third will also be transformed, with the metric of the third dimension assumed to be meters if the vertical units metric is not given in the projection description with +vunits= or +vto_meter= (which is 1.0 by default) \url{http://trac.osgeo.org/proj/wiki/GenParms#VerticalUnits}.
+
+Note that WGS84 is both an ellipse and a datum, and that since 1984 there have been changes in the relative positions of continents, leading to a number of modifications. This is discussed for example in \url{http://www.uvm.edu/giv/resources/WGS84_NAD83.pdf}; there are then multiple transformations between NAD83 and WGS84 depending on the WGS84 definition used. One would expect that \dQuote{+towgs84=} is a no-op for WGS84, but this only applies sometimes, and as there are now at least 30 years between now and 1984, things have shifted. It may be useful to note that \dQuote{+nadgrids=@null} can help, see these threads: \url{https://stat.ethz.ch/pipermail/r-sig-geo/2014-August/021611.html}, \url{http://lists.maptools.org/pipermail/proj/2014-August/006894.html}, with thanks to Hermann Peifer for assistance.
 }
 
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
@@ -164,6 +166,22 @@ summary(nor2k)
 nor2kNGO <- spTransform(nor2k, CRS("+init=epsg:4273"))
 summary(nor2kNGO)
 all.equal(coordinates(nor2k)[,3], coordinates(nor2kNGO)[,3])
+#added after posting by Don MacQueen 
+crds <- cbind(c(-121.524764291826, -121.523480804667), c(37.6600366036405, 37.6543604613483))
+ref <- cbind(c(1703671.30566227, 1704020.20113366), c(424014.398045834, 421943.708664294))
+crs.step1.cf <- CRS(paste("+proj=lcc +lat_1=38.43333333333333",
+ "+lat_2=37.06666666666667 +lat_0=36.5 +lon_0=-120.5",
+ "+x_0=2000000.0 +y_0=500000.0 +ellps=GRS80 +units=us-ft +no_defs",
+ "+towgs84=-0.991,1.9072,0.5129,0.025789908,0.0096501,0.0116599,0.0"))
+locs.step1.cf <- spTransform(SpatialPoints(crds,
+ proj4string=CRS("+proj=longlat +datum=WGS84")), crs.step1.cf)
+suppressWarnings(proj4string(locs.step1.cf) <- CRS(paste("+proj=lcc",
+"+lat_1=38.43333333333333 +lat_2=37.06666666666667 +lat_0=36.5",
+"+lon_0=-120.5 +x_0=2000000.0 +y_0=500000.0 +ellps=GRS80 +units=us-ft",
+"+no_defs +nadgrids=@null")))
+locs.step2.cfb <- spTransform(locs.step1.cf, CRS("+init=epsg:26743"))
+coordinates(locs.step2.cfb) - ref
+all.equal(unname(coordinates(locs.step2.cfb)), ref)
 }
 
 \keyword{methods}

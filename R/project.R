@@ -75,7 +75,7 @@ if (!isGeneric("spTransform"))
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
           if (dots$use_ob_tran) {
-            gpf <- grep("proj=ob_tran", CRSargs(CRSobj))
+            gpf <- grep("proj=ob_tran", slot(CRSobj, "projargs"))
             gpi <- grep("proj=ob_tran", proj4string(x))
             if (length(gpf) == 0 && length(gpi) == 0) {
               use_ob_tran <- 0L
@@ -95,7 +95,7 @@ if (!isGeneric("spTransform"))
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
         if (ncol(crds) == 2) {
-	    res <- .Call("transform", proj4string(x), CRSargs(CRSobj), n,
+	    res <- .Call("transform", proj4string(x), slot(CRSobj, "projargs"), n,
 		as.double(crds[,1]), as.double(crds[,2]), NULL, PACKAGE="rgdal")
 	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
@@ -105,7 +105,7 @@ if (!isGeneric("spTransform"))
 	    }
 	    crds[,1:2] <- cbind(res[[1]], res[[2]])
         } else {
-	    res <- .Call("transform", proj4string(x), CRSargs(CRSobj), n,
+	    res <- .Call("transform", proj4string(x), slot(CRSobj, "projargs"), n,
 		as.double(crds[,1]), as.double(crds[,2]), as.double(crds[,3]),
                 PACKAGE="rgdal")
 	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))
@@ -194,14 +194,14 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 	from_args <- proj4string(x)
 	if (is.na(from_args)) 
 		stop("No transformation possible from NA reference system")
-	to_args <- CRSargs(CRSobj)
+	to_args <- slot(CRSobj, "projargs")
 	if (is.na(to_args)) 
 		stop("No transformation possible to NA reference system")
 	dots = list(...)
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
           if (dots$use_ob_tran) {
-            gpf <- grep("proj=ob_tran", CRSargs(CRSobj))
+            gpf <- grep("proj=ob_tran", slot(CRSobj, "projargs"))
             gpi <- grep("proj=ob_tran", proj4string(x))
             if (length(gpf) == 0 && length(gpi) == 0) {
               use_ob_tran <- 0L
@@ -278,14 +278,14 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 	from_args <- proj4string(x)
 	if (is.na(from_args)) 
 		stop("No transformation possible from NA reference system")
-	to_args <- CRSargs(CRSobj)
+	to_args <- slot(CRSobj, "projargs")
 	if (is.na(to_args)) 
 		stop("No transformation possible to NA reference system")
 	dots = list(...)
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
           if (dots$use_ob_tran) {
-            gpf <- grep("proj=ob_tran", CRSargs(CRSobj))
+            gpf <- grep("proj=ob_tran", slot(CRSobj, "projargs"))
             gpi <- grep("proj=ob_tran", proj4string(x))
             if (length(gpf) == 0 && length(gpi) == 0) {
               use_ob_tran <- 0L

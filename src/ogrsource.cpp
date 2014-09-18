@@ -35,11 +35,12 @@ extern "C" {
   SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer){
     // return FIDs, nFields, fieldInfo
 
-    SEXP ans,vec,/*mat,*/drv, dvec;
+    SEXP ans, vec1, vec2, vec3,/*mat,*/drv, dvec;
     SEXP itemlist, itemnames, itemwidth, itemtype, itemTypeNames;
+    SEXP itemlistmaxcount;
     /*SEXP geotype;*/
 
-    int nFIDs, nFields, iField, pc=0;
+    int nFIDs, nFields, iField, *nCount, pc=0;
 
     OGRDataSource *poDS;
     OGRLayer *poLayer;
@@ -77,7 +78,7 @@ extern "C" {
     uninstallErrorHandlerAndTriggerError();
 
     // allocate a list for return values   
-    PROTECT(ans=allocVector(VECSXP,5)); pc++;
+    PROTECT(ans=allocVector(VECSXP,6)); pc++;
 
     PROTECT(drv=allocVector(STRSXP,1)); pc++;
     installErrorHandler();
@@ -86,9 +87,9 @@ extern "C" {
     SET_VECTOR_ELT(ans,3,drv);
 
     // store number of FIDs
-    PROTECT(vec=allocVector(INTSXP,1)); pc++;
-    INTEGER(vec)[0]=nFIDs;
-    SET_VECTOR_ELT(ans,0,vec);
+    PROTECT(vec1=allocVector(INTSXP,1)); pc++;
+    INTEGER(vec1)[0]=nFIDs;
+    SET_VECTOR_ELT(ans,0,vec1);
 
 
     // store other stuff....
@@ -98,9 +99,9 @@ extern "C" {
     uninstallErrorHandlerAndTriggerError();
 
     // store number of fields
-    PROTECT(vec=allocVector(INTSXP,1)); pc++;
-    INTEGER(vec)[0]=nFields;
-    SET_VECTOR_ELT(ans,1,vec);
+    PROTECT(vec2=allocVector(INTSXP,1)); pc++;
+    INTEGER(vec2)[0]=nFields;
+    SET_VECTOR_ELT(ans,1,vec2);
     installErrorHandler();
     OGREnvelope oExt;
     if (poLayer->GetExtent(&oExt, TRUE) == OGRERR_NONE) {
@@ -116,23 +117,68 @@ extern "C" {
     PROTECT(itemnames=allocVector(STRSXP,nFields)); pc++;
     PROTECT(itemtype=allocVector(INTSXP,nFields)); pc++;
     PROTECT(itemwidth=allocVector(INTSXP,nFields)); pc++;
+// try List types
+    PROTECT(itemlistmaxcount=allocVector(INTSXP,nFields)); pc++;
     PROTECT(itemTypeNames=allocVector(STRSXP,nFields)); pc++;
+    int listFieldCount=0;
 
     installErrorHandler();
     for(iField=0;iField<nFields;iField++){
       OGRFieldDefn *poField = poDefn->GetFieldDefn(iField);
       SET_STRING_ELT(itemnames,iField,mkChar(poField->GetNameRef()));
       INTEGER(itemtype)[iField]=poField->GetType();
+      if (INTEGER(itemtype)[iField] == OFTIntegerList ||
+         INTEGER(itemtype)[iField] == OFTRealList ||
+         INTEGER(itemtype)[iField] == OFTStringList) listFieldCount++;
       INTEGER(itemwidth)[iField]=poField->GetWidth();
       SET_STRING_ELT(itemTypeNames,iField,mkChar(poField->GetFieldTypeName(
         poField->GetType())));
+      INTEGER(itemlistmaxcount)[iField] = 0;
     }
     uninstallErrorHandlerAndTriggerError();
-    PROTECT(itemlist=allocVector(VECSXP,4)); pc++;
+
+    PROTECT(vec3=allocVector(INTSXP,1)); pc++;
+    INTEGER(vec3)[0]=listFieldCount;
+    SET_VECTOR_ELT(ans,5,vec3);
+    PROTECT(itemlist=allocVector(VECSXP,5)); pc++;
     SET_VECTOR_ELT(itemlist,0,itemnames);
     SET_VECTOR_ELT(itemlist,1,itemtype);
     SET_VECTOR_ELT(itemlist,2,itemwidth);
     SET_VECTOR_ELT(itemlist,3,itemTypeNames);
+// try List types
+    if (listFieldCount > 0) {
+
+        poLayer->ResetReading();
+        OGRFeature* poFeature;
+
+        nCount = (int *) R_alloc((size_t) nFields, sizeof(int));
+        for (iField=0; iField<nFields; iField++) nCount[iField] = 0;
+        installErrorHandler();
+        OGRField* psField;
+        while( (poFeature = poLayer->GetNextFeature()) != NULL ){
+            for(iField=0; iField<nFields; iField++){
+                psField = poFeature->GetRawFieldRef(iField);
+                if (INTEGER(itemtype)[iField] == OFTIntegerList) {
+                    nCount[iField] = psField->IntegerList.nCount;
+                    if (nCount[iField] > INTEGER(itemlistmaxcount)[iField])
+                        INTEGER(itemlistmaxcount)[iField] = nCount[iField];
+                } else if (INTEGER(itemtype)[iField] == OFTRealList) {
+                    nCount[iField] = psField->RealList.nCount;
+                    if (nCount[iField] > INTEGER(itemlistmaxcount)[iField])
+                        INTEGER(itemlistmaxcount)[iField] = nCount[iField];
+                } else if (INTEGER(itemtype)[iField] == OFTStringList) {
+                    nCount[iField] = psField->StringList.nCount;
+                    if (nCount[iField] > INTEGER(itemlistmaxcount)[iField])
+                        INTEGER(itemlistmaxcount)[iField] = nCount[iField];
+                }
+            }
+            OGRFeature::DestroyFeature( poFeature );
+//    delete poFeature;
+        }
+        uninstallErrorHandlerAndTriggerError();
+
+    }
+    SET_VECTOR_ELT(itemlist,4,itemlistmaxcount);
     SET_VECTOR_ELT(ans,2,itemlist);
 
     UNPROTECT(pc);
@@ -345,6 +391,105 @@ extern "C" {
 }
 #endif
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+// extern "C" {
+
+  SEXP ogrReadListColumn(OGRLayer *poLayer, SEXP FIDs, int iField, int k){
+    // read feature data and return something according to the type
+    OGRFeatureDefn *poDefn;
+    OGRFieldDefn *poField;
+    OGRFeature *poFeature;
+    int iRow,nRows,nlist;
+    SEXP ans = R_NilValue;
+
+    nRows=length(FIDs);
+    // get field data from layer
+    installErrorHandler();
+    poDefn = poLayer->GetLayerDefn();
+    poField = poDefn->GetFieldDefn(iField);
+    uninstallErrorHandlerAndTriggerError();
+    if(poField == NULL){
+      error("Error getting field %d ",iField);
+    }
+    // allocate an object for the result depending on the feature type:
+    installErrorHandler();
+    switch(poField->GetType()){
+    case OFTIntegerList:
+      PROTECT(ans=allocVector(INTSXP,nRows));
+      break;
+    case OFTRealList:
+      PROTECT(ans=allocVector(REALSXP,nRows));
+      break;
+    case OFTStringList:
+      PROTECT(ans=allocVector(STRSXP,nRows));
+      break;
+    default:
+        const char *desc = poField->GetFieldTypeName(poField->GetType());
+        uninstallErrorHandlerAndTriggerError();
+        error("unsupported field type: %s", desc);
+	break;
+    }
+    uninstallErrorHandlerAndTriggerError();
+
+    // now go over each row and retrieve data. iRow is an index in a 
+    // vector of FIDs
+    installErrorHandler();
+    poLayer->ResetReading();
+    OGRField* psField;
+    iRow = 0;
+
+    while((poFeature = poLayer->GetNextFeature()) != NULL) {
+      if (poFeature->IsFieldSet(iField)) {
+
+      // now get the value using the right type:
+        psField = poFeature->GetRawFieldRef(iField);
+
+        switch(poField->GetType()){
+        case OFTIntegerList:
+          nlist = psField->IntegerList.nCount;
+	  if (k < nlist) 
+            INTEGER(ans)[iRow] = psField->IntegerList.paList[k];
+	  else INTEGER(ans)[iRow]=NA_INTEGER;
+	  break;
+
+        case OFTRealList:
+          nlist = psField->RealList.nCount;
+	  if (k < nlist) 
+            REAL(ans)[iRow] = psField->RealList.paList[k];
+	  else REAL(ans)[iRow]=NA_REAL;
+	  break;
+
+        case OFTStringList:
+          nlist = psField->StringList.nCount;
+	  if (k < nlist) 
+            SET_STRING_ELT(ans,iRow,mkChar(psField->StringList.paList[k]));
+	  else SET_STRING_ELT(ans, iRow, NA_STRING);
+	  break;
+
+        default:
+          OGRFeature::DestroyFeature( poFeature );
+//        delete poFeature;
+          uninstallErrorHandlerAndTriggerError();
+	  error("Unsupported field type. should have been caught before");
+        }
+      }
+      OGRFeature::DestroyFeature( poFeature );
+//      delete poFeature;
+      iRow++;
+    }
+    uninstallErrorHandlerAndTriggerError();
+    UNPROTECT(1);
+    return(ans);
+  }
+// }
+#ifdef __cplusplus
+}
+#endif
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -352,10 +497,13 @@ extern "C" {
   SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields){
     // query an OGR data source and return a list
     SEXP ans;
+    SEXP nListFields, ListFields;
     OGRLayer *poLayer;
     OGRDataSource *poDS;
     OGRSFDriver *poDriver;
-    int iField;
+    int iField, nflds=length(iFields), j=0, k;
+    int pc=0;
+
     // open the data source layer or error
     installErrorHandler();
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource,0)), 
@@ -374,12 +522,38 @@ extern "C" {
       error("Cannot open layer");
     }
 
+    nListFields = getAttrib(iFields, mkString("nListFields"));
+
     // reserve a list for the result
-    PROTECT(ans=allocVector(VECSXP,length(iFields)));
+    if (INTEGER_POINTER(nListFields)[0] == 0) {
+        PROTECT(ans=allocVector(VECSXP,length(iFields))); pc++;
+    } else {
+        nflds = INTEGER_POINTER(getAttrib(iFields, mkString("nflds")))[0];
+        PROTECT(ans=allocVector(VECSXP,nflds)); pc++;
+        ListFields = getAttrib(iFields, mkString("ListFields"));
+    }
     // now set each element of the list
     installErrorHandler();
-    for(iField=0;iField<length(iFields);iField++){
-      SET_VECTOR_ELT(ans,iField,ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField]));
+    if (INTEGER_POINTER(nListFields)[0] == 0) {
+      for(iField=0;iField<length(iFields);iField++){
+        SET_VECTOR_ELT(ans,iField,ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField]));
+      }
+    } else {
+        j=0;
+        for(iField=0;iField<length(iFields);iField++){
+            if (INTEGER_POINTER(ListFields)[iField] == 0) {
+                SET_VECTOR_ELT(ans, j, 
+                    ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField]));
+                j++;
+            } else {
+                for (k=0; k < INTEGER_POINTER(ListFields)[iField]; k++) {
+                    SET_VECTOR_ELT(ans, j, 
+                        ogrReadListColumn(poLayer, FIDs,
+                        INTEGER(iFields)[iField], k));
+                    j++;
+                }
+            }
+        }
     }
     uninstallErrorHandlerAndTriggerError();
     // clean up and return
@@ -387,7 +561,7 @@ extern "C" {
     OGRDataSource::DestroyDataSource( poDS );
 //    delete poDS;
     uninstallErrorHandlerAndTriggerError();
-    UNPROTECT(1);
+    UNPROTECT(pc);
     return(ans);
   }
 
@@ -587,7 +761,7 @@ SEXP ogrListLayers (SEXP ogrSource) {
     OGRSFDriver *poDriver;
     OGRLayer *poLayer;
     int i, nlayers;
-    SEXP ans;
+    SEXP ans, debug;
     int pc=0;
 
     installErrorHandler();
@@ -599,9 +773,12 @@ SEXP ogrListLayers (SEXP ogrSource) {
       error("Cannot open data source");
     }
 
+    debug = getAttrib(ogrSource, mkString("debug"));
     installErrorHandler();
     nlayers = poDS->GetLayerCount();
     uninstallErrorHandlerAndTriggerError();
+    if (LOGICAL_POINTER(debug)[0] == TRUE)
+        Rprintf("ogrListLayers: nlayers %d\n", nlayers);
 
     PROTECT(ans=NEW_CHARACTER(nlayers+1)); pc++;
 
@@ -610,10 +787,16 @@ SEXP ogrListLayers (SEXP ogrSource) {
         poLayer = poDS->GetLayer(i);
 
         if(poLayer == NULL){
-            uninstallErrorHandlerAndTriggerError();
-            error("Cannot open layer");
+            if (LOGICAL_POINTER(debug)[0] == TRUE) {
+                SET_STRING_ELT(ans, i, mkChar(""));
+                Rprintf("ogrListLayers: NULL layer %d\n", i);
+            } else {
+                uninstallErrorHandlerAndTriggerError();
+                error("Cannot open layer");
+            }
+        } else {
+            SET_STRING_ELT(ans, i, mkChar(poLayer->GetLayerDefn()->GetName()));
         }
-        SET_STRING_ELT(ans, i, mkChar(poLayer->GetLayerDefn()->GetName()));
         uninstallErrorHandlerAndTriggerError();
     }
 

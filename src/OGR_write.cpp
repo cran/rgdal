@@ -185,6 +185,7 @@ SEXP OGR_write(SEXP inp)
         uninstallErrorHandlerAndTriggerError();
         error( "Layer creation failed" );
     }
+
     installErrorHandler();
     CSLDestroy(papszCreateOptionsLayer);
     uninstallErrorHandlerAndTriggerError();

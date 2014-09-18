@@ -86,6 +86,15 @@ if test ${GDAL_VER_DOT} -lt 163 ; then
 else
   AC_MSG_RESULT(yes)
 fi
+AC_MSG_CHECKING([GDAL version < 2])
+GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d"." -f1`
+if test ${GDAL_MAJ_VER} -gt 1 ; then
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([rgdal is not compatible with GDAL 2])
+else
+  AC_MSG_RESULT(yes)
+fi
+
 
 INLIBS="${LIBS}"
 INCPPFLAGS="${CPPFLAGS}"

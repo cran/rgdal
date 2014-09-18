@@ -31,9 +31,9 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
- encoding=NULL, use_iconv=NULL)
+ encoding=NULL, use_iconv=NULL, swapAxisOrder=FALSE)
 ogrInfo(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
- use_iconv=NULL)
+ use_iconv=NULL, swapAxisOrder=FALSE)
 ogrFIDs(dsn, layer)
 ogrDrivers()
 OGRSpatialRef(dsn, layer)
@@ -56,6 +56,7 @@ ogrListLayers(dsn)
   \item{addCommentsToPolygons}{default TRUE, may be set FALSE for legacy behaviour; used to indicate which interior rings are holes in which exterior rings in conformance with OGC SFS specifications}
   \item{encoding}{default NULL, if set to a character string, and the driver is \dQuote{ESRI Shapefile}, it is passed to the CPL Option \dQuote{SHAPE_ENCODING} immediately before reading the DBF of a shapefile. The empty character string \dQuote{} turns off OGR's encoding functionality, and may be used when GDAL is not built with iconv support.}
   \item{use_iconv}{default NULL, in which case the use of iconv is controlled by the GDAL version (TRUE < 1.9). If set to a logical value, this test will be overridden.}
+  \item{swapAxisOrder}{default FALSE, if TRUE, treat y coordinate as Easting, x as Northing, that is the opposite to the assumed order; this may be needed if some OGR read drivers do not behave as expected}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }
@@ -83,6 +84,8 @@ From 0.7-24, if the layer has no fields, a single field containing the FID value
 From 0.7-24, attempts are begun to provide users with arguments to control reading from OGR/shapefile driver when the encoding is inappropriate (especially the setting of LDID in shapefile DBFs, and the SHAPE_ENCODING environment variable).
 
 Because of the representation of DateTime data in OGR, decimal seconds in input data are rounded to integer seconds, see: \url{http://trac.osgeo.org/gdal/ticket/2680}.
+
+Because some drivers support reading string, integer and real list fields, support has been introduced into \code{ogrInfo} from version 0.9-1 to report their presence and the maximum counts of list items. This may lead to the introduction of the \code{-splitlistfields} facility from the command line utility \code{ogrinfo}. In addition, \code{ogrInfo} reports that there are no features when counting FIDs in a while loop over features in \code{ogrFIDs} never enters the loop, despite the layer feature count reporting at least one feature.
 }
 \seealso{\code{\link[sp]{SpatialPointsDataFrame-class}}, \code{\link[sp]{SpatialLinesDataFrame-class}}, \code{\link[sp]{SpatialPolygonsDataFrame-class}}, \code{\link[maptools]{readShapePoly}}, \code{\link[base]{iconv}}}
 \examples{

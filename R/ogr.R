@@ -8,7 +8,7 @@
 
 #
 ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
-  use_iconv=NULL) {
+  use_iconv=NULL, swapAxisOrder=FALSE) {
   if (missing(dsn)) stop("missing dsn")
   if (nchar(dsn) == 0) stop("empty name")
   if (missing(layer)) stop("missing layer")
@@ -39,8 +39,13 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
   if (!use_iconv && !is.null(encoding)) {
     tull <- setCPLConfigOption("SHAPE_ENCODING", oSE)
   }
+
+  if (swapAxisOrder) ogrinfo[[5]] <- ogrinfo[[5]][c(2,1,4,3)]
+
   fids <- ogrFIDs(dsn=dsn, layer=layer)
-  if (attr(fids, "i") != attr(fids, "nf")) {
+  nrows_i <- attr(fids, "i")
+  have_features <- nrows_i > 0
+  if (have_features && (attr(fids, "i") != attr(fids, "nf"))) {
      retain <- 1:attr(fids, "i")
      afids <- 0:(attr(fids, "nf")-1)
      deleted <- afids[!(afids %in% fids[retain])]
@@ -51,7 +56,10 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
      deleted_geometries <- NULL
      retain <- NULL
   }
-  attributes(fids) <- NULL
+#  attributes(fids) <- NULL
+  u_eType <- u_with_z <- null_geometries <- NULL
+
+  if (have_features) {
   eTypes <- .Call("R_OGR_types",as.character(dsn), as.character(layer),
     PACKAGE = "rgdal")
   if (is.null(retain)) {
@@ -77,16 +85,19 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
       paste((u_with_z + 2), collapse=":")))
   if (u_with_z < 0 || u_with_z > 1) stop(
     paste("Invalid # dimensions:", (u_with_z + 2)))
+  WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
+    "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
   if (length(u_eType) > 2L) stop(
     paste("Multiple incompatible geometries:", 
-      paste(u_eType, collapse=":")))
+      paste(WKB[u_eType], collapse=":")))
   if (length(u_eType) == 2L) {
     if (u_eType[1] == 2 && u_eType[2] == 5) u_eType = 2
     else if (u_eType[1] == 3 && u_eType[2] == 6) u_eType = 3
     else stop(paste("Multiple incompatible geometries:", 
-      paste(u_eType, collapse=":")))
+      paste(WKB[u_eType], collapse=":")))
   }
-  names(ogrinfo) <- c("nrows","nitems","iteminfo","driver","extent")
+  }
+  names(ogrinfo) <- c("nrows","nitems","iteminfo","driver","extent","nListFields")
   if (ogrinfo$driver == "ESRI Shapefile") {
       DSN <- dsn
       if (!file.info(DSN)$isdir) DSN <- dirname(normalizePath(dsn))
@@ -96,9 +107,10 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
       attr(ogrinfo, "LDID") <- ldid
       close(con)
   }
-  names(ogrinfo$iteminfo) <- c("name","type","length","typeName")
+  names(ogrinfo$iteminfo) <- c("name","type","length","typeName","maxListCount")
   if (use_iconv && !is.null(encoding))
     ogrinfo$iteminfo$name <- iconv(ogrinfo$iteminfo$name, from=encoding)
+  ogrinfo$have_features <- have_features
   ogrinfo$eType <- u_eType
   ogrinfo$with_z <- u_with_z
   ogrinfo$null_geometries <- null_geometries
@@ -112,11 +124,13 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
 
 print.ogrinfo <- function(x, ...) {
   cat("Source: \"", x$dsn, '\", layer: \"', x$layer, "\"", '\n', sep='')
-  cat("Driver:", x$driver, "number of rows", x$nrows, "\n")
+  cat("Driver:", x$driver)
+  if (x$have_features) cat(" number of rows", x$nrows, "\n")
+  if (!x$have_features) cat(", no features found\n")
   WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
     "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
-  cat("Feature type:", paste(WKB[x$eType], collapse=", "), "with",
-    x$with_z+2, "dimensions\n")
+  if (x$have_features) cat("Feature type:", paste(WKB[x$eType],
+    collapse=", "), "with", x$with_z+2, "dimensions\n")
   if (!is.null(x$extent)) cat("Extent: (", x$extent[1], " ",
     x$extent[2], ") - (", x$extent[3], " ", x$extent[4], ")\n", sep="")
   if (!is.null(x$null_geometries)) cat(x$null_geometries, "\n")
@@ -124,7 +138,13 @@ print.ogrinfo <- function(x, ...) {
   if ((nchar(x$p4s) > 1) && !is.na(x$p4s)) cat("CRS:", x$p4s, "\n")
   if (!is.null(attr(x, "LDID"))) cat("LDID:", attr(x, "LDID"), "\n")
   cat("Number of fields:", x$nitems, "\n")
-  if (x$nitems > 0) print(as.data.frame(x$iteminfo))
+  if (is.null(x$nListFields)) x$nListFields <- 0
+  if (x$nListFields > 0) cat("Number of list fields:", x$nListFields, "\n")
+  if (x$nitems > 0 && x$nListFields == 0) print(as.data.frame(x$iteminfo)[,1:4])
+  if (x$nitems > 0 && x$nListFields > 0 && x$have_features)
+    print(as.data.frame(x$iteminfo))
+  if (x$nitems > 0 && x$nListFields > 0 && !x$have_features)
+    print(as.data.frame(x$iteminfo)[,1:4])
   invisible(x)
 }
 
@@ -135,6 +155,7 @@ ogrFIDs <- function(dsn, layer){
   if (missing(layer)) stop("missing layer")
   if (nchar(layer) == 0) stop("empty name")
   fids <- .Call("ogrFIDs",as.character(dsn),as.character(layer), PACKAGE = "rgdal")
+  if (attr(fids, "i") == 0L) warning("no features found")
   fids
 }
 
@@ -153,10 +174,20 @@ ogrDrivers <- function() {
 
 ogrListLayers <- function(dsn) {
   if (missing(dsn)) stop("missing dsn")
+  stopifnot(is.character(dsn))
+  stopifnot(length(dsn) == 1)
   if (nchar(dsn) == 0) stop("empty name")
-  layers <- .Call("ogrListLayers", as.character(dsn), PACKAGE = "rgdal")
+  if (!is.null(attr(dsn, "debug"))) {
+    stopifnot(is.logical(attr(dsn, "debug")))
+    stopifnot(length(attr(dsn, "debug")) == 1)
+  } else {
+    attr(dsn, "debug") <- FALSE
+  }
+  layers <- .Call("ogrListLayers", dsn, PACKAGE = "rgdal")
   n <- length(layers)
-  attr(layers, "driver") <- layers[n]
+  tmp <- layers[n]
   layers <- layers[-n]
+  attr(layers, "driver") <- tmp
+  attr(layers, "nlayers") <- (n-1)
   layers
 }

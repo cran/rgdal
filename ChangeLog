@@ -1,3 +1,103 @@
+2014-09-17 16:42  rsbivand
+
+	* man/spTransform-methods.Rd:
+	  null nadgrids
+
+2014-08-22 07:37  rsbivand
+
+	* R/ogr.R,
+	  src/ogrsource.cpp: trap NULL layer
+
+2014-08-18 18:09  rsbivand
+
+	* tests/tests.Rout.save:
+	  tidy
+
+2014-08-18 16:53  rsbivand
+
+	* R/ogr.R,
+	  R/ogr_sp.R, man/readOGR.Rd: add swapAxisOrder to ogrInfo
+	  and readOGR
+
+2014-08-18 08:07  rsbivand
+
+	* inst/LICENSE.TXT:
+	  adding GDAL LICENSE.TXT
+
+2014-08-17 17:50  rsbivand
+
+	* src/ogrsource.cpp:
+	  implement reading List fields
+
+2014-08-17 16:44  rsbivand
+
+	* R/ogr_sp.R,
+	  configure, src/OGR_write.cpp, src/ogrsource.cpp: implement
+	  reading List fields
+
+2014-08-14 12:11  rsbivand
+
+	* R/ogr.R,
+	  R/ogr_sp.R, man/readOGR.Rd: trapping no feature layers
+
+2014-08-13 12:41  rsbivand
+
+	* R/Class-CRSx.R,
+	  R/project.R, configure, src/projectit.cpp: no_uoff bug in
+	  pj_get_def work-around
+
+2014-08-12 12:25  rsbivand
+
+	* DESCRIPTION,
+	  R/ogr.R, src/ogrsource.cpp: info on list fields
+
+2014-06-07 13:54  rsbivand
+
+	* DESCRIPTION:
+	  add test GDAL < 2
+
+2014-06-07 13:53  rsbivand
+
+	* DESCRIPTION,
+	  configure, configure.ac: add test GDAL < 2
+
+2014-04-02 15:36  rsbivand
+
+	* R/ogr.R:
+	  geometry type in ogrInfo error message
+
+2014-03-25 14:06  rsbivand
+
+	* ChangeLog,
+	  inst/ChangeLog: tidy
+
+2014-03-08 15:52  rsbivand
+
+	* DESCRIPTION,
+	  R/Class-CRSx.R, src/init.c, src/projectit.cpp, src/rgdal.h:
+	  removing PROJ workaround for +init
+
+2014-02-08 14:42  rsbivand
+
+	* DESCRIPTION,
+	  src/projectit.cpp: proj init bug
+
+2014-02-08 11:40  rsbivand
+
+	* DESCRIPTION,
+	  src/projectit.cpp: proj init bug
+
+2014-02-07 08:22  rsbivand
+
+	* DESCRIPTION,
+	  R/Class-CRSx.R, man/CRS-class.Rd, src/init.c, src/projectit.cpp,
+	  src/rgdal.h: temporary fix for PROJ 490 init bug
+
+2014-02-05 21:47  rsbivand
+
+	* ChangeLog,
+	  inst/ChangeLog: tidy
+
 2014-02-05 19:54  rsbivand
 
 	* DESCRIPTION,

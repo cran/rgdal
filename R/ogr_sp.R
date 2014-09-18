@@ -5,7 +5,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
-        use_iconv=NULL) {
+        use_iconv=NULL, swapAxisOrder=FALSE) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
@@ -28,16 +28,23 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         }
         
 	ogr_info <- ogrInfo(dsn=dsn, layer=layer, encoding=encoding,
-            use_iconv=use_iconv)
+            use_iconv=use_iconv, swapAxisOrder=swapAxisOrder)
+        if (!ogr_info$have_features) stop("no features found")
+        if (is.null(ogr_info$nListFields)) nListFields <- 0
+        else nListFields <- ogr_info$nListFields
 # 121130 RSB trap no field case (from PostGIS, Mathieu Basille)
         if (ogr_info$nitems > 0) {
           nodata_flag <- FALSE
           keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real",
-            "String", "Date", "Time", "DateTime")
+            "String", "Date", "Time", "DateTime", "IntegerList",
+            "RealList", "StringList")
+          if (nListFields > 0)
+              ListFields <- as.integer(ogr_info$iteminfo$maxListCount)
           if (drop_unsupported_fields) {
              iflds <- as.integer((1:ogr_info$nitems)-1)
              iflds <- iflds[keep]
              fldnms <- ogr_info$iteminfo$name[keep]
+             if (nListFields > 0) ListFields <- ListFields[keep]
              if (any(!keep)) warning(paste("Fields dropped:", 
                  paste(ogr_info$iteminfo$name[!keep], collapse=" ")))
           } else {
@@ -76,7 +83,10 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 		cat("Source: \"", dsn, '\", layer: \"', layer, "\"", '\n',
 			sep='')
 		cat("with", length(fids),"features and",
-			length(iflds), "fields\n")
+			length(iflds), "fields")
+                if (nListFields > 0)
+                  cat(", of which", nListFields, "list fields")
+                cat("\n")
 	}
 # suggestion by Paul Hiemstra 070817
 	if (is.null(p4s)) 
@@ -93,10 +103,26 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	if (nodata_flag) {
             dlist <- list(FID=as.integer(fids))
         } else {
+            attr(iflds, "nListFields") <- as.integer(nListFields)
+            nflds <- length(iflds)
+            if (nListFields > 0) {
+                attr(iflds, "ListFields") <- ListFields
+                nflds <- nflds + sum(ListFields) - nListFields
+                fldnms1 <- NULL
+                for (i in seq(along=ListFields)) {
+                    if (ListFields[i] == 0) fldnms1 <- c(fldnms1, fldnms[i])
+                    else fldnms1 <- c(fldnms1,
+                        paste(fldnms[i], 1:ListFields[i], sep=""))
+                }
+                stopifnot(length(fldnms1) == nflds)
+                fldnms <- fldnms1
+            }
+            attr(iflds, "nflds") <- as.integer(nflds)
             dlist <- .Call("ogrDataFrame", as.character(dsn),
                 as.character(layer), as.integer(fids), iflds, PACKAGE="rgdal")
-	      names(dlist) <- make.names(fldnms ,unique=TRUE)
-              if (use_iconv && !is.null(encoding)) {
+	    names(dlist) <- make.names(fldnms ,unique=TRUE)
+# FIXME names
+            if (use_iconv && !is.null(encoding)) {
                 for (i in seq(along=dlist)) {
                     if (is.character(dlist[[i]]))
                         dlist[[i]] <- iconv(dlist[[i]], from=encoding)
@@ -176,12 +202,23 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 
 	if (u_eType == 1) { # points
 		if (u_with_z == 0 || pointDropZ) {
+                    if (swapAxisOrder) {
+			coords <- do.call("rbind", lapply(gFeatures, 
+				function(x) c(x[[1]][[2]], x[[1]][[1]])))
+                    } else {
 			coords <- do.call("rbind", lapply(gFeatures, 
 				function(x) c(x[[1]][[1]], x[[1]][[2]])))
+                    }
 		} else {
+                    if (swapAxisOrder) {
+			coords <- do.call("rbind", lapply(gFeatures, 
+				function(x) c(x[[1]][[2]], x[[1]][[1]],
+				x[[1]][[3]])))
+                    } else {
 			coords <- do.call("rbind", lapply(gFeatures, 
 				function(x) c(x[[1]][[1]], x[[1]][[2]],
 				x[[1]][[3]])))
+                    }  
 		}
 #		data <- data.frame(dlist)
 		row.names(data) <- NULL
@@ -197,7 +234,11 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 			lnlist <- vector(mode="list", length=m)
 			for (j in 1:m) {
 				jG <- iG[[j]]
-				lnlist[[j]] <- Line(cbind(jG[[1]], jG[[2]]))
+                                if (swapAxisOrder) {
+				  lnlist[[j]] <- Line(cbind(jG[[2]], jG[[1]]))
+                                } else {
+				  lnlist[[j]] <- Line(cbind(jG[[1]], jG[[2]]))
+                                }
 			}
 			lnList[[i]] <- Lines(lnlist, ID=as.character(fids[i]))
 		}
@@ -213,6 +254,11 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 		plList <- vector(mode="list", length=n)
 		for (i in 1:n) {
 			iG <- gFeatures[[i]]
+                        if (swapAxisOrder) {
+                          iG <- lapply(iG, function(x) {
+                            tmp <- x[[1]]; x[[1]] <- x[[2]]; x[[2]] <- tmp
+                          })
+                        }
                         if (addCommentsToPolygons) {
                             thisPL <- Polygons(.Call("make_Polygonlist",
                                 iG, gComments[[i]], PACKAGE="rgdal"),
@@ -231,6 +277,11 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 		plList <- vector(mode="list", length=n)
 		for (i in 1:n) {
 			iG <- gFeatures[[i]]
+                        if (swapAxisOrder) {
+                          iG <- lapply(iG, function(x) {
+                            tmp <- x[[1]]; x[[1]] <- x[[2]]; x[[2]] <- tmp
+                          })
+                        }
 			m <- length(iG)
 			pllist <- vector(mode="list", length=m)
 			for (j in 1:m) {
