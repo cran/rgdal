@@ -1,8 +1,9 @@
 suppressPackageStartupMessages(library(rgdal))
 data(state)
 xy <- cbind(state.center$x, state.center$y)
-res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100")
-res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100", inv=TRUE)
+res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80")
+res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80",
+ inv=TRUE)
 stopifnot(isTRUE(all.equal(res1, xy)))
 crds <- matrix(data=c(9.05, 48.52), ncol=2)
 a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",

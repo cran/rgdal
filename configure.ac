@@ -40,15 +40,41 @@ AC_MSG_NOTICE([svn revision: ${SVN_VERSION}])
 
 GDAL_CONFIG="gdal-config"
 
+GDAL_CONFIG_SET="no"
+
 AC_ARG_WITH([gdal-config],
     AC_HELP_STRING([--with-gdal-config=GDAL_CONFIG],
            [the location of gdal-config]),
            [gdal_config=$withval])
 if test [ -n "$gdal_config" ] ; then
+    GDAL_CONFIG_SET="yes"
     AC_SUBST([GDAL_CONFIG],["${gdal_config}"])
+    AC_MSG_NOTICE(gdal-config set to $GDAL_CONFIG)
 fi
 
-AC_MSG_NOTICE([gdal-config: ${GDAL_CONFIG}])
+if test ["$GDAL_CONFIG_SET" = "no"] ; then
+  AC_PATH_PROG([GDAL_CONFIG], ["$GDAL_CONFIG"],["no"])
+  if test ["$GDAL_CONFIG" = "no"] ; then
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([gdal-config not found or not executable.])
+  fi
+else
+  AC_MSG_CHECKING(gdal-config exists)
+  if test -r "${GDAL_CONFIG}"; then
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([gdal-config not found - configure argument error.])
+  fi
+  AC_MSG_CHECKING(gdal-config executable)
+  if test -x "${GDAL_CONFIG}"; then
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([gdal-config not executable.])
+  fi
+fi
+
 
 AC_MSG_CHECKING(gdal-config usability)
 if test `${GDAL_CONFIG} --version`;

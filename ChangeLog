@@ -1,3 +1,47 @@
+2015-03-10 08:31  rsbivand
+
+	* inst/README:
+	  OSX install note
+
+2015-03-08 19:20  rsbivand
+
+	* man/project.Rd,
+	  man/spTransform-methods.Rd, tests/test_proj.R,
+	  tests/test_proj.Rout.save: add +ellps= for PROJ 4.9.1
+
+2015-03-08 16:38  rsbivand
+
+	* configure,
+	  configure.ac: adding messages to configure
+
+2015-02-03 19:20  rsbivand
+
+	* NAMESPACE,
+	  man/make_EPSG.Rd: tidy
+
+2015-01-24 19:09  rsbivand
+
+	* R/ogr.R,
+	  R/ogr_sp.R, inst/vectors/PacoursIKA2.DAT,
+	  inst/vectors/PacoursIKA2.ID, inst/vectors/PacoursIKA2.MAP,
+	  inst/vectors/PacoursIKA2.TAB, inst/vectors/SOURCES,
+	  man/readOGR.Rd: trying selection of geometry type
+
+2015-01-20 20:46  rsbivand
+
+	* DESCRIPTION,
+	  R/ogr.R: table multiple eTypes
+
+2014-09-17 17:05  rsbivand
+
+	* DESCRIPTION:
+	  tidy
+
+2014-09-17 16:48  rsbivand
+
+	* ChangeLog,
+	  inst/ChangeLog: tidy
+
 2014-09-17 16:42  rsbivand
 
 	* man/spTransform-methods.Rd:

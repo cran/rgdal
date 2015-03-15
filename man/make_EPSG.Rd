@@ -24,7 +24,7 @@ make_EPSG(file)
 \references{\url{http://www.epsg.org/}}
 
 \author{Roger Bivand}
-\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{http://www.asprs.org/resources/GRIDS/}}
+\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{http://www.asprs.org/Grids-Datums.html}}
 \examples{
 EPSG <- make_EPSG()
 EPSG[grep("Oslo", EPSG$note), 1:2]

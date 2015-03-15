@@ -1,7 +1,6 @@
 
-R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
+Copyright (C) 2014 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -19,8 +18,9 @@ Type 'q()' to quit R.
 > suppressPackageStartupMessages(library(rgdal))
 > data(state)
 > xy <- cbind(state.center$x, state.center$y)
-> res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100")
-> res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100", inv=TRUE)
+> res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80")
+> res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80",
++  inv=TRUE)
 > stopifnot(isTRUE(all.equal(res1, xy)))
 > crds <- matrix(data=c(9.05, 48.52), ncol=2)
 > a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",
@@ -51,4 +51,4 @@ Type 'q()' to quit R.
 > 
 > proc.time()
    user  system elapsed 
-  0.674   0.088   0.743 
+  0.463   0.030   0.488 

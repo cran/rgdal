@@ -150,7 +150,8 @@ spLines_tr <- spTransform(spLines, CRS("+proj=ob_tran +o_proj=longlat
 +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
 use_ob_tran=TRUE);
 bbox(spLines_tr)
-bbox(spTransform(spLines_tr, CRS("+proj=longlat"), use_ob_tran=TRUE))
+bbox(spTransform(spLines_tr, CRS("+proj=longlat +ellps=sphere"),
+ use_ob_tran=TRUE))
 spPolygons <- SpatialPolygons(list(Polygons(list(Polygon(crds1),
 Polygon(crds2), Polygon(crds3)), ID="a")));
 spPolygons@proj4string <- CRS("+proj=longlat +ellps=sphere +no_defs");
@@ -159,7 +160,8 @@ spPolygons_tr <- spTransform(spPolygons, CRS("+proj=ob_tran +o_proj=longlat
 +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
 use_ob_tran=TRUE);
 bbox(spPolygons_tr)
-bbox(spTransform(spPolygons_tr, CRS("+proj=longlat"), use_ob_tran=TRUE))
+bbox(spTransform(spPolygons_tr, CRS("+proj=longlat +ellps=sphere"),
+ use_ob_tran=TRUE))
 #added after posting by Martin Ivanov
 data(nor2k)
 summary(nor2k)

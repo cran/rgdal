@@ -5,7 +5,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
-        use_iconv=NULL, swapAxisOrder=FALSE) {
+        use_iconv=NULL, swapAxisOrder=FALSE, require_geomType=NULL) {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
@@ -18,6 +18,14 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             stopifnot(is.character(encoding))
             stopifnot(length(encoding) == 1)
         }
+        WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
+          "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
+        if (!is.null(require_geomType)) {
+          stopifnot(is.character(require_geomType) &&
+            length(require_geomType)==1)
+          m_require_geomType <- match(require_geomType, WKB)
+          stopifnot(!is.na(m_require_geomType) || m_require_geomType <= 3)
+        }
         if (!is.null(input_field_name_encoding)) {
             warning("input_field_name_encoding= deprecated, use encoding=")
             stopifnot(is.character(input_field_name_encoding))
@@ -27,8 +35,9 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             if (is.null(encoding)) encoding <- input_field_name_encoding
         }
         
-	ogr_info <- ogrInfo(dsn=dsn, layer=layer, encoding=encoding,
-            use_iconv=use_iconv, swapAxisOrder=swapAxisOrder)
+	suppressMessages(ogr_info <- ogrInfo(dsn=dsn, layer=layer,
+            encoding=encoding, use_iconv=use_iconv,
+            swapAxisOrder=swapAxisOrder, require_geomType=require_geomType))
         if (!ogr_info$have_features) stop("no features found")
         if (is.null(ogr_info$nListFields)) nListFields <- 0
         else nListFields <- ogr_info$nListFields
@@ -82,8 +91,13 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 		cat("OGR data source with driver:", ogr_info$driver, "\n")
 		cat("Source: \"", dsn, '\", layer: \"', layer, "\"", '\n',
 			sep='')
-		cat("with", length(fids),"features and",
-			length(iflds), "fields")
+		cat("with", length(fids), "features")
+                if (!is.null(attr(ogr_info, "require_geomType")))
+                    cat(";\nSelected", attr(ogr_info, "require_geomType"),
+                      "feature type, with", sum(attr(ogr_info, "keepGeoms")),
+                      "rows")
+                cat("\n")
+		cat("It has", length(iflds), "fields")
                 if (nListFields > 0)
                   cat(", of which", nListFields, "list fields")
                 cat("\n")
@@ -154,29 +168,42 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         if (any(isNULL)) {
             eType <- eType[!isNULL]
             with_z <- with_z[!isNULL]
-        }        
-	u_eType <- unique(sort(eType))
+        }   
+     
 	u_with_z <- unique(sort(with_z))
 	if (length(u_with_z) != 1L) stop(
 		paste("Multiple # dimensions:", 
 			paste((u_with_z + 2), collapse=":")))
 	if (u_with_z < 0 || u_with_z > 1) stop(
 		paste("Invalid # dimensions:", (u_with_z + 2)))
-	if (length(u_eType) > 2L) stop(
-		paste("Multiple incompatible geometries:", 
-			paste(u_eType, collapse=":")))
-	if (length(u_eType) == 2L) {
-		if (u_eType[1] == 2 && u_eType[2] == 5) u_eType = 2
-		else if (u_eType[1] == 3 && u_eType[2] == 6) u_eType = 3
-		else stop(paste("Multiple incompatible geometries:", 
-			paste(u_eType, collapse=":")))
-	}
-	WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
-	    "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
-        if (verbose) cat("Feature type:", paste(WKB[u_eType], collapse=", "),
-	    "with", u_with_z+2, "dimensions\n")
-	if (u_eType == 5) u_eType <- 2
-	if (u_eType == 6) u_eType <- 3
+
+        eType[eType == 5L] <- 2L
+        eType[eType == 6L] <- 3L
+
+	u_eType <- unique(sort(eType))
+
+    t_eType <- table(eType)
+    if (is.null(require_geomType)) {
+      keepGeoms <- NULL
+      if (length(u_eType) > 1L) stop(
+        paste("Multiple incompatible geometries:", 
+          paste(paste(WKB[as.integer(names(t_eType))], t_eType, sep=": "),
+          collapse="; ")))
+#  if (length(u_eType) == 2L) {
+#    if (u_eType[1] == 2 && u_eType[2] == 5) u_eType = 2
+#    else if (u_eType[1] == 3 && u_eType[2] == 6) u_eType = 3
+#    else stop(paste("Multiple incompatible geometries:", 
+#      paste(paste(WKB[as.integer(names(t_eType))], t_eType, sep=": "),
+#        collapse="; ")))
+#   }
+    } else {
+      if (!require_geomType %in% WKB[as.integer(names(t_eType))])
+        stop(require_geomType, "not in", WKB[as.integer(names(t_eType))])
+      u_eType <- match(require_geomType, WKB)
+      keepGeoms <- WKB[eType] == require_geomType
+      message("NOTE: keeping only ", sum(keepGeoms), " ", require_geomType,
+        " of ", length(keepGeoms), " features\n")
+    }
 
 	data <- data.frame(dlist, row.names=fids,
             stringsAsFactors=stringsAsFactors)
@@ -198,6 +225,13 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
                 warning("dropNULLGeometries FALSE, returning only data for null-geometry features")
                 return(data[isNULL, , drop=FALSE])
             }
+        }
+
+        if (!is.null(require_geomType)) {
+                gFeatures <- gFeatures[keepGeoms]
+	        data <- data[keepGeoms, , drop=FALSE]
+                fids <- fids[keepGeoms]
+                gComments <- gComments[keepGeoms]
         }
 
 	if (u_eType == 1) { # points

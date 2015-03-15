@@ -31,9 +31,9 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
- encoding=NULL, use_iconv=NULL, swapAxisOrder=FALSE)
+ encoding=NULL, use_iconv=NULL, swapAxisOrder=FALSE, require_geomType = NULL)
 ogrInfo(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
- use_iconv=NULL, swapAxisOrder=FALSE)
+ use_iconv=NULL, swapAxisOrder=FALSE, require_geomType = NULL)
 ogrFIDs(dsn, layer)
 ogrDrivers()
 OGRSpatialRef(dsn, layer)
@@ -57,6 +57,7 @@ ogrListLayers(dsn)
   \item{encoding}{default NULL, if set to a character string, and the driver is \dQuote{ESRI Shapefile}, it is passed to the CPL Option \dQuote{SHAPE_ENCODING} immediately before reading the DBF of a shapefile. The empty character string \dQuote{} turns off OGR's encoding functionality, and may be used when GDAL is not built with iconv support.}
   \item{use_iconv}{default NULL, in which case the use of iconv is controlled by the GDAL version (TRUE < 1.9). If set to a logical value, this test will be overridden.}
   \item{swapAxisOrder}{default FALSE, if TRUE, treat y coordinate as Easting, x as Northing, that is the opposite to the assumed order; this may be needed if some OGR read drivers do not behave as expected}
+  \item{require_geomType}{, default NULL, if one of: \code{c("wkbPoint", "wkbLineString", "wkbPolygon")}, then in input with multiple geometry types, the chosen type will be read}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }
@@ -133,6 +134,11 @@ dsn <- system.file("vectors", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="trin_inca_pl03")
 birds <- readOGR(dsn=dsn, layer="trin_inca_pl03")
 summary(birds)
+dsn <- system.file("vectors/PacoursIKA2.TAB", package = "rgdal")[1]
+try(ogrInfo(dsn, "PacoursIKA2"))
+ogrInfo(dsn, "PacoursIKA2", require_geomType="wkbPoint")
+plot(readOGR(dsn, "PacoursIKA2", require_geomType="wkbLineString"), col="red")
+plot(readOGR(dsn, "PacoursIKA2", require_geomType="wkbPoint"), add=TRUE)
 }
 \keyword{spatial}
 

@@ -8,11 +8,18 @@
 
 #
 ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
-  use_iconv=NULL, swapAxisOrder=FALSE) {
+  use_iconv=NULL, swapAxisOrder=FALSE, require_geomType=NULL) {
   if (missing(dsn)) stop("missing dsn")
   if (nchar(dsn) == 0) stop("empty name")
   if (missing(layer)) stop("missing layer")
   if (nchar(layer) == 0) stop("empty name")
+  WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
+    "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
+  if (!is.null(require_geomType)) {
+    stopifnot(is.character(require_geomType) && length(require_geomType)==1)
+    m_require_geomType <- match(require_geomType, WKB)
+    stopifnot(!is.na(m_require_geomType) || m_require_geomType <= 3)
+  }
 # a list with various ogr data source information
   
   if (is.null(use_iconv))
@@ -60,44 +67,61 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
   u_eType <- u_with_z <- null_geometries <- NULL
 
   if (have_features) {
-  eTypes <- .Call("R_OGR_types",as.character(dsn), as.character(layer),
-    PACKAGE = "rgdal")
-  if (is.null(retain)) {
-    eType <- eTypes[[4]]
-    with_z <- eTypes[[5]]
-    isNULL <- as.logical(eTypes[[6]])
- } else {
-    eType <- eTypes[[4]][retain]
-    with_z <- eTypes[[5]][retain]
-    isNULL <- as.logical(eTypes[[6]])[retain]
-  }
-  null_geometries <- NULL
-  if (any(isNULL)) {
+    eTypes <- .Call("R_OGR_types",as.character(dsn), as.character(layer),
+      PACKAGE = "rgdal")
+    if (is.null(retain)) {
+      eType <- eTypes[[4]]
+      with_z <- eTypes[[5]]
+      isNULL <- as.logical(eTypes[[6]])
+   } else {
+      eType <- eTypes[[4]][retain]
+      with_z <- eTypes[[5]][retain]
+      isNULL <- as.logical(eTypes[[6]])[retain]
+    }
+    null_geometries <- NULL
+    if (any(isNULL)) {
       eType <- eType[!isNULL]
       with_z <- with_z[!isNULL]
       null_geometries <- paste("Null geometry IDs:", 
         paste(which(isNULL), collapse=", "))
-  }        
-  u_eType <- unique(sort(eType))
-  u_with_z <- unique(sort(with_z))
-  if (length(u_with_z) != 1L) stop(
-    paste("Multiple # dimensions:", 
-      paste((u_with_z + 2), collapse=":")))
-  if (u_with_z < 0 || u_with_z > 1) stop(
-    paste("Invalid # dimensions:", (u_with_z + 2)))
-  WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
-    "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
-  if (length(u_eType) > 2L) stop(
-    paste("Multiple incompatible geometries:", 
-      paste(WKB[u_eType], collapse=":")))
-  if (length(u_eType) == 2L) {
-    if (u_eType[1] == 2 && u_eType[2] == 5) u_eType = 2
-    else if (u_eType[1] == 3 && u_eType[2] == 6) u_eType = 3
-    else stop(paste("Multiple incompatible geometries:", 
-      paste(WKB[u_eType], collapse=":")))
+    }        
+    eType[eType == 5L] <- 2L
+    eType[eType == 6L] <- 3L
+
+    u_eType <- unique(sort(eType))
+    u_with_z <- unique(sort(with_z))
+    if (length(u_with_z) != 1L) stop(
+      paste("Multiple # dimensions:", 
+        paste((u_with_z + 2), collapse=":")))
+    if (u_with_z < 0 || u_with_z > 1) stop(
+      paste("Invalid # dimensions:", (u_with_z + 2)))
+
+    t_eType <- table(eType)
+    if (is.null(require_geomType)) {
+      keepGeoms <- NULL
+      if (length(u_eType) > 1L) stop(
+        paste("Multiple incompatible geometries:", 
+          paste(paste(WKB[as.integer(names(t_eType))], t_eType, sep=": "),
+          collapse="; ")))
+#  if (length(u_eType) == 2L) {
+#    if (u_eType[1] == 2 && u_eType[2] == 5) u_eType = 2
+#    else if (u_eType[1] == 3 && u_eType[2] == 6) u_eType = 3
+#    else stop(paste("Multiple incompatible geometries:", 
+#      paste(paste(WKB[as.integer(names(t_eType))], t_eType, sep=": "),
+#        collapse="; ")))
+#   }
+    } else {
+      if (!require_geomType %in% WKB[as.integer(names(t_eType))])
+        stop(require_geomType, "not in", WKB[as.integer(names(t_eType))])
+      u_eType <- match(require_geomType, WKB)
+      keepGeoms <- WKB[eType] == require_geomType
+      message("NOTE: keeping only ", sum(keepGeoms), " ", require_geomType,
+        " of ", length(keepGeoms), " features\n",
+        "    note that extent applies to all features")
+    }
   }
-  }
-  names(ogrinfo) <- c("nrows","nitems","iteminfo","driver","extent","nListFields")
+  names(ogrinfo) <- c("nrows", "nitems", "iteminfo", "driver", "extent",
+    "nListFields")
   if (ogrinfo$driver == "ESRI Shapefile") {
       DSN <- dsn
       if (!file.info(DSN)$isdir) DSN <- dirname(normalizePath(dsn))
@@ -118,6 +142,9 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
   ogrinfo$dsn <- dsn
   ogrinfo$layer <- layer
   ogrinfo$p4s <- OGRSpatialRef(dsn, layer)
+  if (!is.null(require_geomType))
+    attr(ogrinfo, "require_geomType") <- require_geomType
+  if (!is.null(keepGeoms)) attr(ogrinfo, "keepGeoms") <- keepGeoms
   class(ogrinfo) <- "ogrinfo"
   ogrinfo
 }
@@ -126,9 +153,13 @@ print.ogrinfo <- function(x, ...) {
   cat("Source: \"", x$dsn, '\", layer: \"', x$layer, "\"", '\n', sep='')
   cat("Driver:", x$driver)
   if (x$have_features) cat(" number of rows", x$nrows, "\n")
-  if (!x$have_features) cat(", no features found\n")
   WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
     "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")
+  if (!is.null(attr(x, "require_geomType"))) {
+    cat("  selected geometry type:", attr(x, "require_geomType"), "with",
+      sum(attr(x, "keepGeoms")), "rows\n")
+  }
+  if (!x$have_features) cat(", no features found\n")
   if (x$have_features) cat("Feature type:", paste(WKB[x$eType],
     collapse=", "), "with", x$with_z+2, "dimensions\n")
   if (!is.null(x$extent)) cat("Extent: (", x$extent[1], " ",

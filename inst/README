@@ -135,3 +135,19 @@ may be added if:
 
 to make a local copy of the PROJ.4 data files within the R binary package.
 
+A further report from Bill Behrman in March 2015, repeated on:
+
+https://stat.ethz.ch/pipermail/r-sig-mac/2015-March/011317.html
+
+is to set:
+
+install.packages("rgdal", type = "source", configure.args =
+"--with-gdal-config=/Library/Frameworks/GDAL.framework/Versions/Current/unix
+/bin/gdal-config
+--with-proj-include=/Library/Frameworks/PROJ.framework/unix/include
+--with-proj-lib=/Library/Frameworks/PROJ.framework/unix/lib
+--with-proj-share=/Library/Frameworks/PROJ.framework/unix/share/proj”)
+
+indicating that since 2012 the framworks may also need Versions/Current/ 
+added to the relevant path for gdal-config.
+
