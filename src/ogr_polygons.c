@@ -89,3 +89,8 @@ SEXP make_Polygon(SEXP jG, SEXP jGc) {
 
 }
     
+
+SEXP rgdal_sp_linkingTo_version(void) {
+    return(SP_PREFIX(sp_linkingTo_version)());
+}
+

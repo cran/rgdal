@@ -13,7 +13,7 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
   assign(".rgdal_old.PROJ_LIB", Sys.getenv("PROJ_LIB"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.GDAL_DATA", Sys.getenv("GDAL_DATA"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.NEEDED", FALSE, envir=.RGDAL_CACHE)
-  if (file.exists(system.file("proj/proj_def.dat", package = "rgdal")[1])) {
+  if (file.exists(system.file("proj/nad.lst", package = "rgdal")[1])) {
     Sys.setenv("PROJ_LIB"=system.file("proj", package = "rgdal")[1])
     Sys.setenv("GDAL_DATA"=system.file("gdal", package = "rgdal")[1])
     assign(".rgdal_old.NEEDED", TRUE, envir=.RGDAL_CACHE)
@@ -22,6 +22,7 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
   }
   assign("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", TRUE, envir=.RGDAL_CACHE)
   assign("silent", TRUE, envir=.RGDAL_CACHE)
+  assign("has_proj_def.dat", .Call("PROJ4_proj_def_dat_Installed", PACKAGE="rgdal"), envir=.RGDAL_CACHE)
 
   library.dynam('rgdal', pkg, lib)
 
@@ -45,15 +46,16 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
   Smess <- paste('rgdal: version: ',
     utils::packageDescription("rgdal")$Version,
     ', (SVN revision ', svn_version, ')\n',
-    'Geospatial Data Abstraction Library ',
+    ' Geospatial Data Abstraction Library ',
     'extensions to R successfully loaded\n',
-    'Loaded GDAL runtime: ', rver, ifelse(ver_ok, '\n',
+    ' Loaded GDAL runtime: ', rver, ifelse(ver_ok, '\n',
     '\n   but rgdal build and GDAL runtime not in sync:\n   ... consider re-installing rgdal!!\n'),
-    paste("Path to GDAL shared files: ", gdl[1], sep=""), "\n",
+    paste(" Path to GDAL shared files: ", gdl[1], sep=""), "\n",
     ifelse(GDAL_iconv(), "",
-        paste("GDAL does not use iconv for recoding strings.\n")),
-    'Loaded PROJ.4 runtime: ', getPROJ4VersionInfo(), '\n',
-    paste("Path to PROJ.4 shared files: ", pl[1], sep=""), "\n", sep="")
+        paste(" GDAL does not use iconv for recoding strings.\n")),
+    ' Loaded PROJ.4 runtime: ', getPROJ4VersionInfo(), '\n',
+    paste(" Path to PROJ.4 shared files: ", pl[1], sep=""), "\n", sep="")
+  Smess <- paste(Smess, "Linking to sp version:", version_sp_linkingTo(), "\n")
   packageStartupMessage(Smess, appendLF = FALSE)
 }
 

@@ -70,6 +70,7 @@ static R_CallMethodDef CallEntries[] = {
     {"ogrCheckExists", (DL_FUNC) &ogrCheckExists, 2},
     {"PROJ4VersionInfo", (DL_FUNC) &PROJ4VersionInfo, 0},
     {"PROJ4NADsInstalled", (DL_FUNC) &PROJ4NADsInstalled, 0},
+    {"PROJ4_proj_def_dat_Installed", (DL_FUNC) &PROJ4_proj_def_dat_Installed, 0},
     {"transform", (DL_FUNC) &transform, 6},
     {"projInfo", (DL_FUNC) &projInfo, 1},
     {"RGDAL_SetGeoTransform", (DL_FUNC) &RGDAL_SetGeoTransform, 2},
@@ -87,6 +88,7 @@ static R_CallMethodDef CallEntries[] = {
     {"RGDAL_SetRasterColorTable", (DL_FUNC) &RGDAL_SetRasterColorTable, 4},
     {"RGDAL_SetCategoryNames", (DL_FUNC) &RGDAL_SetCategoryNames, 2},
     {"isGDALObjPtrNULL", (DL_FUNC) &isGDALObjPtrNULL, 1},
+    {"rgdal_sp_linkingTo_version", (DL_FUNC) &rgdal_sp_linkingTo_version, 0},
     {NULL, NULL, 0}
 };
 

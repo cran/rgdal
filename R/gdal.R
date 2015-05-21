@@ -48,6 +48,10 @@ getGDAL_DATA_Path <- function() {
     res
 }
 
+version_sp_linkingTo <- function() {
+    .Call("rgdal_sp_linkingTo_version")
+}
+
 
 
 

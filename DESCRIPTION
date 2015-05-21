@@ -1,8 +1,8 @@
 Package: rgdal
 Title: Bindings for the Geospatial Data Abstraction Library
-Version: 0.9-2
-Date: 2015-03-15
-Depends: R (>= 2.14.0), methods, sp (>= 1.0-9)
+Version: 0.9-3
+Date: 2015-05-21
+Depends: R (>= 2.14.0), methods, sp (>= 1.1-0)
 LinkingTo: sp
 Description: Provides bindings to Frank Warmerdam's Geospatial Data Abstraction Library (GDAL) (>= 1.6.3, < 2) and access to projection/transformation operations from the PROJ.4 library. The GDAL and PROJ.4 libraries are external to the package, and, when installing the package from source, must be correctly installed first. Both GDAL raster and OGR vector map data can be imported into R, and GDAL raster data and OGR vector data exported. Use is made of classes defined in the sp package. Windows and Mac Intel OS X binaries (including GDAL, PROJ.4 and Expat) are provided on CRAN. 
 Authors@R: c(
@@ -21,7 +21,8 @@ SystemRequirements: for building from source: GDAL >= 1.6.3, < 2
         OSX frameworks built by William Kyngesburye at
         http://www.kyngchaos.com/ may be used for source installs on
         OSX.
-Packaged: 2015-03-15 13:20:53 UTC; rsb
+NeedsCompilation: yes
+Packaged: 2015-05-21 09:11:34 UTC; rsb
 Author: Roger Bivand [cre, aut],
   Tim Keitt [aut],
   Barry Rowlingson [aut],
@@ -30,6 +31,5 @@ Author: Roger Bivand [cre, aut],
   Robert Hijmans [ctb],
   Even Rouault [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
-NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2015-03-15 16:43:30
+Date/Publication: 2015-05-21 14:09:58

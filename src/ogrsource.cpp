@@ -641,9 +641,9 @@ SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
     uninstallErrorHandlerAndTriggerError();
 
     if (poDS==NULL){
-      installErrorHandler();
-      OGRDataSource::DestroyDataSource( poDS );
-      uninstallErrorHandlerAndTriggerError();
+//      installErrorHandler();
+//      OGRDataSource::DestroyDataSource( poDS );
+//      uninstallErrorHandlerAndTriggerError();
 //    delete poDS;
       LOGICAL_POINTER(ans)[0] = FALSE;
       UNPROTECT(pc);

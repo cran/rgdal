@@ -33,6 +33,20 @@
 }
 
 checkCRSArgs <- function(uprojargs) {
+# RSB 2015-05-21
+# fix for omission of proj_defs.dat in PROJ.4 4.9.1
+  if (!get("has_proj_def.dat", envir=.RGDAL_CACHE)) {
+    if (length(grep("no_defs", uprojargs)) == 0L) {
+      if (length(grep("ellps", uprojargs)) == 0L) {
+        tags <- sapply(strsplit(strsplit("+proj=longlat +no_defs",
+          "\\+")[[1]], "="), "[", 1)
+# based on proj/src/pj_init.c lines 191-197
+        if (!any(c("datum", "ellps", "a", "b", "rf", "f") %in% tags)) {
+          uprojargs <- paste(uprojargs, "+ellps=WGS84", sep=" ")
+        }
+      }
+    }
+  }
   res <- .Call("checkCRSArgs", uprojargs, PACKAGE="rgdal")
   res[[2]] <- sub("^\\s+", "", res[[2]])
 # fix for pj_get_def() +no_uoff/+no_off bug

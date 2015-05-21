@@ -85,6 +85,40 @@ PROJ4NADsInstalled(void) {
     return(ans);
 }
 
+SEXP
+PROJ4_proj_def_dat_Installed(void) {
+    SEXP ans;
+#ifdef P4CTX
+    projCtx ctx;
+#endif
+#if PJ_VERSION <= 480
+    FILE *fp;
+#else
+    PAFile fp;
+#endif
+
+    PROTECT(ans=NEW_LOGICAL(1));
+
+#ifdef P4CTX
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "proj_def.dat", "r");
+#else
+    fp = pj_open_lib("proj_def.dat", "r");
+#endif
+    if (fp == NULL) LOGICAL_POINTER(ans)[0] = FALSE;
+    else {
+        LOGICAL_POINTER(ans)[0] = TRUE;
+#if PJ_VERSION <= 480
+        fclose(fp);
+#else
+        pj_ctx_fclose(ctx, fp);
+#endif
+    }
+    UNPROTECT(1);
+
+    return(ans);
+}
+
 #define MAX_LINE_LEN 512	/* maximal line length supported.     */
 
 SEXP

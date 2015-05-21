@@ -34,10 +34,14 @@ checkCRSArgs(uprojargs)
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{
-Lists of projections may be seen by using the programs installed with the PROJ.4 library, in particular proj and cs2cs; with the latter, -lp lists projections, -le ellipsoids, -lu units, and -ld datum(s) known to the installed software (available in \pkg{rgdal} using \code{projInfo}). These are added to in successive releases, so tracking the website or compiling and installing the most recent revisions will give the greatest choice. Finding the very important datum transformation parameters to be given with the +towgs84 tag is a further challenge, and is essential when the datums used in data to be used together differ. Tracing projection arguments is easier now than before the mass ownership of GPS receivers raised the issue of matching coordinates from different argument sets (GPS output and paper map, for example).}
+Lists of projections may be seen by using the programs installed with the PROJ.4 library, in particular proj and cs2cs; with the latter, -lp lists projections, -le ellipsoids, -lu units, and -ld datum(s) known to the installed software (available in \pkg{rgdal} using \code{projInfo}). These are added to in successive releases, so tracking the website or compiling and installing the most recent revisions will give the greatest choice. Finding the very important datum transformation parameters to be given with the +towgs84 tag is a further challenge, and is essential when the datums used in data to be used together differ. Tracing projection arguments is easier now than before the mass ownership of GPS receivers raised the issue of matching coordinates from different argument sets (GPS output and paper map, for example).
+
+The 4.9.1 release of PROJ.4 omitted a small file of defaults, leading to reports of \dQuote{major axis or radius = 0 or not given} errors. From 0.9-3, rgdal checks for the presence of this file (proj_def.dat), and if not found, and under the same conditions as used by PROJ.4, adds \dQuote{+ellps=WGS84} to the input string being checked by \code{checkCRSArgs} The \dQuote{+no_defs} tag ignores the file of defaults, and the default work-around implemented to get around this problem.}
 
 
 \examples{
+CRSargs(CRS("+proj=longlat"))
+try(CRS("+proj=longlat +no_defs"))
 CRSargs(CRS("+proj=longlat +datum=NAD27"))
 CRSargs(CRS("+init=epsg:4267"))
 CRSargs(CRS("+init=epsg:26978"))
