@@ -46,17 +46,26 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
 
 SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer) {
 
-    OGRDataSource *poDS;
-    OGRLayer *poLayer;
+#ifdef GDALV2
+//    GDALDriver *poDriver;
+    GDALDataset *poDS;
+#else
     OGRSFDriver *poDriver;
+    OGRDataSource *poDS;
+#endif
+    OGRLayer *poLayer;
 
     OGRSpatialReference *hSRS = NULL;
     char *pszProj4 = NULL;
     SEXP ans;
 
     installErrorHandler();
+#ifdef GDALV2
+    poDS=(GDALDataset*) GDALOpenEx(CHAR(STRING_ELT(ogrsourcename, 0)), GDAL_OF_VECTOR, NULL, NULL, NULL);
+#else
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrsourcename, 0)), 
 	FALSE, &poDriver);
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){

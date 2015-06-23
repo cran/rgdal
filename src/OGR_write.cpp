@@ -25,8 +25,13 @@ SEXP OGR_write(SEXP inp)
 
 // poFeature->SetFID((long) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i]) 130502
 
+#ifdef GDALV2
+    GDALDriver *poDriver;
+    GDALDataset *poDS;
+#else
     OGRSFDriver *poDriver;
     OGRDataSource *poDS;
+#endif
     OGRLayer *poLayer;
     char **papszCreateOptions = NULL;
     char **papszCreateOptionsLayer = NULL;
@@ -36,8 +41,12 @@ SEXP OGR_write(SEXP inp)
     PROTECT(ans = NEW_CHARACTER(1)); pc++;
 
     installErrorHandler();
+#ifdef GDALV2
+    poDriver = GetGDALDriverManager()->GetDriverByName(CHAR(STRING_ELT(VECTOR_ELT(inp, 3), 0)) );
+#else
     poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
                 CHAR(STRING_ELT(VECTOR_ELT(inp, 3), 0)) );
+#endif
     uninstallErrorHandlerAndTriggerError();
     if( poDriver == NULL )
     {
@@ -61,13 +70,22 @@ SEXP OGR_write(SEXP inp)
 #endif
 
     installErrorHandler();
+#ifdef GDALV2
+    poDS = poDriver->Create( CHAR(STRING_ELT(VECTOR_ELT(inp,
+        1), 0)), 0, 0, 0, GDT_Unknown, papszCreateOptions );
+#else
     poDS = poDriver->CreateDataSource( CHAR(STRING_ELT(VECTOR_ELT(inp,
         1), 0)), papszCreateOptions );
+#endif
     uninstallErrorHandlerAndTriggerError();
     if( poDS == NULL )
     {
         installErrorHandler();
+#ifdef GDALV2
+        GDALClose( poDS );
+#else
         OGRDataSource::DestroyDataSource( poDS );
+#endif
         CSLDestroy(papszCreateOptions);
         uninstallErrorHandlerAndTriggerError();
         error( "Creation of output file failed" );
@@ -98,7 +116,11 @@ SEXP OGR_write(SEXP inp)
         SEXP lns = GET_SLOT(obj, install("lines"));
         if (length(lns) != nobs) {
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
@@ -117,7 +139,11 @@ SEXP OGR_write(SEXP inp)
         SEXP pls = GET_SLOT(obj, install("polygons"));
         if (length(pls) != nobs) {
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
@@ -157,7 +183,11 @@ SEXP OGR_write(SEXP inp)
             OGRSpatialReference hSRS = NULL;
             installErrorHandler();
             if (hSRS.importFromProj4(PROJ4) != OGRERR_NONE) {
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
                 OGRDataSource::DestroyDataSource( poDS );
+#endif
                 uninstallErrorHandlerAndTriggerError();
 	        error("Can't parse PROJ.4-style parameter string");
             }
@@ -181,7 +211,11 @@ SEXP OGR_write(SEXP inp)
     if( poLayer == NULL )
     {
         installErrorHandler();
+#ifdef GDALV2
+        GDALClose( poDS );
+#else
         OGRDataSource::DestroyDataSource( poDS );
+#endif
         uninstallErrorHandlerAndTriggerError();
         error( "Layer creation failed" );
     }
@@ -203,7 +237,11 @@ SEXP OGR_write(SEXP inp)
             Rprintf("%s %d\n", CHAR(STRING_ELT(fld_names, i)), 
                 (OGRFieldType) OGR_type);
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error( "Unknown field type" );
         }
@@ -213,7 +251,11 @@ SEXP OGR_write(SEXP inp)
 // RSB 081009 FIXME - not working yet, integer flips to real in shapefile
         if (OGR_type == 0) oField.SetPrecision(0);
         if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error( "Creating Name field failed" );
         }
@@ -231,7 +273,11 @@ SEXP OGR_write(SEXP inp)
         int z=INTEGER_POINTER(dim)[1];
         if (INTEGER_POINTER(dim)[0] != nobs) {
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
@@ -250,16 +296,26 @@ SEXP OGR_write(SEXP inp)
             if (z > 2) pt.setZ( NUMERIC_POINTER(crds)[i+(2*nobs)] );
 
             poFeature->SetGeometry( &pt ); 
+#ifdef GDALV2
+            if(poFeature->SetFID((GIntBig) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
+               installErrorHandler();
+                GDALClose( poDS );
+#else
             if(poFeature->SetFID((long) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to set FID" );
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to set FID" );
             } 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to create feature" );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to create feature" );
             } 
 
              OGRFeature::DestroyFeature( poFeature );
@@ -273,7 +329,11 @@ SEXP OGR_write(SEXP inp)
         SEXP lns = GET_SLOT(obj, install("lines"));
         if (length(lns) != nobs) {
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
@@ -298,23 +358,37 @@ SEXP OGR_write(SEXP inp)
 
             if( poFeature->SetGeometry( &OGRln ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to set geometry" );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to set geometry" );
             } 
 
+#ifdef GDALV2
+            if(poFeature->SetFID((GIntBig) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
+               installErrorHandler();
+                GDALClose( poDS );
+#else
             if(poFeature->SetFID((long) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to set FID" );
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to set FID" );
             } 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to create feature" );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to create feature" );
             } 
 
              OGRFeature::DestroyFeature( poFeature );
@@ -328,7 +402,11 @@ SEXP OGR_write(SEXP inp)
         SEXP lns = GET_SLOT(obj, install("lines"));
         if (length(lns) != nobs) {
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
@@ -362,31 +440,49 @@ SEXP OGR_write(SEXP inp)
 
                 if( OGRlns.addGeometry( &OGRln ) != OGRERR_NONE ) {
                    installErrorHandler();
-                   OGRDataSource::DestroyDataSource( poDS );
-                   uninstallErrorHandlerAndTriggerError();
+#ifdef GDALV2
+                    GDALClose( poDS );
+#else
+                    OGRDataSource::DestroyDataSource( poDS );
+#endif
+                    uninstallErrorHandlerAndTriggerError();
                     error( "Failed to add line" );
                 } 
             }
 
             if( poFeature->SetGeometry( &OGRlns ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to set geometry" );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to set geometry" );
             } 
 
+#ifdef GDALV2
+            if(poFeature->SetFID((GIntBig) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
+               installErrorHandler();
+                GDALClose( poDS );
+#else
             if(poFeature->SetFID((long) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to set FID" );
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to set FID" );
             } 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to create feature" );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to create feature" );
             } 
 
              OGRFeature::DestroyFeature( poFeature );
@@ -400,7 +496,11 @@ SEXP OGR_write(SEXP inp)
         SEXP lns = GET_SLOT(obj, install("polygons"));
         if (length(lns) != nobs) {
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
@@ -429,21 +529,35 @@ SEXP OGR_write(SEXP inp)
 
             if( poFeature->SetGeometry( &OGRply ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to set geometry" );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to set geometry" );
             } 
 
+#ifdef GDALV2
+            if(poFeature->SetFID((GIntBig) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
+               installErrorHandler();
+                GDALClose( poDS );
+#else
             if(poFeature->SetFID((long) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
-               uninstallErrorHandlerAndTriggerError();
-               error( "Failed to set FID" );
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
+                uninstallErrorHandlerAndTriggerError();
+                error( "Failed to set FID" );
             } 
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
                uninstallErrorHandlerAndTriggerError();
                error( "Failed to create feature" );
             } 
@@ -460,7 +574,11 @@ SEXP OGR_write(SEXP inp)
         SEXP lns = GET_SLOT(obj, install("polygons"));
         if (length(lns) != nobs) {
             installErrorHandler();
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
             OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
@@ -498,14 +616,25 @@ SEXP OGR_write(SEXP inp)
 
              if( poFeature->SetGeometry( &OGRply ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
                uninstallErrorHandlerAndTriggerError();
                error( "Failed to set geometry" );
             } 
 
+// FIXME
+#ifdef GDALV2
+            if(poFeature->SetFID((GIntBig) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
+               installErrorHandler();
+                GDALClose( poDS );
+#else
             if(poFeature->SetFID((long) INTEGER_POINTER(VECTOR_ELT(inp, 12))[i])  != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
                uninstallErrorHandlerAndTriggerError();
                error( "Failed to set FID" );
             } 
@@ -517,7 +646,11 @@ SEXP OGR_write(SEXP inp)
 
             if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
                installErrorHandler();
-               OGRDataSource::DestroyDataSource( poDS );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
                uninstallErrorHandlerAndTriggerError();
                error( "Failed to create feature" );
             } 
@@ -529,7 +662,11 @@ SEXP OGR_write(SEXP inp)
     } // multiPolygon 
 
     installErrorHandler();
+#ifdef GDALV2
+    GDALClose( poDS );
+#else
     OGRDataSource::DestroyDataSource( poDS );
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     UNPROTECT(pc);

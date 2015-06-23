@@ -5,11 +5,19 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
-        use_iconv=NULL, swapAxisOrder=FALSE, require_geomType=NULL) {
+        use_iconv=NULL, swapAxisOrder=FALSE, require_geomType=NULL,
+        integer64="allow.loss") {
 	if (missing(dsn)) stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
 	if (nchar(layer) == 0) stop("empty name")
+        integer64 <- match.arg(integer64,
+          c("allow.loss", "warn.loss", "no.loss"))
+        
+        int64 <- switch(integer64,
+          "allow.loss"=1L,
+          "warn.loss"=2L, 
+          "no.loss"=3L)
 # adding argument for SHAPE_ENCODING environment variable 121124
         if (is.null(use_iconv))
             use_iconv <- ifelse(as.integer(getGDALVersionInfo("VERSION_NUM"))
@@ -44,9 +52,15 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 # 121130 RSB trap no field case (from PostGIS, Mathieu Basille)
         if (ogr_info$nitems > 0) {
           nodata_flag <- FALSE
-          keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real",
-            "String", "Date", "Time", "DateTime", "IntegerList",
-            "RealList", "StringList")
+          if (strsplit(getGDALVersionInfo(), " ")[[1]][2] < "2") {
+            keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real",
+              "String", "Date", "Time", "DateTime", "IntegerList",
+              "RealList", "StringList")
+          } else {
+            keep <- ogr_info$iteminfo$typeName %in% c("Integer", "Real",
+              "String", "Date", "Time", "DateTime", "IntegerList",
+              "RealList", "StringList", "Integer64", "Integer64List")
+          }
           if (nListFields > 0)
               ListFields <- as.integer(ogr_info$iteminfo$maxListCount)
           if (drop_unsupported_fields) {
@@ -103,9 +117,17 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
                 cat("\n")
 	}
 # suggestion by Paul Hiemstra 070817
-	if (is.null(p4s)) 
-	    p4s <- .Call("ogrP4S", as.character(dsn), as.character(layer), 
+	prj <- .Call("ogrP4S", as.character(dsn), as.character(layer), 
 		PACKAGE="rgdal")
+	if (!is.null(p4s)) {
+            if (!is.na(prj)) {
+                warning("p4s= argument given as: ", p4s, "\n and read as: ", prj, 
+                "\n read string overridden by given p4s= argument value")
+            }
+        } else {
+            p4s <- prj
+        }
+
 	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
 
 # adding argument for SHAPE_ENCODING environment variable 121124
@@ -132,6 +154,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
                 fldnms <- fldnms1
             }
             attr(iflds, "nflds") <- as.integer(nflds)
+            attr(iflds, "int64") <- as.integer(int64)
             dlist <- .Call("ogrDataFrame", as.character(dsn),
                 as.character(layer), as.integer(fids), iflds, PACKAGE="rgdal")
 	    names(dlist) <- make.names(fldnms ,unique=TRUE)

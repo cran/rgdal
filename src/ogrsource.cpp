@@ -38,24 +38,46 @@ extern "C" {
     SEXP ans, vec1, vec2, vec3,/*mat,*/drv, dvec;
     SEXP itemlist, itemnames, itemwidth, itemtype, itemTypeNames;
     SEXP itemlistmaxcount;
+#ifdef GDALV2
+    SEXP dFIDs;
+#endif
     /*SEXP geotype;*/
 
     int nFIDs, nFields, iField, *nCount, pc=0;
 
+#ifdef GDALV2
+    GDALDriver *poDriver;
+    GDALDataset *poDS;
+#else
     OGRDataSource *poDS;
+    OGRSFDriver *poDriver;
+#endif
     OGRLayer *poLayer;
+    OGRFeature *poFeature;
     OGRFeatureDefn *poDefn;
   /*  OGRGeometry *poGeom;*/
-    OGRSFDriver *poDriver;
 
     installErrorHandler();
+#ifdef GDALV2
+    poDS=(GDALDataset*) GDALOpenEx(CHAR(STRING_ELT(ogrsourcename, 0)), GDAL_OF_VECTOR, NULL, NULL, NULL);
+    if(poDS==NULL){
+      uninstallErrorHandlerAndTriggerError();
+      error("Cannot open data source");
+    }
+    poDriver = poDS->GetDriver();
+#else
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrsourcename, 0)), 
 	FALSE, &poDriver);
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
       installErrorHandler();
+#ifdef GDALV2
+      GDALClose( poDS );
+#else
       OGRDataSource::DestroyDataSource( poDS );
+#endif
       uninstallErrorHandlerAndTriggerError();
 //    delete poDS;
       error("Cannot open file");
@@ -67,29 +89,76 @@ extern "C" {
 
     if(poLayer == NULL){
       installErrorHandler();
+#ifdef GDALV2
+      GDALClose( poDS );
+#else
       OGRDataSource::DestroyDataSource( poDS );
+#endif
       uninstallErrorHandlerAndTriggerError();
 //    delete poDS;
       error("Cannot open layer");
     }
-
-    installErrorHandler();
-    nFIDs   = poLayer->GetFeatureCount();
-    uninstallErrorHandlerAndTriggerError();
 
     // allocate a list for return values   
     PROTECT(ans=allocVector(VECSXP,6)); pc++;
 
     PROTECT(drv=allocVector(STRSXP,1)); pc++;
     installErrorHandler();
+#ifdef GDALV2
+    SET_STRING_ELT(drv, 0, mkChar(poDriver->GetDescription()));
+#else
     SET_STRING_ELT(drv, 0, mkChar(poDriver->GetName()));
+#endif
     uninstallErrorHandlerAndTriggerError();
     SET_VECTOR_ELT(ans,3,drv);
 
-    // store number of FIDs
     PROTECT(vec1=allocVector(INTSXP,1)); pc++;
+    installErrorHandler();
+#ifdef GDALV2
+    GIntBig nFIDs64 = poLayer->GetFeatureCount();
+    nFIDs = (nFIDs64 > INT_MAX) ? INT_MAX : 
+        (nFIDs64 < INT_MIN) ? INT_MIN : (int) nFIDs64;
+    if ((GIntBig) nFIDs != nFIDs64){
+        warning("ogrInfo: feature count overflow");
+        INTEGER(vec1)[0]=NA_INTEGER;      
+        PROTECT(dFIDs=NEW_NUMERIC(1)); pc++;
+        NUMERIC_POINTER(dFIDs)[0] = (double) nFIDs64;
+        setAttrib(vec1, install("dFIDs"), dFIDs);
+    } else {
+    // store number of FIDs
+        INTEGER(vec1)[0]=nFIDs;
+    }
+#else
+    nFIDs   = poLayer->GetFeatureCount();
+    // store number of FIDs
     INTEGER(vec1)[0]=nFIDs;
+#endif
+    uninstallErrorHandlerAndTriggerError();
+
+    if (nFIDs == -1) {
+      int i=0;
+      installErrorHandler();
+      while( ((poFeature = poLayer->GetNextFeature()) != NULL) && i <= INT_MAX){
+        i++;
+        OGRFeature::DestroyFeature( poFeature );
+//    delete poFeature;
+      }
+      uninstallErrorHandlerAndTriggerError();
+      if (i == INT_MAX) {
+        error("ogrInfo: undeclared feature count overflow");
+      } else {
+        nFIDs = i;
+        warning("ogrInfo: feature count not given; %d counted", nFIDs);
+      }
+      installErrorHandler();
+      poLayer->ResetReading();
+      uninstallErrorHandlerAndTriggerError();
+
+      INTEGER(vec1)[0]=nFIDs;
+    }
+
     SET_VECTOR_ELT(ans,0,vec1);
+
 
 
     // store other stuff....
@@ -183,7 +252,13 @@ extern "C" {
 
     UNPROTECT(pc);
 
+    installErrorHandler();
+#ifdef GDALV2
+    GDALClose( poDS );
+#else
     OGRDataSource::DestroyDataSource( poDS );
+#endif
+    uninstallErrorHandlerAndTriggerError();
 //    delete poDS;
     return(ans);
 
@@ -202,14 +277,22 @@ extern "C" {
   SEXP fids, nf, ii;
   int /*layerNum,*/i;
   int nFeatures, pc=0;
-  OGRDataSource *poDS;
   OGRLayer *poLayer;
   OGRFeature *poFeature;
-  OGRSFDriver *poDriver;
+#ifdef GDALV2
+    GDALDataset *poDS;
+#else
+    OGRDataSource *poDS;
+    OGRSFDriver *poDriver;
+#endif
 
   installErrorHandler();
+#ifdef GDALV2
+    poDS=(GDALDataset*) GDALOpenEx(CHAR(STRING_ELT(filename, 0)), GDAL_OF_VECTOR, NULL, NULL, NULL);
+#else
   poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(filename, 0)), 
 	FALSE, &poDriver);
+#endif
   uninstallErrorHandlerAndTriggerError();
 
   if(poDS==NULL){
@@ -224,8 +307,37 @@ extern "C" {
     error("Cannot open layer");
   }
   installErrorHandler();
+#ifdef GDALV2
+  GIntBig nFIDs64 = poLayer->GetFeatureCount();
+  nFeatures = (nFIDs64 > INT_MAX) ? INT_MAX : 
+        (nFIDs64 < INT_MIN) ? INT_MIN : (int) nFIDs64;
+  if ((GIntBig) nFeatures != nFIDs64){
+        uninstallErrorHandlerAndTriggerError();
+        error("ogrFIDs: feature count overflow");
+  }
+#else
   nFeatures=poLayer->GetFeatureCount();
+#endif
   uninstallErrorHandlerAndTriggerError();
+
+  if (nFeatures == -1) {
+    i=0;
+    installErrorHandler();
+    while( ((poFeature = poLayer->GetNextFeature()) != NULL) && i <= INT_MAX){
+      i++;
+      OGRFeature::DestroyFeature( poFeature );
+//    delete poFeature;
+    }
+    uninstallErrorHandlerAndTriggerError();
+    installErrorHandler();
+    poLayer->ResetReading();
+    uninstallErrorHandlerAndTriggerError();
+    if (i == INT_MAX) {
+      error("ogrFIDs: feature count overflow");
+    } else {
+      nFeatures = i;
+    }
+  }
 
   PROTECT(fids=allocVector(INTSXP,nFeatures)); pc++;
   PROTECT(nf = NEW_INTEGER(1)); pc++;
@@ -251,7 +363,13 @@ extern "C" {
   setAttrib(fids, install("nf"), nf);
   setAttrib(fids, install("i"), ii);
 
+  installErrorHandler();
+#ifdef GDALV2
+  GDALClose( poDS );
+#else
   OGRDataSource::DestroyDataSource( poDS );
+#endif
+  uninstallErrorHandlerAndTriggerError();
 //  delete poDS;
 
   UNPROTECT(pc);
@@ -268,7 +386,7 @@ extern "C" {
 #endif
 // extern "C" {
 
-  SEXP ogrReadColumn(OGRLayer *poLayer, SEXP FIDs, int iField){
+  SEXP ogrReadColumn(OGRLayer *poLayer, SEXP FIDs, int iField, int int64){
     // read feature data and return something according to the type
     OGRFeatureDefn *poDefn;
     OGRFieldDefn *poField;
@@ -291,6 +409,15 @@ extern "C" {
     case OFTInteger:
       PROTECT(ans=allocVector(INTSXP,nRows));
       break;
+#ifdef GDALV2
+    case OFTInteger64:
+      if (int64 ==3) {
+          PROTECT(ans=allocVector(STRSXP,nRows));
+      } else {
+         PROTECT(ans=allocVector(INTSXP,nRows));
+      }
+      break;
+#endif
     case OFTReal:
       PROTECT(ans=allocVector(REALSXP,nRows));
       break;
@@ -339,6 +466,30 @@ extern "C" {
           INTEGER(ans)[iRow]=poFeature->GetFieldAsInteger(iField);
 	else INTEGER(ans)[iRow]=NA_INTEGER;
 	break;
+#ifdef GDALV2
+      case OFTInteger64:
+	if (poFeature->IsFieldSet(iField)) {
+            if (int64 == 3) {
+                SET_STRING_ELT(ans, iRow, 
+                    mkChar(poFeature->GetFieldAsString(iField)));
+            } else {
+                GIntBig nVal64 = poFeature->GetFieldAsInteger64(iField);
+                int nVal = (nVal64 > INT_MAX) ? INT_MAX : 
+                    (nVal64 < INT_MIN) ? INT_MIN : (int) nVal64;
+                INTEGER(ans)[iRow]=nVal;
+                if (((GIntBig)nVal != nVal64) && int64 == 2) {
+                    warning("Integer64 value clamped: feature %d", iRow);
+                }
+            }
+        } else {
+            if (int64 == 3) {
+                SET_STRING_ELT(ans, iRow, NA_STRING);
+            } else {
+                INTEGER(ans)[iRow]=NA_INTEGER;
+            }
+        }
+	break;
+#endif
       case OFTReal:
 	if (poFeature->IsFieldSet(iField)) 
           REAL(ans)[iRow]=poFeature->GetFieldAsDouble(iField);
@@ -397,7 +548,7 @@ extern "C" {
 #endif
 // extern "C" {
 
-  SEXP ogrReadListColumn(OGRLayer *poLayer, SEXP FIDs, int iField, int k){
+  SEXP ogrReadListColumn(OGRLayer *poLayer, SEXP FIDs, int iField, int k, int int64){
     // read feature data and return something according to the type
     OGRFeatureDefn *poDefn;
     OGRFieldDefn *poField;
@@ -420,6 +571,15 @@ extern "C" {
     case OFTIntegerList:
       PROTECT(ans=allocVector(INTSXP,nRows));
       break;
+#ifdef GDALV2
+    case OFTInteger64List:
+      if (int64 == 3) {
+          PROTECT(ans=allocVector(STRSXP,nRows));
+      } else {
+          PROTECT(ans=allocVector(INTSXP,nRows));
+      }
+      break;
+#endif
     case OFTRealList:
       PROTECT(ans=allocVector(REALSXP,nRows));
       break;
@@ -454,6 +614,34 @@ extern "C" {
             INTEGER(ans)[iRow] = psField->IntegerList.paList[k];
 	  else INTEGER(ans)[iRow]=NA_INTEGER;
 	  break;
+#ifdef GDALV2
+        case OFTInteger64List:
+          nlist = psField->Integer64List.nCount;
+	  if (k < nlist) {
+            if (int64 == 3) {
+                GIntBig nVal64 = psField->Integer64List.paList[k];
+                char szItem[32];
+                snprintf(szItem, sizeof(szItem), CPL_FRMT_GIB,
+                      psField->Integer64List.paList[k]);
+                SET_STRING_ELT(ans, iRow, mkChar(szItem));
+            } else {
+                GIntBig nVal64 = psField->Integer64List.paList[k];
+                int nVal = (nVal64 > INT_MAX) ? INT_MAX : 
+                    (nVal64 < INT_MIN) ? INT_MIN : (int) nVal64;
+                if (((GIntBig)nVal != nVal64) && int64 == 2) {
+                    warning("Integer64 value clamped: feature %d", iRow);
+                }
+                INTEGER(ans)[iRow]=nVal;
+            }
+          } else {
+            if (int64 == 3) {
+                SET_STRING_ELT(ans, iRow, NA_STRING);
+            } else {
+                INTEGER(ans)[iRow]=NA_INTEGER;
+            }
+          }
+	  break;
+#endif
 
         case OFTRealList:
           nlist = psField->RealList.nCount;
@@ -497,17 +685,26 @@ extern "C" {
   SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields){
     // query an OGR data source and return a list
     SEXP ans;
-    SEXP nListFields, ListFields;
+    SEXP nListFields, ListFields, int64;
     OGRLayer *poLayer;
+#ifdef GDALV2
+    GDALDataset *poDS;
+#else
     OGRDataSource *poDS;
     OGRSFDriver *poDriver;
+#endif
+
     int iField, nflds=length(iFields), j=0, k;
     int pc=0;
 
     // open the data source layer or error
     installErrorHandler();
+#ifdef GDALV2
+    poDS=(GDALDataset*) GDALOpenEx(CHAR(STRING_ELT(ogrSource, 0)), GDAL_OF_VECTOR, NULL, NULL, NULL);
+#else
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource,0)), 
       FALSE, &poDriver);
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
@@ -522,6 +719,7 @@ extern "C" {
       error("Cannot open layer");
     }
 
+    int64 = getAttrib(iFields, mkString("int64"));
     nListFields = getAttrib(iFields, mkString("nListFields"));
 
     // reserve a list for the result
@@ -536,20 +734,20 @@ extern "C" {
     installErrorHandler();
     if (INTEGER_POINTER(nListFields)[0] == 0) {
       for(iField=0;iField<length(iFields);iField++){
-        SET_VECTOR_ELT(ans,iField,ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField]));
+        SET_VECTOR_ELT(ans,iField,ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField], INTEGER(int64)[0]));
       }
     } else {
         j=0;
         for(iField=0;iField<length(iFields);iField++){
             if (INTEGER_POINTER(ListFields)[iField] == 0) {
                 SET_VECTOR_ELT(ans, j, 
-                    ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField]));
+                    ogrReadColumn(poLayer, FIDs, INTEGER(iFields)[iField], INTEGER(int64)[0]));
                 j++;
             } else {
                 for (k=0; k < INTEGER_POINTER(ListFields)[iField]; k++) {
                     SET_VECTOR_ELT(ans, j, 
                         ogrReadListColumn(poLayer, FIDs,
-                        INTEGER(iFields)[iField], k));
+                        INTEGER(iFields)[iField], k, INTEGER(int64)[0]));
                     j++;
                 }
             }
@@ -558,7 +756,11 @@ extern "C" {
     uninstallErrorHandlerAndTriggerError();
     // clean up and return
     installErrorHandler();
+#ifdef GDALV2
+    GDALClose( poDS );
+#else
     OGRDataSource::DestroyDataSource( poDS );
+#endif
 //    delete poDS;
     uninstallErrorHandlerAndTriggerError();
     UNPROTECT(pc);
@@ -629,15 +831,25 @@ extern "C" {
 
 SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
     OGRLayer *poLayer;
+#ifdef GDALV2
+    GDALDataset *poDS;
+    GDALDriver *poDriver;
+#else
     OGRDataSource *poDS;
     OGRSFDriver *poDriver;
+#endif
     SEXP ans, drv;
     int pc=0;
     PROTECT(ans=NEW_LOGICAL(1)); pc++;
 
     installErrorHandler();
+#ifdef GDALV2
+    poDS=(GDALDataset*) GDALOpenEx(CHAR(STRING_ELT(ogrSource, 0)), GDAL_OF_VECTOR, NULL, NULL, NULL);
+    if (poDS != NULL) poDriver = poDS->GetDriver();
+#else
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource, 0)), 
 	FALSE, &poDriver);
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     if (poDS==NULL){
@@ -656,7 +868,11 @@ SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
 
     if (poLayer == NULL){
       installErrorHandler();
+#ifdef GDALV2
+      GDALClose( poDS );
+#else
       OGRDataSource::DestroyDataSource( poDS );
+#endif
       uninstallErrorHandlerAndTriggerError();
 //    delete poDS;
       LOGICAL_POINTER(ans)[0] = FALSE;
@@ -668,12 +884,20 @@ SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
     
     PROTECT(drv=allocVector(STRSXP,1)); pc++;
     installErrorHandler();
+#ifdef GDALV2
+    SET_STRING_ELT(drv, 0, mkChar(poDriver->GetDescription()));
+#else
     SET_STRING_ELT(drv, 0, mkChar(poDriver->GetName()));
+#endif
     uninstallErrorHandlerAndTriggerError();
     setAttrib(ans, install("driver"), drv);
 
     installErrorHandler();
+#ifdef GDALV2
+    GDALClose( poDS );
+#else
     OGRDataSource::DestroyDataSource( poDS );
+#endif
     uninstallErrorHandlerAndTriggerError();
 //    delete poDS;
     UNPROTECT(pc);
@@ -683,22 +907,45 @@ SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
 
 SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     OGRLayer *poLayer;
+#ifdef GDALV2
+    GDALDataset *poDS;
+    GDALDriver *poDriver;
+#else
     OGRDataSource *poDS;
     OGRSFDriver *poDriver;
+#endif
     int iLayer = -1;
     int flag = 0;
 
     installErrorHandler();
+#ifdef GDALV2
+    poDriver = GetGDALDriverManager()->GetDriverByName(CHAR(STRING_ELT(ogrDriver, 0)));
+#else
     poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
                 CHAR(STRING_ELT(ogrDriver, 0)) );
+#endif
     uninstallErrorHandlerAndTriggerError();
     if (poDriver == NULL) {
         error("Driver not available");
     }
 
     installErrorHandler();
+#ifdef GDALV2
+    poDS=(GDALDataset*) GDALOpenEx(CHAR(STRING_ELT(ogrSource, 0)), GDAL_OF_VECTOR, NULL, NULL, NULL);
+    if(poDS==NULL){
+      error("Cannot open data source");
+    }
+//Rprintf("ogrDeleteLayer: %s %s\n", CHAR(STRING_ELT(ogrDriver, 0)), poDS->GetDriver()->GetDescription());
+    if (!EQUAL(CHAR(STRING_ELT(ogrDriver, 0)),
+        poDS->GetDriver()->GetDescription())) {
+//Rprintf("ogrDeleteLayer: in condition\n");
+        GDALClose( poDS );
+        poDS = NULL;
+    }
+#else
     poDS = poDriver->Open(CHAR(STRING_ELT(ogrSource, 0)), 
 	TRUE);
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     if (poDS==NULL)
@@ -708,40 +955,63 @@ SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     for(iLayer = 0; iLayer < poDS->GetLayerCount(); iLayer++) {
         poLayer = poDS->GetLayer(iLayer);
 /* poLayer->GetLayerDefn()->GetName() is poLayer->GetName() from 1.8 */
+#ifdef GDALV2
+        if (poLayer != NULL && EQUAL(poLayer->GetName(),
+#else
         if (poLayer != NULL && EQUAL(poLayer->GetLayerDefn()->GetName(),
+#endif
             CHAR(STRING_ELT(Layer, 0)))) {
             flag = 1;
             break;
         }
     }
     uninstallErrorHandlerAndTriggerError();
-
     installErrorHandler();
     if (flag != 0) {
-        if (poDS->DeleteLayer(iLayer) != OGRERR_NONE) {
-            OGRDataSource::DestroyDataSource(poDS);
+        int res = poDS->DeleteLayer(iLayer);
+        if (res != OGRERR_NONE) {
+#ifdef GDALV2
+            GDALClose( poDS );
+#else
+            OGRDataSource::DestroyDataSource( poDS );
+#endif
             uninstallErrorHandlerAndTriggerError();
             error("ogrDeleteLayer: failed to delete layer");
         }
     } else {
         warning("ogrDeleteLayer: no such layer");
     }
-    OGRDataSource::DestroyDataSource(poDS);
+#ifdef GDALV2
+    GDALClose( poDS );
+#else
+    OGRDataSource::DestroyDataSource( poDS );
+#endif
     uninstallErrorHandlerAndTriggerError();
     return(R_NilValue);
 }
 
 SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver) {
+#ifdef GDALV2
+    GDALDriver *poDriver;
+#else
     OGRSFDriver *poDriver;
+#endif
 
     installErrorHandler();
+#ifdef GDALV2
+    poDriver = GetGDALDriverManager()->GetDriverByName(CHAR(STRING_ELT(ogrDriver, 0)));
+#else
     poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
                 CHAR(STRING_ELT(ogrDriver, 0)) );
+#endif
     uninstallErrorHandlerAndTriggerError();
     if (poDriver == NULL) {
         error("Driver not available");
     }
     installErrorHandler();
+#ifdef GDALV2
+    poDriver->Delete(CHAR(STRING_ELT(ogrSource, 0)));
+#else
     if (poDriver->TestCapability(ODrCDeleteDataSource)) {
         if (poDriver->DeleteDataSource(CHAR(STRING_ELT(ogrSource, 0)))
             != OGRERR_NONE) {
@@ -749,24 +1019,40 @@ SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver) {
             error("Data source could not be deleted");
         }
     } else {
-        error("This driver not capable of data source deletion");
+        uninstallErrorHandlerAndTriggerError();
+        error("This driver is not capable of data source deletion");
     }
+#endif
     uninstallErrorHandlerAndTriggerError();
     return(R_NilValue);
 }
 
 
 SEXP ogrListLayers (SEXP ogrSource) {
+#ifdef GDALV2
+    GDALDataset *poDS;
+    GDALDriver *poDriver;
+#else
     OGRDataSource *poDS;
     OGRSFDriver *poDriver;
+#endif
     OGRLayer *poLayer;
     int i, nlayers;
     SEXP ans, debug;
     int pc=0;
 
     installErrorHandler();
+#ifdef GDALV2
+    poDS=(GDALDataset*) GDALOpenEx(CHAR(STRING_ELT(ogrSource, 0)), GDAL_OF_VECTOR, NULL, NULL, NULL);
+    if(poDS==NULL){
+      uninstallErrorHandlerAndTriggerError();
+      error("Cannot open data source");
+    }
+    poDriver = poDS->GetDriver();
+#else
     poDS=OGRSFDriverRegistrar::Open(CHAR(STRING_ELT(ogrSource, 0)), 
 	FALSE, &poDriver);
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     if(poDS==NULL){
@@ -801,11 +1087,19 @@ SEXP ogrListLayers (SEXP ogrSource) {
     }
 
     installErrorHandler();
+#ifdef GDALV2
+    SET_STRING_ELT(ans, nlayers, mkChar(poDriver->GetDescription()));
+#else
     SET_STRING_ELT(ans, nlayers, mkChar(poDriver->GetName()));
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     installErrorHandler();
+#ifdef GDALV2
+    GDALClose( poDS );
+#else
     OGRDataSource::DestroyDataSource( poDS );
+#endif
     uninstallErrorHandlerAndTriggerError();
 
     UNPROTECT(pc);

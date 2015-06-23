@@ -331,7 +331,11 @@ RGDAL_GetDescription(SEXP sxpObj) {
 SEXP
 RGDAL_GetDriverNames(void) {
 
+#ifdef GDALV2
+  SEXP ans, ansnames, attr;
+#else
   SEXP ans, ansnames;
+#endif
   int pc=0;
   installErrorHandler();
   int nDr=GDALGetDriverCount();
@@ -349,12 +353,23 @@ RGDAL_GetDriverNames(void) {
   SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(nDr));
   SET_VECTOR_ELT(ans, 2, NEW_LOGICAL(nDr));
   SET_VECTOR_ELT(ans, 3, NEW_LOGICAL(nDr));
+#ifdef GDALV2
+  PROTECT(attr = NEW_LOGICAL(nDr)); pc++;
+#endif
+
 
   int i, flag;
   installErrorHandler();
   for (i = 0; i < nDr; ++i) {
+#ifdef GDALV2
+    LOGICAL_POINTER(attr)[i] = FALSE;
+#endif
 
     GDALDriver *pDriver = GetGDALDriverManager()->GetDriver(i);
+#ifdef GDALV2
+    if(pDriver->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL)
+      LOGICAL_POINTER(attr)[i] = TRUE;
+#endif
     
     SET_STRING_ELT(VECTOR_ELT(ans, 0), i, 
       mkChar(GDALGetDriverShortName( pDriver )));
@@ -368,6 +383,9 @@ RGDAL_GetDriverNames(void) {
     LOGICAL_POINTER(VECTOR_ELT(ans, 3))[i] = flag;
   }
   uninstallErrorHandlerAndTriggerError();
+#ifdef GDALV2
+  setAttrib(ans, install("isVector"), attr);
+#endif
 
   UNPROTECT(pc);
 

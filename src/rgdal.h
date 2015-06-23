@@ -14,6 +14,13 @@ extern "C" {
 #define SP_XPORT(x) RGDAL_ ## x
 #include "sp.h"
 
+#ifndef GDALV2
+#if GDAL_VERSION_MAJOR >= 2
+# define GDALV2 1
+#endif
+#endif
+
+
 SEXP make_Polygonlist(SEXP iG, SEXP iGc);
 SEXP make_Polygon(SEXP jG, SEXP jGc);
 SEXP rgdal_sp_linkingTo_version(void);

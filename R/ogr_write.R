@@ -55,6 +55,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         }
     }
 
+    odsn <- NULL
     if (check_exists) {
         already_exists <- FALSE
         ogrI <- .Call("ogrCheckExists", as.character(dsn),
@@ -64,6 +65,15 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         }
         if (already_exists) {
             if (overwrite_layer) {
+# NASTY KLUDGE: GDAL 2 appears to handle shapefile deletion awkwardly
+# and prefers the "single" *.shp definition of dsn
+                if (strsplit(getGDALVersionInfo(), " ")[[1]][2] >= "2" && 
+                    driver == "ESRI Shapefile" && file.info(dsn)$isdir) {
+                    odsn <- dsn
+                    dsn <- paste(dsn, "/", layer, ".shp", sep="")
+                    if (verbose) warning(dsn, " substituted for ", odsn,
+                        " for layer deletion")
+                }
                 layer_del <- try(ogrDeleteLayer(dsn, layer, driver),
                     silent=TRUE)
                 if (class(layer_del) == "try-error" && delete_dsn) {

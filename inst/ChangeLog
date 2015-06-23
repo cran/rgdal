@@ -1,3 +1,71 @@
+2015-06-23 09:05  rsbivand
+
+	* configure: tidy
+
+2015-06-23 07:55  rsbivand
+
+	* R/AAA.R: add utils:: to packageVersion()
+
+2015-06-22 17:44  rsbivand
+
+	* R/ogr_sp.R: warn if readOGR p4s= given and data have CRS read
+
+2015-06-22 16:34  rsbivand
+
+	* DESCRIPTION, R/ogr.R, src/ogr_geom.cpp, src/ogrsource.cpp: count
+	  features for -1 count
+
+2015-06-13 07:11  rsbivand
+
+	* man/GDALMajorObject-class.Rd, man/GDALReadOnlyDataset-class.Rd:
+	  drop dead keittlab URLs
+
+2015-06-12 21:08  rsbivand
+
+	* R/ogr.R, inst/vectors/test64.csv, inst/vectors/test64.csvt,
+	  inst/vectors/test64.vrt, man/readOGR.Rd, man/writeOGR.Rd,
+	  src/ogrsource.cpp: test for Integer64
+
+2015-06-11 15:14  rsbivand
+
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd,
+	  src/OGR_write.cpp, src/ogr_geom.cpp, src/ogrsource.cpp: guarding
+	  for Integer64 fields, banning Integer64 overflow for number of
+	  features
+
+2015-06-02 09:59  rsbivand
+
+	* R/gdal.R: fixing overwrite vector (kludge) and driver listings
+
+2015-06-02 09:42  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_write.R,
+	  src/gdal-bindings.cpp, src/ogrsource.cpp: fixing overwrite vector
+	  (kludge) and driver listings
+
+2015-05-31 17:06  rsbivand
+
+	* src/ogrsource.cpp: first pass at accommodating GDAL 2
+
+2015-05-31 17:02  rsbivand
+
+	* R/ogr_sp.R, src/ogrsource.cpp: first pass at accommodating GDAL 2
+
+2015-05-31 16:36  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2015-05-31 16:34  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, configure, configure.ac,
+	  man/writeOGR.Rd, src/OGR_write.cpp, src/ogr_proj.cpp,
+	  src/ogrdrivers.cpp, src/ogrsource.cpp, src/rgdal.h: first pass at
+	  accommodating GDAL 2
+
+2015-05-21 09:11  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2015-05-21 09:09  rsbivand
 
 	* R/AAA.R, R/Class-CRSx.R: work-around for missing proj_def.dat

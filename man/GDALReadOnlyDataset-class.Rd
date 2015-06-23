@@ -84,7 +84,7 @@ may appear when \code{GDAL.close} is run, or at some later stage.
 \code{getGeoTransFunc} returns a warping function.
   
 }
-\references{\url{http://www.keittlab.org/}, \url{http://www.gdal.org/}}
+\references{\url{http://www.gdal.org/}}
 
 \author{Timothy H. Keitt, modified by Roger Bivand}
 

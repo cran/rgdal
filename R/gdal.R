@@ -67,7 +67,11 @@ setClass('GDALRasterBand', 'GDALMajorObject')
 
 getGDALDriverNames <- function() {
   res <- .Call('RGDAL_GetDriverNames', PACKAGE="rgdal")
-  res <- as.data.frame(res)
+  has_isVector <- 0L
+  if (!is.null(attr(res, "isVector"))) has_isVector <- 1L
+  if (has_isVector) res$isVector <- attr(res, "isVector")
+  res <- as.data.frame(res, stringsAsFactors=FALSE)
+  if (has_isVector) res <- res[!res$isVector,]
   res <- res[order(res$name),]
   row.names(res) <- NULL
   res

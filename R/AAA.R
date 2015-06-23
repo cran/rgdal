@@ -55,7 +55,13 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
         paste(" GDAL does not use iconv for recoding strings.\n")),
     ' Loaded PROJ.4 runtime: ', getPROJ4VersionInfo(), '\n',
     paste(" Path to PROJ.4 shared files: ", pl[1], sep=""), "\n", sep="")
-  Smess <- paste(Smess, "Linking to sp version:", version_sp_linkingTo(), "\n")
+    splVersion <- version_sp_linkingTo()
+  Smess <- paste(Smess, "Linking to sp version:", splVersion, "\n")
+  spVcheck <- NULL
+  if("sp" %in% .packages()) 
+    spVcheck <- utils::packageVersion("sp") == splVersion
+  if (!is.null(spVcheck) && !spVcheck) paste(Smess, 
+    "sp version used to install rgdal and loaded sp version differ\n")
   packageStartupMessage(Smess, appendLF = FALSE)
 }
 

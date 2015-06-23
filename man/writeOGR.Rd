@@ -48,7 +48,7 @@ cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
 is.na(cities$POPULATION) <- cities$POPULATION == -99
 summary(cities$POPULATION)
 td <- tempdir()
-if(nchar(Sys.getenv("OSGEO4W_ROOT") > 0)) {
+if(nchar(Sys.getenv("OSGEO4W_ROOT")) > 0) {
     OLDPWD <- getwd()
     setwd(td)
     td <- "."
@@ -78,21 +78,28 @@ list.files(td)
 roads <- readOGR(system.file("vectors", package = "rgdal")[1],
  "kiritimati_primary_roads")
 summary(roads)
-writeOGR(roads, td, "roads", driver="MapInfo File")
-roads2 <- readOGR(paste(td, "roads.tab", sep="/"), "roads")
-summary(roads2)
+if (strsplit(getGDALVersionInfo(), " ")[[1]][2] < "2") {
+# For GDAL >= 2, the TAB driver may need a BOUNDS layer option
+  writeOGR(roads, td, "roads", driver="MapInfo File")
+  roads2 <- readOGR(paste(td, "roads.tab", sep="/"), "roads")
+  summary(roads2)
+}
 scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1], "scot_BNG")
 summary(scot_BNG)
-writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File")
-list.files(td)
-scot_BNG2 <- readOGR(paste(td, "scot_BNG.tab", sep="/"), "scot_BNG", addCommentsToPolygons=FALSE)
-summary(scot_BNG2)
+if (strsplit(getGDALVersionInfo(), " ")[[1]][2] < "2") {
+# For GDAL >= 2, the TAB driver may need a BOUNDS layer option
+  writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File")
+  list.files(td)
+  scot_BNG2 <- readOGR(paste(td, "scot_BNG.tab", sep="/"), "scot_BNG",
+    addCommentsToPolygons=FALSE)
+  summary(scot_BNG2)
+}
 writeOGR(scot_BNG, td, "scot_BNG", driver="MapInfo File",
  dataset_options="FORMAT=MIF")
 list.files(td)
 scot_BNG3 <- readOGR(paste(td, "scot_BNG.mif", sep="/"), "scot_BNG")
 summary(scot_BNG3)
-if(nchar(Sys.getenv("OSGEO4W_ROOT") > 0)) {
+if(nchar(Sys.getenv("OSGEO4W_ROOT")) > 0) {
     setwd(OLDPWD)
 }
 }

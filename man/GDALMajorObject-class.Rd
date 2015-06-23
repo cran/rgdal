@@ -35,7 +35,7 @@ getDescription(object)
   }
 }
 
-\references{\url{http://www.keittlab.org/}, \url{http://www.gdal.org/}}
+\references{\url{http://www.gdal.org/}}
 
 \author{Timothy H. Keitt, modified by Roger Bivand}
 

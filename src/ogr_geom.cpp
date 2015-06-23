@@ -105,9 +105,37 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments)
 /* was projection */
 
     installErrorHandler();
+#ifdef GDALV2
+  GIntBig nFIDs64 = OGR_L_GetFeatureCount(Ogr_layer, 1);
+  nf = (nFIDs64 > INT_MAX) ? INT_MAX : 
+        (nFIDs64 < INT_MIN) ? INT_MIN : (int) nFIDs64;
+  if ((GIntBig) nf != nFIDs64){
+        uninstallErrorHandlerAndTriggerError();
+        error("R_OGR_CAPI_features: feature count overflow");
+  }
+#else
     nf = OGR_L_GetFeatureCount(Ogr_layer, 1);
+#endif
     uninstallErrorHandlerAndTriggerError();
-
+    if (nf == -1) {
+      i=0;
+      installErrorHandler();
+      while( ((Ogr_feature = OGR_L_GetNextFeature(Ogr_layer)) != NULL) && i <= INT_MAX){
+        i++;
+        OGR_F_Destroy(Ogr_feature);
+//    delete poFeature;
+      }
+      uninstallErrorHandlerAndTriggerError();
+      if (i == INT_MAX) {
+        error("ogrFIDs: feature count overflow");
+      } else {
+        nf = i;
+      }
+      installErrorHandler();
+      OGR_L_ResetReading(Ogr_layer);
+      uninstallErrorHandlerAndTriggerError();
+    }
+//Rprintf("nf: %d\n", nf);
     SET_VECTOR_ELT(ans, 3, NEW_INTEGER(nf));
     SET_VECTOR_ELT(ans, 4, NEW_LIST(nf));
     SET_VECTOR_ELT(ans, 5, NEW_INTEGER(nf));
@@ -400,8 +428,38 @@ SEXP R_OGR_types(SEXP dsn, SEXP layer)
 /* was projection */
 
     installErrorHandler();
+#ifdef GDALV2
+  GIntBig nFIDs64 = OGR_L_GetFeatureCount(Ogr_layer, 1);
+  nf = (nFIDs64 > INT_MAX) ? INT_MAX : 
+        (nFIDs64 < INT_MIN) ? INT_MIN : (int) nFIDs64;
+  if ((GIntBig) nf != nFIDs64){
+        uninstallErrorHandlerAndTriggerError();
+        error("R_OGR_types: feature count overflow");
+  }
+#else
     nf = OGR_L_GetFeatureCount(Ogr_layer, 1);
+#endif
     uninstallErrorHandlerAndTriggerError();
+
+    if (nf == -1) {
+      i=0;
+      installErrorHandler();
+      while( ((Ogr_feature = OGR_L_GetNextFeature(Ogr_layer)) != NULL) && i <= INT_MAX){
+        i++;
+        OGR_F_Destroy(Ogr_feature);
+//    delete poFeature;
+      }
+      uninstallErrorHandlerAndTriggerError();
+      if (i == INT_MAX) {
+        error("ogrFIDs: feature count overflow");
+      } else {
+        nf = i;
+      }
+      installErrorHandler();
+      OGR_L_ResetReading(Ogr_layer);
+      uninstallErrorHandlerAndTriggerError();
+    }
+
 
     SET_VECTOR_ELT(ans, 3, NEW_INTEGER(nf));
     SET_VECTOR_ELT(ans, 4, NEW_INTEGER(nf));

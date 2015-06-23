@@ -31,7 +31,8 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
- encoding=NULL, use_iconv=NULL, swapAxisOrder=FALSE, require_geomType = NULL)
+ encoding=NULL, use_iconv=NULL, swapAxisOrder=FALSE, require_geomType = NULL,
+ integer64="allow.loss")
 ogrInfo(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
  use_iconv=NULL, swapAxisOrder=FALSE, require_geomType = NULL)
 ogrFIDs(dsn, layer)
@@ -58,6 +59,7 @@ ogrListLayers(dsn)
   \item{use_iconv}{default NULL, in which case the use of iconv is controlled by the GDAL version (TRUE < 1.9). If set to a logical value, this test will be overridden.}
   \item{swapAxisOrder}{default FALSE, if TRUE, treat y coordinate as Easting, x as Northing, that is the opposite to the assumed order; this may be needed if some OGR read drivers do not behave as expected}
   \item{require_geomType}{, default NULL, if one of: \code{c("wkbPoint", "wkbLineString", "wkbPolygon")}, then in input with multiple geometry types, the chosen type will be read}
+  \item{integer64}{From GDAL 2, fields to be read may also take Integer64 values. As R has no such storage mode, three options are offered, analogous with \code{\link{type.convert}} for numeric conversion: \dQuote{allow.loss} which clamps to 32-bit signed integer, \dQuote{warn.loss} - as \dQuote{allow.loss} but warns when clamping occurs, and \dQuote{no.loss}, which reads as a character string using the formatting applied by default by GDAL. The use of 64-bit integers is usually a misunderstanding, as such data is almost always a long key ID.}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }
@@ -139,6 +141,18 @@ try(ogrInfo(dsn, "PacoursIKA2"))
 ogrInfo(dsn, "PacoursIKA2", require_geomType="wkbPoint")
 plot(readOGR(dsn, "PacoursIKA2", require_geomType="wkbLineString"), col="red")
 plot(readOGR(dsn, "PacoursIKA2", require_geomType="wkbPoint"), add=TRUE)
+odir <- getwd()
+setwd(system.file("vectors", package = "rgdal")[1])
+ow <- options("warn")$warn
+options("warn"=1)
+ogrInfo("test64.vrt", "test64")
+str(readOGR("test64.vrt", "test64", verbose=FALSE, integer64="allow.loss")$val)
+str(readOGR("test64.vrt", "test64", verbose=FALSE, integer64="warn.loss")$val)
+str(readOGR("test64.vrt", "test64", verbose=FALSE, integer64="no.loss")$val)
+str(readOGR("test64.vrt", "test64", verbose=FALSE, stringsAsFactors=FALSE,
+ integer64="no.loss")$val)
+options("warn"=ow)
+setwd(odir)
 }
 \keyword{spatial}
 
