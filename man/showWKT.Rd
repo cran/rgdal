@@ -1,12 +1,14 @@
 \name{showWKT}
 \alias{showWKT}
+\alias{showEPSG}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Show Well-Known Text spatial reference system metadata}
 \description{
-  Use GDAL/OGR spatial reference objects to convert a PROJ.4 representation to a Well-Known Text representation.
+  Use GDAL/OGR spatial reference objects to convert a PROJ.4 representation to a Well-Known Text representation, and report an EPSG code if it can be determined by OGR SRS services.
 }
 \usage{
 showWKT(p4s, file = NULL, morphToESRI = TRUE)
+showEPSG(p4s)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +29,8 @@ cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
 readLines(system.file("vectors/cities.prj", package = "rgdal")[1])
 showWKT(proj4string(cities))
 showWKT("+init=epsg:28992")
+showEPSG("+proj=utm +zone=30")
+showEPSG("+proj=longlat +ellps=WGS84")
 }
 \keyword{spatial}
 

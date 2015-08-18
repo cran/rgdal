@@ -391,4 +391,11 @@ showWKT <- function(p4s, file=NULL, morphToESRI=TRUE) {
 	res
 }
 
+showEPSG <- function(p4s) {
+
+	if (!is.character(p4s)) stop("invalid p4s object")
+	res <- .Call("ogrAutoIdentifyEPSG", as.character(p4s), PACKAGE="rgdal")
+	res
+}
+
  

@@ -109,6 +109,7 @@ SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields);
 SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments);
 //SEXP make_Polygonlist(SEXP iG);
 SEXP p4s_to_wkt(SEXP p4s, SEXP esri);
+SEXP ogrAutoIdentifyEPSG(SEXP p4s);
 SEXP OGR_write(SEXP inp);
 SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver);
 SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver);

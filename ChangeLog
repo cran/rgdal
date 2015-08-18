@@ -1,3 +1,27 @@
+2015-08-18 06:32  rsbivand
+
+	* configure: identify EPSG; list Grids & Datums
+
+2015-08-17 23:05  rsbivand
+
+	* NAMESPACE, R/ogr_sp.R, data/GridsDatums.rda, man/showWKT.Rd:
+	  identify EPSG; list Grids & Datums
+
+2015-08-16 23:45  rsbivand
+
+	* DESCRIPTION, data/GridsDatums.rda, man/GridsDatums.Rd,
+	  src/init.c, src/ogr_proj.cpp, src/rgdal.h: identify EPSG; list
+	  Grids & Datums
+
+2015-06-28 20:11  rsbivand
+
+	* DESCRIPTION, NAMESPACE: CRAN
+	  _R_CHECK_CODE_USAGE_WITH_ONLY_BASE_ATTACHED_=true NAMESPACE tidy
+
+2015-06-23 09:07  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2015-06-23 09:05  rsbivand
 
 	* configure: tidy
