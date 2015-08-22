@@ -236,6 +236,13 @@ RGDAL_Init(void) {
 
 //  CPLSetErrorHandler((CPLErrorHandler)__errorHandler);
 //  CPLPushErrorHandler((CPLErrorHandler)__errorHandler);
+#ifdef GDALV2
+
+    installErrorHandler();
+  GDALAllRegister();
+    uninstallErrorHandlerAndTriggerError();
+
+#else
 
     installErrorHandler();
   GDALAllRegister();
@@ -244,6 +251,8 @@ RGDAL_Init(void) {
     installErrorHandler();
   OGRRegisterAll();
     uninstallErrorHandlerAndTriggerError();
+
+#endif
  
   return(R_NilValue);
 

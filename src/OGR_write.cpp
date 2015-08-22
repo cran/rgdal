@@ -180,26 +180,31 @@ SEXP OGR_write(SEXP inp)
     const char *PROJ4 = CHAR(STRING_ELT(GET_SLOT(p4s, install("projargs")), 0));
 
     if (strcmp(PROJ4, "NA")) {
-            OGRSpatialReference hSRS = NULL;
+//            OGRSpatialReference hSRS = NULL;
+//            OGRSpatialReference* poSRS = new OGRSpatialReference();
+            OGRSpatialReference* poSRS =
+                (OGRSpatialReference*)OSRNewSpatialReference(NULL);
             installErrorHandler();
-            if (hSRS.importFromProj4(PROJ4) != OGRERR_NONE) {
+//            if (hSRS.importFromProj4(PROJ4) != OGRERR_NONE) {
+            if (poSRS->importFromProj4(PROJ4) != OGRERR_NONE) {
 #ifdef GDALV2
                 GDALClose( poDS );
 #else
                 OGRDataSource::DestroyDataSource( poDS );
 #endif
+                poSRS->Release();
                 uninstallErrorHandlerAndTriggerError();
 	        error("Can't parse PROJ.4-style parameter string");
             }
             uninstallErrorHandlerAndTriggerError();
-            installErrorHandler();
+/*            installErrorHandler();
             if (LOGICAL_POINTER(VECTOR_ELT(inp, 11))[0]) {
-                    hSRS.morphToESRI();
+                    poSRS->morphToESRI();
             }
-            uninstallErrorHandlerAndTriggerError();
+            uninstallErrorHandlerAndTriggerError();*/
             installErrorHandler();
             poLayer = poDS->CreateLayer( CHAR(STRING_ELT(VECTOR_ELT(inp, 2),
-                0)), &hSRS, wkbtype, papszCreateOptionsLayer );
+                0)), poSRS, wkbtype, papszCreateOptionsLayer );
             uninstallErrorHandlerAndTriggerError();
 
     } else {
@@ -663,7 +668,7 @@ SEXP OGR_write(SEXP inp)
 
     installErrorHandler();
 #ifdef GDALV2
-    GDALClose( poDS );
+        GDALClose( poDS );
 #else
     OGRDataSource::DestroyDataSource( poDS );
 #endif

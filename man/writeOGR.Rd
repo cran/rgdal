@@ -57,6 +57,10 @@ writeOGR(cities, td, "cities", driver="ESRI Shapefile")
 cities2 <- readOGR(td, "cities")
 summary(cities2$POPULATION)
 all.equal(cities, cities2)
+if ("SQLite" \%in\% ogrDrivers()$name) {
+  tf <- tempfile()
+  try(writeOGR(cities, tf, "cities", driver="SQLite", layer_options="LAUNDER=NO"))
+}
 \dontrun{if ("GML" \%in\% ogrDrivers()$name) {
   airports <- try(readOGR(system.file("vectors/airports.gml",
     package = "rgdal")[1], "airports"))

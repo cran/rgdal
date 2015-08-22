@@ -1,3 +1,16 @@
+2015-08-21 20:12  rsbivand
+
+	* DESCRIPTION, man/writeOGR.Rd, src/OGR_write.cpp: bug fix SQLite
+	  driver v2
+
+2015-08-21 18:46  rsbivand
+
+	* src/OGR_write.cpp, src/gdal-bindings.cpp: bug fixes v2
+
+2015-08-18 06:34  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2015-08-18 06:32  rsbivand
 
 	* configure: identify EPSG; list Grids & Datums
