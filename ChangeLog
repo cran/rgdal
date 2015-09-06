@@ -1,3 +1,21 @@
+2015-09-05 12:29  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/Class-CRSx.R, man/CRS-class.Rd: further
+	  workarounds PROJ release bug
+
+2015-09-04 14:37  rsbivand
+
+	* R/Class-CRSx.R: add init to exceptions in 4.9.1 bugfix
+
+2015-08-31 12:56  rsbivand
+
+	* DESCRIPTION, R/Class-CRSx.R, R/wrappers.R: modularise PROJ 4.9.1
+	  check
+
+2015-08-21 20:27  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2015-08-21 20:12  rsbivand
 
 	* DESCRIPTION, man/writeOGR.Rd, src/OGR_write.cpp: bug fix SQLite

@@ -63,12 +63,20 @@ GDALcall <- function(object, option, ...) {
 
 
 .gd_transform <- function(projfrom, projto, n, x, y, z=NULL) {
+  if (!get("has_proj_def.dat", envir=.RGDAL_CACHE)) {
+      projfrom <- proj_def_bug_fix(projfrom)
+      projto <- proj_def_bug_fix(projto)
+  }
   if (is.null(z)) .Call("transform", projfrom, projto, n, x, y, NULL, PACKAGE="rgdal")
   else .Call("transform", projfrom, projto, n, x, y, z, PACKAGE="rgdal")
 }
 
 # exported version
 rawTransform <- function(projfrom, projto, n, x, y, z=NULL) {
+        if (!get("has_proj_def.dat", envir=.RGDAL_CACHE)) {
+            projfrom <- proj_def_bug_fix(projfrom)
+            projto <- proj_def_bug_fix(projto)
+        }
 	if (is.null(z)) .Call("transform", projfrom, projto, n, x, y, NULL, PACKAGE="rgdal")
 	else .Call("transform", projfrom, projto, n, x, y, z, PACKAGE="rgdal")
 }
