@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the Geospatial Data Abstraction Library
-Version: 1.0-7
-Date: 2015-09-04
+Version: 1.1-1
+Date: 2015-10-30
 Depends: R (>= 2.14.0), methods, sp (>= 1.1-0)
 Imports: grDevices, graphics, stats, utils
 LinkingTo: sp
@@ -23,7 +23,7 @@ SystemRequirements: for building from source: GDAL >= 1.6.3, library
         http://www.kyngchaos.com/ may be used for source installs on
         OSX.
 NeedsCompilation: yes
-Packaged: 2015-09-05 14:30:42 UTC; rsb
+Packaged: 2015-11-02 10:29:50 UTC; rsb
 Author: Roger Bivand [cre, aut],
   Tim Keitt [aut],
   Barry Rowlingson [aut],
@@ -33,4 +33,4 @@ Author: Roger Bivand [cre, aut],
   Even Rouault [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2015-09-06 16:29:10
+Date/Publication: 2015-11-02 20:04:03

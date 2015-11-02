@@ -16,8 +16,11 @@ extern "C" {
 //extern "C" {
   SEXP ogr_GetDriverNames(void){
     SEXP ans, ansnames;
-    int i, j, n, vsum=0, pc=0, create=0;
+    int i, n, pc=0;
+#ifdef GDALV2
+    int j, vsum=0, create=0;
     int *vector;
+#endif
 
     PROTECT(ans = NEW_LIST(2)); pc++;
     PROTECT(ansnames = NEW_CHARACTER(2)); pc++;
@@ -48,7 +51,10 @@ extern "C" {
 #endif
 
     installErrorHandler();
-    for (i=0, j=0; i < n; i++) {
+#ifdef GDALV2
+    j = 0;
+#endif
+    for (i=0; i < n; i++) {
 #ifdef GDALV2
       if (vector[i] == 1) {
         GDALDriver *poDriver = GetGDALDriverManager()->GetDriver(i);

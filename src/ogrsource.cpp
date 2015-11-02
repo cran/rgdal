@@ -685,7 +685,7 @@ extern "C" {
   SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields){
     // query an OGR data source and return a list
     SEXP ans;
-    SEXP nListFields, ListFields, int64;
+    SEXP nListFields, ListFields=R_NilValue, int64;
     OGRLayer *poLayer;
 #ifdef GDALV2
     GDALDataset *poDS;

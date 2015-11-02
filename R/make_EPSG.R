@@ -4,7 +4,14 @@ make_EPSG <- function(file) {
             n <- .Call("PROJcopyEPSG", tf, PACKAGE="rgdal")
             if (n > 0) file <- tf
             else stop("Error opening epsg file")
-        }
+       } else {
+# bug fix 20150914 Alain Benard
+           if (file.exists(file)) {
+               n <- length(readLines(file))
+           } else {
+               stop("Error opening", file)
+           }
+       }
 #	epsg <- file(system.file("proj/epsg", package="rgdal"), open="r")
 # report Michael Sumner 071017
 	epsg <- file(file, open="r")

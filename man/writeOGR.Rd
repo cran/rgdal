@@ -39,7 +39,7 @@ For writing with the KML and GPX drivers, note that the geometries should be in 
 \section{Warning}{
 The \code{overwrite_layer} and \code{delete_dsn} arguments are provided only for experienced script writers who need to be able to destroy data, for example during repetetive simulation runs. They should never be used by anyone who is not confident about deleting files.
 }
-\references{\url{http://www.gdal.org/ogr/}, \url{http://www.gdal.org/ogr/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
+\references{\url{http://www.gdal.org/ogr_formats.html}, \url{http://examples.oreilly.com/webmapping/}}
 \author{Roger Bivand}
 
 \seealso{\code{\link{readOGR}}}
@@ -56,10 +56,26 @@ if(nchar(Sys.getenv("OSGEO4W_ROOT")) > 0) {
 writeOGR(cities, td, "cities", driver="ESRI Shapefile")
 cities2 <- readOGR(td, "cities")
 summary(cities2$POPULATION)
-all.equal(cities, cities2)
 if ("SQLite" \%in\% ogrDrivers()$name) {
   tf <- tempfile()
   try(writeOGR(cities, tf, "cities", driver="SQLite", layer_options="LAUNDER=NO"))
+}
+if ("GeoJSON" \%in\% ogrDrivers()$name) {
+  js <- '{
+    "type": "MultiPolygon",
+    "coordinates": [[[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0],
+    [102.0, 2.0]]], [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0],
+    [100.0, 0.0]]]]
+  }'
+  spdf <- readOGR(js, layer='OGRGeoJSON')
+  in1_comms <- sapply(slot(spdf, "polygons"), comment)
+  print(in1_comms)
+  tf <- tempfile()
+  writeOGR(spdf, tf, "OGRGeoJSON", driver="GeoJSON")
+  spdf1 <- readOGR(tf, "OGRGeoJSON")
+  in2_comms <- sapply(slot(spdf1, "polygons"), comment)
+  print(in2_comms)
+  print(isTRUE(all.equal(in1_comms, in2_comms)))
 }
 \dontrun{if ("GML" \%in\% ogrDrivers()$name) {
   airports <- try(readOGR(system.file("vectors/airports.gml",
@@ -67,7 +83,6 @@ if ("SQLite" \%in\% ogrDrivers()$name) {
   if (class(airports) != "try-error") {
     writeOGR(cities, paste(td, "cities.gml", sep="/"), "cities", driver="GML")
     cities3 <- readOGR(paste(td, "cities.gml", sep="/"), "cities")
-    all.equal(cities, cities3)
   }
 }}
 # The GML driver does not support coordinate reference systems
