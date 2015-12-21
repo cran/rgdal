@@ -1,19 +1,19 @@
 \name{GridsDatums}
 \alias{GridsDatums}
 \docType{data}
-\title{Grids and Datums PE\&RS listing}
-\description{A data.frame of years and months of Grids \& Datums column publications by country and country code.}
+\title{Grids and Datums PE&RS listing}
+\description{A data.frame of years and months of Grids & Datums column publications by country and country code.}
 \usage{data("GridsDatums")}
 \format{
-  A data frame with 204 observations on the following 4 variables.
+  A data frame with 207 observations on the following 4 variables.
   \describe{
-    \item{\code{country}}{name of PE\&RS column}
+    \item{\code{country}}{name of PE&RS column}
     \item{\code{month}}{issue month}
     \item{\code{year}}{publication year}
     \item{\code{ISO}}{ISO code for country}
   }
 }
-\details{The journal \emph{Photogrammetric Engineering & Remote Sensing}, run by the American Society for Photogrammetry and Remote Sensing (ASPRS), began publishing a more-or-less monthly column on the spatial reference systems used in different countries, including their datums. The column first appeared in September 1997, and continues (by August 2015, 204 had appeared). Some of the columns also cover other topics, such as world and Martian spatial reference systems. They are written by Clifford J. Mugnier, Louisiana State University, Fellow Emeritus ASPRS. To access the columns, visit \url{http://www.asprs.org/Grids-Datums.html}, and choose the 1997--2008, 2009--2010, or 2011 onwards subset as appropriate.}
+\details{The journal \emph{Photogrammetric Engineering & Remote Sensing}, run by the American Society for Photogrammetry and Remote Sensing (ASPRS), began publishing a more-or-less monthly column on the spatial reference systems used in different countries, including their datums. The column first appeared in September 1997, and continued until November 2015. Some also cover other topics, such as world and Martian spatial reference systems. They are written by Clifford J. Mugnier, Louisiana State University, Fellow Emeritus ASPRS. To access the columns, visit \url{http://www.asprs.org/Grids-Datums.html}, and choose the 1997--2008, 2009--2010, or 2011--2015 subset as appropriate.}
 \source{\url{http://www.asprs.org/Grids-Datums.html}}
 \examples{
 data(GridsDatums)

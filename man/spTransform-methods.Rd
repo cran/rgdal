@@ -59,6 +59,8 @@ The methods may take an optional argument \dQuote{use_ob_tran}, default FALSE, i
 If a SpatialPoints object has three dimensions, the third will also be transformed, with the metric of the third dimension assumed to be meters if the vertical units metric is not given in the projection description with +vunits= or +vto_meter= (which is 1.0 by default) \url{http://trac.osgeo.org/proj/wiki/GenParms#VerticalUnits}.
 
 Note that WGS84 is both an ellipse and a datum, and that since 1984 there have been changes in the relative positions of continents, leading to a number of modifications. This is discussed for example in \url{http://www.uvm.edu/giv/resources/WGS84_NAD83.pdf}; there are then multiple transformations between NAD83 and WGS84 depending on the WGS84 definition used. One would expect that \dQuote{+towgs84=} is a no-op for WGS84, but this only applies sometimes, and as there are now at least 30 years between now and 1984, things have shifted. It may be useful to note that \dQuote{+nadgrids=@null} can help, see these threads: \url{https://stat.ethz.ch/pipermail/r-sig-geo/2014-August/021611.html}, \url{http://lists.maptools.org/pipermail/proj/2014-August/006894.html}, with thanks to Hermann Peifer for assistance.
+
+Note that from PROJ.4 4.9.3, the definition of UTM is changed from TMERC to ETMERC; see example.
 }
 
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
@@ -184,6 +186,34 @@ suppressWarnings(proj4string(locs.step1.cf) <- CRS(paste("+proj=lcc",
 locs.step2.cfb <- spTransform(locs.step1.cf, CRS("+init=epsg:26743"))
 coordinates(locs.step2.cfb) - ref
 all.equal(unname(coordinates(locs.step2.cfb)), ref)
+# Test for UTM == TMERC (<= 4.9.2) or UTM == ETMERC (> 4.9.2)
+nhh <- SpatialPointsDataFrame(matrix(c(5.304234, 60.422311), ncol=2),
+ proj4string=CRS("+init=epsg:4326"), data=data.frame(office="RSB"))
+nhh_utm_32N_P4 <- spTransform(nhh, CRS("+init=epsg:3044"))
+nhh_tmerc_P4 <- spTransform(nhh, CRS(paste("+proj=tmerc +k=0.9996",
+ "+lon_0=9 +x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")))
+nhh_etmerc_P4 <- spTransform(nhh, CRS(paste("+proj=etmerc +k=0.9996",
+ "+lon_0=9 +x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")))
+all.equal(coordinates(nhh_utm_32N_P4), coordinates(nhh_tmerc_P4),
+ tolerance=1e-9, scale=1)
+# UTM == TMERC: PROJ4 <=4.9.2
+all.equal(coordinates(nhh_utm_32N_P4), coordinates(nhh_etmerc_P4),
+ tolerance=1e-9, scale=1)
+# UTM == ETMERC: PROJ4 > 4.9.2
+unis <- SpatialPointsDataFrame(matrix(c(15.653453, 78.222504), ncol=2),
+ proj4string=CRS("+init=epsg:4326"), data=data.frame(office="UNIS"))
+unis_utm_33N_P4 <- spTransform(unis, CRS("+init=epsg:3045"))
+unis_tmerc_P4 <- spTransform(unis, CRS(paste("+proj=tmerc +k=0.9996 +lon_0=15",
+ "+x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")))
+unis_etmerc_P4 <- spTransform(unis, CRS(paste("+proj=etmerc +k=0.9996",
+ "+lon_0=15 +x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")))
+all.equal(coordinates(unis_utm_33N_P4), coordinates(unis_tmerc_P4),
+ tolerance=1e-9, scale=1)
+# UTM == TMERC: PROJ4 <=4.9.2
+all.equal(coordinates(unis_utm_33N_P4), coordinates(unis_etmerc_P4),
+ tolerance=1e-9, scale=1)
+# UTM == ETMERC: PROJ4 > 4.9.2
+
 }
 
 \keyword{methods}

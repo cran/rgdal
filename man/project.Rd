@@ -17,6 +17,8 @@ project(xy, proj, inv = FALSE, use_ob_tran=FALSE)
 }
 \details{
   Full details of projection arguments available from website below, and examples in file "epsg" in the data directory installed with PROJ.4.
+
+Note that from PROJ.4 4.9.3, the definition of UTM is changed from TMERC to ETMERC; see example.
 }
 \value{
   A two column matrix with projected coordinates.
@@ -48,7 +50,28 @@ a
 project(a, paste("+proj=ob_tran +o_proj=longlat",
  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
  inv=TRUE, use_ob_tran=TRUE)
-
 #added after posting by Martin Ivanov
+#
+# Test for UTM == TMERC (<= 4.9.2) or UTM == ETMERC (> 4.9.2)
+nhh <- matrix(c(5.304234, 60.422311), ncol=2)
+nhh_utm_32N_P4 <- project(nhh, "+init=epsg:3044")
+nhh_tmerc_P4 <- project(nhh, paste("+proj=tmerc +k=0.9996 +lon_0=9",
+ "+x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
+nhh_etmerc_P4 <- project(nhh, paste("+proj=etmerc +k=0.9996 +lon_0=9",
+ "+x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
+all.equal(nhh_utm_32N_P4, nhh_tmerc_P4, tolerance=1e-9, scale=1)
+# UTM == TMERC: PROJ4 <=4.9.2
+all.equal(nhh_utm_32N_P4, nhh_etmerc_P4, tolerance=1e-9, scale=1)
+# UTM == ETMERC: PROJ4 > 4.9.2
+unis <- matrix(c(15.653453, 78.222504), ncol=2)
+unis_utm_33N_P4 <- project(unis, "+init=epsg:3045")
+unis_tmerc_P4 <- project(unis, paste("+proj=tmerc +k=0.9996 +lon_0=15",
+ "+x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
+unis_etmerc_P4 <- project(unis, paste("+proj=etmerc +k=0.9996 +lon_0=15",
+ "+x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
+all.equal(unis_utm_33N_P4, unis_tmerc_P4, tolerance=1e-9, scale=1)
+# UTM == TMERC: PROJ4 <=4.9.2
+all.equal(unis_utm_33N_P4, unis_etmerc_P4, tolerance=1e-9, scale=1)
+# UTM == ETMERC: PROJ4 > 4.9.2
 }
 \keyword{spatial}

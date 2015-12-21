@@ -619,7 +619,8 @@ extern "C" {
           nlist = psField->Integer64List.nCount;
 	  if (k < nlist) {
             if (int64 == 3) {
-                GIntBig nVal64 = psField->Integer64List.paList[k];
+// FIXME clang++
+//                GIntBig nVal64 = psField->Integer64List.paList[k];
                 char szItem[32];
                 snprintf(szItem, sizeof(szItem), CPL_FRMT_GIB,
                       psField->Integer64List.paList[k]);
@@ -935,10 +936,8 @@ SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     if(poDS==NULL){
       error("Cannot open data source");
     }
-//Rprintf("ogrDeleteLayer: %s %s\n", CHAR(STRING_ELT(ogrDriver, 0)), poDS->GetDriver()->GetDescription());
     if (!EQUAL(CHAR(STRING_ELT(ogrDriver, 0)),
         poDS->GetDriver()->GetDescription())) {
-//Rprintf("ogrDeleteLayer: in condition\n");
         GDALClose( poDS );
         poDS = NULL;
     }
@@ -954,16 +953,19 @@ SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     installErrorHandler();
     for(iLayer = 0; iLayer < poDS->GetLayerCount(); iLayer++) {
         poLayer = poDS->GetLayer(iLayer);
-/* poLayer->GetLayerDefn()->GetName() is poLayer->GetName() from 1.8 */
 #ifdef GDALV2
         if (poLayer != NULL && EQUAL(poLayer->GetName(),
-#else
-        if (poLayer != NULL && EQUAL(poLayer->GetLayerDefn()->GetName(),
-#endif
             CHAR(STRING_ELT(Layer, 0)))) {
             flag = 1;
             break;
         }
+#else
+        if (poLayer != NULL && EQUAL(poLayer->GetLayerDefn()->GetName(),
+            CHAR(STRING_ELT(Layer, 0)))) {
+            flag = 1;
+            break;
+        }
+#endif
     }
     uninstallErrorHandlerAndTriggerError();
     installErrorHandler();

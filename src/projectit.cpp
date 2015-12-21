@@ -291,7 +291,7 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 	 * and datum transformation in an SEXP format */
 
 	int i, n, nwarn=0, ob_tran, have_z;
-	double *xx, *yy, *zz;
+	double *xx, *yy, *zz=NULL;
 	projPJ fromPJ, toPJ;
         SEXP use_ob_tran = getAttrib(npts, install("ob_tran"));
 	SEXP res;

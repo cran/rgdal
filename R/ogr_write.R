@@ -1,4 +1,5 @@
 writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL) {
+    stopifnot(is.logical(verbose))
     drvs <- ogrDrivers()
     mch <- match(driver, drvs$name)
     if (is.na(mch) || length(mch) > 1L)
@@ -73,12 +74,20 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
                     dsn <- paste(dsn, "/", layer, ".shp", sep="")
                     if (verbose) warning(dsn, " substituted for ", odsn,
                         " for layer deletion")
+                    odelete_dsn <- delete_dsn
+                    delete_dsn <- TRUE
+                    owarnZZ <- options("warn")$warn
+                    options(warn=-1)
                 }
                 layer_del <- try(ogrDeleteLayer(dsn, layer, driver),
                     silent=TRUE)
                 if (class(layer_del) == "try-error" && delete_dsn) {
                     ogrDeleteDataSource(dsn, driver)
                     if (verbose) warning("existing data source removed")
+                }
+                if (exists("odelete_dsn")) {
+                    delete_dsn <- odelete_dsn
+                    options(warn=owarnZZ)
                 }
                 if (verbose) warning("existing layer removed")
             } else {
@@ -144,6 +153,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     FIDs <- as.integer(row.names(obj))
     if (any(is.na(FIDs))) FIDs <- as.integer(0:(nobj-1))
     options("warn"=owarn$warn)
+    attr(nf, "verbose") <- as.logical(verbose)
     
     pre <- list(obj, as.character(dsn), as.character(layer), 
         as.character(driver), as.integer(nobj), nf,
