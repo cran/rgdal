@@ -44,6 +44,33 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
     return(ans);
 }
 
+SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
+
+    OGRSpatialReference hSRS = NULL;
+    char *pszSRS_P4 = NULL;
+    char **ppszInput = NULL;
+    SEXP ans;
+    ppszInput = CSLAddString(ppszInput, CHAR(STRING_ELT(wkt, 0)));
+
+    installErrorHandler();
+    if (hSRS.importFromWkt(ppszInput) != OGRERR_NONE) {
+        uninstallErrorHandlerAndTriggerError();
+	error("Can't parse WKT-style parameter string");
+    }
+    uninstallErrorHandlerAndTriggerError();
+    installErrorHandler();
+    if (INTEGER_POINTER(esri)[0] == 1) hSRS.morphFromESRI();
+    hSRS.exportToProj4(&pszSRS_P4);
+    uninstallErrorHandlerAndTriggerError();
+
+    PROTECT(ans=NEW_CHARACTER(1));
+    SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszSRS_P4));
+
+    UNPROTECT(1);
+
+    return(ans);
+}
+
 SEXP ogrAutoIdentifyEPSG(SEXP p4s) {
 
     OGRSpatialReference hSRS = NULL;

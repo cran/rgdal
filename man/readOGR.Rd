@@ -28,13 +28,13 @@ lines or \code{layer="track_points"} points.
 \usage{
 readOGR(dsn, layer, verbose = TRUE, p4s=NULL, 
  stringsAsFactors=default.stringsAsFactors(), 
- drop_unsupported_fields=FALSE, input_field_name_encoding=NULL,
+ drop_unsupported_fields=FALSE,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
- encoding=NULL, use_iconv=NULL, swapAxisOrder=FALSE, require_geomType = NULL,
+ encoding=NULL, use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL,
  integer64="allow.loss")
-ogrInfo(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
- use_iconv=NULL, swapAxisOrder=FALSE, require_geomType = NULL)
+ogrInfo(dsn, layer, encoding=NULL,
+ use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL)
 ogrFIDs(dsn, layer)
 ogrDrivers()
 OGRSpatialRef(dsn, layer)
@@ -49,14 +49,13 @@ ogrListLayers(dsn)
   \item{p4s}{PROJ4 string defining CRS, if default NULL, the value is read from the OGR data set} 
   \item{stringsAsFactors}{logical: should character vectors be converted to factors? The \sQuote{factory-fresh} default is \code{TRUE}, but this can be changed by setting \code{\link{options}(stringsAsFactors = FALSE)} (see \code{link[base]{data.frame}}).}
   \item{drop\_unsupported\_fields}{default FALSE, if TRUE skip fields other than String, Integer, and Real; Date, Time and DateTime are converted to String}
-  \item{input\_field\_name\_encoding}{default NULL; if not NULL, should be a valid encoding name for the source platform of the data source and layer, see \code{\link[base]{iconv}}}
   \item{pointDropZ}{default FALSE, if TRUE, discard third coordinates for point geometries; third coordinates are alway discarded for line and polygon geometries}
   \item{dropNULLGeometries}{default TRUE, drop both declared NULL geometries, and empty geometries with no coordinates; if FALSE, return a data frame with the attribute values of the NULL and empty geometries}
   \item{useC}{default TRUE, if FALSE use original interpreted code in a loop}
   \item{disambiguateFIDs}{default FALSE, if TRUE, and FID values are not unique, they will be set to unique values 1:N for N features; problem observed in GML files}
   \item{addCommentsToPolygons}{default TRUE, may be set FALSE for legacy behaviour; used to indicate which interior rings are holes in which exterior rings in conformance with OGC SFS specifications}
-  \item{encoding}{default NULL, if set to a character string, and the driver is \dQuote{ESRI Shapefile}, it is passed to the CPL Option \dQuote{SHAPE_ENCODING} immediately before reading the DBF of a shapefile. The empty character string \dQuote{} turns off OGR's encoding functionality, and may be used when GDAL is not built with iconv support.}
-  \item{use_iconv}{default NULL, in which case the use of iconv is controlled by the GDAL version (TRUE < 1.9). If set to a logical value, this test will be overridden.}
+  \item{encoding}{default NULL, if set to a character string, and the driver is \dQuote{ESRI Shapefile}, and use_iconv is FALSE, it is passed to the CPL Option \dQuote{SHAPE_ENCODING} immediately before reading the DBF of a shapefile. If use_iconv is TRUE, and encoding is not NULL, it will be used to convert input strings from the given value to the native encoding for the system/platform.}
+  \item{use_iconv}{default FALSE; if TRUE and encoding is not NULL, it will be used to convert input strings from the given value to the native encoding for the system/platform.}
   \item{swapAxisOrder}{default FALSE, if TRUE, treat y coordinate as Easting, x as Northing, that is the opposite to the assumed order; this may be needed if some OGR read drivers do not behave as expected}
   \item{require_geomType}{, default NULL, if one of: \code{c("wkbPoint", "wkbLineString", "wkbPolygon")}, then in input with multiple geometry types, the chosen type will be read}
   \item{integer64}{From GDAL 2, fields to be read may also take Integer64 values. As R has no such storage mode, three options are offered, analogous with \code{\link{type.convert}} for numeric conversion: \dQuote{allow.loss} which clamps to 32-bit signed integer, \dQuote{warn.loss} - as \dQuote{allow.loss} but warns when clamping occurs, and \dQuote{no.loss}, which reads as a character string using the formatting applied by default by GDAL. The use of 64-bit integers is usually a misunderstanding, as such data is almost always a long key ID.}
@@ -86,6 +85,8 @@ From 0.7-24, if the layer has no fields, a single field containing the FID value
 
 From 0.7-24, attempts are begun to provide users with arguments to control reading from OGR/shapefile driver when the encoding is inappropriate (especially the setting of LDID in shapefile DBFs, and the SHAPE_ENCODING environment variable).
 
+While there is no certainty, newer drivers such as KML, GML, SQLite and Geopackage (GPKG) may encode string fields as UTF-8. Users are advised to explore this on a case to case basis using \code{\link[base]{Encoding}} on string fields of input objects.
+
 Because of the representation of DateTime data in OGR, decimal seconds in input data are rounded to integer seconds, see: \url{http://trac.osgeo.org/gdal/ticket/2680}.
 
 Because some drivers support reading string, integer and real list fields, support has been introduced into \code{ogrInfo} from version 0.9-1 to report their presence and the maximum counts of list items. This may lead to the introduction of the \code{-splitlistfields} facility from the command line utility \code{ogrinfo}. In addition, \code{ogrInfo} reports that there are no features when counting FIDs in a while loop over features in \code{ogrFIDs} never enters the loop, despite the layer feature count reporting at least one feature.
@@ -102,6 +103,7 @@ ogrInfo(dsn="cities.shp", layer="cities")
 setwd(owd)
 cities <- readOGR(dsn=dsn, layer="cities")
 summary(cities)
+table(Encoding(as.character(cities$NAME)))
 ogrInfo(dsn=dsn, layer="kiritimati_primary_roads")
 OGRSpatialRef(dsn=dsn, layer="kiritimati_primary_roads")
 kiritimati_primary_roads <- readOGR(dsn=dsn, layer="kiritimati_primary_roads")

@@ -7,8 +7,8 @@
 ###
 
 #
-ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
-  use_iconv=NULL, swapAxisOrder=FALSE, require_geomType=NULL) {
+ogrInfo <- function(dsn, layer, encoding=NULL,
+  use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL) {
   if (missing(dsn)) stop("missing dsn")
   if (nchar(dsn) == 0) stop("empty name")
   if (missing(layer)) stop("missing layer")
@@ -22,20 +22,11 @@ ogrInfo <- function(dsn, layer, encoding=NULL, input_field_name_encoding=NULL,
   }
 # a list with various ogr data source information
   
-  if (is.null(use_iconv))
-    use_iconv <- ifelse(as.integer(getGDALVersionInfo("VERSION_NUM")) < 1900L,
-      TRUE, FALSE)
+  stopifnot(is.logical(use_iconv))
+  stopifnot(length(use_iconv) == 1)
   if (!is.null(encoding)) {
     stopifnot(is.character(encoding))
     stopifnot(length(encoding) == 1)
-  }
-  if (!is.null(input_field_name_encoding)) {
-    warning("input_field_name_encoding= deprecated, use encoding=")
-    stopifnot(is.character(input_field_name_encoding))
-    stopifnot(length(input_field_name_encoding) == 1)
-    if (!is.null(encoding) && (encoding != input_field_name_encoding))
-       stop("encoding and input_field_name_encoding differ")
-    if (is.null(encoding)) encoding <- input_field_name_encoding
   }
   if (!use_iconv && !is.null(encoding)) {
     oSE <- getCPLConfigOption("SHAPE_ENCODING")

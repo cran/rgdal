@@ -1,4 +1,4 @@
-writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL) {
+writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL) {
     stopifnot(is.logical(verbose))
     drvs <- ogrDrivers()
     mch <- match(driver, drvs$name)
@@ -130,8 +130,16 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
             ldata[[i]] <- as.integer(slot(obj, "data")[,i])
             ogr_ftype[i] <- as.integer(0) #"OFTInteger"
         } else stop(paste(dfcls[i], dftof[i], "unknown data type"))
+        if (!is.null(encoding)) {
+            if (ogr_ftype[i] == 4L) {
+                ldata[[i]] <- iconv(ldata[[i]], from=encoding, to="UTF-8")
+            }
+        }
     }
     fld_names <- names(dfcls)
+    if (!is.null(encoding)) {
+        fld_names <- iconv(fld_names, from=encoding, to="UTF-8")
+    }
     if (driver == "ESRI Shapefile") {
         if (any(nchar(fld_names) > 10)) {
             fld_names <- abbreviate(fld_names, minlength=7)

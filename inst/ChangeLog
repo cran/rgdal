@@ -1,3 +1,62 @@
+2016-03-26 11:12  rsbivand
+
+	* inst/pictures/Rlogo.jpg, inst/pictures/logo.jpg: smaller logo
+
+2016-03-24 11:31  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-03-24 10:55  rsbivand
+
+	* src/ogrsource.cpp: C++98 ll issue
+
+2016-03-23 19:47  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-03-23 19:45  rsbivand
+
+	* configure: tidy
+
+2016-03-23 19:44  rsbivand
+
+	* DESCRIPTION, NAMESPACE, man/readOGR.Rd, man/writeOGR.Rd: encoding
+
+2016-03-23 10:59  rsbivand
+
+	* DESCRIPTION: tidy
+
+2016-02-18 05:01  rsbivand
+
+	* inst/pictures/Rlogo.jpg, inst/pictures/logo.jpg: update logo
+
+2016-02-15 07:47  rsbivand
+
+	* src/Makevars.in, src/Makevars.win: remove CXX11 from Makevars*
+
+2016-01-31 13:40  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/ogr.R, R/ogr_sp.R, R/ogr_write.R,
+	  man/readOGR.Rd, man/writeOGR.Rd: start adding encoding to trunk
+
+2016-01-14 13:46  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R: revert Encoding
+
+2016-01-13 16:31  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R: attempt to handle SQLite
+	  UTF-8 encoding
+
+2016-01-05 11:18  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/ogr_sp.R, man/showWKT.Rd, src/init.c,
+	  src/ogr_proj.cpp, src/rgdal.h: add showP4
+
+2015-12-21 14:09  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2015-12-18 17:41  rsbivand
 
 	* src/OGR_write.cpp, tests/tripup.Rout.save: adding verbose reports

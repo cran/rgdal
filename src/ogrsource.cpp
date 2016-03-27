@@ -600,6 +600,8 @@ extern "C" {
     poLayer->ResetReading();
     OGRField* psField;
     iRow = 0;
+    double DINT_MAX = 2251799813685248.0;
+    double DINT_MIN = -2251799813685248.0;
 
     while((poFeature = poLayer->GetNextFeature()) != NULL) {
       if (poFeature->IsFieldSet(iField)) {
@@ -618,15 +620,16 @@ extern "C" {
         case OFTInteger64List:
           nlist = psField->Integer64List.nCount;
 	  if (k < nlist) {
+            GIntBig nVal64 = psField->Integer64List.paList[k];
             if (int64 == 3) {
-// FIXME clang++
-//                GIntBig nVal64 = psField->Integer64List.paList[k];
+                double dnval = (double) nVal64;
+                if (dnval > DINT_MAX || dnval < DINT_MIN)
+                    warning("Integer64 value clamped: feature %d", iRow);
                 char szItem[32];
-                snprintf(szItem, sizeof(szItem), CPL_FRMT_GIB,
-                      psField->Integer64List.paList[k]);
+// CPL FORMAT assumes > ISO C++98
+                snprintf(szItem, sizeof(szItem), "%.0f", dnval);
                 SET_STRING_ELT(ans, iRow, mkChar(szItem));
             } else {
-                GIntBig nVal64 = psField->Integer64List.paList[k];
                 int nVal = (nVal64 > INT_MAX) ? INT_MAX : 
                     (nVal64 < INT_MIN) ? INT_MIN : (int) nVal64;
                 if (((GIntBig)nVal != nVal64) && int64 == 2) {

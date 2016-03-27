@@ -1,5 +1,5 @@
 #include Makeconf.win
-CXX_STD = CXX11
+CXX_STD = CXX1X
 GDAL_INC_DIR=$(GDAL_HOME)/include
 GDAL_LIB_DIR=$(GDAL_HOME)/lib
 
