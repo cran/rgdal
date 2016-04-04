@@ -35,30 +35,61 @@ projNAD <- function() {
 # 120820 RSB
         } else inv <- !inv
     }
-    if(!inv) {
-      res <- .C("project",
-                as.integer(nc),
-                as.double(xy[,1]),
-                as.double(xy[,2]),
-                x=double(nc),
-                y=double(nc),
-                proj,
-                as.integer(use_ob_tran),
-                NAOK=TRUE,
-                PACKAGE="rgdal")
+    if (.Platform$OS.type == "windows" && .Platform$r_arch == "i386") {
+     if (!inv) {
+        attr(nc, "ob_tran") <- as.integer(use_ob_tran)
+        if (attr(nc, "ob_tran") == 0L) {
+          res <- .Call("transform", "+proj=longlat", proj, nc,
+	    as.double(xy[,1]), as.double(xy[,2]), NULL, PACKAGE="rgdal")
+        } else {
+          res <- .Call("transform", proj, "+proj=longlat", nc,
+	    as.double(xy[,1]), as.double(xy[,2]), NULL, PACKAGE="rgdal")
+        }
+	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
+	  k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
+	  cat("non finite transformation detected:\n")
+	  print(cbind(xy, res[[1]], res[[2]])[k,])
+	  stop(paste("failure in points", paste(k, collapse=":")))
+	}
+     } else {
+        attr(nc, "ob_tran") <- -as.integer(use_ob_tran)
+        if (attr(nc, "ob_tran") == 0L) {
+          res <- .Call("transform", proj, "+proj=longlat", nc,
+	    as.double(xy[,1]), as.double(xy[,2]), NULL, PACKAGE="rgdal")
+        } else {
+          res <- .Call("transform", "+proj=longlat", proj, nc,
+	    as.double(xy[,1]), as.double(xy[,2]), NULL, PACKAGE="rgdal")
+        }
+	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
+	  k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
+	  cat("non finite transformation detected:\n")
+	  print(cbind(xy, res[[1]], res[[2]])[k,])
+	  stop(paste("failure in points", paste(k, collapse=":")))
+	}
+     }
     } else {
-      res <- .C("project_inv",
+     if(!inv) {
+# 160404 RSB convert to .Call()
+      res <- .Call("project",
                 as.integer(nc),
                 as.double(xy[,1]),
                 as.double(xy[,2]),
-                x=double(nc),
-                y=double(nc),
                 proj,
-                as.integer(use_ob_tran),
-                NAOK=TRUE,
+                as.logical(use_ob_tran),
                 PACKAGE="rgdal")
+     } else {
+      res <- .Call("project_inv",
+                as.integer(nc),
+                as.double(xy[,1]),
+                as.double(xy[,2]),
+                proj,
+                as.logical(use_ob_tran),
+                PACKAGE="rgdal")
+     }
     }
-    cbind(res$x, res$y)
+    out <- cbind(res[[1]], res[[2]])
+    if (!is.null(colnames(xy))) colnames(out) <- colnames(xy)
+    out
 }
 
 

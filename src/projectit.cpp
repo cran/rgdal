@@ -202,72 +202,98 @@ PROJcopyEPSG(SEXP tf) {
     return(ans);
 }
 
-void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg, int *ob_tran){
+SEXP project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran) {
+//void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg, int *ob_tran){
 
   /* call the _forward_ projection specified by the string projarg,
   * using longitude and lat from xlon and ylat vectors, return
   * answers in x and y vectors (all vectors of length n) */
 
-  int i, nwarn=0;
+  int i, nwarn=0, is_ob_tran=LOGICAL_POINTER(ob_tran)[0], 
+      nn=INTEGER_POINTER(n)[0];
 
   projUV p;
   projPJ pj;
+  SEXP res;
+  double ixlon, iylat;
   
-  if (!(pj = pj_init_plus(*projarg))) 
+  if (!(pj = pj_init_plus(CHAR(STRING_ELT(projarg, 0))))) 
     error(pj_strerrno(*pj_get_errno_ref()));
-/*Rprintf("pj_fwd: %s\n", pj_get_def(pj, 0));*/
+//Rprintf("pj_fwd: %s\n", pj_get_def(pj, 0));
+  PROTECT(res = NEW_LIST(2));
+  SET_VECTOR_ELT(res, 0, NEW_NUMERIC(nn));
+  SET_VECTOR_ELT(res, 1, NEW_NUMERIC(nn));
 
-  for (i=0; i<*n; i++) {
+//Rprintf("n: %d, is_ob_tran: %d\n", nn, is_ob_tran);
+
+  for (i=0; i<nn; i++) {
+//Rprintf("i: %d ", i);
+    ixlon = NUMERIC_POINTER(xlon)[i];
+//Rprintf("xlon: %f ", ixlon);
+    iylat = NUMERIC_POINTER(ylat)[i];
+//Rprintf("ylat: %f\n", iylat);
     /* preserve NAs and NaNs. Allow Infs, since maybe proj can handle them. */
-    if(ISNAN(xlon[i]) || ISNAN(ylat[i])){
-      x[i]=xlon[i];
-      y[i]=ylat[i];
+    if(ISNAN(ixlon) || ISNAN(iylat)){
+      NUMERIC_POINTER(VECTOR_ELT(res, 0))[i]=ixlon;
+      NUMERIC_POINTER(VECTOR_ELT(res, 1))[i]=iylat;
     } else {
-      p.u=xlon[i];
-      p.v=ylat[i];
+      p.u=ixlon;
+      p.v=iylat;
       p.u *= DEG_TO_RAD;
       p.v *= DEG_TO_RAD;
       p = pj_fwd(p, pj);
       if (p.u == HUGE_VAL || ISNAN(p.u)) {
               nwarn++;
-/*	      Rprintf("projected point not finite\n");*/
+	      Rprintf("projected point not finite\n");
       }
-      if (*ob_tran) {
+      if (is_ob_tran) {
         p.u *= RAD_TO_DEG;
         p.v *= RAD_TO_DEG;
       }
-      x[i]=p.u;
-      y[i]=p.v;
+//Rprintf("i: %d x: %f y: %f\n", i, p.u, p.v);
+      NUMERIC_POINTER(VECTOR_ELT(res, 0))[i]=p.u;
+      NUMERIC_POINTER(VECTOR_ELT(res, 1))[i]=p.v;
     }
   }
   if (nwarn > 0) warning("%d projected point(s) not finite", nwarn);
 
   pj_free(pj);
+  UNPROTECT(1);
+  return(res);
 }
 
-void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char **projarg, int *ob_tran){
+SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran) {
+//void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char **projarg, int *ob_tran){
 
   /* call the _inverse_ projection specified by the string projarg,
   * returning longitude and lat in xlon and ylat vectors, given the
   * numbers in x and y vectors (all vectors of length n) */
 
-  int i, nwarn=0;
+  int i, nwarn=0, is_ob_tran=LOGICAL_POINTER(ob_tran)[0], 
+      nn=INTEGER_POINTER(n)[0];
 
   projUV p;
   projPJ pj;
-  
-  if (!(pj = pj_init_plus(*projarg)))
+  SEXP res;
+  double ix, iy;
+
+  if (!(pj = pj_init_plus(CHAR(STRING_ELT(projarg, 0)))))
     error(pj_strerrno(*pj_get_errno_ref()));
 /*Rprintf("pj_inv: %s\n", pj_get_def(pj, 0));*/
+  PROTECT(res = NEW_LIST(2));
+  SET_VECTOR_ELT(res, 0, NEW_NUMERIC(nn));
+  SET_VECTOR_ELT(res, 1, NEW_NUMERIC(nn));
 
-  for(i=0;i<*n;i++){
-    if(ISNAN(x[i]) || ISNAN(y[i])){
-      xlon[i]=x[i];
-      ylat[i]=y[i];
+  for(i=0;i<nn;i++){
+    ix = NUMERIC_POINTER(x)[i];
+    iy = NUMERIC_POINTER(y)[i];
+    if(ISNAN(ix) || ISNAN(iy)){
+      NUMERIC_POINTER(VECTOR_ELT(res, 0))[i]=ix;
+      NUMERIC_POINTER(VECTOR_ELT(res, 1))[i]=iy;
     } else {
-      p.u=x[i];
-      p.v=y[i];
-      if (*ob_tran) {
+      p.u=ix;
+      p.v=iy;
+      if (is_ob_tran) {
         p.u *= DEG_TO_RAD;
         p.v *= DEG_TO_RAD;
       }
@@ -276,13 +302,15 @@ void project_inv(int *n, double *x, double *y, double *xlon, double *ylat, char 
             nwarn++;
 /*	    Rprintf("inverse projected point not finite\n");*/
       }
-      xlon[i]=p.u * RAD_TO_DEG;
-      ylat[i]=p.v * RAD_TO_DEG;
+      NUMERIC_POINTER(VECTOR_ELT(res, 0))[i]=p.u * RAD_TO_DEG;
+      NUMERIC_POINTER(VECTOR_ELT(res, 1))[i]=p.v * RAD_TO_DEG;
     }
   }
   if (nwarn > 0) warning("%d projected point(s) not finite", nwarn);
 
   pj_free(pj);
+  UNPROTECT(1);
+  return(res);
 }
 
 SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {

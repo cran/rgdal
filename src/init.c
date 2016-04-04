@@ -4,13 +4,6 @@
 
 #include <R_ext/Rdynload.h>
 
-static const R_CMethodDef CEntries[] = {
-    {"project", (DL_FUNC) &project, 7},
-    {"project_inv", (DL_FUNC) &project_inv, 7},
-    {NULL, NULL, 0} 
-};
-
-
 static R_CallMethodDef CallEntries[] = {
 
     {"RGDAL_Init", (DL_FUNC) &RGDAL_Init, 0},
@@ -75,6 +68,8 @@ static R_CallMethodDef CallEntries[] = {
     {"PROJ4_proj_def_dat_Installed", (DL_FUNC) &PROJ4_proj_def_dat_Installed, 0},
     {"transform", (DL_FUNC) &transform, 6},
     {"projInfo", (DL_FUNC) &projInfo, 1},
+    {"project", (DL_FUNC) &project, 5},
+    {"project_inv", (DL_FUNC) &project_inv, 5},
     {"RGDAL_SetGeoTransform", (DL_FUNC) &RGDAL_SetGeoTransform, 2},
     {"RGDAL_GetNoDataValue", (DL_FUNC) &RGDAL_GetNoDataValue, 1},
     {"RGDAL_GetMetadata", (DL_FUNC) &RGDAL_GetMetadata, 2},
@@ -92,6 +87,10 @@ static R_CallMethodDef CallEntries[] = {
     {"isGDALObjPtrNULL", (DL_FUNC) &isGDALObjPtrNULL, 1},
     {"rgdal_sp_linkingTo_version", (DL_FUNC) &rgdal_sp_linkingTo_version, 0},
     {NULL, NULL, 0}
+};
+
+static const R_CMethodDef CEntries[] = {
+    {NULL, NULL, 0} 
 };
 
 

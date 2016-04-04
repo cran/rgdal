@@ -120,10 +120,8 @@ SEXP PROJ4NADsInstalled(void);
 SEXP PROJ4_proj_def_dat_Installed(void);
 SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z);
 SEXP projInfo(SEXP type);
-void project(int *n, double *xlon, double *ylat, double *x, double *y,
-  char **projarg, int *ob_tran);
-void project_inv(int *n, double *x, double *y, double *xlon, double *ylat,
-  char **projarg, int *ob_tran);
+SEXP project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran);
+SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran);
 
 
 #ifdef __cplusplus

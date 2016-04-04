@@ -1,3 +1,16 @@
+2016-04-04 11:59  rsbivand
+
+	* ChangeLog: updates for i386 project issue in win-4.9.3
+
+2016-04-04 11:56  rsbivand
+
+	* DESCRIPTION, R/project.R, configure, src/init.c,
+	  src/projectit.cpp, src/rgdal.h: tidy
+
+2016-03-26 11:13  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2016-03-26 11:12  rsbivand
 
 	* inst/pictures/Rlogo.jpg, inst/pictures/logo.jpg: smaller logo
