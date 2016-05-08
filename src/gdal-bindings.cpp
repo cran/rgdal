@@ -341,7 +341,7 @@ SEXP
 RGDAL_GetDriverNames(void) {
 
 #ifdef GDALV2
-  SEXP ans, ansnames, attr;
+  SEXP ans, ansnames, vattr, rattr;
 #else
   SEXP ans, ansnames;
 #endif
@@ -363,7 +363,8 @@ RGDAL_GetDriverNames(void) {
   SET_VECTOR_ELT(ans, 2, NEW_LOGICAL(nDr));
   SET_VECTOR_ELT(ans, 3, NEW_LOGICAL(nDr));
 #ifdef GDALV2
-  PROTECT(attr = NEW_LOGICAL(nDr)); pc++;
+  PROTECT(vattr = NEW_LOGICAL(nDr)); pc++;
+  PROTECT(rattr = NEW_LOGICAL(nDr)); pc++;
 #endif
 
 
@@ -371,13 +372,16 @@ RGDAL_GetDriverNames(void) {
   installErrorHandler();
   for (i = 0; i < nDr; ++i) {
 #ifdef GDALV2
-    LOGICAL_POINTER(attr)[i] = FALSE;
+    LOGICAL_POINTER(vattr)[i] = FALSE;
+    LOGICAL_POINTER(rattr)[i] = FALSE;
 #endif
 
     GDALDriver *pDriver = GetGDALDriverManager()->GetDriver(i);
 #ifdef GDALV2
     if(pDriver->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL)
-      LOGICAL_POINTER(attr)[i] = TRUE;
+      LOGICAL_POINTER(vattr)[i] = TRUE;
+    if(pDriver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL)
+      LOGICAL_POINTER(rattr)[i] = TRUE;
 #endif
     
     SET_STRING_ELT(VECTOR_ELT(ans, 0), i, 
@@ -393,7 +397,8 @@ RGDAL_GetDriverNames(void) {
   }
   uninstallErrorHandlerAndTriggerError();
 #ifdef GDALV2
-  setAttrib(ans, install("isVector"), attr);
+  setAttrib(ans, install("isVector"), vattr);
+  setAttrib(ans, install("isRaster"), rattr);
 #endif
 
   UNPROTECT(pc);

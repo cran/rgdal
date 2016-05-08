@@ -1,3 +1,16 @@
+2016-05-06 09:19  rsbivand
+
+	* DESCRIPTION, R/gdal.R, src/gdal-bindings.cpp: gdalDrivers for
+	  GPKG
+
+2016-04-04 12:02  rsbivand
+
+	* inst/ChangeLog: tidy
+
+2016-04-04 12:01  rsbivand
+
+	* ChangeLog: tidy
+
 2016-04-04 11:59  rsbivand
 
 	* ChangeLog: updates for i386 project issue in win-4.9.3
