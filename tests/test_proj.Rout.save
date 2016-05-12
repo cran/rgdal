@@ -1,7 +1,7 @@
 
-R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
-Copyright (C) 2014 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R version 3.3.0 (2016-05-03) -- "Supposedly Educational"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -47,8 +47,349 @@ Type 'q()' to quit R.
 > a1 <- spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
 +  use_ob_tran=TRUE)
 > stopifnot(isTRUE(all.equal(unname(coordinates(a1)), unname(coordinates(spPoint)), tolerance=.Machine$double.eps ^ 0.25)))
-> 
+> projs <- as.character(projInfo()$name)
+> res <- logical(length(projs))
+> names(res) <- projs
+> msgs <- character(length(projs))
+> names(msgs) <- projs
+> for (i in seq(along=res)) {
++   iprs <- paste("+proj=", projs[i], sep="")
++   xy <- try(project(cbind(0, 0), iprs, legacy=TRUE), silent=TRUE)
++   if (class(xy) == "try-error") {
++     res[i] <- NA
++     msgs[i] <- paste("fwd:", strsplit(xy, "\n")[[1]][2])
++   } else {
++     out <- try(project(xy, iprs, inv=TRUE, legacy=TRUE), silent=TRUE)
++     if (class(out) == "try-error") {
++       res[i] <- NA
++       msgs[i] <- paste("inv:", strsplit(out, "\n")[[1]][2])
++     } else res[i] <- isTRUE(all.equal(cbind(0,0), out))
++   }
++ }
+Warning messages:
+1: In project(xy, iprs, inv = TRUE, legacy = TRUE) :
+  1 projected point(s) not finite
+2: In project(xy, iprs, inv = TRUE, legacy = TRUE) :
+  1 projected point(s) not finite
+3: In project(cbind(0, 0), iprs, legacy = TRUE) :
+  1 projected point(s) not finite
+4: In project(xy, iprs, inv = TRUE, legacy = TRUE) :
+  1 projected point(s) not finite
+5: In project(cbind(0, 0), iprs, legacy = TRUE) :
+  1 projected point(s) not finite
+> res
+     aea     aeqd     airy   aitoff     alsk    apian   august    bacon 
+    TRUE     TRUE       NA     TRUE    FALSE       NA       NA       NA 
+    bipc    boggs    bonne  calcofi     cass       cc      cea    chamb 
+    TRUE       NA       NA     TRUE     TRUE     TRUE     TRUE       NA 
+   collg    crast    denoy     eck1     eck2     eck3     eck4     eck5 
+    TRUE     TRUE       NA     TRUE     TRUE     TRUE     TRUE     TRUE 
+    eck6      eqc     eqdc    euler   etmerc    fahey     fouc   fouc_s 
+    TRUE     TRUE       NA       NA     TRUE     TRUE     TRUE     TRUE 
+    gall  geocent     geos    gins8  gn_sinu     gnom    goode     gs48 
+    TRUE     TRUE       NA       NA       NA     TRUE     TRUE    FALSE 
+    gs50   hammer   hatano  healpix rhealpix      igh    imw_p     isea 
+   FALSE       NA     TRUE     TRUE     TRUE     TRUE       NA       NA 
+    kav5     kav7   krovak    labrd     laea   lagrng     larr     lask 
+    TRUE     TRUE    FALSE    FALSE     TRUE       NA       NA       NA 
+  lonlat   latlon  latlong  longlat      lcc     lcca     leac   lee_os 
+    TRUE     TRUE     TRUE     TRUE     TRUE       NA     TRUE    FALSE 
+   loxim     lsat    mbt_s  mbt_fps   mbtfpp   mbtfpq   mbtfps     merc 
+    TRUE       NA     TRUE     TRUE     TRUE     TRUE     TRUE     TRUE 
+  mil_os     mill     moll    murd1    murd2    murd3 natearth     nell 
+    TRUE     TRUE     TRUE       NA       NA       NA     TRUE     TRUE 
+  nell_h    nicol    nsper     nzmg  ob_tran     ocea      oea    omerc 
+    TRUE       NA       NA    FALSE       NA     TRUE       NA       NA 
+   ortel    ortho   pconic     poly    putp1    putp2    putp3   putp3p 
+      NA     TRUE       NA     TRUE     TRUE     TRUE     TRUE     TRUE 
+  putp4p    putp5   putp5p    putp6   putp6p  qua_aut      qsc    robin 
+    TRUE     TRUE     TRUE     TRUE     TRUE     TRUE     TRUE     TRUE 
+   rouss    rpoly     sinu   somerc    stere   sterea  gstmerc      tcc 
+    TRUE       NA     TRUE     TRUE     TRUE     TRUE     TRUE       NA 
+    tcea   tissot    tmerc    tpeqd    tpers      ups     urm5   urmfps 
+    TRUE       NA     TRUE       NA       NA     TRUE       NA       NA 
+     utm    vandg   vandg2   vandg3   vandg4    vitk1     wag1     wag2 
+    TRUE     TRUE       NA       NA       NA       NA     TRUE     TRUE 
+    wag3     wag4     wag5     wag6     wag7    weren    wink1    wink2 
+    TRUE     TRUE     TRUE     TRUE       NA     TRUE     TRUE       NA 
+  wintri 
+    TRUE 
+> msgs
+                                           aea 
+                                            "" 
+                                          aeqd 
+                                            "" 
+                                          airy 
+       "inv:   No inverse for this projection" 
+                                        aitoff 
+                                            "" 
+                                          alsk 
+                                            "" 
+                                         apian 
+       "inv:   No inverse for this projection" 
+                                        august 
+       "inv:   No inverse for this projection" 
+                                         bacon 
+       "inv:   No inverse for this projection" 
+                                          bipc 
+                                            "" 
+                                         boggs 
+       "inv:   No inverse for this projection" 
+                                         bonne 
+                                     "fwd: NA" 
+                                       calcofi 
+                                            "" 
+                                          cass 
+                                            "" 
+                                            cc 
+                                            "" 
+                                           cea 
+                                            "" 
+                                         chamb 
+   "fwd:   no distance between control points" 
+                                         collg 
+                                            "" 
+                                         crast 
+                                            "" 
+                                         denoy 
+       "inv:   No inverse for this projection" 
+                                          eck1 
+                                            "" 
+                                          eck2 
+                                            "" 
+                                          eck3 
+                                            "" 
+                                          eck4 
+                                            "" 
+                                          eck5 
+                                            "" 
+                                          eck6 
+                                            "" 
+                                           eqc 
+                                            "" 
+                                          eqdc 
+                                     "fwd: NA" 
+                                         euler 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                        etmerc 
+                                            "" 
+                                         fahey 
+                                            "" 
+                                          fouc 
+                                            "" 
+                                        fouc_s 
+                                            "" 
+                                          gall 
+                                            "" 
+                                       geocent 
+                                            "" 
+                                          geos 
+                                     "fwd: NA" 
+                                         gins8 
+       "inv:   No inverse for this projection" 
+                                       gn_sinu 
+"fwd:   invalid projection system error (-99)" 
+                                          gnom 
+                                            "" 
+                                         goode 
+                                            "" 
+                                          gs48 
+                                            "" 
+                                          gs50 
+                                            "" 
+                                        hammer 
+       "inv:   No inverse for this projection" 
+                                        hatano 
+                                            "" 
+                                       healpix 
+                                            "" 
+                                      rhealpix 
+                                            "" 
+                                           igh 
+                                            "" 
+                                         imw_p 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                          isea 
+       "inv:   No inverse for this projection" 
+                                          kav5 
+                                            "" 
+                                          kav7 
+                                            "" 
+                                        krovak 
+                                            "" 
+                                         labrd 
+                                            "" 
+                                          laea 
+                                            "" 
+                                        lagrng 
+       "inv:   No inverse for this projection" 
+                                          larr 
+       "inv:   No inverse for this projection" 
+                                          lask 
+       "inv:   No inverse for this projection" 
+                                        lonlat 
+                                            "" 
+                                        latlon 
+                                            "" 
+                                       latlong 
+                                            "" 
+                                       longlat 
+                                            "" 
+                                           lcc 
+                                            "" 
+                                          lcca 
+            "fwd:   no system list, errno: 50" 
+                                          leac 
+                                            "" 
+                                        lee_os 
+                                            "" 
+                                         loxim 
+                                            "" 
+                                          lsat 
+                "fwd:   lsat not in 1-5 range" 
+                                         mbt_s 
+                                            "" 
+                                       mbt_fps 
+                                            "" 
+                                        mbtfpp 
+                                            "" 
+                                        mbtfpq 
+                                            "" 
+                                        mbtfps 
+                                            "" 
+                                          merc 
+                                            "" 
+                                        mil_os 
+                                            "" 
+                                          mill 
+                                            "" 
+                                          moll 
+                                            "" 
+                                         murd1 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                         murd2 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                         murd3 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                      natearth 
+                                            "" 
+                                          nell 
+                                            "" 
+                                        nell_h 
+                                            "" 
+                                         nicol 
+       "inv:   No inverse for this projection" 
+                                         nsper 
+                                     "fwd: NA" 
+                                          nzmg 
+                                            "" 
+                                       ob_tran 
+"fwd:   projection not selected to be rotated" 
+                                          ocea 
+                                            "" 
+                                           oea 
+    "fwd:   both n & m must be spec'd and > 0" 
+                                         omerc 
+   "fwd:   lat_1=lat_2 or lat_1=0 or lat_2=90" 
+                                         ortel 
+       "inv:   No inverse for this projection" 
+                                         ortho 
+                                            "" 
+                                        pconic 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                          poly 
+                                            "" 
+                                         putp1 
+                                            "" 
+                                         putp2 
+                                            "" 
+                                         putp3 
+                                            "" 
+                                        putp3p 
+                                            "" 
+                                        putp4p 
+                                            "" 
+                                         putp5 
+                                            "" 
+                                        putp5p 
+                                            "" 
+                                         putp6 
+                                            "" 
+                                        putp6p 
+                                            "" 
+                                       qua_aut 
+                                            "" 
+                                           qsc 
+                                            "" 
+                                         robin 
+                                            "" 
+                                         rouss 
+                                            "" 
+                                         rpoly 
+       "inv:   No inverse for this projection" 
+                                          sinu 
+                                            "" 
+                                        somerc 
+                                            "" 
+                                         stere 
+                                            "" 
+                                        sterea 
+                                            "" 
+                                       gstmerc 
+                                            "" 
+                                           tcc 
+       "inv:   No inverse for this projection" 
+                                          tcea 
+                                            "" 
+                                        tissot 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                         tmerc 
+                                            "" 
+                                         tpeqd 
+   "fwd:   no distance between control points" 
+                                         tpers 
+                                     "fwd: NA" 
+                                           ups 
+                                            "" 
+                                          urm5 
+       "inv:   No inverse for this projection" 
+                                        urmfps 
+       "fwd:   n <= 0, n > 1 or not specified" 
+                                           utm 
+                                            "" 
+                                         vandg 
+                                            "" 
+                                        vandg2 
+       "inv:   No inverse for this projection" 
+                                        vandg3 
+       "inv:   No inverse for this projection" 
+                                        vandg4 
+       "inv:   No inverse for this projection" 
+                                         vitk1 
+         "fwd:   lat_1 or lat_2 not specified" 
+                                          wag1 
+                                            "" 
+                                          wag2 
+                                            "" 
+                                          wag3 
+                                            "" 
+                                          wag4 
+                                            "" 
+                                          wag5 
+                                            "" 
+                                          wag6 
+                                            "" 
+                                          wag7 
+       "inv:   No inverse for this projection" 
+                                         weren 
+                                            "" 
+                                         wink1 
+                                            "" 
+                                         wink2 
+       "inv:   No inverse for this projection" 
+                                        wintri 
+                                            "" 
 > 
 > proc.time()
    user  system elapsed 
-  0.463   0.030   0.488 
+  0.432   0.027   0.452 

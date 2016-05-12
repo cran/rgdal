@@ -15,7 +15,7 @@ projNAD <- function() {
     .Call("PROJ4NADsInstalled", PACKAGE="rgdal")
 }
 
-"project" <- function(xy, proj, inv=FALSE, use_ob_tran=FALSE) {
+"project" <- function(xy, proj, inv=FALSE, use_ob_tran=FALSE, legacy=TRUE) {
 
     if (!is.numeric(xy)) stop("xy not numeric")
     if (is.matrix(xy)) nc <- dim(xy)[1]
@@ -35,7 +35,9 @@ projNAD <- function() {
 # 120820 RSB
         } else inv <- !inv
     }
-    if (.Platform$OS.type == "windows" && .Platform$r_arch == "i386") {
+    if (.Platform$OS.type == "windows" && .Platform$r_arch == "i386") 
+        legacy <- FALSE
+    if (!legacy) {
      if (!inv) {
         attr(nc, "ob_tran") <- as.integer(use_ob_tran)
         if (attr(nc, "ob_tran") == 0L) {

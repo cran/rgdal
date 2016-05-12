@@ -6,7 +6,7 @@
   Interface to the PROJ.4 library of projection functions for geographical position data, no datum transformation possible. Use \code{spTransform()} for extended support.
 }
 \usage{
-project(xy, proj, inv = FALSE, use_ob_tran=FALSE)
+project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE)
 }
 
 \arguments{
@@ -14,6 +14,7 @@ project(xy, proj, inv = FALSE, use_ob_tran=FALSE)
   \item{proj}{ character string of projection arguments; the arguments must be entered exactly as in the PROJ.4 documentation, in particular there cannot be any white space in +<arg>=<value> strings, and successive such strings can only be separated by blanks. }
   \item{inv}{ default FALSE, if TRUE inverse projection to geographical coordinates }
   \item{use_ob_tran}{default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal; the user oblique transforms forward rather than inverse.}
+  \item{legacy}{default TRUE, if FALSE, use transform C functions (enforced internally for Windows 32-bit platforms)}
 }
 \details{
   Full details of projection arguments available from website below, and examples in file "epsg" in the data directory installed with PROJ.4.

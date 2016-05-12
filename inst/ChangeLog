@@ -1,3 +1,21 @@
+2016-05-11 17:49  rsbivand
+
+	* src/inverser.c, src/inverser.cpp: inverser as C not C++
+
+2016-05-11 17:02  rsbivand
+
+	* ChangeLog, configure, inst/ChangeLog: tidy
+
+2016-05-11 16:59  rsbivand
+
+	* DESCRIPTION, R/project.R, man/project.Rd, src/inverser.cpp,
+	  src/projectit.cpp, tests/test_proj.R, tests/test_proj.Rout.save:
+	  pj_inv issues; add tests
+
+2016-05-06 09:21  rsbivand
+
+	* ChangeLog, configure, inst/ChangeLog: tidy
+
 2016-05-06 09:19  rsbivand
 
 	* DESCRIPTION, R/gdal.R, src/gdal-bindings.cpp: gdalDrivers for

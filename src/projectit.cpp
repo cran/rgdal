@@ -30,6 +30,8 @@ FILE *pj_open_lib(const char *, const char *);
 #endif
 #endif
 
+int inversetest(void *);
+
 SEXP
 PROJ4VersionInfo(void) {
     SEXP ans;
@@ -242,11 +244,11 @@ SEXP project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran) {
       p.u *= DEG_TO_RAD;
       p.v *= DEG_TO_RAD;
       p = pj_fwd(p, pj);
-      if (p.u == HUGE_VAL || ISNAN(p.u)) {
+      if (p.u == HUGE_VAL || ISNAN(p.u) || p.v == HUGE_VAL || ISNAN(p.v)) {
               nwarn++;
-	      Rprintf("projected point not finite\n");
+/*	      Rprintf("projected point not finite\n");*/
       }
-      if (is_ob_tran) {
+       if (is_ob_tran) {
         p.u *= RAD_TO_DEG;
         p.v *= RAD_TO_DEG;
       }
@@ -280,6 +282,11 @@ SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran) {
   if (!(pj = pj_init_plus(CHAR(STRING_ELT(projarg, 0)))))
     error(pj_strerrno(*pj_get_errno_ref()));
 /*Rprintf("pj_inv: %s\n", pj_get_def(pj, 0));*/
+// check
+  if ( inversetest(pj) == 0) {
+    pj_free(pj);
+    error("No inverse for this projection");
+  };
   PROTECT(res = NEW_LIST(2));
   SET_VECTOR_ELT(res, 0, NEW_NUMERIC(nn));
   SET_VECTOR_ELT(res, 1, NEW_NUMERIC(nn));
@@ -298,7 +305,7 @@ SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran) {
         p.v *= DEG_TO_RAD;
       }
       p = pj_inv(p, pj);
-      if (p.u == HUGE_VAL || ISNAN(p.u)) {
+      if (p.u == HUGE_VAL || ISNAN(p.u) || p.v == HUGE_VAL || ISNAN(p.v)) {
             nwarn++;
 /*	    Rprintf("inverse projected point not finite\n");*/
       }
