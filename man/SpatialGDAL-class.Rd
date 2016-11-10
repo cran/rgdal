@@ -48,7 +48,7 @@ the GDAL file.
   }
 }
 \usage{
-\method{open}{SpatialGDAL}(con, \dots, silent = FALSE)
+\method{open}{SpatialGDAL}(con, \dots, silent = FALSE, allowedDrivers = NULL, options=NULL)
 \method{close}{SpatialGDAL}(con, \dots)
 copy.SpatialGDAL(dataset, fname, driver = getDriver(dataset@grod),
  strict = FALSE, options = NULL, silent = FALSE)
@@ -61,7 +61,8 @@ copy.SpatialGDAL(dataset, fname, driver = getDriver(dataset@grod),
 \item{fname}{ file name of grid map }
 \item{driver}{ GDAL driver name }
 \item{strict}{TRUE if the copy must be strictly equivalent, or more normally FALSE indicating that the copy may adapt as needed for the output format}
-\item{options}{driver-specific options to be passed to the GDAL driver}
+\item{allowedDrivers}{a character vector of suggested driver short names may be provided starting from GDAL 2.0}
+\item{options}{driver-specific options to be passed to the GDAL driver; only available for opening datasets from GDAL 2.0}
 }
 \note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
 

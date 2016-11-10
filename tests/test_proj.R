@@ -30,24 +30,3 @@ stopifnot(isTRUE(all.equal(unname(coordinates(a)), matrix(c(-5.917698, -1.87195)
 a1 <- spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
  use_ob_tran=TRUE)
 stopifnot(isTRUE(all.equal(unname(coordinates(a1)), unname(coordinates(spPoint)), tolerance=.Machine$double.eps ^ 0.25)))
-projs <- as.character(projInfo()$name)
-res <- logical(length(projs))
-names(res) <- projs
-msgs <- character(length(projs))
-names(msgs) <- projs
-for (i in seq(along=res)) {
-  iprs <- paste("+proj=", projs[i], sep="")
-  xy <- try(project(cbind(0, 0), iprs, legacy=TRUE), silent=TRUE)
-  if (class(xy) == "try-error") {
-    res[i] <- NA
-    msgs[i] <- paste("fwd:", strsplit(xy, "\n")[[1]][2])
-  } else {
-    out <- try(project(xy, iprs, inv=TRUE, legacy=TRUE), silent=TRUE)
-    if (class(out) == "try-error") {
-      res[i] <- NA
-      msgs[i] <- paste("inv:", strsplit(out, "\n")[[1]][2])
-    } else res[i] <- isTRUE(all.equal(cbind(0,0), out))
-  }
-}
-res
-msgs

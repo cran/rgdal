@@ -1,4 +1,4 @@
-# Copyright 2006-2012 Roger Bivand
+# Copyright 2006-2016 Roger Bivand
 
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, 
         stringsAsFactors=default.stringsAsFactors(),
@@ -6,8 +6,17 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
         use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
-        integer64="allow.loss") {
-	if (missing(dsn)) stop("missing dsn")
+        integer64="no.loss", GDAL1_integer64_policy=FALSE) {
+	if (missing(dsn)){
+          layers <- ogrListLayers(dsn=dsn)
+          if (length(layers) == 0L) stop("missing layer")
+          if (length(layers) > 0L) layer <- c(layers[1])
+          if (length(layers) > 1L)
+            warning("First layer ", layer,
+              " read; multiple layers present in\n", dsn,
+              ", check layers with ogrListLayers()")
+        }
+# stop("missing dsn")
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)) stop("missing layer")
 	if (nchar(layer) == 0) stop("empty name")
@@ -18,6 +27,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
           "allow.loss"=1L,
           "warn.loss"=2L, 
           "no.loss"=3L)
+        if (GDAL1_integer64_policy) int64 <- 4L
 # adding argument for SHAPE_ENCODING environment variable 121124
         stopifnot(is.logical(use_iconv))
         stopifnot(length(use_iconv) == 1)
@@ -67,7 +77,9 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
              iflds <- as.integer((1:ogr_info$nitems)-1)
              fldnms <- ogr_info$iteminfo$name
           }
+          int64_found <- grep("Integer64", ogr_info$iteminfo$typeName)
         } else {
+          int64_found <- integer(0L)
           nodata_flag <- TRUE
           iflds <- integer(0)
         }
@@ -76,7 +88,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             retain <- 1:attr(fids, "i")
             afids <- 0:(attr(fids, "nf")-1)
             deleted <- afids[!(afids %in% fids[retain])]
-            warning(paste("Deleted feature IDs:", paste(deleted,
+            warning(paste("Deleted feature IDs: ", paste(deleted,
                     collapse=", ")))
             fids <- fids[retain]
         } else {
@@ -106,6 +118,21 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
                 if (nListFields > 0)
                   cat(", of which", nListFields, "list fields")
                 cat("\n")
+                if (length(int64_found > 0L)) {
+                    if (GDAL1_integer64_policy) {
+                        cat("Integer64 fields read as doubles: ",
+                            paste(fldnms[int64_found], collapse=" "), "\n")
+                    } else {
+                        if (integer64 == "no.loss") {
+                            cat("Integer64 fields read as strings: ",
+                                paste(fldnms[int64_found], collapse=" "), "\n")
+                        } else {
+                            cat("Integer64 fields read as signed 32-bit integers: ",
+                                paste(fldnms[int64_found], collapse=" "), "\n")
+                        }
+                    }
+            }
+
 	}
 # suggestion by Paul Hiemstra 070817
 	prj <- .Call("ogrP4S", as.character(dsn), as.character(layer), 

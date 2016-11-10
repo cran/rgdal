@@ -336,8 +336,8 @@ SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments)
             if (jcnt == 0) INTEGER_POINTER(VECTOR_ELT(ans, 6))[i] = 1;
           } else INTEGER_POINTER(VECTOR_ELT(ans, 6))[i] = 1;
 	} else warning("eType not chosen");
-	OGR_F_Destroy(Ogr_feature);
       }
+      OGR_F_Destroy(Ogr_feature);
       i++;
     }
     uninstallErrorHandlerAndTriggerError();

@@ -8,7 +8,7 @@ SEXP make_Polygonlist(SEXP iG, SEXP iGc) {
     n = length(iG);
 
     PROTECT(res = NEW_LIST(n)); pc++;
-    PROTECT(jGc = NEW_INTEGER(0)); pc++;
+    PROTECT(jGc = NEW_INTEGER(1)); pc++;
 
     for (i=0; i<n; i++) {
 

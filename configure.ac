@@ -112,29 +112,6 @@ if test ${GDAL_VER_DOT} -lt 163 ; then
 else
   AC_MSG_RESULT(yes)
 fi
-GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d"." -f1`
-
-#WITH_GDAL2="no"
-#AC_ARG_ENABLE([gdal2],
-#    [--enable-gdal2     enable configuration with GDAL 2],
-#    [case "${enableval}" in
-#     yes | no ) WITH_GDAL2="${enableval}" ;;
-#     *) AC_MSG_ERROR(bad value ${enableval} for --enable-gdal2) ;;
-#   esac],
-#  [WITH_GDAL2="no"]
-#)
-
-#if test "${WITH_GDAL2}" = "no"; then
-#  AC_MSG_CHECKING([GDAL version < 2])
-if test ${GDAL_MAJ_VER} -gt 1 ; then
-#    AC_MSG_RESULT(no)
-#    AC_MSG_ERROR([rgdal is not compatible with GDAL 2])
-#  else
-#    AC_MSG_RESULT(yes)
-#  fi
-#else
-  AC_MSG_NOTICE([experimental conditional use of GDAL2])
-fi
 
 INLIBS="${LIBS}"
 INCPPFLAGS="${CPPFLAGS}"

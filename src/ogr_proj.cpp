@@ -154,6 +154,7 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer) {
 	} else {
 //	    SET_VECTOR_ELT(ans, 0, COPY_TO_USER_STRING(pszProj4));
             SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszProj4));
+            CPLFree(pszProj4);
 	}
         uninstallErrorHandlerAndTriggerError();
 //    } else SET_VECTOR_ELT(ans, 0, NA_STRING);

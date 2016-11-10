@@ -1,3 +1,89 @@
+2016-11-03 13:11  rsbivand
+
+	* man/readGDAL.Rd: tidy
+
+2016-11-03 12:24  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-11-03 12:23  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: handle missing layer
+	  argument
+
+2016-11-02 17:03  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-11-02 17:02  rsbivand
+
+	* R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R,
+	  man/GDALReadOnlyDataset-class.Rd, man/SpatialGDAL-class.Rd,
+	  man/readGDAL.Rd, src/gdal-bindings.cpp, src/init.c, src/rgdal.h:
+	  adding allowed drivers to GDAL.open
+
+2016-11-02 10:02  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-11-02 10:01  rsbivand
+
+	* src/gdal-bindings.cpp: GDALOpenEx for rasters; no.loss for vector
+	  Integer64
+
+2016-11-02 09:31  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-11-02 09:30  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sgdf_gdal.R,
+	  R/sp_gdal.R, configure, configure.ac, inst/vectors/SOURCES,
+	  man/GDALReadOnlyDataset-class.Rd, man/SpatialGDAL-class.Rd,
+	  man/readGDAL.Rd, man/readOGR.Rd, src/gdal-bindings.cpp,
+	  src/init.c, src/ogrsource.cpp, src/rgdal.h,
+	  tests/tests.Rout.save: readOGR modification making layer
+	  optional, add open options for GDAL.open through GDALOpenEx
+
+2016-10-21 08:03  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-10-21 08:01  rsbivand
+
+	* configure: move inverse proj tests to example
+
+2016-10-21 08:00  rsbivand
+
+	* DESCRIPTION, man/project.Rd, tests/test_proj.R,
+	  tests/test_proj.Rout.save: move inverse proj tests to example
+
+2016-10-19 11:59  rsbivand
+
+	* ChangeLog, inst/ChangeLog: Memory issues Bill Dunlap 161019
+
+2016-10-19 11:57  rsbivand
+
+	* ChangeLog, DESCRIPTION, configure, inst/ChangeLog,
+	  tests/test_proj.Rout.save: Memory issues Bill Dunlap 161019
+
+2016-10-19 11:56  rsbivand
+
+	* src/ogr_geom.cpp, src/ogr_polygons.c, src/ogr_proj.cpp: Memory
+	  issues Bill Dunlap 161019
+
+2016-09-25 10:15  edzer
+
+	* src/projectit.cpp: fix memory leak
+
+2016-05-20 10:30  rsbivand
+
+	* DESCRIPTION: supplement ctb
+
+2016-05-11 17:50  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2016-05-11 17:49  rsbivand
 
 	* src/inverser.c, src/inverser.cpp: inverser as C not C++

@@ -454,7 +454,7 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 SEXP checkCRSArgs(SEXP args) {
 	SEXP res;
 	projPJ pj;
-        char cbuf[512], cbuf1[512], c;
+        char cbuf[512], cbuf1[512], c, *cp = NULL;
         int i, k;
 	PROTECT(res = NEW_LIST(2));
 	SET_VECTOR_ELT(res, 0, NEW_LOGICAL(1));
@@ -471,7 +471,9 @@ SEXP checkCRSArgs(SEXP args) {
 		return(res);
 	}
 
-        strcpy(cbuf, pj_get_def(pj, 0));
+        cp = pj_get_def(pj, 0);
+        strncpy(cbuf, cp, 512); /* FIXME: UNSAFE */
+	free(cp);
         c = cbuf[0];
         if (isspace(c)) {
             k = (int) strlen(cbuf);

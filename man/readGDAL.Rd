@@ -16,7 +16,8 @@ be able to save to GDAL driver formats that only permit copying rather
 than creation.}
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ...,
- half.cell=c(0.5, 0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
+ half.cell=c(0.5, 0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL,
+ allowedDrivers = NULL, options=NULL)
 asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ...,
  half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32",
@@ -27,8 +28,10 @@ create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA,
  catNames=NULL)
 GDALinfo(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE,
  returnStats=TRUE, returnColorTable=FALSE,
- OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE)
-GDALSpatialRef(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
+ OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE,
+ allowedDrivers = NULL, options=NULL)
+GDALSpatialRef(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL,
+ allowedDrivers = NULL, options=NULL)
 }
 
 \arguments{
@@ -51,6 +54,7 @@ usually as default, but may be set to c=(0,0) if needed; presently ordered (y,x)
 \item{silent}{ logical; if TRUE, comment and non-fatal CPL driver errors 
 suppressed }
 \item{OVERRIDE_PROJ_DATUM_WITH_TOWGS84}{logical value, default NULL, which case the cached option set by \code{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84} is used. Ignored if the GDAL version is less than \dQuote{1.8.0} or if the CPLConfigOption variable is already set; see \code{\link{getProjectionRef}} for further details}
+\item{allowedDrivers}{a character vector of suggested driver short names may be provided starting from GDAL 2.0}
 \item{...}{ arguments passed to either \code{getRasterData}, or
 \code{getRasterTable}, depending on rotation angles (see below);
 see the rgdal documentation for the available options (subsetting
@@ -69,8 +73,8 @@ value works for \sQuote{Int32}, \sQuote{Float32}, \sQuote{Float64}, but
 suitable in-range value that fits the data type should be used for other 
 data types, for example 255 for \sQuote{Byte}, -32768 for \sQuote{Int16}, 
 and so on; see Details below.}
-\item{options}{driver-specific options to be passed to the GDAL driver; 
-see Details below}
+\item{options}{driver-specific options to be passed to the GDAL driver; only available for opening datasets from GDAL 2.0; 
+see copying and creation details below}
 \item{setStatistics}{default FALSE, if TRUE, attempt to set per-band 
 statistics in the output file (driver-dependent)}
 \item{colorTables}{default NULL, if not NULL, a list of length equal to the number of bands, with NULL components for bands with no color table, or either an integer matrix of red, green, blue and alpha values (0-255), or a character vector of colours. The number of colours permitted may vary with driver.}

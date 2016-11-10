@@ -411,7 +411,9 @@ extern "C" {
       break;
 #ifdef GDALV2
     case OFTInteger64:
-      if (int64 ==3) {
+      if (int64 == 4) {
+          PROTECT(ans=allocVector(REALSXP,nRows));
+      } else if (int64 ==3) {
           PROTECT(ans=allocVector(STRSXP,nRows));
       } else {
          PROTECT(ans=allocVector(INTSXP,nRows));
@@ -469,7 +471,9 @@ extern "C" {
 #ifdef GDALV2
       case OFTInteger64:
 	if (poFeature->IsFieldSet(iField)) {
-            if (int64 == 3) {
+            if (int64 == 4) {
+                    REAL(ans)[iRow] = poFeature->GetFieldAsDouble(iField);
+            } else if (int64 == 3) {
                 SET_STRING_ELT(ans, iRow, 
                     mkChar(poFeature->GetFieldAsString(iField)));
             } else {
@@ -573,7 +577,9 @@ extern "C" {
       break;
 #ifdef GDALV2
     case OFTInteger64List:
-      if (int64 == 3) {
+      if (int64 == 4) {
+          PROTECT(ans=allocVector(REALSXP,nRows));
+      } else if (int64 == 3) {
           PROTECT(ans=allocVector(STRSXP,nRows));
       } else {
           PROTECT(ans=allocVector(INTSXP,nRows));
@@ -621,7 +627,9 @@ extern "C" {
           nlist = psField->Integer64List.nCount;
 	  if (k < nlist) {
             GIntBig nVal64 = psField->Integer64List.paList[k];
-            if (int64 == 3) {
+            if (int64 == 4) {
+                    REAL(ans)[iRow] = (double) nVal64;
+            } else if (int64 == 3) {
                 double dnval = (double) nVal64;
                 if (dnval > DINT_MAX || dnval < DINT_MIN)
                     warning("Integer64 value clamped: feature %d", iRow);

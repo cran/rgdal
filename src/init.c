@@ -17,7 +17,7 @@ static R_CallMethodDef CallEntries[] = {
     {"RGDAL_GetDriver", (DL_FUNC) &RGDAL_GetDriver, 1},
     {"RGDAL_GetDriverShortName", (DL_FUNC) &RGDAL_GetDriverShortName, 1},
     {"RGDAL_GetDriverLongName", (DL_FUNC) &RGDAL_GetDriverLongName, 1},
-    {"RGDAL_OpenDataset", (DL_FUNC) &RGDAL_OpenDataset, 3},
+    {"RGDAL_OpenDataset", (DL_FUNC) &RGDAL_OpenDataset, 5},
     {"RGDAL_CloseHandle", (DL_FUNC) &RGDAL_CloseHandle, 1},
 //    {"RGDAL_DeleteHandle", (DL_FUNC) &RGDAL_DeleteHandle, 1},
     {"RGDAL_CreateDataset", (DL_FUNC) &RGDAL_CreateDataset, 5},

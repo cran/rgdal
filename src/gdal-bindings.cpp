@@ -617,16 +617,41 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
 }
 
 SEXP
-RGDAL_OpenDataset(SEXP filename, SEXP read_only, SEXP silent) {
+RGDAL_OpenDataset(SEXP filename, SEXP read_only, SEXP silent, SEXP allowedDr, SEXP sOpts) {
 
   const char *fn = asString(filename);
 
-  GDALAccess RWFlag;
+#ifdef GDALV2
+  int i;
+  char **papszOpenOptions = NULL;
+  char **papszAllowedDrivers = NULL;
+  installErrorHandler();
+  for (i=0; i < length(sOpts); i++) papszOpenOptions = CSLAddString( 
+    papszOpenOptions, CHAR(STRING_ELT(sOpts, i)) );
+  for (i=0; i < CSLCount(papszOpenOptions); i++)
+    Rprintf("option %d: %s\n", i, CSLGetField(papszOpenOptions, i));
+  uninstallErrorHandlerAndTriggerError();
+  installErrorHandler();
+  for (i=0; i < length(allowedDr); i++) papszAllowedDrivers = CSLAddString( 
+    papszAllowedDrivers, CHAR(STRING_ELT(allowedDr, i)) );
+  for (i=0; i < CSLCount(papszAllowedDrivers); i++)
+    Rprintf("driver %d: %s\n", i, CSLGetField(papszAllowedDrivers, i));
+  uninstallErrorHandlerAndTriggerError();
+#endif
 
+#ifdef GDALV2
+  unsigned int RWFlag;
+  if (asLogical(read_only))
+    RWFlag = GDAL_OF_RASTER | GDAL_OF_READONLY;
+  else
+    RWFlag = GDAL_OF_RASTER | GDAL_OF_UPDATE;
+#else
+  GDALAccess RWFlag;
   if (asLogical(read_only))
     RWFlag = GA_ReadOnly;
   else
     RWFlag = GA_Update;
+#endif
 
 /* Modification suggested by Even Rouault, 2009-08-08: */
 
@@ -636,7 +661,13 @@ RGDAL_OpenDataset(SEXP filename, SEXP read_only, SEXP silent) {
   else
      installErrorHandler();
 
+#ifdef GDALV2
+  GDALDataset *pDataset = (GDALDataset *) GDALOpenEx(fn, RWFlag,
+    papszAllowedDrivers, papszOpenOptions, NULL);
+#else
   GDALDataset *pDataset = (GDALDataset *) GDALOpen(fn, RWFlag);
+#endif
+
 
   if (pDataset == NULL)
     error("%s\n", CPLGetLastErrorMsg());
@@ -645,6 +676,13 @@ RGDAL_OpenDataset(SEXP filename, SEXP read_only, SEXP silent) {
     CPLPopErrorHandler();
   else
     uninstallErrorHandlerAndTriggerError();
+
+#ifdef GDALV2
+  installErrorHandler();
+  CSLDestroy(papszOpenOptions);
+  CSLDestroy(papszAllowedDrivers);
+  uninstallErrorHandlerAndTriggerError();
+#endif
 
 /* Similarly to SWIG bindings, the following lines will cause
 RGDAL_OpenDataset() to fail on - uncleared - errors even if pDataset is not

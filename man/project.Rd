@@ -53,6 +53,7 @@ project(a, paste("+proj=ob_tran +o_proj=longlat",
  inv=TRUE, use_ob_tran=TRUE)
 #added after posting by Martin Ivanov
 #
+getPROJ4VersionInfo()
 # Test for UTM == TMERC (<= 4.9.2) or UTM == ETMERC (> 4.9.2)
 nhh <- matrix(c(5.304234, 60.422311), ncol=2)
 nhh_utm_32N_P4 <- project(nhh, "+init=epsg:3044")
@@ -74,5 +75,39 @@ all.equal(unis_utm_33N_P4, unis_tmerc_P4, tolerance=1e-9, scale=1)
 # UTM == TMERC: PROJ4 <=4.9.2
 all.equal(unis_utm_33N_P4, unis_etmerc_P4, tolerance=1e-9, scale=1)
 # UTM == ETMERC: PROJ4 > 4.9.2
+# available projections and their inverses if provided
+getPROJ4VersionInfo()
+projs <- as.character(projInfo()$name)
+res <- logical(length(projs))
+names(res) <- projs
+msgs <- character(length(projs))
+names(msgs) <- projs
+owarn <- options("warn")$warn
+options(warn=2L)
+for (i in seq(along=res)) {
+  iprs <- paste("+proj=", projs[i], sep="")
+  xy <- try(project(cbind(0, 0), iprs, legacy=TRUE), silent=TRUE)
+  if (class(xy) == "try-error") {
+    res[i] <- NA
+    msgs[i] <- paste("fwd:", strsplit(xy, "\n")[[1]][2])
+  } else {
+    out <- try(project(xy, iprs, inv=TRUE, legacy=TRUE), silent=TRUE)
+    if (class(out) == "try-error") {
+      res[i] <- NA
+      msgs[i] <- paste("inv:", strsplit(out, "\n")[[1]][2])
+    } else res[i] <- isTRUE(all.equal(cbind(0,0), out))
+  }
+}
+options(warn=owarn)
+df <- data.frame(res=unname(res), msgs=unname(msgs), row.names=names(res))
+# projection and inverse projection failures
+# fwd: missing parameters
+# inv: mostly inverse not defined
+df[is.na(df$res),]
+# inverse not equal to input
+# (see http://lists.maptools.org/pipermail/proj/2011-November/006015.html)
+df[!is.na(df$res) & !df$res,]
+# inverse equal to input
+row.names(df[!is.na(df$res) & df$res,])
 }
 \keyword{spatial}

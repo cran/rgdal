@@ -1,6 +1,7 @@
-GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE) {
+GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE, allowedDrivers=NULL, options=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
-	x <- GDAL.open(fname, silent=silent)
+	x <- GDAL.open(fname, silent=silent,
+              allowedDrivers=allowedDrivers, options=options)
 	d <- dim(x)[1:2]
         dr <- getDriverName(getDriver(x))
 #	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
@@ -298,9 +299,10 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 	return(data)
 }
 
-readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
+readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, options=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
-	x = GDAL.open(fname, silent=silent)
+	x = GDAL.open(fname, silent=silent,
+              allowedDrivers=allowedDrivers, options=options)
 	d = dim(x)
 	if (missing(offset)) offset <- c(0,0)
 	if (missing(region.dim)) region.dim <- dim(x)[1:2] # rows=nx, cols=ny
@@ -521,9 +523,10 @@ toUnSigned <- function(x, base) {
     as.integer(x)
 }
 
-"GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
+"GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, options=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
-	x <- GDAL.open(fname, silent=silent)
+	x <- GDAL.open(fname, silent=silent,
+              allowedDrivers=allowedDrivers, options=options)
 #        p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
         p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
 	GDAL.close(x)

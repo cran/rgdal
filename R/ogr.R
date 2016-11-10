@@ -11,7 +11,16 @@ ogrInfo <- function(dsn, layer, encoding=NULL,
   use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL) {
   if (missing(dsn)) stop("missing dsn")
   if (nchar(dsn) == 0) stop("empty name")
-  if (missing(layer)) stop("missing layer")
+  if (missing(layer)) {
+    layers <- ogrListLayers(dsn=dsn)
+    if (length(layers) == 0L) stop("missing layer")
+    if (length(layers) > 0L) layer <- c(layers[1])
+    if (length(layers) > 1L)
+      warning("First layer ", layer,
+        " read; multiple layers present in\n", dsn,
+        ", check layers with ogrListLayers()")
+    
+  }
   if (nchar(layer) == 0) stop("empty name")
   WKB <- c("wkbPoint", "wkbLineString", "wkbPolygon", "wkbMultiPoint",
     "wkbMultiLineString", "wkbMultiPolygon", "wkbGeometryCollection")

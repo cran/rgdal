@@ -32,7 +32,7 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
  encoding=NULL, use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL,
- integer64="allow.loss")
+ integer64="no.loss", GDAL1_integer64_policy=FALSE)
 ogrInfo(dsn, layer, encoding=NULL,
  use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL)
 ogrFIDs(dsn, layer)
@@ -44,7 +44,7 @@ ogrListLayers(dsn)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{dsn}{data source name (interpretation varies by driver --- for some drivers, dsn is a file name, but may also be a folder)}
-  \item{layer}{layer name (varies by driver, may be a file name without extension)}
+  \item{layer}{layer name (varies by driver, may be a file name without extension). From rgdal 1.2.*, layer may be missing, in which case ogrListLayers examines the dsn, and fails if there are no layers, silently reads the only layer if only one layer is found, and reads the first layer if multiple layers are present, issuing a warning that layer should be given explicitly.}
   \item{verbose}{report progress}
   \item{p4s}{PROJ4 string defining CRS, if default NULL, the value is read from the OGR data set} 
   \item{stringsAsFactors}{logical: should character vectors be converted to factors? The \sQuote{factory-fresh} default is \code{TRUE}, but this can be changed by setting \code{\link{options}(stringsAsFactors = FALSE)} (see \code{link[base]{data.frame}}).}
@@ -58,7 +58,8 @@ ogrListLayers(dsn)
   \item{use_iconv}{default FALSE; if TRUE and encoding is not NULL, it will be used to convert input strings from the given value to the native encoding for the system/platform.}
   \item{swapAxisOrder}{default FALSE, if TRUE, treat y coordinate as Easting, x as Northing, that is the opposite to the assumed order; this may be needed if some OGR read drivers do not behave as expected}
   \item{require_geomType}{, default NULL, if one of: \code{c("wkbPoint", "wkbLineString", "wkbPolygon")}, then in input with multiple geometry types, the chosen type will be read}
-  \item{integer64}{From GDAL 2, fields to be read may also take Integer64 values. As R has no such storage mode, three options are offered, analogous with \code{\link{type.convert}} for numeric conversion: \dQuote{allow.loss} which clamps to 32-bit signed integer, \dQuote{warn.loss} - as \dQuote{allow.loss} but warns when clamping occurs, and \dQuote{no.loss}, which reads as a character string using the formatting applied by default by GDAL. The use of 64-bit integers is usually a misunderstanding, as such data is almost always a long key ID.}
+  \item{integer64}{default \dQuote{no.loss} (from rgdal 1.2.*). From GDAL 2, fields to be read may also take Integer64 values. As R has no such storage mode, three options are offered, analogous with \code{\link{type.convert}} for numeric conversion: \dQuote{allow.loss} which clamps to 32-bit signed integer (default < rgdal 1.2), \dQuote{warn.loss} - as \dQuote{allow.loss} but warns when clamping occurs, and \dQuote{no.loss}, which reads as a character string using the formatting applied by default by GDAL (default >= rgdal 1.2). The use of 64-bit integers is usually a misunderstanding, as such data is almost always a long key ID.}
+  \item{GDAL1_integer64_policy}{default FALSE, if TRUE, Integer64 fields are read as doubles}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }
@@ -96,12 +97,20 @@ Because some drivers support reading string, integer and real list fields, suppo
 ogrDrivers()
 dsn <- system.file("vectors", package = "rgdal")[1]
 ogrListLayers(dsn)
+ogrInfo(dsn)
 ogrInfo(dsn=dsn, layer="cities")
 owd <- getwd()
 setwd(dsn)
+ogrInfo(dsn="cities.shp")
 ogrInfo(dsn="cities.shp", layer="cities")
 setwd(owd)
+ow <- options("warn")$warn
+options("warn"=1)
 cities <- readOGR(dsn=dsn, layer="cities")
+str(slot(cities, "data"))
+cities <- readOGR(dsn=dsn, layer="cities", GDAL1_integer64_policy=TRUE)
+str(slot(cities, "data"))
+options("warn"=ow)
 summary(cities)
 table(Encoding(as.character(cities$NAME)))
 ogrInfo(dsn=dsn, layer="kiritimati_primary_roads")
@@ -153,8 +162,8 @@ str(readOGR("test64.vrt", "test64", verbose=FALSE, integer64="warn.loss")$val)
 str(readOGR("test64.vrt", "test64", verbose=FALSE, integer64="no.loss")$val)
 str(readOGR("test64.vrt", "test64", verbose=FALSE, stringsAsFactors=FALSE,
  integer64="no.loss")$val)
-options("warn"=ow)
 setwd(odir)
+options("warn"=ow)
 }
 \keyword{spatial}
 
