@@ -1,3 +1,20 @@
+2016-11-14 13:48  rsbivand
+
+	* configure: tidy
+
+2016-11-13 19:18  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R: typo readOGR
+
+2016-11-10 17:56  rsbivand
+
+	* DESCRIPTION, tests/tests.R, tests/tests.Rout.save: suit fuller
+	  try() error messages
+
+2016-11-03 13:12  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2016-11-03 13:11  rsbivand
 
 	* man/readGDAL.Rd: tidy

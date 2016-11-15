@@ -4,7 +4,7 @@ x <- GDAL.open(logo)
 try(getRasterData(x, band=4))
 GDAL.close(x)
 logoo <- paste(logo, "o", sep="")
-try(GDAL.open(logo))
+try(GDAL.open(logoo))
 try(GDAL.close(x))
 try(new('GDALDriver', "GeoTIFF"))
 fn <- system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1]

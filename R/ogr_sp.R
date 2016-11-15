@@ -7,7 +7,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
         use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
         integer64="no.loss", GDAL1_integer64_policy=FALSE) {
-	if (missing(dsn)){
+	if (missing(layer)){
           layers <- ogrListLayers(dsn=dsn)
           if (length(layers) == 0L) stop("missing layer")
           if (length(layers) > 0L) layer <- c(layers[1])
