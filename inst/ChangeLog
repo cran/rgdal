@@ -1,3 +1,24 @@
+2016-12-15 11:37  rsbivand
+
+	* configure: tidy
+
+2016-12-15 11:36  rsbivand
+
+	* DESCRIPTION, man/readOGR.Rd, man/writeOGR.Rd, src/ogrsource.cpp,
+	  tests/tests.Rout.save: dot in tempdir; warn int64 bounds
+
+2016-12-15 11:26  rsbivand
+
+	* src/ogrsource.cpp: check int64 as real bounds
+
+2016-11-25 16:43  rsbivand
+
+	* man/readOGR.Rd: use type.convert() in readOGR() example
+
+2016-11-14 13:49  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2016-11-14 13:48  rsbivand
 
 	* configure: tidy

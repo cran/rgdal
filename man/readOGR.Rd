@@ -108,6 +108,9 @@ ow <- options("warn")$warn
 options("warn"=1)
 cities <- readOGR(dsn=dsn, layer="cities")
 str(slot(cities, "data"))
+cities$POPULATION <- type.convert(as.character(cities$POPULATION),
+  na.strings="-99", numerals="no.loss")
+str(slot(cities, "data"))
 cities <- readOGR(dsn=dsn, layer="cities", GDAL1_integer64_policy=TRUE)
 str(slot(cities, "data"))
 options("warn"=ow)

@@ -391,7 +391,8 @@ extern "C" {
     OGRFeatureDefn *poDefn;
     OGRFieldDefn *poField;
     OGRFeature *poFeature;
-    int iRow,nRows;
+    int iRow, nRows, warn_int64=0;
+    double dbl_max_int64 = pow(2.0, 53);
     SEXP ans = R_NilValue;
 
     nRows=length(FIDs);
@@ -473,6 +474,7 @@ extern "C" {
 	if (poFeature->IsFieldSet(iField)) {
             if (int64 == 4) {
                     REAL(ans)[iRow] = poFeature->GetFieldAsDouble(iField);
+                    if (REAL(ans)[iRow] > dbl_max_int64) warn_int64 = 1;
             } else if (int64 == 3) {
                 SET_STRING_ELT(ans, iRow, 
                     mkChar(poFeature->GetFieldAsString(iField)));
@@ -536,6 +538,9 @@ extern "C" {
       // side we use a GDAL function to delete the feature.
       iRow++;
 //#endif
+    }
+    if (warn_int64 == 1) {
+        warning("Integer64 values larger than %g lost significance after conversion to double", dbl_max_int64);
     }
     uninstallErrorHandlerAndTriggerError();
     UNPROTECT(1);

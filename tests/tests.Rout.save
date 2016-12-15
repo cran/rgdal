@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2016-11-10 r71645) -- "Unsuffered Consequences"
+R version 3.3.2 Patched (2016-12-13 r71785) -- "Sincere Pumpkin Patch"
 Copyright (C) 2016 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -19,7 +19,7 @@ Type 'q()' to quit R.
 > logo <- system.file("pictures/Rlogo.jpg", package="rgdal")[1]
 > x <- GDAL.open(logo)
 > try(getRasterData(x, band=4))
-Error in getRasterData(x, band = 4) : Null external pointer
+Error : Null external pointer
 
 > GDAL.close(x)
 > logoo <- paste(logo, "o", sep="")
@@ -33,14 +33,12 @@ Error in .local(.Object, ...) : No driver registered with name: GeoTIFF
 > fn <- system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1]
 > x <- GDALinfo(fn)
 Warning message:
-In GDALinfo(fn) : statistics not supported by this driver
+statistics not supported by this driver 
 > try(erdas_spnad83 <- readGDAL(fn, offset=c(500, 1000), region.dim=c(400, 400), silent=TRUE))
-Error in getRasterData(x, band = band, offset = offset, region.dim = region.dim,  : 
-  Failure during raster IO
+Error : Failure during raster IO
 
 > try(erdas_spnad83 <- readGDAL(fn, region.dim=c(4000, 400), silent=TRUE))
-Error in getRasterData(x, band = band, offset = offset, region.dim = region.dim,  : 
-  Failure during raster IO
+Error : Failure during raster IO
 
 > x <- readGDAL(fn, silent=TRUE)
 > tf <- tempfile()
@@ -74,4 +72,4 @@ Error in writeOGR(cities, td, "cities", driver = "ESRI_Shapefile") :
 > 
 > proc.time()
    user  system elapsed 
-  1.623   0.037   1.700 
+  0.437   0.021   0.453 

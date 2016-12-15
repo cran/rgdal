@@ -55,7 +55,8 @@ In fixing a bug in the correct handling of SFS polygon geometries in version 1.1
 cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
 is.na(cities$POPULATION) <- cities$POPULATION == -99
 summary(cities$POPULATION)
-td <- tempdir()
+td <- file.path(tempdir(), "rgdal_examples"); dir.create(td)
+# BDR 2016-12-15 (MapInfo driver fails writing to directory with ".")
 if(nchar(Sys.getenv("OSGEO4W_ROOT")) > 0) {
     OLDPWD <- getwd()
     setwd(td)
