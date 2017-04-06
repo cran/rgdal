@@ -88,8 +88,8 @@ getGDALObjPtr(SEXP sxpObj) {
 
 SEXP isGDALObjPtrNULL(SEXP sxpObj) {
 
-  SEXP sxpHandle = getObjHandle(sxpObj);
-  SEXP res;
+  SEXP sxpHandle, res;
+  PROTECT(sxpHandle = getObjHandle(sxpObj));
   PROTECT(res = NEW_LOGICAL(1));
   LOGICAL_POINTER(res)[0] = FALSE;
 
@@ -97,7 +97,7 @@ SEXP isGDALObjPtrNULL(SEXP sxpObj) {
 
   if (extPtr == NULL) LOGICAL_POINTER(res)[0] = TRUE;
 
-  UNPROTECT(1);
+  UNPROTECT(2);
 
   return(res);
 
@@ -945,12 +945,13 @@ RGDAL_GetRasterBlockSize(SEXP rasterObj) {
 	
 	 GDALRasterBand *raster = getGDALRasterPtr(rasterObj);
 	 
-	 SEXP blockSize = allocVector(INTSXP, 2);
+	 SEXP blockSize;
+         PROTECT(blockSize = allocVector(INTSXP, 2));
 	 
   installErrorHandler();
 	 raster->GetBlockSize(INTEGER(blockSize) + 1, INTEGER(blockSize));
   uninstallErrorHandlerAndTriggerError();
-	 
+	 UNPROTECT(1);
 	 return(blockSize);
 	 
 }
@@ -1626,7 +1627,8 @@ GDALColorTable2Matrix(GDALColorTableH ctab) {
 	int ncol = GDALGetColorEntryCount(ctab);
         uninstallErrorHandlerAndTriggerError();
 
-	SEXP cmat = allocMatrix(INTSXP, ncol, 4);
+	SEXP cmat;
+        PROTECT(cmat = allocMatrix(INTSXP, ncol, 4));
 
         installErrorHandler();
 	for (int i = 0; i < ncol; ++i) {
@@ -1640,6 +1642,7 @@ GDALColorTable2Matrix(GDALColorTableH ctab) {
 
   	}
         uninstallErrorHandlerAndTriggerError();
+        UNPROTECT(1);
 
   	return(cmat);
 	
@@ -1728,8 +1731,9 @@ RGDAL_GetGeoTransform(SEXP sxpDataset) {
 
   GDALDataset *pDataset = getGDALDatasetPtr(sxpDataset);
 
-  SEXP sxpGeoTrans = allocVector(REALSXP, 6);
-  SEXP ceFail = NEW_LOGICAL(1);
+  SEXP sxpGeoTrans, ceFail;
+  PROTECT(sxpGeoTrans = allocVector(REALSXP, 6));
+  PROTECT(ceFail = NEW_LOGICAL(1));
   LOGICAL_POINTER(ceFail)[0] = FALSE;
 
   installErrorHandler();
@@ -1749,6 +1753,7 @@ RGDAL_GetGeoTransform(SEXP sxpDataset) {
   }
   setAttrib(sxpGeoTrans, install("CE_Failure"), ceFail);
   uninstallErrorHandlerAndTriggerError();
+  UNPROTECT(2);
 
   return(sxpGeoTrans);
 

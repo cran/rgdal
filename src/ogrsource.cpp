@@ -250,7 +250,6 @@ extern "C" {
     SET_VECTOR_ELT(itemlist,4,itemlistmaxcount);
     SET_VECTOR_ELT(ans,2,itemlist);
 
-    UNPROTECT(pc);
 
     installErrorHandler();
 #ifdef GDALV2
@@ -260,6 +259,7 @@ extern "C" {
 #endif
     uninstallErrorHandlerAndTriggerError();
 //    delete poDS;
+    UNPROTECT(pc);
     return(ans);
 
   }
@@ -736,8 +736,8 @@ extern "C" {
       error("Cannot open layer");
     }
 
-    int64 = getAttrib(iFields, mkString("int64"));
-    nListFields = getAttrib(iFields, mkString("nListFields"));
+    PROTECT(int64 = getAttrib(iFields, mkString("int64"))); pc++;
+    PROTECT(nListFields = getAttrib(iFields, mkString("nListFields"))); pc++;
 
     // reserve a list for the result
     if (INTEGER_POINTER(nListFields)[0] == 0) {
@@ -745,7 +745,7 @@ extern "C" {
     } else {
         nflds = INTEGER_POINTER(getAttrib(iFields, mkString("nflds")))[0];
         PROTECT(ans=allocVector(VECSXP,nflds)); pc++;
-        ListFields = getAttrib(iFields, mkString("ListFields"));
+        PROTECT(ListFields = getAttrib(iFields, mkString("ListFields"))); pc++;
     }
     // now set each element of the list
     installErrorHandler();
@@ -1077,7 +1077,7 @@ SEXP ogrListLayers (SEXP ogrSource) {
       error("Cannot open data source");
     }
 
-    debug = getAttrib(ogrSource, mkString("debug"));
+    PROTECT(debug = getAttrib(ogrSource, mkString("debug"))); pc++;
     installErrorHandler();
     nlayers = poDS->GetLayerCount();
     uninstallErrorHandlerAndTriggerError();

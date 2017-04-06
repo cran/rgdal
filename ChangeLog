@@ -1,3 +1,17 @@
+2017-04-05 11:50  rsbivand
+
+	* DESCRIPTION: tidy
+
+2017-04-05 11:38  rsbivand
+
+	* DESCRIPTION, configure, man/spTransform-methods.Rd,
+	  src/Makevars.win, src/OGR_write.cpp, src/gdal-bindings.cpp,
+	  src/ogrsource.cpp: change to R >= 3.3.0
+
+2016-12-15 11:38  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2016-12-15 11:37  rsbivand
 
 	* configure: tidy

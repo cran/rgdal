@@ -556,7 +556,7 @@ SEXP OGR_write(SEXP inp)
 
             OGRPolygon OGRply;
 
-            comms = SP_PREFIX(comment2comm)(VECTOR_ELT(pls, i));
+            PROTECT(comms = SP_PREFIX(comment2comm)(VECTOR_ELT(pls, i)));
             if (comms == R_NilValue) {
                 crds = GET_SLOT(VECTOR_ELT(GET_SLOT(VECTOR_ELT(pls, i),
                     install("Polygons")), 0), install("coords"));
@@ -581,7 +581,7 @@ SEXP OGR_write(SEXP inp)
                     OGRply.addRing( &OGRlr ); // first is Ering, others Iring(s)
                 }
             }
-
+            UNPROTECT(1);
             if( poFeature->SetGeometry( &OGRply ) != OGRERR_NONE ) {
                installErrorHandler();
 #ifdef GDALV2
@@ -643,7 +643,7 @@ SEXP OGR_write(SEXP inp)
 	for (i=0; i<nobs; i++) {
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
-            comms = SP_PREFIX(comment2comm)(VECTOR_ELT(pls, i));
+            PROTECT(comms = SP_PREFIX(comment2comm)(VECTOR_ELT(pls, i)));
             if (comms == R_NilValue) {
 
 // RSB 081009
@@ -729,6 +729,7 @@ SEXP OGR_write(SEXP inp)
                     error( "Failed to set geometry" );
                 } 
             }
+            UNPROTECT(1);
             uninstallErrorHandlerAndTriggerError();
             wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
 
