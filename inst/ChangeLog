@@ -1,3 +1,34 @@
+2017-04-21 08:50  rsbivand
+
+	* DESCRIPTION, src/OGR_write.cpp, src/ogrsource.cpp: GDAL RFC 67
+	  for 2.2.0
+
+2017-04-16 16:00  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-04-16 15:58  rsbivand
+
+	* configure: tidy
+
+2017-04-16 15:57  rsbivand
+
+	* DESCRIPTION: tidy
+
+2017-04-15 12:50  edzer
+
+	* man/writeOGR.Rd, tests/tripup.R, tests/tripup.Rout.save:
+	  compatibility with gdal pre 2.2
+
+2017-04-15 12:18  edzer
+
+	* man/writeOGR.Rd, tests/tripup.R, tests/tripup.Rout.save: rename
+	  most OGRGeoJSON to GeoJSON, required by gdal 2.2beta
+
+2017-04-14 21:38  edzer
+
+	* src/ogr_proj.cpp: address gdal 2.2 compile errors
+
 2017-04-05 11:50  rsbivand
 
 	* DESCRIPTION: tidy
@@ -6,7 +37,7 @@
 
 	* DESCRIPTION, configure, man/spTransform-methods.Rd,
 	  src/Makevars.win, src/OGR_write.cpp, src/gdal-bindings.cpp,
-	  src/ogrsource.cpp: change to R >= 3.3.0
+	  src/ogrsource.cpp: change to R >= 3.4.0
 
 2016-12-15 11:38  rsbivand
 

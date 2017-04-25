@@ -1,6 +1,6 @@
 
-R version 3.3.2 Patched (2016-12-13 r71785) -- "Sincere Pumpkin Patch"
-Copyright (C) 2016 The R Foundation for Statistical Computing
+R Under development (unstable) (2017-04-24 r72606) -- "Unsuffered Consequences"
+Copyright (C) 2017 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -35,10 +35,12 @@ Error in .local(.Object, ...) : No driver registered with name: GeoTIFF
 Warning message:
 statistics not supported by this driver 
 > try(erdas_spnad83 <- readGDAL(fn, offset=c(500, 1000), region.dim=c(400, 400), silent=TRUE))
-Error : Failure during raster IO
+Error in getRasterData(x, band = band, offset = offset, region.dim = region.dim,  : 
+  Failure during raster IO
 
 > try(erdas_spnad83 <- readGDAL(fn, region.dim=c(4000, 400), silent=TRUE))
-Error : Failure during raster IO
+Error in getRasterData(x, band = band, offset = offset, region.dim = region.dim,  : 
+  Failure during raster IO
 
 > x <- readGDAL(fn, silent=TRUE)
 > tf <- tempfile()
@@ -72,4 +74,4 @@ Error in writeOGR(cities, td, "cities", driver = "ESRI_Shapefile") :
 > 
 > proc.time()
    user  system elapsed 
-  0.437   0.021   0.453 
+  0.813   0.029   0.840 

@@ -785,14 +785,29 @@ void wrtDF(int i, int nf, SEXP fld_names, SEXP ldata,
              if (!ISNA(NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i]))
                  poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
                      NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+             else poFeature->SetFieldNull(j);
+#else
+             else poFeature->UnsetField(j);
+#endif
          } else if (OGR_type == 4) {
              if (STRING_ELT(VECTOR_ELT(ldata, j), i) != NA_STRING)
                  poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
                      CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+             else poFeature->SetFieldNull(j);
+#else
+             else poFeature->UnsetField(j);
+#endif
          } else if (OGR_type == 0) {
               if (INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] != NA_INTEGER)
                   poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
                       INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+             else poFeature->SetFieldNull(j);
+#else
+             else poFeature->UnsetField(j);
+#endif
          }
          uninstallErrorHandlerAndTriggerError();
      }         

@@ -465,13 +465,21 @@ extern "C" {
       // now get the value using the right type:
       switch(poField->GetType()){
       case OFTInteger:
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField))
+#else
 	if (poFeature->IsFieldSet(iField)) 
+#endif
           INTEGER(ans)[iRow]=poFeature->GetFieldAsInteger(iField);
 	else INTEGER(ans)[iRow]=NA_INTEGER;
 	break;
 #ifdef GDALV2
       case OFTInteger64:
+#if (GDAL_VERSION_MINOR >= 2 || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField)) {
+#else
 	if (poFeature->IsFieldSet(iField)) {
+#endif
             if (int64 == 4) {
                     REAL(ans)[iRow] = poFeature->GetFieldAsDouble(iField);
                     if (REAL(ans)[iRow] > dbl_max_int64) warn_int64 = 1;
@@ -497,27 +505,47 @@ extern "C" {
 	break;
 #endif
       case OFTReal:
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField))
+#else
 	if (poFeature->IsFieldSet(iField)) 
+#endif
           REAL(ans)[iRow]=poFeature->GetFieldAsDouble(iField);
 	else REAL(ans)[iRow]=NA_REAL;
 	break;
       case OFTString:
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField))
+#else
 	if (poFeature->IsFieldSet(iField)) 
+#endif
           SET_STRING_ELT(ans,iRow,mkChar(poFeature->GetFieldAsString(iField)));
 	else SET_STRING_ELT(ans, iRow, NA_STRING);
 	break;
       case OFTDate:
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField))
+#else
 	if (poFeature->IsFieldSet(iField)) 
+#endif
           SET_STRING_ELT(ans,iRow,mkChar(poFeature->GetFieldAsString(iField)));
 	else SET_STRING_ELT(ans, iRow, NA_STRING);
 	break;
       case OFTDateTime:
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField))
+#else
 	if (poFeature->IsFieldSet(iField)) 
+#endif
           SET_STRING_ELT(ans,iRow,mkChar(poFeature->GetFieldAsString(iField)));
 	else SET_STRING_ELT(ans, iRow, NA_STRING);
 	break;
       case OFTTime:
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField))
+#else
 	if (poFeature->IsFieldSet(iField)) 
+#endif
           SET_STRING_ELT(ans,iRow,mkChar(poFeature->GetFieldAsString(iField)));
 	else SET_STRING_ELT(ans, iRow, NA_STRING);
 	break;
@@ -615,7 +643,11 @@ extern "C" {
     double DINT_MIN = -2251799813685248.0;
 
     while((poFeature = poLayer->GetNextFeature()) != NULL) {
-      if (poFeature->IsFieldSet(iField)) {
+#if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
+        if (poFeature->IsFieldSetAndNotNull(iField)) {
+#else
+	if (poFeature->IsFieldSet(iField)) {
+#endif
 
       // now get the value using the right type:
         psField = poFeature->GetRawFieldRef(iField);

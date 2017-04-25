@@ -21,7 +21,7 @@ extern "C" {
 
 SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
 
-    OGRSpatialReference hSRS = NULL;
+    OGRSpatialReference hSRS = (OGRSpatialReference) NULL;
     char *pszSRS_WKT = NULL;
     SEXP ans;
 
@@ -46,7 +46,7 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
 
 SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
 
-    OGRSpatialReference hSRS = NULL;
+    OGRSpatialReference hSRS = (OGRSpatialReference) NULL;
     char *pszSRS_P4 = NULL;
     char **ppszInput = NULL;
     SEXP ans;
@@ -73,7 +73,7 @@ SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
 
 SEXP ogrAutoIdentifyEPSG(SEXP p4s) {
 
-    OGRSpatialReference hSRS = NULL;
+    OGRSpatialReference hSRS = (OGRSpatialReference) NULL;
     OGRErr thisOGRErr;
     SEXP ans;
 
