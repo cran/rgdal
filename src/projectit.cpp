@@ -30,7 +30,9 @@ FILE *pj_open_lib(const char *, const char *);
 #endif
 #endif
 
+#if PJ_VERSION < 493
 int inversetest(void *);
+#endif
 
 SEXP
 PROJ4VersionInfo(void) {
@@ -283,10 +285,12 @@ SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran) {
     error(pj_strerrno(*pj_get_errno_ref()));
 /*Rprintf("pj_inv: %s\n", pj_get_def(pj, 0));*/
 // check
+#if PJ_VERSION < 493
   if ( inversetest(pj) == 0) {
     pj_free(pj);
     error("No inverse for this projection");
   };
+#endif
   PROTECT(res = NEW_LIST(2));
   SET_VECTOR_ELT(res, 0, NEW_NUMERIC(nn));
   SET_VECTOR_ELT(res, 1, NEW_NUMERIC(nn));

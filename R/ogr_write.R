@@ -105,29 +105,29 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     ogr_ftype <- integer(nf)
     for (i in 1:nf) {
         if (dfcls[i] == "numeric" && dftof[i] == "double") {
-            ldata[[i]] <- slot(obj, "data")[,i]
+            ldata[[i]] <- slot(obj, "data")[[i]]
             ogr_ftype[i] <- as.integer(2) #"OFTReal"
         } else if (dfcls[i] == "character" && dftof[i] == "character") {
-            ldata[[i]] <- slot(obj, "data")[,i]
+            ldata[[i]] <- slot(obj, "data")[[i]]
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "factor" && dftof[i] == "integer") {
-            ldata[[i]] <- as.character(slot(obj, "data")[,i])
+            ldata[[i]] <- as.character(slot(obj, "data")[[i]])
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "POSIXt" && dftof[i] == "integer") {
-            ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
+            ldata[[i]] <- as.character(format(slot(obj, "data")[[i]]))
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "POSIXt" && dftof[i] == "double") {
-            ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
+            ldata[[i]] <- as.character(format(slot(obj, "data")[[i]]))
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "POSIXt" && dftof[i] == "list") {
-            ldata[[i]] <- as.character(format(slot(obj, "data")[,i]))
+            ldata[[i]] <- as.character(format(slot(obj, "data")[[i]]))
             ogr_ftype[i] <- as.integer(4) #"OFTString"
         } else if (dfcls[i] == "integer" && dftof[i] == "integer") {
-            ldata[[i]] <- slot(obj, "data")[,i]
+            ldata[[i]] <- slot(obj, "data")[[i]]
             ogr_ftype[i] <- as.integer(0) #"OFTInteger"
         } else if (dfcls[i] == "logical" && dftof[i] == "logical") {
 # fix for logical and better reporting Barry Rowlingson 091106
-            ldata[[i]] <- as.integer(slot(obj, "data")[,i])
+            ldata[[i]] <- as.integer(slot(obj, "data")[[i]])
             ogr_ftype[i] <- as.integer(0) #"OFTInteger"
         } else stop(paste(dfcls[i], dftof[i], "unknown data type"))
         if (!is.null(encoding)) {

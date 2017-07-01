@@ -76,6 +76,7 @@ all.equal(unis_utm_33N_P4, unis_tmerc_P4, tolerance=1e-9, scale=1)
 all.equal(unis_utm_33N_P4, unis_etmerc_P4, tolerance=1e-9, scale=1)
 # UTM == ETMERC: PROJ4 > 4.9.2
 # available projections and their inverses if provided
+# For >=4.9.3 returns non-finite points rather than needing crash protection
 getPROJ4VersionInfo()
 projs <- as.character(projInfo()$name)
 res <- logical(length(projs))

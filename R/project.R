@@ -94,6 +94,28 @@ projNAD <- function() {
     out
 }
 
+## Fri, 28 Apr 2017 10:40:18
+## From: Martin Aleksandrov Ivanov <Martin.Ivanov@geogr.uni-giessen.de>
+# ob_tran when isTRUE(is.projected())
+
+if (!isGeneric("is.projected"))
+	setGeneric("is.projected", function(obj)
+		standardGeneric("is.projected"))
+
+is_projected_crs <- function (obj) 
+{
+    p4str <- CRSargs(obj)
+    if (is.na(p4str) || !nzchar(p4str)) 
+        return(as.logical(NA))
+    else {
+        res <- grep("longlat", p4str, fixed = TRUE)
+        if (length(res) == 0) 
+            return(TRUE)
+        else return(FALSE)
+    }
+}
+
+setMethod("is.projected", signature("CRS"), is_projected_crs)
 
 if (!isGeneric("spTransform"))
 	setGeneric("spTransform", function(x, CRSobj, ...)
@@ -116,6 +138,10 @@ if (!isGeneric("spTransform"))
             } else {
               if (length(gpf) > 0) use_ob_tran <- -1L
               else use_ob_tran <- 1L
+            }
+            if (use_ob_tran != 0L) {
+              if (is.projected(x) || is.projected(CRSobj))
+                stop("Use ob_tran to or from unprojected objects only")
             }
           } else {
             use_ob_tran <- 0L
@@ -243,6 +269,10 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
               if (length(gpf) > 0) use_ob_tran <- -1L
               else use_ob_tran <- 1L
             }
+            if (use_ob_tran != 0L) {
+              if (is.projected(x) || is.projected(CRSobj))
+                stop("Use ob_tran to or from unprojected objects only")
+            }
           } else {
             use_ob_tran <- 0L
           }
@@ -326,6 +356,10 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
             } else {
               if (length(gpf) > 0) use_ob_tran <- -1L
               else use_ob_tran <- 1L
+            }
+            if (use_ob_tran != 0L) {
+              if (is.projected(x) || is.projected(CRSobj))
+                stop("Use ob_tran to or from unprojected objects only")
             }
           } else {
             use_ob_tran <- 0L

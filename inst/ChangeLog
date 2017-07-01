@@ -1,3 +1,27 @@
+2017-06-28 13:01  rsbivand
+
+	* DESCRIPTION, R/project.R, man/project.Rd,
+	  man/spTransform-methods.Rd, src/inverser.c, src/projectit.cpp:
+	  condition on inversetest; block ob_tran with not longlat
+
+2017-05-11 08:50  rsbivand
+
+	* DESCRIPTION, R/ogr_write.R: added patch to writeOGR from M.
+	  Sumner
+
+2017-04-24 12:39  rsbivand
+
+	* tests/tests.Rout.save: tests to 3.4
+
+2017-04-21 14:29  rsbivand
+
+	* src/OGR_write.cpp, src/ogrsource.cpp: trying to keep GDAL 1 in
+	  play
+
+2017-04-21 08:52  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2017-04-21 08:50  rsbivand
 
 	* DESCRIPTION, src/OGR_write.cpp, src/ogrsource.cpp: GDAL RFC 67

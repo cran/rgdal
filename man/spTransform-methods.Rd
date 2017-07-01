@@ -54,7 +54,7 @@ Note that warnings about different projections may be issued when the PROJ.4 lib
 
 Also note that re-projection and/or datum transformation will usually not work for regular grids. The term used for similar operations for regular grids is warping, which involved resampling to a regular grid in the target coordinate reference system.
 
-The methods may take an optional argument \dQuote{use_ob_tran}, default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal (the user oblique transforms from longlat to oblique forward rather than inverse as suggested in PROJ.4 mailing list postings); these changes are intended to meet a need pointed out by Martin Ivanov (2012-08-15).
+The methods may take an optional argument \dQuote{use_ob_tran}, default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal (the user oblique transforms from longlat to oblique forward rather than inverse as suggested in PROJ.4 mailing list postings); these changes are intended to meet a need pointed out by Martin Ivanov (2012-08-15). A subsequent point raised by Martin Ivanov (2017-04-28) was that use of a projected CRS with \dQuote{+proj=ob_tran} led to errors, so mixing projected CRS and \dQuote{+proj=ob_tran} is blocked. Transform first \dQuote{+proj=ob_tran} to or from \dQuote{+proj=longlat}, and then on from geographical coordinates to those desired or the reverse - see example.
 
 If a SpatialPoints object has three dimensions, the third will also be transformed, with the metric of the third dimension assumed to be meters if the vertical units metric is not given in the projection description with +vunits= or +vto_meter= (which is 1.0 by default) \url{http://proj4.org/parameters.html}.
 
@@ -138,6 +138,14 @@ a
 #should be (-5.917698, -1.87195)
 spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
  use_ob_tran=TRUE)
+try(spTransform(a, CRS(paste("+proj=tmerc +lat_0=0 +lon_0=9 +k=1",
+"+x_0=3500000 +y_0=0 +ellps=bessel +units=m +no_defs")),
+ use_ob_tran=TRUE))
+spTransform(spPoint, CRS(paste("+proj=tmerc +lat_0=0 +lon_0=9 +k=1",
+"+x_0=3500000 +y_0=0 +ellps=bessel +units=m +no_defs")))
+spTransform(spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
+ use_ob_tran=TRUE), CRS(paste("+proj=tmerc +lat_0=0 +lon_0=9 +k=1",
+"+x_0=3500000 +y_0=0 +ellps=bessel +units=m +no_defs")))
 crds1 <- matrix(data=c(7, 51, 8, 52, 9, 52, 10, 51, 7, 51), ncol=2,
 byrow=TRUE, dimnames=list(NULL, c("lon", "lat")));
 crds2 <- matrix(data=c(8, 48, 9, 49, 11, 49, 9, 48, 8, 48), ncol=2,
