@@ -1,3 +1,35 @@
+2017-09-13 15:31  rsbivand
+
+	* DESCRIPTION: tidy
+
+2017-09-13 15:30  rsbivand
+
+	* ChangeLog: tidy
+
+2017-09-13 15:29  rsbivand
+
+	* tools, tools/winlibs.R: add tools/winlibs.R
+
+2017-09-13 15:27  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-09-13 15:26  rsbivand
+
+	* DESCRIPTION, src/Makevars.win, src/projectit.cpp: tidy
+
+2017-09-13 13:18  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-09-13 13:17  rsbivand
+
+	* configure, configure.ac: stop proj checks false positive
+
+2017-06-28 13:04  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2017-06-28 13:01  rsbivand
 
 	* DESCRIPTION, R/project.R, man/project.Rd,

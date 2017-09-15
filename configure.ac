@@ -232,8 +232,8 @@ fi
 
 
 PKG_LIBS="${PKG_LIBS} -lproj"
-
-[cat > proj_conf_test.c <<_EOCONF
+# FIXME re-using names
+[cat > proj_conf_test1.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
 
@@ -243,9 +243,9 @@ int main() {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS}
+${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test1 proj_conf_test1.c ${PKG_LIBS}
 
-proj_version=`./proj_conf_test`
+proj_version=`./proj_conf_test1`
 
 if test ${proj_version} -eq 480; then
   AC_MSG_NOTICE([PROJ.4 version: 4.8.0])
@@ -268,10 +268,12 @@ if test [ -n "$proj_share_path" ] ; then
 fi
 
 
+rm -f proj_conf_test1.c proj_conf_test1
+
 
 
 if test ${proj_version} -ge 480; then
-[cat > proj_conf_test.c <<_EOCONF
+[cat > proj_conf_test2.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
 #if PJ_VERSION == 480
@@ -297,7 +299,7 @@ int main() {
 }
 _EOCONF]
 else
-[cat > proj_conf_test.c <<_EOCONF
+[cat > proj_conf_test2.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
 FILE *pj_open_lib(const char *, const char *);
@@ -312,12 +314,12 @@ int main() {
 _EOCONF]
 fi
 
-${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS}
+${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.c ${PKG_LIBS}
 if test [ -n "$proj_share_path" ] ; then
-  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test2
   proj_share=`echo $?`
 else
-  ./proj_conf_test
+  ./proj_conf_test2
   proj_share=`echo $?`
 fi
 
@@ -329,7 +331,7 @@ else
     AC_MSG_RESULT(yes)
 fi
 
-rm -f proj_conf_test.c proj_conf_test
+rm -f proj_conf_test2.c proj_conf_test2
 
 if test "$STOP" = "stop" ; then
     echo "Error: proj/epsg not found"
@@ -343,7 +345,7 @@ fi
 
 
 if test ${proj_version} -ge 480; then
-[cat > proj_conf_test.c <<_EOCONF
+[cat > proj_conf_test3.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
 #if PJ_VERSION == 480
@@ -369,7 +371,7 @@ int main() {
 }
 _EOCONF]
 else
-[cat > proj_conf_test.c <<_EOCONF
+[cat > proj_conf_test3.c <<_EOCONF
 #include <stdio.h>
 #include <proj_api.h>
 FILE *pj_open_lib(const char *, const char *);
@@ -384,12 +386,12 @@ int main() {
 _EOCONF]
 fi
 
-${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PKG_LIBS}
+${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test3 proj_conf_test3.c ${PKG_LIBS}
 if test [ -n "$proj_share_path" ] ; then
-  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test3
   proj_share=`echo $?`
 else
-  ./proj_conf_test
+  ./proj_conf_test3
   proj_share=`echo $?`
 fi
 
@@ -401,7 +403,7 @@ else
     AC_MSG_RESULT(yes)
 fi
 
-rm -f proj_conf_test.c proj_conf_test
+rm -f proj_conf_test3.c proj_conf_test3
 
 if test "$WARN" = "warn" ; then
     echo "Note: proj/conus not found"

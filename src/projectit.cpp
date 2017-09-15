@@ -458,12 +458,14 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 SEXP checkCRSArgs(SEXP args) {
 	SEXP res;
 	projPJ pj;
-        char cbuf[512], cbuf1[512], c, *cp = NULL;
+        char *cp=NULL;
+        char cbuf[512], cbuf1[512], c;
         int i, k;
 	PROTECT(res = NEW_LIST(2));
 	SET_VECTOR_ELT(res, 0, NEW_LOGICAL(1));
 	SET_VECTOR_ELT(res, 1, NEW_CHARACTER(1));
 	LOGICAL_POINTER(VECTOR_ELT(res, 0))[0] = FALSE;
+        cbuf[0] = '\0';
         pj = pj_init_plus(CHAR(STRING_ELT(args, 0)));
 	if (!(pj)) {
 
@@ -475,9 +477,10 @@ SEXP checkCRSArgs(SEXP args) {
 		return(res);
 	}
 
-        cp = pj_get_def(pj, 0);
+        cp = pj_get_def(pj, 0); // FIXME allocated but not freed??
         strncpy(cbuf, cp, 512); /* FIXME: UNSAFE */
-	free(cp);
+        pj_dalloc(cp);
+//	free(cp);
         c = cbuf[0];
         if (isspace(c)) {
             k = (int) strlen(cbuf);
