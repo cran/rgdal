@@ -1,3 +1,19 @@
+2017-09-18 12:44  rsbivand
+
+	* DESCRIPTION, configure: tidy
+
+2017-09-15 11:43  rsbivand
+
+	* configure.win: remove configure.win
+
+2017-09-13 15:32  rsbivand
+
+	* configure: tidy
+
+2017-09-13 15:32  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2017-09-13 15:31  rsbivand
 
 	* DESCRIPTION: tidy

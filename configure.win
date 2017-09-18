@@ -1,9 +1,0 @@
-#if test -z "$OSGEO4W_BUILD" ; then
-  cp -r ${GDAL_HOME}/share/proj "${R_PACKAGE_DIR}"
-  cp -r ${GDAL_HOME}/share/gdal "${R_PACKAGE_DIR}"
-#  echo "OSGEO= " >> src/Makeconf.win
-
-#else
-#    echo "OSGEO=-DOSGEO4W" >> src/Makeconf.win
-#fi
-
