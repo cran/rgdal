@@ -75,7 +75,6 @@ else
   fi
 fi
 
-
 AC_MSG_CHECKING(gdal-config usability)
 if test `${GDAL_CONFIG} --version`;
 then
@@ -85,6 +84,7 @@ then
         GDAL_VERSION=`${GDAL_CONFIG} --version`
         GDAL_DEP_LIBS=`${GDAL_CONFIG} --dep-libs`
         GDAL_DATADIR=`${GDAL_CONFIG} --datadir`
+        gdalok=yes
         AC_MSG_RESULT(yes)
 else
         AC_MSG_RESULT(no)
@@ -126,11 +126,6 @@ AC_SUBST([PKG_LIBS], ["${INPKG_LIBS} ${GDAL_LIBS}"])
 # since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
 CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
 
-gdalok=yes
-AC_CHECK_HEADERS(gdal.h,,gdalok=no)
-if test "${gdalok}" = no; then
-   AC_MSG_ERROR([gdal.h not found in given locations.])
-fi
 
 NEED_DEPS=no
 LIBS="${INLIBS} ${PKG_LIBS}"
@@ -206,12 +201,6 @@ fi
 CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
 
 
-proj4ok=yes
-AC_CHECK_HEADERS(proj_api.h,,proj4ok=no)
-if test "${proj4ok}" = no; then
-   AC_MSG_ERROR([proj_api.h not found in standard or given locations.])
-fi
-
           
 # dnl ditto for a library path
 AC_ARG_WITH([proj-lib],
@@ -222,16 +211,11 @@ if test [ -n "$proj_lib_path" ] ; then
     AC_SUBST([PKG_LIBS], ["-L${proj_lib_path} ${INPKG_LIBS}"])
 fi
 
+
 LIBS="${INLIBS} ${PKG_LIBS}"
-
-proj4ok=yes
-AC_CHECK_LIB(proj,pj_init_plus,,proj4ok=no)
-if test "${proj4ok}" = no; then
-   AC_MSG_ERROR([libproj not found in standard or given locations.])
-fi
-
-
 PKG_LIBS="${PKG_LIBS} -lproj"
+AC_MSG_NOTICE([${CFLAGS} ${PKG_CPPFLAGS}])
+AC_MSG_CHECKING(proj_api.h presence and usability)
 # FIXME re-using names
 [cat > proj_conf_test1.c <<_EOCONF
 #include <stdio.h>
@@ -243,18 +227,24 @@ int main() {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test1 proj_conf_test1.c ${PKG_LIBS}
+if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test1 proj_conf_test1.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([proj_api.h not found in standard or given locations.])
+fi
 
 proj_version=`./proj_conf_test1`
 
+AC_MSG_CHECKING([PROJ.4 version: ])
 if test ${proj_version} -eq 480; then
-  AC_MSG_NOTICE([PROJ.4 version: 4.8.0])
+  AC_MSG_RESULT([4.8.0])
   AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
 else if test ${proj_version} -ge 490; then
-  AC_MSG_NOTICE([PROJ.4 version: > 4.8.0])
+  AC_MSG_RESULT([> 4.8.0])
   AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
 else
-  AC_MSG_NOTICE([PROJ.4 version: < 4.8.0])
+  AC_MSG_RESULT([< 4.8.0])
 fi
 fi
 
