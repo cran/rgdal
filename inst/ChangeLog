@@ -1,3 +1,30 @@
+2017-10-07 12:31  rsbivand
+
+	* src/ogrsource.cpp: fix omitted Integer64List counts in ogrInfo C
+	  level
+
+2017-10-07 12:20  rsbivand
+
+	* ChangeLog, configure, inst/ChangeLog: fix omitted Integer64List
+	  counts in ogrInfo C level
+
+2017-10-07 10:25  rsbivand
+
+	* DESCRIPTION, src/ogrsource.cpp: fix omitted Integer64List counts
+	  in ogrInfo C level
+
+2017-10-05 12:40  edzer
+
+	* src/Makevars.in: add c++11 flag
+
+2017-09-25 08:56  rsbivand
+
+	* configure, configure.ac: updating for stricter autoconf
+
+2017-09-24 17:49  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2017-09-24 17:47  rsbivand
 
 	* DESCRIPTION, configure, configure.ac: drop header checking

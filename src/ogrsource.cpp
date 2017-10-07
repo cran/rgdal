@@ -197,6 +197,9 @@ extern "C" {
       SET_STRING_ELT(itemnames,iField,mkChar(poField->GetNameRef()));
       INTEGER(itemtype)[iField]=poField->GetType();
       if (INTEGER(itemtype)[iField] == OFTIntegerList ||
+#ifdef GDALV2
+         INTEGER(itemtype)[iField] == OFTInteger64List ||
+#endif
          INTEGER(itemtype)[iField] == OFTRealList ||
          INTEGER(itemtype)[iField] == OFTStringList) listFieldCount++;
       INTEGER(itemwidth)[iField]=poField->GetWidth();
@@ -239,6 +242,12 @@ extern "C" {
                     nCount[iField] = psField->StringList.nCount;
                     if (nCount[iField] > INTEGER(itemlistmaxcount)[iField])
                         INTEGER(itemlistmaxcount)[iField] = nCount[iField];
+#ifdef GDALV2
+                } else if (INTEGER(itemtype)[iField] == OFTInteger64List) {
+                    nCount[iField] = psField->StringList.nCount;
+                    if (nCount[iField] > INTEGER(itemlistmaxcount)[iField])
+                        INTEGER(itemlistmaxcount)[iField] = nCount[iField];
+#endif
                 }
             }
             OGRFeature::DestroyFeature( poFeature );
