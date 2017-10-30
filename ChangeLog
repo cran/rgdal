@@ -1,3 +1,25 @@
+2017-10-23 18:58  rsbivand
+
+	* R/AAA.R: add extSoftVersion
+
+2017-10-20 08:27  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, man/GDALDriver-class.Rd,
+	  src/OGR_write.cpp: add >=2 vector transaction speedup
+
+2017-10-10 09:05  rsbivand
+
+	* man/GDALDriver-class.Rd: check GDAL GEOS status
+
+2017-10-09 18:59  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, src/gdal-bindings.cpp,
+	  src/init.c, src/rgdal.h: add check for GEOS in GDAL build
+
+2017-10-07 12:32  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2017-10-07 12:31  rsbivand
 
 	* src/ogrsource.cpp: fix omitted Integer64List counts in ogrInfo C

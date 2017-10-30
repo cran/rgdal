@@ -12,6 +12,7 @@ static R_CallMethodDef CallEntries[] = {
     {"RGDAL_GetDescription", (DL_FUNC) &RGDAL_GetDescription, 1},
     {"RGDAL_GDALVersionInfo", (DL_FUNC) &RGDAL_GDALVersionInfo, 1},
     {"RGDAL_GDALCheckVersion", (DL_FUNC) &RGDAL_GDALCheckVersion, 0},
+    {"RGDAL_GDALwithGEOS", (DL_FUNC) &RGDAL_GDALwithGEOS, 0},
     {"RGDAL_GDAL_DATA_Info", (DL_FUNC) &RGDAL_GDAL_DATA_Info, 0},
     {"RGDAL_GetDriverNames", (DL_FUNC) &RGDAL_GetDriverNames, 0},
     {"RGDAL_GetDriver", (DL_FUNC) &RGDAL_GetDriver, 1},

@@ -53,6 +53,7 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
     paste(" Path to GDAL shared files: ", gdl[1], sep=""), "\n",
     ifelse(GDAL_iconv(), "",
         paste(" GDAL does not use iconv for recoding strings.\n")),
+    paste(' GDAL binary built with GEOS:', getGDALwithGEOS(), "\n"),
     ' Loaded PROJ.4 runtime: ', getPROJ4VersionInfo(), '\n',
     paste(" Path to PROJ.4 shared files: ", pl[1], sep=""), "\n",
     ifelse(get("has_proj_def.dat", envir=.RGDAL_CACHE), "", "WARNING: no proj_defs.dat in PROJ.4 shared files\n"), sep="")
@@ -75,3 +76,7 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
   .Call('RGDAL_Exit', PACKAGE="rgdal")
 }
 
+rgdal_extSoftVersion <- function() {
+  res <- c("GDAL"=strsplit(strsplit(getGDALVersionInfo(), ",")[[1]][1], " ")[[1]][2], "GDAL_with_GEOS"=as.character(getGDALwithGEOS()), "PROJ.4"=strsplit(strsplit(getPROJ4VersionInfo(), ",")[[1]][1], " ")[[1]][2], "sp"=version_sp_linkingTo())
+  res
+}

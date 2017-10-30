@@ -34,6 +34,7 @@ SEXP RGDAL_Exit(void);
 SEXP RGDAL_GDALVersionInfo(SEXP str);
 SEXP RGDAL_GDALCheckVersion(void);
 SEXP RGDAL_GDAL_DATA_Info(void);
+SEXP RGDAL_GDALwithGEOS(void);
 
 SEXP RGDAL_GetDriverNames(void);
 SEXP RGDAL_GetDriver(SEXP sxpDriverName);

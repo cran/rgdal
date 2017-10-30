@@ -9,8 +9,10 @@
 \alias{getGDALVersionInfo}
 \alias{getGDAL_DATA_Path}
 \alias{getGDALCheckVersion}
+\alias{getGDALwithGEOS}
 \alias{getCPLConfigOption}
 \alias{setCPLConfigOption}
+\alias{rgdal_extSoftVersion}
 \title{Class "GDALDriver": GDAL Driver Object}
 
 \description{\code{GDALDriver} objects encapsulate GDAL file format
@@ -40,6 +42,8 @@ getDriverName(driver)
 getDriverLongName(driver)
 getGDALVersionInfo(str = "--version")
 getGDALCheckVersion()
+getGDALwithGEOS()
+rgdal_extSoftVersion()
 getCPLConfigOption(ConfigOption)
 setCPLConfigOption(ConfigOption, value)
 }
@@ -60,6 +64,7 @@ setCPLConfigOption(ConfigOption, value)
     \item{\code{getDriverLongName}:}{returns a longer driver name.}
     \item{\code{getGDALVersionInfo}:}{returns the version of the GDAL runtime shared object.}
     \item{\code{getGDALCheckVersion}:}{checks the version of the GDAL headers used when building the package (GDAL_VERSION_MAJOR, GDAL_VERSION_MINOR) - if the two versions differ, problems may arise (the C++ API/ABI may have changed), and rgdal should be re-installed}
+    \item{\code{getGDALwithGEOS}:}{because drivers may behave differently if GDAL itself was built with GEOS support, the function uses a heuristic to check whether GDAL has access to the GEOS Union function or not}
 }
 }
 

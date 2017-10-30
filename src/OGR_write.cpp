@@ -301,6 +301,11 @@ SEXP OGR_write(SEXP inp)
 
 // Point data
 
+#ifdef GDALV2
+    int transaction_ds = poDS->TestCapability(ODsCTransactions);
+//Rprintf("transaction_ds: %s, %d\n", CHAR(STRING_ELT(VECTOR_ELT(inp, 3), 0)) , transaction_ds);
+#endif
+
     if (wkbtype == wkbPoint) {
         SEXP crds, dim;
         crds = GET_SLOT(obj, install("coords"));
@@ -319,6 +324,12 @@ SEXP OGR_write(SEXP inp)
 
         if (verbose) Rprintf("Writing %d wkbPoint objects\n", nobs);
         installErrorHandler();
+
+#ifdef GDALV2
+        int start_trans = transaction_ds &&
+          (poDS->StartTransaction() == OGRERR_NONE);
+#endif
+
         for (i=0; i<nobs; i++) {
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
@@ -356,6 +367,15 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+
+#ifdef GDALV2
+        if (start_trans && poDS->CommitTransaction() != OGRERR_NONE) {
+          GDALClose( poDS );
+          uninstallErrorHandlerAndTriggerError();
+          error("commit transaction failure");
+        }
+#endif
+
         uninstallErrorHandlerAndTriggerError();
 
 // Line data
@@ -376,6 +396,11 @@ SEXP OGR_write(SEXP inp)
 
         if (verbose) Rprintf("Writing %d wkbLineString objects\n", nobs);
         installErrorHandler();
+#ifdef GDALV2
+        int start_trans = transaction_ds &&
+          (poDS->StartTransaction() == OGRERR_NONE);
+#endif
+
 	for (i=0; i<nobs; i++) {
 
             OGRFeature *poFeature;
@@ -430,6 +455,14 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+#ifdef GDALV2
+        if (start_trans && poDS->CommitTransaction() != OGRERR_NONE) {
+          GDALClose( poDS );
+          uninstallErrorHandlerAndTriggerError();
+          error("commit transaction failure");
+        }
+#endif
+
         uninstallErrorHandlerAndTriggerError();
 
 // Multi line data
@@ -451,6 +484,11 @@ SEXP OGR_write(SEXP inp)
         int Lns_l;
         if (verbose) Rprintf("Writing %d wkbMultiLineString objects\n", nobs);
         installErrorHandler();
+#ifdef GDALV2
+        int start_trans = transaction_ds &&
+          (poDS->StartTransaction() == OGRERR_NONE);
+#endif
+
 	for (i=0; i<nobs; i++) {
 
             OGRFeature *poFeature;
@@ -525,6 +563,14 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+#ifdef GDALV2
+        if (start_trans && poDS->CommitTransaction() != OGRERR_NONE) {
+          GDALClose( poDS );
+          uninstallErrorHandlerAndTriggerError();
+          error("commit transaction failure");
+        }
+#endif
+
         uninstallErrorHandlerAndTriggerError();
 
 // Polygon data
@@ -544,6 +590,11 @@ SEXP OGR_write(SEXP inp)
         }
         if (verbose) Rprintf("Writing %d wkbPolygon objects\n", nobs);
         installErrorHandler();
+#ifdef GDALV2
+        int start_trans = transaction_ds &&
+          (poDS->StartTransaction() == OGRERR_NONE);
+#endif
+
 	for (i=0; i<nobs; i++) {
 
              
@@ -619,6 +670,14 @@ SEXP OGR_write(SEXP inp)
 
              OGRFeature::DestroyFeature( poFeature );
         }
+#ifdef GDALV2
+        if (start_trans && poDS->CommitTransaction() != OGRERR_NONE) {
+          GDALClose( poDS );
+          uninstallErrorHandlerAndTriggerError();
+          error("commit transaction failure");
+        }
+#endif
+
         uninstallErrorHandlerAndTriggerError();
 
 // Multi polygon data
@@ -640,6 +699,11 @@ SEXP OGR_write(SEXP inp)
         int Lns_l;
         if (verbose) Rprintf("Writing %d wkbMultiPolygon objects\n", nobs);
         installErrorHandler();
+#ifdef GDALV2
+        int start_trans = transaction_ds &&
+          (poDS->StartTransaction() == OGRERR_NONE);
+#endif
+
 	for (i=0; i<nobs; i++) {
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
@@ -759,8 +823,16 @@ SEXP OGR_write(SEXP inp)
              OGRFeature::DestroyFeature( poFeature );
         } // i 
 
-    } // multiPolygon 
+#ifdef GDALV2
+        if (start_trans && poDS->CommitTransaction() != OGRERR_NONE) {
+          GDALClose( poDS );
+          uninstallErrorHandlerAndTriggerError();
+          error("commit transaction failure");
+        }
+#endif
     uninstallErrorHandlerAndTriggerError();
+    } // multiPolygon 
+
 
     installErrorHandler();
 #ifdef GDALV2
