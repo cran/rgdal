@@ -169,8 +169,16 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         as.character(dataset_options), as.character(layer_options),
         as.logical(morphToESRI), as.integer(FIDs))
     res <- .Call("OGR_write", pre, PACKAGE="rgdal")
+    NAs <- !(fld_names == attr(res, "ofld_nms"))
+    if (any(NAs)) {
+        hits <- which(NAs)
+        warning("field name", ifelse(length(hits)==1, " ", "s "),
+          paste(fld_names[hits], collapse=", "), " changed by driver to: ",
+          paste(attr(res, "ofld_nms")[hits], collapse=", "))
+    }
     if (verbose) {
-        res <- list(object_type=res, output_dsn=dsn, output_layer=layer,
+        res <- list(object_type=res, ofld_nms=attr(res, "ofld_nms"),
+            output_dsn=dsn, output_layer=layer,
             output_diver=driver, output_n=nobj, output_nfields=nf,
             output_fields=fld_names, output_fclasses=ogr_ftype, 
             dataset_options=dataset_options, layer_options=layer_options,
