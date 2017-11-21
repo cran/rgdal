@@ -1,3 +1,42 @@
+2017-11-21 12:58  rsbivand
+
+	* DESCRIPTION, R/ogr_write.R, src/OGR_write.cpp: reverse field
+	  number bugfix for all drivers but ESRI Shapefile
+
+2017-11-20 09:49  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-11-20 09:48  rsbivand
+
+	* DESCRIPTION: tidy
+
+2017-11-05 15:32  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-11-05 15:30  rsbivand
+
+	* R/ogr_write.R, src/OGR_write.cpp: adding warning that field names
+	  changed
+
+2017-11-04 15:09  rsbivand
+
+	* configure: tidy
+
+2017-11-04 15:08  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-11-04 15:07  rsbivand
+
+	* DESCRIPTION, src/OGR_write.cpp: fix shapefile writing bug for
+	  field names only differing in case/CASE
+
+2017-10-27 11:12  rsbivand
+
+	* ChangeLog, DESCRIPTION, configure, inst/ChangeLog: tidy
+
 2017-10-23 18:58  rsbivand
 
 	* R/AAA.R: add extSoftVersion

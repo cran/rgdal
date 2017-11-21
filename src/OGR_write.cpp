@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 // RSB 081009
-void wrtDF(int, int, SEXP, SEXP, SEXP, OGRFeature*);
+void wrtDF(int, int, SEXP, SEXP, SEXP, OGRFeature*, int);
 
 SEXP OGR_write(SEXP inp)
 {
@@ -33,15 +33,18 @@ SEXP OGR_write(SEXP inp)
     OGRDataSource *poDS;
 #endif
     OGRLayer *poLayer;
+    OGRFeatureDefn *poDefn;
     char **papszCreateOptions = NULL;
     char **papszCreateOptionsLayer = NULL;
-    SEXP ans, wkbtype_attr, comms;
+    SEXP ans, wkbtype_attr, comms, ofld_nms;
     int verbose = INTEGER_POINTER(getAttrib(VECTOR_ELT(inp, 5),
         install("verbose")))[0];
-    int pc=0, i, j, k;
+    int pc=0, i, j, k, is_shpfile;
 
     PROTECT(ans = NEW_CHARACTER(1)); pc++;
     PROTECT(wkbtype_attr = NEW_INTEGER(1)); pc++;
+    is_shpfile = INTEGER_POINTER(getAttrib(VECTOR_ELT(inp, 3),
+      install("is_shpfile")))[0]; 
 
     installErrorHandler();
 #ifdef GDALV2
@@ -266,6 +269,7 @@ SEXP OGR_write(SEXP inp)
     SEXP ogr_ftype = VECTOR_ELT(inp, 7);
     int OGR_type;
 
+
     for (i=0; i<nf; i++) {
         OGR_type = INTEGER_POINTER(ogr_ftype)[i];
         if (OGR_type != 0 && OGR_type != 2 && OGR_type != 4) {
@@ -296,6 +300,22 @@ SEXP OGR_write(SEXP inp)
         }
         uninstallErrorHandlerAndTriggerError();
     }
+    
+    installErrorHandler();
+    poDefn = poLayer->GetLayerDefn();
+    int nFields =  poDefn->GetFieldCount();
+    uninstallErrorHandlerAndTriggerError();
+
+    PROTECT(ofld_nms = NEW_CHARACTER(nFields)); pc++;
+
+    installErrorHandler();
+    for (i=0; i<nFields; i++) {
+      OGRFieldDefn *poField = poDefn->GetFieldDefn(i);
+      SET_STRING_ELT(ofld_nms, i, COPY_TO_USER_STRING(poField->GetNameRef()));
+    }
+    uninstallErrorHandlerAndTriggerError();
+        
+    setAttrib(ans, install("ofld_nms"), ofld_nms);
 
     SEXP ldata = VECTOR_ELT(inp, 8);
 
@@ -335,7 +355,7 @@ SEXP OGR_write(SEXP inp)
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
 
 // RSB 081009
-            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature, is_shpfile);
 
             OGRPoint pt;
             pt.setX( NUMERIC_POINTER(crds)[i] );
@@ -406,7 +426,7 @@ SEXP OGR_write(SEXP inp)
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
 // RSB 081009
-            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature, is_shpfile);
 
             SEXP crds, dim;
             crds = GET_SLOT(VECTOR_ELT(GET_SLOT(VECTOR_ELT(lns, i),
@@ -494,7 +514,7 @@ SEXP OGR_write(SEXP inp)
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
 // RSB 081009
-            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature, is_shpfile);
 
             Lns = GET_SLOT(VECTOR_ELT(lns, i), install("Lines"));
             Lns_l = length(Lns);
@@ -601,7 +621,7 @@ SEXP OGR_write(SEXP inp)
             OGRFeature *poFeature;
             poFeature = new OGRFeature( poLayer->GetLayerDefn() );
 // RSB 081009
-            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature, is_shpfile);
 
             SEXP crds, dim;
 
@@ -795,7 +815,7 @@ SEXP OGR_write(SEXP inp)
             }
             UNPROTECT(1);
             uninstallErrorHandlerAndTriggerError();
-            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature);
+            wrtDF(i, nf, fld_names, ldata, ogr_ftype, poFeature, is_shpfile);
 
 // FIXME
 #ifdef GDALV2
@@ -848,15 +868,20 @@ SEXP OGR_write(SEXP inp)
 
 // RSB 081009
 void wrtDF(int i, int nf, SEXP fld_names, SEXP ldata,
-     SEXP ogr_ftype, OGRFeature* poFeature) {
+     SEXP ogr_ftype, OGRFeature* poFeature, int is_shpfile) {
      int j, OGR_type;
      for (j=0; j<nf; j++) {
          installErrorHandler();
          OGR_type = INTEGER_POINTER(ogr_ftype)[j];
          if (OGR_type == 2) {
              if (!ISNA(NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i]))
+               if (is_shpfile) {
+                 poFeature->SetField(j,
+                     NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
+               } else {
                  poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
                      NUMERIC_POINTER(VECTOR_ELT(ldata, j))[i] );
+               }
 #if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
              else poFeature->SetFieldNull(j);
 #else
@@ -864,8 +889,13 @@ void wrtDF(int i, int nf, SEXP fld_names, SEXP ldata,
 #endif
          } else if (OGR_type == 4) {
              if (STRING_ELT(VECTOR_ELT(ldata, j), i) != NA_STRING)
+               if (is_shpfile) {
+                 poFeature->SetField(j,
+                     CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
+               } else {
                  poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
                      CHAR(STRING_ELT(VECTOR_ELT(ldata, j), i)) );
+               }
 #if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
              else poFeature->SetFieldNull(j);
 #else
@@ -873,8 +903,13 @@ void wrtDF(int i, int nf, SEXP fld_names, SEXP ldata,
 #endif
          } else if (OGR_type == 0) {
               if (INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] != NA_INTEGER)
+               if (is_shpfile) {
+                  poFeature->SetField(j,
+                      INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
+               } else {
                   poFeature->SetField( CHAR(STRING_ELT(fld_names, j)),
                       INTEGER_POINTER(VECTOR_ELT(ldata, j))[i] );
+               }
 #if ((GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2) || GDAL_VERSION_MAJOR > 2)
              else poFeature->SetFieldNull(j);
 #else
