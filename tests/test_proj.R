@@ -30,3 +30,7 @@ stopifnot(isTRUE(all.equal(unname(coordinates(a)), matrix(c(-5.917698, -1.87195)
 a1 <- spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
  use_ob_tran=TRUE)
 stopifnot(isTRUE(all.equal(unname(coordinates(a1)), unname(coordinates(spPoint)), tolerance=.Machine$double.eps ^ 0.25)))
+sp <- SpatialPoints(matrix(c(1, 1), nrow=1), proj4string=CRS("+init=epsg:4326"))
+sp.tr <- spTransform(sp, CRS("+init=epsg:3857"))
+stopifnot(isTRUE(all.equal(unname(coordinates(sp.tr)), matrix(c(111319.4908, 111325.1429), nrow=1))))
+

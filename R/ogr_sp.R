@@ -7,6 +7,12 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
         use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
         integer64="no.loss", GDAL1_integer64_policy=FALSE) {
+	if (missing(dsn)) stop("missing dsn")
+        stopifnot(is.character(dsn))
+        stopifnot(length(dsn) == 1L)
+# copy sf::st_read.default usage
+        dsn <- enc2utf8(normalizePath(dsn))
+	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)){
           layers <- ogrListLayers(dsn=dsn)
           if (length(layers) == 0L) stop("missing layer")
@@ -15,10 +21,9 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             warning("First layer ", layer,
               " read; multiple layers present in\n", dsn,
               ", check layers with ogrListLayers()")
-        }
+        }  else layer <- enc2utf8(layer)
 # stop("missing dsn")
-	if (nchar(dsn) == 0) stop("empty name")
-	if (missing(layer)) stop("missing layer")
+#	if (missing(layer)) stop("missing layer")
 	if (nchar(layer) == 0) stop("empty name")
         integer64 <- match.arg(integer64,
           c("allow.loss", "warn.loss", "no.loss"))
@@ -135,7 +140,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 
 	}
 # suggestion by Paul Hiemstra 070817
-	prj <- .Call("ogrP4S", as.character(dsn), as.character(layer), 
+	prj <- .Call("ogrP4S", as.character(dsn), enc2utf8(as.character(layer)), 
 		PACKAGE="rgdal")
 	if (!is.null(p4s)) {
             if (!is.na(prj)) {
@@ -174,7 +179,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             attr(iflds, "nflds") <- as.integer(nflds)
             attr(iflds, "int64") <- as.integer(int64)
             dlist <- .Call("ogrDataFrame", as.character(dsn),
-                as.character(layer), as.integer(fids), iflds, PACKAGE="rgdal")
+                enc2utf8(as.character(layer)), as.integer(fids), iflds, PACKAGE="rgdal")
 	    names(dlist) <- make.names(fldnms ,unique=TRUE)
 
             if (use_iconv && !is.null(encoding)) {
@@ -192,7 +197,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 
 
 	geometry <- .Call("R_OGR_CAPI_features", as.character(dsn), 
-		as.character(layer), comments=addCommentsToPolygons,
+		enc2utf8(as.character(layer)), comments=addCommentsToPolygons,
                 PACKAGE="rgdal")
 	if (is.null(retain)) {
 	    eType <- geometry[[4]]

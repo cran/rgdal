@@ -1,6 +1,6 @@
 
-R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
-Copyright (C) 2016 The R Foundation for Statistical Computing
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -47,7 +47,11 @@ Type 'q()' to quit R.
 > a1 <- spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
 +  use_ob_tran=TRUE)
 > stopifnot(isTRUE(all.equal(unname(coordinates(a1)), unname(coordinates(spPoint)), tolerance=.Machine$double.eps ^ 0.25)))
+> sp <- SpatialPoints(matrix(c(1, 1), nrow=1), proj4string=CRS("+init=epsg:4326"))
+> sp.tr <- spTransform(sp, CRS("+init=epsg:3857"))
+> stopifnot(isTRUE(all.equal(unname(coordinates(sp.tr)), matrix(c(111319.4908, 111325.1429), nrow=1))))
+> 
 > 
 > proc.time()
    user  system elapsed 
-  0.294   0.021   0.307 
+  0.488   0.023   0.507 

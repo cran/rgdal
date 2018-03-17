@@ -526,6 +526,9 @@ struct PJ_UNITS {
 	char	*id;	/* units keyword */
 	char	*to_meter;	/* multiply by value to get meters */
 	char	*name;	/* comments */
+#if PJ_VERSION >= 500
+	double   factor;       /* to_meter factor in actual numbers */
+#endif
 };
 struct PJ_UNITS *pj_get_units_ref( void );
 
@@ -611,6 +614,7 @@ SEXP projInfo(SEXP type) {
         }
 
     } else if (INTEGER_POINTER(type)[0] == 3) {
+#if PJ_VERSION < 500
         PROTECT(ans = NEW_LIST(3)); pc++;
         PROTECT(ansnames = NEW_CHARACTER(3)); pc++;
         SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("id"));
@@ -623,7 +627,6 @@ SEXP projInfo(SEXP type) {
         SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(n));
         SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(n));
         SET_VECTOR_ELT(ans, 2, NEW_CHARACTER(n));
-        SET_VECTOR_ELT(ans, 3, NEW_CHARACTER(n));
         n=0;
         for (ld = pj_get_units_ref(); ld->id ; ++ld) {
             SET_STRING_ELT(VECTOR_ELT(ans, 0), n, 
@@ -634,7 +637,33 @@ SEXP projInfo(SEXP type) {
 		COPY_TO_USER_STRING(ld->name));
             n++;
         }
+#else
+        PROTECT(ans = NEW_LIST(4)); pc++;
+        PROTECT(ansnames = NEW_CHARACTER(4)); pc++;
+        SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("id"));
+        SET_STRING_ELT(ansnames, 1, COPY_TO_USER_STRING("to_meter"));
+        SET_STRING_ELT(ansnames, 2, COPY_TO_USER_STRING("name"));
+        SET_STRING_ELT(ansnames, 3, COPY_TO_USER_STRING("factor"));
+        setAttrib(ans, R_NamesSymbol, ansnames);
 
+        struct PJ_UNITS *ld;
+        for (ld = pj_get_units_ref(); ld->id ; ++ld) n++;
+        SET_VECTOR_ELT(ans, 0, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 1, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 2, NEW_CHARACTER(n));
+        SET_VECTOR_ELT(ans, 3, NEW_NUMERIC(n));
+        n=0;
+        for (ld = pj_get_units_ref(); ld->id ; ++ld) {
+            SET_STRING_ELT(VECTOR_ELT(ans, 0), n, 
+		COPY_TO_USER_STRING(ld->id));
+            SET_STRING_ELT(VECTOR_ELT(ans, 1), n, 
+		COPY_TO_USER_STRING(ld->to_meter));
+            SET_STRING_ELT(VECTOR_ELT(ans, 2), n, 
+		COPY_TO_USER_STRING(ld->name));
+            NUMERIC_POINTER(VECTOR_ELT(ans, 3))[n] = ld->factor;
+            n++;
+        }
+#endif
     } else error("no such type");
     
     UNPROTECT(pc);

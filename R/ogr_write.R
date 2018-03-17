@@ -1,4 +1,9 @@
 writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL) {
+    if (missing(dsn)) stop("missing dsn")
+    stopifnot(is.character(dsn))
+    stopifnot(length(dsn) == 1L)
+    if (file.exists(dsn)) dsn <- normalizePath(dsn)
+    if (nchar(dsn) == 0) stop("empty dsn")
     stopifnot(is.logical(verbose))
     drvs <- ogrDrivers()
     mch <- match(driver, drvs$name)
@@ -16,6 +21,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
       }
 # fix for over-eager internal checking in the KML driver 090114
     }
+    is_shpfile <- driver == "ESRI Shapefile"
     stopifnot(inherits(obj, "Spatial"))
     if (gridded(obj)) {
         obj <- as(obj, "SpatialPointsDataFrame")
@@ -69,7 +75,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
 # NASTY KLUDGE: GDAL 2 appears to handle shapefile deletion awkwardly
 # and prefers the "single" *.shp definition of dsn
                 if (strsplit(getGDALVersionInfo(), " ")[[1]][2] >= "2" && 
-                    driver == "ESRI Shapefile" && file.info(dsn)$isdir) {
+                    is_shpfile && file.info(dsn)$isdir) {
                     odsn <- dsn
                     dsn <- paste(dsn, "/", layer, ".shp", sep="")
                     if (verbose) warning(dsn, " substituted for ", odsn,
@@ -96,7 +102,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         }
     }
     if (is.null(morphToESRI))
-        morphToESRI <- ifelse(driver == "ESRI Shapefile", TRUE, FALSE)
+        morphToESRI <- ifelse(is_shpfile, TRUE, FALSE)
     stopifnot(is.logical(morphToESRI))
     stopifnot(length(morphToESRI) == 1)
 
@@ -140,7 +146,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     if (!is.null(encoding)) {
         fld_names <- iconv(fld_names, from=encoding, to="UTF-8")
     }
-    if (driver == "ESRI Shapefile") {
+    if (is_shpfile) {
         if (any(nchar(fld_names) > 10)) {
             fld_names <- abbreviate(fld_names, minlength=7)
             warning("Field names abbreviated for ESRI Shapefile driver")
@@ -162,15 +168,17 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     if (any(is.na(FIDs))) FIDs <- as.integer(0:(nobj-1))
     options("warn"=owarn$warn)
     attr(nf, "verbose") <- as.logical(verbose)
+    driver <- as.character(driver)
+    attr(driver, "is_shpfile") <- is_shpfile
     
     pre <- list(obj, as.character(dsn), as.character(layer), 
-        as.character(driver), as.integer(nobj), nf,
+        driver, as.integer(nobj), nf,
         as.character(fld_names), as.integer(ogr_ftype), ldata, 
         as.character(dataset_options), as.character(layer_options),
         as.logical(morphToESRI), as.integer(FIDs))
     res <- .Call("OGR_write", pre, PACKAGE="rgdal")
     NAs <- !(fld_names == attr(res, "ofld_nms"))
-    if (any(NAs)) {
+    if (any(NAs) && is_shpfile) {
         hits <- which(NAs)
         warning("field name", ifelse(length(hits)==1, " ", "s "),
           paste(fld_names[hits], collapse=", "), " changed by driver to: ",
