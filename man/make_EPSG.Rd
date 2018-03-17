@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Make a data frame of EPSG projection codes}
 \description{
-  Make a data frame of the now-defunct European Petroleum Survey Group (EPSG) geodetic parameter dataset as distributed with PROJ.4 software and included in this package. Because finding the correct projection specification is not easy, lists still known as EPSG lists are maintained, and more generally retrieved from Access databases. The data collated here are as distributed with PROJ.4.
+  Make a data frame of the now-defunct European Petroleum Survey Group (EPSG) geodetic parameter dataset as distributed with PROJ.4 software and included in this package. Because finding the correct projection specification is not easy, lists still known as EPSG lists are maintained, and more generally retrieved from databases. The data collated here are as distributed with PROJ.4.
 }
 \usage{
 make_EPSG(file)
@@ -24,9 +24,10 @@ make_EPSG(file)
 \references{\url{http://www.epsg.org/}}
 
 \author{Roger Bivand}
-\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{http://www.asprs.org/Grids-Datums.html}}
+\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{http://www.asprs.org/Grids-Datums.html}, see also \code{\link{GridsDatums}}.}
 \examples{
 EPSG <- make_EPSG()
+attr(EPSG, "metadata") # PROJ.4 5.0.0 and later include EPSG version
 EPSG[grep("Oslo", EPSG$note), 1:2]
 EPSG[1925:1927, 3]
 EPSG[grep("Poland", EPSG$note), 1:2]

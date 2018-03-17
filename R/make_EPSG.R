@@ -12,13 +12,17 @@ make_EPSG <- function(file) {
                stop("Error opening", file)
            }
        }
+       pre5 <- .Call("PROJ4VersionInfo", PACKAGE = "rgdal")[[2]] < 500L
+       if (!pre5) n <- n - 1
 #	epsg <- file(system.file("proj/epsg", package="rgdal"), open="r")
 # report Michael Sumner 071017
 	epsg <- file(file, open="r")
 	note <- character(n)
 	prj4 <- character(n)
 	code <- integer(n)
-	for (i in seq(along=code)) {
+        metadata <- NULL
+        if (!pre5) metadata <- readLines(epsg, n=1)
+	for (i in seq(along=code)) { # FIXME - broken in 5.0.0
 		res <- strsplit(paste(readLines(epsg, n=2), collapse=""), 
 			"[<>]")
 		note[i] <- res[[1]][1]
@@ -34,6 +38,7 @@ make_EPSG <- function(file) {
 #		strip.white=TRUE, quiet=TRUE)
 	EPSG <- data.frame(code=I(code), note=I(note), prj4=I(prj4))
 	EPSG <- EPSG[-which(is.na(EPSG$note)),]
+        attr(EPSG, "metadata") <- metadata
 	EPSG
 }
 

@@ -1,3 +1,79 @@
+2018-03-13 14:09  rsbivand
+
+	* R/Class-CRSx.R: WebMerc on 4.9.3
+
+2018-03-13 13:07  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2018-03-13 13:06  rsbivand
+
+	* configure: work-around for proj 5.0.0 Web Mercator bug
+
+2018-03-13 13:05  rsbivand
+
+	* R/Class-CRSx.R, tests/test_proj.R, tests/test_proj.Rout.save:
+	  work-around for proj 5.0.0 Web Mercator bug
+
+2018-02-26 13:33  rsbivand
+
+	* DESCRIPTION, src/projectit.cpp: fix projInfo("units") for 5.0.0
+
+2018-02-15 11:29  rsbivand
+
+	* ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
+
+2018-02-15 11:28  rsbivand
+
+	* R/ogr_sp.R: add enc2utf8 to OGR readers
+
+2018-02-15 10:01  rsbivand
+
+	* ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
+
+2018-02-15 10:01  rsbivand
+
+	* R/ogr.R: add enc2utf8 to OGR readers
+
+2018-02-15 09:01  rsbivand
+
+	* ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
+
+2018-02-15 09:00  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R: add enc2utf8 to OGR readers
+
+2018-02-14 10:47  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2018-02-14 10:47  rsbivand
+
+	* ChangeLog, R/ogr.R, R/ogr_sp.R, R/ogr_write.R, inst/ChangeLog:
+	  add normalizePath() to OGR
+
+2018-02-10 15:54  rsbivand
+
+	* ChangeLog, inst/ChangeLog: add new Windows drivers
+
+2018-02-10 15:53  rsbivand
+
+	* DESCRIPTION, configure, src/Makevars.win, tools/winlibs.R: add
+	  new Windows drivers
+
+2018-01-30 12:38  rsbivand
+
+	* DESCRIPTION, R/make_EPSG.R, man/make_EPSG.Rd: condition on proj
+	  version for make_EPSG
+
+2017-11-21 17:37  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-11-21 17:26  rsbivand
+
+	* DESCRIPTION: tidy
+
 2017-11-21 12:58  rsbivand
 
 	* DESCRIPTION, R/ogr_write.R, src/OGR_write.cpp: reverse field

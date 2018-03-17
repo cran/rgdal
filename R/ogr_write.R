@@ -1,4 +1,9 @@
 writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL) {
+    if (missing(dsn)) stop("missing dsn")
+    stopifnot(is.character(dsn))
+    stopifnot(length(dsn) == 1L)
+    if (file.exists(dsn)) dsn <- normalizePath(dsn)
+    if (nchar(dsn) == 0) stop("empty dsn")
     stopifnot(is.logical(verbose))
     drvs <- ogrDrivers()
     mch <- match(driver, drvs$name)

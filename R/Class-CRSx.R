@@ -33,6 +33,12 @@
 }
 
 checkCRSArgs <- function(uprojargs) {
+# RSB Web Mercator bug 180313 (for 5.0.0)
+  drop_nadgrids <- FALSE
+  if (strsplit(strsplit(getPROJ4VersionInfo(), ",")[[1]][1], " ")[[1]][2]
+    == "5.0.0") {
+    if (length(grep("+init=epsg:3857", uprojargs)) > 0L) drop_nadgrids <- TRUE
+  }
 # RSB 2015-05-21
 # fix for omission of proj_defs.dat in PROJ.4 4.9.1
   if (!get("has_proj_def.dat", envir=.RGDAL_CACHE)) {
@@ -40,6 +46,13 @@ checkCRSArgs <- function(uprojargs) {
       uprojargs <- proj_def_bug_fix(uprojargs)
   }
   res <- .Call("checkCRSArgs", uprojargs, PACKAGE="rgdal")
+  if (drop_nadgrids) {
+    uuproj <- strsplit(res[[2]], " ")[[1]]
+    hit_nad <- grep("nadgrids", uuproj)
+    hit_init <- grep("init", uuproj)
+    if (length(c(hit_nad, hit_init) > 0))
+      res[[2]] <- paste(uuproj[-c(hit_nad, hit_init)], collapse=" ")
+  }
   res[[2]] <- sub("^\\s+", "", res[[2]])
 # fix for pj_get_def() +no_uoff/+no_off bug
   no_uoff <- length(grep("+no_uoff", uprojargs, fixed=TRUE) > 0)
