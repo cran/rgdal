@@ -70,7 +70,10 @@ Error in ogrInfo(dsn = dsn, layer = layer, encoding = encoding, use_iconv = use_
 > try(writeOGR(cities, td, "cities", driver="ESRI_Shapefile"))
 Error in writeOGR(cities, td, "cities", driver = "ESRI_Shapefile") : 
   No such driver: ESRI_Shapefile
-> 
+> x <- '{"type":"Point","coordinates":[-99.74,32.45]}"'
+> try(rgdal::readOGR(x, "OGRGeoJSON", verbose = FALSE))
+      coordinates FID
+1 (-99.74, 32.45)   0
 > 
 > proc.time()
    user  system elapsed 

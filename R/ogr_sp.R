@@ -11,7 +11,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         stopifnot(is.character(dsn))
         stopifnot(length(dsn) == 1L)
 # copy sf::st_read.default usage
-        dsn <- enc2utf8(normalizePath(dsn))
+	if (length(dsn) == 1 && file.exists(dsn))
+          dsn <- enc2utf8(normalizePath(dsn))
 	if (nchar(dsn) == 0) stop("empty name")
 	if (missing(layer)){
           layers <- ogrListLayers(dsn=dsn)

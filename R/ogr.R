@@ -13,7 +13,8 @@ ogrInfo <- function(dsn, layer, encoding=NULL,
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
 # copy sf::st_read.default usage
-  dsn <- enc2utf8(normalizePath(dsn))
+  if (length(dsn) == 1 && file.exists(dsn))
+    dsn <- enc2utf8(normalizePath(dsn))
   if (nchar(dsn) == 0) stop("empty dsn")
   if (missing(layer)) {
     layers <- ogrListLayers(dsn=dsn)
@@ -211,7 +212,8 @@ ogrFIDs <- function(dsn, layer){
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
 # copy sf::st_read.default usage
-  dsn <- enc2utf8(normalizePath(dsn))
+  if (length(dsn) == 1 && file.exists(dsn))
+    dsn <- enc2utf8(normalizePath(dsn))
   if (nchar(dsn) == 0) stop("empty name")
   if (missing(layer)) stop("missing layer")
   layer <- enc2utf8(layer)
@@ -241,7 +243,8 @@ ogrDrivers <- function() {
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
 # copy sf::st_read.default usage
-  dsn <- enc2utf8(normalizePath(dsn))
+  if (length(dsn) == 1 && file.exists(dsn))
+    dsn <- enc2utf8(normalizePath(dsn))
   layer <- enc2utf8(layer)
   .Call("ogrP4S", as.character(dsn), as.character(layer),
         PACKAGE="rgdal")
@@ -252,7 +255,8 @@ ogrListLayers <- function(dsn) {
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1)
 # copy sf::st_read.default usage
-  dsn <- enc2utf8(normalizePath(dsn))
+  if (length(dsn) == 1 && file.exists(dsn))
+    dsn <- enc2utf8(normalizePath(dsn))
   if (nchar(dsn) == 0) stop("empty name")
   if (!is.null(attr(dsn, "debug"))) {
     stopifnot(is.logical(attr(dsn, "debug")))

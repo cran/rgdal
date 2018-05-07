@@ -459,13 +459,10 @@ SEXP checkCRSArgs(SEXP args) {
 	SEXP res;
 	projPJ pj;
         char *cp=NULL;
-        char cbuf[512], cbuf1[512], c;
-        int i, k;
 	PROTECT(res = NEW_LIST(2));
 	SET_VECTOR_ELT(res, 0, NEW_LOGICAL(1));
 	SET_VECTOR_ELT(res, 1, NEW_CHARACTER(1));
 	LOGICAL_POINTER(VECTOR_ELT(res, 0))[0] = FALSE;
-        cbuf[0] = '\0';
         pj = pj_init_plus(CHAR(STRING_ELT(args, 0)));
 	if (!(pj)) {
 
@@ -477,21 +474,16 @@ SEXP checkCRSArgs(SEXP args) {
 		return(res);
 	}
 
-        cp = pj_get_def(pj, 0); // FIXME allocated but not freed??
-        strncpy(cbuf, cp, 512); /* FIXME: UNSAFE */
-        pj_dalloc(cp);
-//	free(cp);
-        c = cbuf[0];
-        if (isspace(c)) {
-            k = (int) strlen(cbuf);
-            for (i=0; i<(k-1); i++) cbuf1[i] = cbuf[i+1];
-            cbuf1[(k-1)] = '\0';
+        cp = pj_get_def(pj, 0); 
+// Thanks to Brian Ripley for resolving poor coding issue found in GCC 8
+        if (isspace(cp[0])) {
 	    SET_STRING_ELT(VECTOR_ELT(res, 1), 0, 
-		COPY_TO_USER_STRING(cbuf1));
+		COPY_TO_USER_STRING(cp+1));
         } else {
 	    SET_STRING_ELT(VECTOR_ELT(res, 1), 0, 
-		COPY_TO_USER_STRING(cbuf));
+		COPY_TO_USER_STRING(cp));
         }
+        pj_dalloc(cp);
 	
 	LOGICAL_POINTER(VECTOR_ELT(res, 0))[0] = TRUE;
 	pj_free(pj);

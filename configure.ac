@@ -236,6 +236,28 @@ fi
 
 proj_version=`./proj_conf_test1`
 
+rm -f proj_conf_test1.c proj_conf_test1
+
+AC_MSG_CHECKING(projects.h presence and usability)
+# FIXME re-using names
+[cat > proj_conf_test1a.c <<_EOCONF
+#include <stdio.h>
+#include <projects.h>
+
+int main() {
+    exit(0);
+}
+_EOCONF]
+
+if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test1a proj_conf_test1a.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([projects.h not found in standard or given locations.])
+fi
+rm -f proj_conf_test1a.c proj_conf_test1a
+
+
 AC_MSG_CHECKING([PROJ.4 version: ])
 if test ${proj_version} -eq 480; then
   AC_MSG_RESULT([4.8.0])
@@ -258,7 +280,6 @@ if test [ -n "$proj_share_path" ] ; then
 fi
 
 
-rm -f proj_conf_test1.c proj_conf_test1
 
 
 
