@@ -1,3 +1,31 @@
+2018-04-05 11:21  rsbivand
+
+	* DESCRIPTION: check before normalizePath() in OGR access
+
+2018-04-05 11:19  rsbivand
+
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R: check before normalizePath() in
+	  OGR access
+
+2018-04-02 14:26  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: add config check for
+	  projects.h
+
+2018-03-17 17:29  rsbivand
+
+	* src/projectit.cpp: BDRs checkCRSArgs fix avoiding unnecessary
+	  string operations
+
+2018-03-17 17:10  rsbivand
+
+	* DESCRIPTION, src/projectit.cpp: allocate string in checkCRSArgs
+	  dynamically
+
+2018-03-13 14:50  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2018-03-13 14:09  rsbivand
 
 	* R/Class-CRSx.R: WebMerc on 4.9.3

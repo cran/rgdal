@@ -23,4 +23,5 @@ try(readOGR(dsn=dsn, layer="trucks", verbose=FALSE))
 cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities", verbose=FALSE)
 td <- tempdir()
 try(writeOGR(cities, td, "cities", driver="ESRI_Shapefile"))
-
+x <- '{"type":"Point","coordinates":[-99.74,32.45]}"'
+try(rgdal::readOGR(x, "OGRGeoJSON", verbose = FALSE))
