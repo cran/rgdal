@@ -33,7 +33,7 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
     uninstallErrorHandlerAndTriggerError();
     installErrorHandler();
     if (INTEGER_POINTER(esri)[0] == 1) hSRS.morphToESRI();
-    hSRS.exportToWkt(&pszSRS_WKT);
+    hSRS.exportToWkt(&pszSRS_WKT);//FIXME VG
     uninstallErrorHandlerAndTriggerError();
 
     PROTECT(ans=NEW_CHARACTER(1));
@@ -50,17 +50,23 @@ SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
     char *pszSRS_P4 = NULL;
     char **ppszInput = NULL;
     SEXP ans;
-    ppszInput = CSLAddString(ppszInput, CHAR(STRING_ELT(wkt, 0)));
+    ppszInput = CSLAddString(ppszInput, CHAR(STRING_ELT(wkt, 0)));//FIXME VG
 
     installErrorHandler();
-    if (hSRS.importFromWkt(ppszInput) != OGRERR_NONE) {
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+    if (hSRS.importFromWkt(ppszInput) != OGRERR_NONE) 
+#else
+    if (hSRS.importFromWkt((const char **) ppszInput) != OGRERR_NONE) 
+#endif
+    {
         uninstallErrorHandlerAndTriggerError();
 	error("Can't parse WKT-style parameter string");
     }
     uninstallErrorHandlerAndTriggerError();
+
     installErrorHandler();
     if (INTEGER_POINTER(esri)[0] == 1) hSRS.morphFromESRI();
-    hSRS.exportToProj4(&pszSRS_P4);
+    hSRS.exportToProj4(&pszSRS_P4);//FIXME VG
     uninstallErrorHandlerAndTriggerError();
 
     PROTECT(ans=NEW_CHARACTER(1));

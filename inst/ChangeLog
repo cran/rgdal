@@ -1,3 +1,105 @@
+2018-06-01 12:14  rsbivand
+
+	* DESCRIPTION, LICENSE.note: add LICENSE.note
+
+2018-06-01 08:02  rsbivand
+
+	* configure, configure.ac: tidy
+
+2018-05-31 18:33  rsbivand
+
+	* tests/srs_rendering.Rout.save: tidy
+
+2018-05-31 18:28  rsbivand
+
+	* tests/srs_rendering.R: tidy
+
+2018-05-31 18:07  rsbivand
+
+	* tests/srs_rendering.Rout.save: tidy
+
+2018-05-31 18:04  rsbivand
+
+	* tests/srs_rendering.R: tidy
+
+2018-05-31 18:02  rsbivand
+
+	* tests/srs_rendering.Rout.save: tidy
+
+2018-05-31 17:56  rsbivand
+
+	* tests/srs_rendering.R: tidy
+
+2018-05-31 12:11  rsbivand
+
+	* .Rbuildignore, tests/srs_rendering.R,
+	  tests/srs_rendering.Rout.save: tests for SRS GDAL version
+
+2018-05-31 08:11  rsbivand
+
+	* configure, configure.ac, m4, m4/ax_cxx_compile_stdcxx.m4: add
+	  CXX11 check
+
+2018-05-30 12:11  rsbivand
+
+	* configure, configure.ac: configure.ac fix
+
+2018-05-30 08:03  rsbivand
+
+	* src/gdal-bindings.cpp: importFromWkt bug: removed & for const
+	  char*
+
+2018-05-29 18:24  rsbivand
+
+	* src/ogr_proj.cpp: tidy
+
+2018-05-29 18:13  rsbivand
+
+	* DESCRIPTION: tidy
+
+2018-05-29 16:53  rsbivand
+
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  src/projectit.cpp: add valgrind fixme tags
+
+2018-05-29 12:22  rsbivand
+
+	* src/gdal-bindings.cpp: 2.3.0 const
+
+2018-05-29 11:51  rsbivand
+
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp, src/projectit.cpp:
+	  valgrind and GDAL 2.3.0 const
+
+2018-05-23 19:34  rsbivand
+
+	* configure, configure.ac: fix configure test
+
+2018-05-07 12:56  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2018-05-07 12:55  rsbivand
+
+	* tests/tests.Rout.save: tidy
+
+2018-05-07 12:51  rsbivand
+
+	* DESCRIPTION, configure, configure.ac, inst/include,
+	  inst/include/projects.h: updating ext-dep limits
+
+2018-04-30 13:29  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: add enable deprecated
+
+2018-04-06 07:09  rsbivand
+
+	* ChangeLog, inst/ChangeLog: add geojson string test
+
+2018-04-06 07:08  rsbivand
+
+	* tests/tests.R, tests/tests.Rout.save: add geojson string test
+
 2018-04-05 11:21  rsbivand
 
 	* DESCRIPTION: check before normalizePath() in OGR access

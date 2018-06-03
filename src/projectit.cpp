@@ -221,7 +221,7 @@ SEXP project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran) {
   SEXP res;
   double ixlon, iylat;
   
-  if (!(pj = pj_init_plus(CHAR(STRING_ELT(projarg, 0))))) 
+  if (!(pj = pj_init_plus(CHAR(STRING_ELT(projarg, 0))))) //FIXME VG poss
     error(pj_strerrno(*pj_get_errno_ref()));
 //Rprintf("pj_fwd: %s\n", pj_get_def(pj, 0));
   PROTECT(res = NEW_LIST(2));
@@ -281,8 +281,11 @@ SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran) {
   SEXP res;
   double ix, iy;
 
-  if (!(pj = pj_init_plus(CHAR(STRING_ELT(projarg, 0)))))
+  pj = pj_init_plus((const char*) CHAR(STRING_ELT(projarg, 0)));//FIXME VG poss
+  if (!(pj)) {
+    pj_free(pj);
     error(pj_strerrno(*pj_get_errno_ref()));
+  }
 /*Rprintf("pj_inv: %s\n", pj_get_def(pj, 0));*/
 // check
 #if PJ_VERSION < 493
@@ -407,19 +410,23 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 	      }
             }
         }
+        char *from_def = pj_get_def(fromPJ, 0);
+        char *to_def = pj_get_def(toPJ, 0);
 	if (have_z) {
 	    SET_STRING_ELT(VECTOR_ELT(res, 3), 0, 
-		COPY_TO_USER_STRING(pj_get_def(fromPJ, 0)));
+		COPY_TO_USER_STRING(from_def));
 	    SET_STRING_ELT(VECTOR_ELT(res, 4), 0, 
-		COPY_TO_USER_STRING(pj_get_def(toPJ, 0)));
+		COPY_TO_USER_STRING(to_def));
         } else {
 	    SET_STRING_ELT(VECTOR_ELT(res, 2), 0, 
-		COPY_TO_USER_STRING(pj_get_def(fromPJ, 0)));
+		COPY_TO_USER_STRING(from_def));
 	    SET_STRING_ELT(VECTOR_ELT(res, 3), 0, 
-		COPY_TO_USER_STRING(pj_get_def(toPJ, 0)));
+		COPY_TO_USER_STRING(to_def));
         }
 
         pj_free(fromPJ);
+        pj_dalloc(from_def);
+        pj_dalloc(to_def);
 	if ( pj_is_latlong(toPJ) || ob_tran == -1) {
 		for (i=0; i < n; i++) {
                		xx[i] *= RAD_TO_DEG;

@@ -214,10 +214,10 @@ SEXP OGR_write(SEXP inp)
 //            OGRSpatialReference hSRS = NULL;
 //            OGRSpatialReference* poSRS = new OGRSpatialReference();
             OGRSpatialReference* poSRS =
-                (OGRSpatialReference*)OSRNewSpatialReference(NULL);
+                (OGRSpatialReference*)OSRNewSpatialReference(NULL);//FIXME VG
             installErrorHandler();
 //            if (hSRS.importFromProj4(PROJ4) != OGRERR_NONE) {
-            if (poSRS->importFromProj4(PROJ4) != OGRERR_NONE) {
+            if (poSRS->importFromProj4(PROJ4) != OGRERR_NONE) { //FIXME VG
 #ifdef GDALV2
                 GDALClose( poDS );
 #else
@@ -780,10 +780,10 @@ SEXP OGR_write(SEXP inp)
 
             } else {
                 int nExtRings = length(comms);
-                OGRMultiPolygon *poRet = new OGRMultiPolygon();
+                OGRMultiPolygon *poRet = new OGRMultiPolygon();//FIXME VG
                 SEXP PLSi = GET_SLOT(VECTOR_ELT(pls, i), install("Polygons"));
                 for (int iER=0; iER<nExtRings; iER++) {
-                    OGRPolygon *OGRply = new OGRPolygon();
+                    OGRPolygon *OGRply = new OGRPolygon();//FIXME VG
                     int nthisiER = length(VECTOR_ELT(comms, iER));
 
                     for (k=0; k<nthisiER; k++) {
@@ -800,7 +800,7 @@ SEXP OGR_write(SEXP inp)
                                    NUMERIC_POINTER(crds)[j+ncrds] );
                         OGRply->addRing( &OGRlr ); 
                     }
-                    poRet->addGeometry(OGRply);
+                    poRet->addGeometry(OGRply);//FIXME VG
                     OGRply->empty();
                 }
                 if( poFeature->SetGeometry( poRet ) != OGRERR_NONE ) {
