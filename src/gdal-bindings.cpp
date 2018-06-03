@@ -326,11 +326,19 @@ RGDAL_GDALwithGEOS(void) {
     OGRGeometry *poGeometry1, *poGeometry2;
     char* pszWKT;
     pszWKT = (char*) "POINT (10 20)";
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
     OGRGeometryFactory::createFromWkt( &pszWKT, NULL, &poGeometry1 );
+#else
+    OGRGeometryFactory::createFromWkt( (const char*) pszWKT, NULL, &poGeometry1 );
+#endif
     pszWKT = (char*) "POINT (30 20)";
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
     OGRGeometryFactory::createFromWkt( &pszWKT, NULL, &poGeometry2 );
+#else
+    OGRGeometryFactory::createFromWkt( (const char*) pszWKT, NULL, &poGeometry2 );
+#endif
     withGEOS = 1;
-    if (poGeometry1->Union(poGeometry2) == NULL) withGEOS = 0;
+    if (poGeometry1->Union(poGeometry2) == NULL) withGEOS = 0;//FIXME VG
     OGRGeometryFactory::destroyGeometry(poGeometry1);
     OGRGeometryFactory::destroyGeometry(poGeometry2);
 
@@ -827,7 +835,7 @@ RGDAL_GetRasterCount(SEXP sDataset) {
 SEXP
 RGDAL_GetProjectionRef(SEXP sDataset) {
 
-  OGRSpatialReference oSRS;
+  OGRSpatialReference oSRS, oSRS1;
   char *pszSRS_WKT = NULL;
   SEXP ans;
 
@@ -838,8 +846,13 @@ RGDAL_GetProjectionRef(SEXP sDataset) {
   uninstallErrorHandlerAndTriggerError();
 
   installErrorHandler();
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2 
   oSRS.importFromWkt( &pszSRS_WKT );
+#else
+  oSRS.importFromWkt( (const char*) pszSRS_WKT );
+#endif
   oSRS.exportToProj4( &pszSRS_WKT );
+
   uninstallErrorHandlerAndTriggerError();
   PROTECT(ans = NEW_CHARACTER(1));
   SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszSRS_WKT));
@@ -1703,7 +1716,7 @@ RGDAL_SetCategoryNames(SEXP sxpRasterBand, SEXP sxpNames) {
   int i;
   installErrorHandler();
   for (i = 0; i < length(sxpNames); ++i)
-    nameList = CSLAddString(nameList, asString(sxpNames, i));
+    nameList = CSLAddString(nameList, asString(sxpNames, i));//FIXME VG
   uninstallErrorHandlerAndTriggerError();
 
   installErrorHandler();
@@ -1728,7 +1741,7 @@ RGDAL_GetCategoryNames(SEXP sxpRasterBand) {
   if (pcCNames == NULL) return(R_NilValue);
 
   installErrorHandler();
-  pcCNames = CSLDuplicate(pcCNames);
+  pcCNames = CSLDuplicate(pcCNames);//FIXME VG
   uninstallErrorHandlerAndTriggerError();
 
   SEXP sxpCNames;
@@ -1872,7 +1885,7 @@ SEXP RGDAL_SetRasterColorTable(SEXP raster, SEXP icT, SEXP ricT, SEXP cicT) {
     GDALRasterBand* target = getGDALRasterPtr(raster);
 		
     installErrorHandler();
-    GDALColorTableH ctab = GDALCreateColorTable(GPI_RGB);
+    GDALColorTableH ctab = GDALCreateColorTable(GPI_RGB);//FIXME VG
     uninstallErrorHandlerAndTriggerError();
 
     for (i=0; i<nr; i++) {
