@@ -777,16 +777,16 @@ extern "C" {
       error("Cannot open layer");
     }
 
-    PROTECT(int64 = getAttrib(iFields, mkString("int64"))); pc++;
-    PROTECT(nListFields = getAttrib(iFields, mkString("nListFields"))); pc++;
+    PROTECT(int64 = getAttrib(iFields, install("int64"))); pc++;
+    PROTECT(nListFields = getAttrib(iFields, install("nListFields"))); pc++;
 
     // reserve a list for the result
     if (INTEGER_POINTER(nListFields)[0] == 0) {
         PROTECT(ans=allocVector(VECSXP,length(iFields))); pc++;
     } else {
-        nflds = INTEGER_POINTER(getAttrib(iFields, mkString("nflds")))[0];
+        nflds = INTEGER_POINTER(getAttrib(iFields, install("nflds")))[0];
         PROTECT(ans=allocVector(VECSXP,nflds)); pc++;
-        PROTECT(ListFields = getAttrib(iFields, mkString("ListFields"))); pc++;
+        PROTECT(ListFields = getAttrib(iFields, install("ListFields"))); pc++;
     }
     // now set each element of the list
     installErrorHandler();
@@ -1118,7 +1118,7 @@ SEXP ogrListLayers (SEXP ogrSource) {
       error("Cannot open data source");
     }
 
-    PROTECT(debug = getAttrib(ogrSource, mkString("debug"))); pc++;
+    PROTECT(debug = getAttrib(ogrSource, install("debug"))); pc++;
     installErrorHandler();
     nlayers = poDS->GetLayerCount();
     uninstallErrorHandlerAndTriggerError();

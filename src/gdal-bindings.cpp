@@ -65,10 +65,11 @@ asString(SEXP sxpString, const int i = 0) {
 static SEXP
 getObjHandle(SEXP sxpObj) {
 
-  SEXP sxpHandle = getAttrib(sxpObj, mkString("handle"));
+  SEXP sxpHandle;
+  PROTECT(sxpHandle = getAttrib(sxpObj, install("handle")));
 
   if (isNull(sxpHandle)) error("Null object handle\n");
-
+  UNPROTECT(1);
   return(sxpHandle);
 
 }
@@ -76,12 +77,13 @@ getObjHandle(SEXP sxpObj) {
 static void*
 getGDALObjPtr(SEXP sxpObj) {
 
-  SEXP sxpHandle = getObjHandle(sxpObj);
+  SEXP sxpHandle;
+  PROTECT(sxpHandle = getObjHandle(sxpObj));
 
   void *extPtr = R_ExternalPtrAddr(sxpHandle);
 
   if (extPtr == NULL) error("Null external pointer\n");
-
+  UNPROTECT(1);
   return(extPtr);
 
 }
@@ -355,7 +357,7 @@ SEXP
 RGDAL_NullHandle(void) {
 
   return(R_MakeExternalPtr(NULL,
-			   mkString("Null handle"),
+			   install("Null handle"),
 			   R_NilValue));
   
 }
@@ -457,7 +459,7 @@ RGDAL_GetDriver(SEXP sxpDriverName) {
     error("No driver registered with name: %s\n", pDriverName);
   
   SEXP sxpHandle = R_MakeExternalPtr((void *) pDriver,
-				     mkChar("GDAL Driver"),
+				     install("GDAL Driver"),
 				     R_NilValue);
 
   return(sxpHandle);
@@ -582,7 +584,8 @@ SEXP
 RGDAL_CloseDataset(SEXP sxpDataset) {
 
 
-  SEXP sxpHandle = getObjHandle(sxpDataset);
+  SEXP sxpHandle;
+  PROTECT(sxpHandle = getObjHandle(sxpDataset));
 
   if (sxpHandle == NULL) return(R_NilValue);
 
@@ -596,6 +599,7 @@ RGDAL_CloseDataset(SEXP sxpDataset) {
 
     RGDAL_CloseHandle(sxpHandle);
   }
+  UNPROTECT(1);
 
   return(R_NilValue);
 
@@ -646,7 +650,7 @@ RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
   uninstallErrorHandlerAndTriggerError();
 
   SEXP sxpHandle = R_MakeExternalPtr((void *) pDataset,
-				     mkChar("GDAL Dataset"),
+				     install("GDAL Dataset"),
 				     R_NilValue);
 
   return(sxpHandle);
@@ -736,7 +740,7 @@ hope ;-) */
 
 
   SEXP sxpHandle = R_MakeExternalPtr((void *) pDataset,
-				     mkChar("GDAL Dataset"),
+				     install("GDAL Dataset"),
 				     R_NilValue);
 
   return(sxpHandle);
@@ -781,7 +785,7 @@ RGDAL_CopyDataset(SEXP sxpDataset, SEXP sxpDriver,
   uninstallErrorHandlerAndTriggerError();
 
   SEXP sxpHandle = R_MakeExternalPtr((void *) pDatasetCopy,
-				     mkChar("GDAL Dataset"),
+				     install("GDAL Dataset"),
 				     R_NilValue);
 
 
@@ -907,7 +911,7 @@ RGDAL_GetDatasetDriver(SEXP sDataset) {
   uninstallErrorHandlerAndTriggerError();
 
   SEXP sxpDriver = R_MakeExternalPtr((void *) pDriver,
-				     mkChar("GDAL Dataset"),
+				     install("GDAL Dataset"),
 				     R_NilValue);
 
   return(sxpDriver);
@@ -948,7 +952,7 @@ RGDAL_GetRasterBand(SEXP sDataset, SEXP sBand) {
   uninstallErrorHandlerAndTriggerError();
 
   SEXP rpRasterBand = R_MakeExternalPtr((void *) pRasterBand,
-					mkChar("GDAL Raster Band"),
+					install("GDAL Raster Band"),
 					R_NilValue);
   return(rpRasterBand);
 

@@ -1,3 +1,32 @@
+2018-06-08 06:44  rsbivand
+
+	* DESCRIPTION, configure, src/gdal-bindings.cpp: extra rchk
+	  PROTECTs
+
+2018-06-01 17:54  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2018-06-01 17:53  rsbivand
+
+	* LICENSE.note: add BSD text to LICENSE.note
+
+2018-06-01 13:30  rsbivand
+
+	* src/gdal-bindings.cpp: rchk issues
+
+2018-06-01 13:27  rsbivand
+
+	* src/gdal-bindings.cpp: rchk issues
+
+2018-06-01 13:22  rsbivand
+
+	* src/ogrsource.cpp: rchk issues
+
+2018-06-01 12:16  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2018-06-01 12:14  rsbivand
 
 	* DESCRIPTION, LICENSE.note: add LICENSE.note
