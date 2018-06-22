@@ -3,6 +3,8 @@ define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 |
 AC_INIT(rgdal, [pkgversion], Roger.Bivand@nhh.no)
 AC_CONFIG_SRCDIR(src/gdal-bindings.cpp)
 
+AC_PROG_CXX()
+
 # find R home and set correct compiler + flags
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -38,7 +40,7 @@ AC_MSG_NOTICE([svn revision: ${SVN_VERSION}])
 
 #CXX_11
 
-m4_include([m4/ax_cxx_compile_stdcxx.m4])
+m4_include([inst/m4/ax_cxx_compile_stdcxx.m4])
 AX_CXX_COMPILE_STDCXX([11], [ext], [optional])
 if test [${HAVE_CXX11} = 1] ; then
   AC_MSG_NOTICE([C++11 support available])

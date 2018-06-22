@@ -53,7 +53,8 @@ SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
     ppszInput = CSLAddString(ppszInput, CHAR(STRING_ELT(wkt, 0)));//FIXME VG
 
     installErrorHandler();
-#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+#if GDAL_VERSION_MAJOR == 1 || ( GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR <= 2 ) // thanks to Even Roualt https://github.com/OSGeo/gdal/issues/681
+//#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
     if (hSRS.importFromWkt(ppszInput) != OGRERR_NONE) 
 #else
     if (hSRS.importFromWkt((const char **) ppszInput) != OGRERR_NONE) 
