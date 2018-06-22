@@ -1,3 +1,22 @@
+2018-06-16 21:37  rsbivand
+
+	* .Rbuildignore, configure, configure.ac, inst/m4,
+	  inst/m4/ax_cxx_compile_stdcxx.m4, m4: add Colin Rundel's diff
+
+2018-06-13 17:56  rsbivand
+
+	* src/ogr_proj.cpp: #ifdef issue blocking out 1.11.4 from 2.3.0
+	  adaptation
+
+2018-06-13 14:36  rsbivand
+
+	* DESCRIPTION, configure, src/gdal-bindings.cpp: #ifdef issue
+	  blocking out 1.11.4 from 2.3.0 adaptation
+
+2018-06-08 06:50  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2018-06-08 06:44  rsbivand
 
 	* DESCRIPTION, configure, src/gdal-bindings.cpp: extra rchk

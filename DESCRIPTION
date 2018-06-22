@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the 'Geospatial' Data Abstraction Library
-Version: 1.3-2
-Date: 2018-06-05
+Version: 1.3-3
+Date: 2018-06-13
 Depends: R (>= 3.3.0), methods, sp (>= 1.1-0)
 Imports: grDevices, graphics, stats, utils
 LinkingTo: sp
@@ -15,7 +15,8 @@ Authors@R: c(
 	person("Robert", "Hijmans", role = "ctb"),
 	person("Even", "Rouault", role = c("cph", "ctb")),
 	person("Frank", "Warmerdam", role = c("cph", "ctb")),
-	person("Jeroen", "Ooms", role = "ctb"))
+	person("Jeroen", "Ooms", role = "ctb"),
+	person("Colin", "Rundel", role = "ctb"))
 License: GPL (>= 2)
 URL: http://www.gdal.org, https://r-forge.r-project.org/projects/rgdal/
 SystemRequirements: for building from source: GDAL >= 1.11.4, library
@@ -30,7 +31,7 @@ SystemRequirements: for building from source: GDAL >= 1.11.4, library
         with installed external dependencies, for example rgdal_0.8-7
         for PROJ4 4.8.0 (March 2012).
 NeedsCompilation: yes
-Packaged: 2018-06-08 06:50:58 UTC; rsb
+Packaged: 2018-06-22 15:35:11 UTC; rsb
 Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Tim Keitt [aut],
   Barry Rowlingson [aut, ctb],
@@ -39,7 +40,8 @@ Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Robert Hijmans [ctb],
   Even Rouault [cph, ctb],
   Frank Warmerdam [cph, ctb],
-  Jeroen Ooms [ctb]
+  Jeroen Ooms [ctb],
+  Colin Rundel [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2018-06-08 08:47:58 UTC
+Date/Publication: 2018-06-22 17:15:52 UTC
