@@ -1,3 +1,21 @@
+2018-08-01 09:47  rsbivand
+
+	* configure, configure.ac: issue with g++ instead of clang++ in
+	  configure
+
+2018-07-31 16:28  rsbivand
+
+	* DESCRIPTION, configure, configure.ac, src/gdal-bindings.cpp:
+	  issue with g++ instead of clang++ in configure
+
+2018-06-21 07:34  rsbivand
+
+	* DESCRIPTION: add Colin to DESCRIPTION
+
+2018-06-19 16:55  rsbivand
+
+	* ChangeLog, inst/ChangeLog, inst/README: tidy
+
 2018-06-16 21:37  rsbivand
 
 	* .Rbuildignore, configure, configure.ac, inst/m4,

@@ -607,6 +607,8 @@ RGDAL_CloseDataset(SEXP sxpDataset) {
 
 }
 
+// FIXME rchk Function RGDAL_CloseDataset
+//  [PB] has possible protection stack imbalance rgdal/src/gdal-bindings.cpp:606
 SEXP
 RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
 		    SEXP sOpts, SEXP sFile) {
