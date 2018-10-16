@@ -24,7 +24,7 @@ make_EPSG(file)
 \references{\url{http://www.epsg.org/}}
 
 \author{Roger Bivand}
-\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{http://www.asprs.org/Grids-Datums.html}, see also \code{\link{GridsDatums}}.}
+\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{http://www.asprs.org/a/resources/grids/}, see also \code{\link{GridsDatums}}.}
 \examples{
 EPSG <- make_EPSG()
 attr(EPSG, "metadata") # PROJ.4 5.0.0 and later include EPSG version
