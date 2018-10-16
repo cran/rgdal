@@ -1,3 +1,46 @@
+2018-09-28 08:26  rsbivand
+
+	* man/make_EPSG.Rd: update Grids&Datums URL
+
+2018-09-28 08:22  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2018-09-28 08:21  rsbivand
+
+	* man/GridsDatums.Rd: update Grids&Datums URL
+
+2018-09-28 08:14  rsbivand
+
+	* ChangeLog, configure, inst/ChangeLog: tidy
+
+2018-09-26 16:07  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd: permit readOGR to
+	  process no geometry input
+
+2018-09-10 18:17  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: CXX11 and CXX11STD
+	  configures
+
+2018-08-01 10:57  rsbivand
+
+	* configure, configure.ac: tidy
+
+2018-08-01 10:56  rsbivand
+
+	* configure, configure.ac: tidy
+
+2018-08-01 10:45  rsbivand
+
+	* man/spTransform-methods.Rd: tidy
+
+2018-08-01 09:52  rsbivand
+
+	* ChangeLog, inst/ChangeLog: issue with g++ instead of clang++ in
+	  configure
+
 2018-08-01 09:47  rsbivand
 
 	* configure, configure.ac: issue with g++ instead of clang++ in

@@ -53,7 +53,15 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	suppressMessages(ogr_info <- ogrInfo(dsn=dsn, layer=layer,
             encoding=encoding, use_iconv=use_iconv,
             swapAxisOrder=swapAxisOrder, require_geomType=require_geomType))
-        if (!ogr_info$have_features) stop("no features found")
+        HAS_FEATURES <- TRUE
+        if (!ogr_info$have_features) {
+            if (dropNULLGeometries) {
+                stop("no features found")
+            } else {
+                warning("no features found; proceeding to atttributes only")
+                HAS_FEATURES <- FALSE
+            }
+        }
         if (is.null(ogr_info$nListFields)) nListFields <- 0
         else nListFields <- ogr_info$nListFields
 # 121130 RSB trap no field case (from PostGIS, Mathieu Basille)
@@ -140,19 +148,6 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             }
 
 	}
-# suggestion by Paul Hiemstra 070817
-	prj <- .Call("ogrP4S", as.character(dsn), enc2utf8(as.character(layer)), 
-		PACKAGE="rgdal")
-	if (!is.null(p4s)) {
-            if (!is.na(prj)) {
-                warning("p4s= argument given as: ", p4s, "\n and read as: ", prj, 
-                "\n read string overridden by given p4s= argument value")
-            }
-        } else {
-            p4s <- prj
-        }
-
-	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
 
 # adding argument for SHAPE_ENCODING environment variable 121124
         if (!use_iconv && !is.null(encoding) && 
@@ -195,6 +190,28 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             ogr_info$driver == "ESRI Shapefile") {
             tull <- setCPLConfigOption("SHAPE_ENCODING", oSE)
         }
+	data <- data.frame(dlist, row.names=fids,
+            stringsAsFactors=stringsAsFactors)
+        rm(dlist)
+        gc(verbose = FALSE)
+
+        if (!HAS_FEATURES) {
+            return(data)
+        }
+
+# suggestion by Paul Hiemstra 070817
+	prj <- .Call("ogrP4S", as.character(dsn), enc2utf8(as.character(layer)), 
+		PACKAGE="rgdal")
+	if (!is.null(p4s)) {
+          if (!is.na(prj)) {
+              warning("p4s= argument given as: ", p4s, "\n and read as: ", prj, 
+              "\n read string overridden by given p4s= argument value")
+          }
+        } else {
+          p4s <- prj
+        }
+
+	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
 
 
 	geometry <- .Call("R_OGR_CAPI_features", as.character(dsn), 
@@ -255,10 +272,6 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         " of ", length(keepGeoms), " features\n")
     }
 
-	data <- data.frame(dlist, row.names=fids,
-            stringsAsFactors=stringsAsFactors)
-        rm(dlist)
-        gc(verbose = FALSE)
 	if (length(gFeatures) != length(fids)) stop("Feature mismatch")
 
         if (any(isNULL)) {
