@@ -30,7 +30,7 @@ checkCRSArgs(uprojargs)
 \arguments{
   \item{uprojargs}{character string PROJ.4 projection arguments}
 }
-\references{\url{http://proj.maptools.org/}}
+\references{\url{http://proj.org/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{

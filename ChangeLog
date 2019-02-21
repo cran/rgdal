@@ -1,3 +1,91 @@
+2019-02-20 11:23  rsbivand
+
+	* R/AAA.R: place has_proj_def.dat earlier
+
+2019-02-20 09:13  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-02-20 09:12  rsbivand
+
+	* DESCRIPTION: tidy
+
+2019-02-20 09:06  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-02-20 09:04  rsbivand
+
+	* DESCRIPTION: tidy
+
+2019-02-20 08:42  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-02-20 08:39  rsbivand
+
+	* man/CRS-class.Rd: link to proj update
+
+2019-02-19 18:14  rsbivand
+
+	* man/RGB2PCT.Rd, man/displayDataset.Rd, man/readGDAL.Rd: pkgdown
+	  progress
+
+2019-02-19 14:45  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/Class-CRSx.R, R/ogr.R, R/ogr_write.R,
+	  R/project.R, src/RGDAL.def, src/init.c, src/ogrsource.cpp,
+	  src/projectit.cpp, src/rgdal.h: correcting registration of
+	  compiled functions
+
+2019-02-19 13:20  rsbivand
+
+	* R/AAA.R, man/project.Rd: project message issue
+
+2019-02-19 12:40  rsbivand
+
+	* .Rbuildignore, DESCRIPTION, R/AAA.R, R/Class-CRSx.R,
+	  R/wrappers.R, _pkgdown.yml: starting pkgdown
+
+2019-02-19 12:05  rsbivand
+
+	* DESCRIPTION, R/project.R, configure, man/project.Rd: use of NA in
+	  coords in oce triggered issue in project/transform for i386
+
+2019-02-18 15:10  rsbivand
+
+	* DESCRIPTION, R/project.R: project message issue
+
+2018-12-29 19:40  rsbivand
+
+	* data/GridsDatums.rda: tidy
+
+2018-12-29 19:26  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: add check for gdal-config
+	  --datadir sanity
+
+2018-12-21 13:32  rsbivand
+
+	* ChangeLog, inst/ChangeLog: update Grids & Datums
+
+2018-12-21 13:28  rsbivand
+
+	* man/GridsDatums.Rd: update Grids & Datums
+
+2018-12-21 12:33  rsbivand
+
+	* data/GridsDatums.rda, man/GridsDatums.Rd: update Grids & Datums
+
+2018-12-21 12:01  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: guard against fictional
+	  versions of GDAL
+
+2018-09-28 08:26  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2018-09-28 08:26  rsbivand
 
 	* man/make_EPSG.Rd: update Grids&Datums URL

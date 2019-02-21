@@ -26,18 +26,20 @@ a list of the image data, the colour table, and the par() values on entry.
 \author{Tim Keitt}
 
 \examples{
+\dontrun{
 logo <- system.file("pictures/Rlogo.jpg", package="rgdal")[1]
 x <- GDAL.open(logo)
 opar <- par(no.readonly=TRUE)
 par(mfrow=c(2,2))
 displayDataset(x, band=1, reset.par=FALSE)
 displayDataset(x, band=2, reset.par=FALSE)
-displayDataset(x, band=3, reset.par=TRUE)
+#displayDataset(x, band=3, reset.par=TRUE)
 par(opar)
 dx <- RGB2PCT(x, band=1:3)
-displayDataset(dx)
+displayDataset(dx, reset.par=FALSE)
 GDAL.close(x)
 GDAL.close(dx)
+}
 }
 \keyword{spatial}
 

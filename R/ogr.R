@@ -46,7 +46,7 @@ ogrInfo <- function(dsn, layer, encoding=NULL,
     oSE <- getCPLConfigOption("SHAPE_ENCODING")
     tull <- setCPLConfigOption("SHAPE_ENCODING", encoding)
   }
-  ogrinfo <- .Call("ogrInfo",as.character(dsn), as.character(layer),
+  ogrinfo <- .Call("RGDAL_ogrInfo",as.character(dsn), as.character(layer),
     PACKAGE = "rgdal")
   if (!use_iconv && !is.null(encoding)) {
     tull <- setCPLConfigOption("SHAPE_ENCODING", oSE)
@@ -218,7 +218,7 @@ ogrFIDs <- function(dsn, layer){
   if (missing(layer)) stop("missing layer")
   layer <- enc2utf8(layer)
   if (nchar(layer) == 0) stop("empty name")
-  fids <- .Call("ogrFIDs",as.character(dsn),as.character(layer), PACKAGE = "rgdal")
+  fids <- .Call("RGDAL_ogrFIDs",as.character(dsn),as.character(layer), PACKAGE = "rgdal")
   if (attr(fids, "i") == 0L) warning("no features found")
   fids
 }
@@ -264,7 +264,7 @@ ogrListLayers <- function(dsn) {
   } else {
     attr(dsn, "debug") <- FALSE
   }
-  layers <- .Call("ogrListLayers", dsn, PACKAGE = "rgdal")
+  layers <- .Call("RGDAL_ogrListLayers", dsn, PACKAGE = "rgdal")
   n <- length(layers)
   tmp <- layers[n]
   layers <- layers[-n]

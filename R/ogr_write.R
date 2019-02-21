@@ -203,7 +203,7 @@ ogrDeleteLayer <- function(dsn, layer, driver) {
     if (nchar(layer) == 0) stop("empty name")
     if (missing(driver)) stop("missing layer")
     if (nchar(driver) == 0) stop("empty name")
-    res <- .Call("ogrDeleteLayer", as.character(dsn), as.character(layer),
+    res <- .Call("RGDAL_ogrDeleteLayer", as.character(dsn), as.character(layer),
         as.character(driver), PACKAGE = "rgdal")
     invisible(res)
 }
@@ -213,7 +213,7 @@ ogrDeleteDataSource <- function(dsn, driver) {
     if (nchar(dsn) == 0) stop("empty name")
     if (missing(driver)) stop("missing layer")
     if (nchar(driver) == 0) stop("empty name")
-    res <- .Call("ogrDeleteDataSource", as.character(dsn), as.character(driver),
+    res <- .Call("RGDAL_ogrDeleteDataSource", as.character(dsn), as.character(driver),
         PACKAGE = "rgdal")
     invisible(res)
 

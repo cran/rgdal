@@ -1,5 +1,5 @@
 # useDynLib(rgdal, .registration = TRUE, .fixes = "GDAL_")
-useDynLib(rgdal)
+useDynLib(rgdal, .registration = TRUE)
 
 import(methods)
 import(sp)

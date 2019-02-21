@@ -1,11 +1,12 @@
 Package: rgdal
 Title: Bindings for the 'Geospatial' Data Abstraction Library
-Version: 1.3-6
-Date: 2018-09-26
+Version: 1.3-9
+Date: 2019-02-19
 Depends: R (>= 3.3.0), methods, sp (>= 1.1-0)
 Imports: grDevices, graphics, stats, utils
 LinkingTo: sp
-Description: Provides bindings to the 'Geospatial' Data Abstraction Library ('GDAL') (>= 1.11.4) and access to projection/transformation operations from the 'PROJ.4' library. The 'GDAL' and 'PROJ.4' libraries are external to the package, and, when installing the package from source, must be correctly installed first. Both 'GDAL' raster and 'OGR' vector map data can be imported into R, and 'GDAL' raster data and 'OGR' vector data exported. Use is made of classes defined in the 'sp' package. Windows and Mac Intel OS X binaries (including 'GDAL', 'PROJ.4' and 'Expat') are provided on 'CRAN'. 
+NeedsCompilation: yes
+Description: Provides bindings to the 'Geospatial' Data Abstraction Library ('GDAL') (>= 1.11.4 and <= 2.5.0) and access to projection/transformation operations from the 'PROJ.4' library. The 'GDAL' and 'PROJ.4' libraries are external to the package, and, when installing the package from source, must be correctly installed first. Both 'GDAL' raster and 'OGR' vector map data can be imported into R, and 'GDAL' raster data and 'OGR' vector data exported. Use is made of classes defined in the 'sp' package. Windows and Mac Intel OS X binaries (including 'GDAL', 'PROJ.4' and 'Expat') are provided on 'CRAN'. 
 Authors@R: c(
 	person("Roger", "Bivand", role = c("cre", "aut"), email = "Roger.Bivand@nhh.no", comment=c(ORCID="0000-0003-2392-6140")),
 	person("Tim", "Keitt", role = "aut"),
@@ -18,9 +19,12 @@ Authors@R: c(
 	person("Jeroen", "Ooms", role = "ctb"),
 	person("Colin", "Rundel", role = "ctb"))
 License: GPL (>= 2)
-URL: http://www.gdal.org, https://r-forge.r-project.org/projects/rgdal/
-SystemRequirements: for building from source: GDAL >= 1.11.4, library
-        from https://trac.osgeo.org/gdal/wiki/DownloadSource and PROJ.4
+URL: http://rgdal.r-forge.r-project.org, https://www.gdal.org,
+        https://www.proj.org,
+        https://r-forge.r-project.org/projects/rgdal/
+SystemRequirements: for building from source: GDAL >= 1.11.4 and <=
+        2.5.0, library from
+        https://trac.osgeo.org/gdal/wiki/DownloadSource and PROJ.4
         (proj >= 4.8.0) from https://download.osgeo.org/proj/; GDAL OSX
         frameworks built by William Kyngesburye at
         http://www.kyngchaos.com/ may be used for source installs on
@@ -30,8 +34,8 @@ SystemRequirements: for building from source: GDAL >= 1.11.4, library
         installations using archived versions of rgdal contemporary
         with installed external dependencies, for example rgdal_0.8-7
         for PROJ4 4.8.0 (March 2012).
-NeedsCompilation: yes
-Packaged: 2018-09-28 08:28:18 UTC; rsb
+RoxygenNote: 6.1.1
+Packaged: 2019-02-20 11:25:35 UTC; rsb
 Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Tim Keitt [aut],
   Barry Rowlingson [aut, ctb],
@@ -44,4 +48,4 @@ Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Colin Rundel [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2018-10-16 13:40:02 UTC
+Date/Publication: 2019-02-21 10:00:03 UTC

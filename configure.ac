@@ -173,6 +173,20 @@ else
   fi
 fi
 
+
+AC_MSG_CHECKING([GDAL version <= 2.5.0])
+if test ${GDAL_MAJOR} -lt 2 ; then
+  AC_MSG_RESULT(yes)
+else
+  if test ${GDAL_MAJOR} = 2 -a ${GDAL_MINOR} -le 5 ; then
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([GDAL version out of bounds])
+  fi
+fi
+
+
 INLIBS="${LIBS}"
 INCPPFLAGS="${CPPFLAGS}"
 INPKG_CPPFLAGS="${PKG_CPPFLAGS}"
@@ -235,6 +249,24 @@ fi
 
 rm -f gdal_test errors.txt gdal_test.cc
 
+AC_MSG_CHECKING(GDAL: gdal-config data directory readable)
+if test -d "${GDAL_DATADIR}" ; then
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+  AC_MSG_CHECKING(GDAL: GDAL_DATA data directory readable)
+  if test -z ${GDAL_DATA} ; then
+    AC_MSG_ERROR([GDAL data directory not found.])
+  else
+    if test -d "${GDAL_DATA}" ; then
+      AC_MSG_RESULT(yes)
+      AC_SUBST([GDAL_DATADIR], [${GDAL_DATA}])
+    else
+      AC_MSG_RESULT(no)
+      AC_MSG_ERROR([GDAL data directory not found.])
+    fi
+  fi
+fi
 
 GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
 AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/pcs.csv readable)

@@ -15,7 +15,7 @@ projNAD <- function() {
     .Call("PROJ4NADsInstalled", PACKAGE="rgdal")
 }
 
-"project" <- function(xy, proj, inv=FALSE, use_ob_tran=FALSE, legacy=TRUE) {
+"project" <- function(xy, proj, inv=FALSE, use_ob_tran=FALSE, legacy=TRUE, allowNAs_if_not_legacy=FALSE) {
 
     if (!is.numeric(xy)) stop("xy not numeric")
     if (is.matrix(xy)) nc <- dim(xy)[1]
@@ -39,6 +39,9 @@ projNAD <- function() {
         legacy <- FALSE
     if (!legacy) {
      if (!inv) {
+        if (allowNAs_if_not_legacy) {
+          nas <- is.na(xy[,1]) | is.na(xy[,1])
+        }
         attr(nc, "ob_tran") <- as.integer(use_ob_tran)
         if (attr(nc, "ob_tran") == 0L) {
           res <- .Call("transform", "+proj=longlat", proj, nc,
@@ -47,12 +50,19 @@ projNAD <- function() {
           res <- .Call("transform", proj, "+proj=longlat", nc,
 	    as.double(xy[,1]), as.double(xy[,2]), NULL, PACKAGE="rgdal")
         }
-	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
-	  k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
-	  cat("non finite transformation detected:\n")
-	  print(cbind(xy, res[[1]], res[[2]])[k,])
-	  stop(paste("failure in points", paste(k, collapse=":")))
-	}
+	if (!allowNAs_if_not_legacy) {
+           if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
+	      k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
+	      cat("non finite transformation detected:\n")
+	      print(cbind(xy, res[[1]], res[[2]])[k,])
+	      stop(paste("failure in points", paste(k, collapse=":")))
+	   }
+        } else {
+           if (any(nas)) {
+             res[[1]][nas] <- as.double(NA)
+             res[[2]][nas] <- as.double(NA)
+           }
+        }
      } else {
         attr(nc, "ob_tran") <- -as.integer(use_ob_tran)
         if (attr(nc, "ob_tran") == 0L) {
@@ -62,17 +72,24 @@ projNAD <- function() {
           res <- .Call("transform", "+proj=longlat", proj, nc,
 	    as.double(xy[,1]), as.double(xy[,2]), NULL, PACKAGE="rgdal")
         }
-	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
-	  k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
-	  cat("non finite transformation detected:\n")
-	  print(cbind(xy, res[[1]], res[[2]])[k,])
-	  stop(paste("failure in points", paste(k, collapse=":")))
-	}
+	if (!allowNAs_if_not_legacy) {
+	   if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
+	     k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
+	     cat("non finite transformation detected:\n")
+	     print(cbind(xy, res[[1]], res[[2]])[k,])
+	     stop(paste("failure in points", paste(k, collapse=":")))
+	   }
+        } else {
+           if (any(nas)) {
+             res[[1]][nas] <- as.double(NA)
+             res[[2]][nas] <- as.double(NA)   
+           }        
+        }
      }
     } else {
      if(!inv) {
 # 160404 RSB convert to .Call()
-      res <- .Call("project",
+      res <- .Call("RGDAL_project",
                 as.integer(nc),
                 as.double(xy[,1]),
                 as.double(xy[,2]),
@@ -157,7 +174,7 @@ if (!isGeneric("spTransform"))
 	    res <- .Call("transform", proj4string(x), slot(CRSobj, "projargs"), n,
 		as.double(crds[,1]), as.double(crds[,2]), NULL, PACKAGE="rgdal")
 	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
-		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
+		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
 		print(cbind(crds, res[[1]], res[[2]])[k,])
 		stop(paste("failure in points", paste(k, collapse=":")))
@@ -169,8 +186,8 @@ if (!isGeneric("spTransform"))
                 PACKAGE="rgdal")
 	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))
                 || any(!is.finite(res[[3]]))) {
-		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]])
-                    || !is.finite(res[[3]]))
+		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]])
+                    | !is.finite(res[[3]]))
 		cat("non finite transformation detected:\n")
 		print(cbind(crds, res[[1]], res[[2]], res[[3]])[k,])
 		stop(paste("failure in points", paste(k, collapse=":")))
@@ -221,7 +238,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 		as.double(crds[,1]), as.double(crds[,2]), NULL,
 		PACKAGE="rgdal")
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
-		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
+		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
 		print(cbind(crds, res[[1]], res[[2]])[k,])
 		stop(paste("failure in Lines", ii, "Line", jj, 
@@ -310,7 +327,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 		as.double(crds[,1]), as.double(crds[,2]), NULL,
 		PACKAGE="rgdal")
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
-		k <- which(!is.finite(res[[1]]) || !is.finite(res[[2]]))
+		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
 		print(cbind(crds, res[[1]], res[[2]])[k,])
 		stop(paste("failure in Polygons", ii, "Polygon", jj, 
@@ -393,7 +410,7 @@ projInfo <- function(type="proj") {
     if (!(type %in% opts)) stop("unknown type")
     t <- as.integer(match(type[1], opts) - 1)
     if (is.na(t)) stop("unknown type")
-    res <- .Call("projInfo", t, PACKAGE="rgdal")
+    res <- .Call("RGDAL_projInfo", t, PACKAGE="rgdal")
     if (type == "proj") res$description <- sapply(strsplit(as.character(
         res$description), "\n"), function(x) x[1])
     res <- data.frame(res)

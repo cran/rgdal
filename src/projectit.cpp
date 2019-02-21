@@ -206,7 +206,7 @@ PROJcopyEPSG(SEXP tf) {
     return(ans);
 }
 
-SEXP project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran) {
+SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran) {
 //void project(int *n, double *xlon, double *ylat, double *x, double *y, char **projarg, int *ob_tran){
 
   /* call the _forward_ projection specified by the string projarg,
@@ -462,7 +462,7 @@ SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z) {
 	return(res);
 }
 
-SEXP checkCRSArgs(SEXP args) {
+SEXP RGDAL_checkCRSArgs(SEXP args) {
 	SEXP res;
 	projPJ pj;
         char *cp=NULL;
@@ -531,7 +531,7 @@ struct PJ_UNITS {
 };
 struct PJ_UNITS *pj_get_units_ref( void );
 
-SEXP projInfo(SEXP type) {
+SEXP RGDAL_projInfo(SEXP type) {
     SEXP ans=NULL;
     SEXP ansnames;
     int n=0, pc=0;
