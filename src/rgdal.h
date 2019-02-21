@@ -99,14 +99,14 @@ SEXP RGDAL_CPLSetConfigOption(SEXP inOption, SEXP value);
 SEXP RGDAL_CPLGetConfigOption(SEXP inOption);
 SEXP RGDAL_CPL_RECODE_ICONV(void);
 
-SEXP checkCRSArgs(SEXP args);
+SEXP RGDAL_checkCRSArgs(SEXP args);
 SEXP PROJcopyEPSG(SEXP tf);
-SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer);
+SEXP RGDAL_ogrInfo(SEXP ogrsourcename, SEXP Layer);
 SEXP R_OGR_types(SEXP dsn, SEXP layer);
-SEXP ogrFIDs(SEXP filename, SEXP layer);
+SEXP RGDAL_ogrFIDs(SEXP filename, SEXP layer);
 SEXP ogr_GetDriverNames(void);
 SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer);
-SEXP ogrListLayers (SEXP ogrSource);
+SEXP RGDAL_ogrListLayers (SEXP ogrSource);
 SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields);
 SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments);
 //SEXP make_Polygonlist(SEXP iG);
@@ -114,15 +114,15 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri);
 SEXP wkt_to_p4s(SEXP wkt, SEXP esri);
 SEXP ogrAutoIdentifyEPSG(SEXP p4s);
 SEXP OGR_write(SEXP inp);
-SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver);
-SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver);
+SEXP RGDAL_ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver);
+SEXP RGDAL_ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver);
 SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer);
 SEXP PROJ4VersionInfo(void);
 SEXP PROJ4NADsInstalled(void);
 SEXP PROJ4_proj_def_dat_Installed(void);
 SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z);
-SEXP projInfo(SEXP type);
-SEXP project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran);
+SEXP RGDAL_projInfo(SEXP type);
+SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran);
 SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran);
 
 

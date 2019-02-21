@@ -8,8 +8,10 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
 
 #.First.lib <- function(lib, pkg) {
 .onLoad <- function(lib, pkg) {
-#  require(methods, quietly = TRUE, warn.conflicts = FALSE)
-#  require("sp")
+  load_stuff()
+}
+
+load_stuff <- function() {
   assign(".rgdal_old.PROJ_LIB", Sys.getenv("PROJ_LIB"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.GDAL_DATA", Sys.getenv("GDAL_DATA"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.NEEDED", FALSE, envir=.RGDAL_CACHE)
@@ -22,12 +24,11 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
   }
   assign("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", TRUE, envir=.RGDAL_CACHE)
   assign("silent", TRUE, envir=.RGDAL_CACHE)
-  assign("has_proj_def.dat", .Call("PROJ4_proj_def_dat_Installed", PACKAGE="rgdal"), envir=.RGDAL_CACHE)
-
-  library.dynam('rgdal', pkg, lib)
-
-  .Call('RGDAL_Init', PACKAGE="rgdal")
+  assign("has_proj_def.dat", as.logical(NA), envir=.RGDAL_CACHE)
+  local_RGDAL_Init() #.Call('RGDAL_Init', PACKAGE="rgdal")
 }
+
+local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
 
 .onAttach <- function(lib, pkg) {
   ver_ok <- getGDALCheckVersion()
@@ -41,6 +42,10 @@ assign(".rgdal_old.GDAL_DATA", "", envir=.RGDAL_CACHE)
     svn_version <- scan(fn, what=character(1), sep="\n", quiet=TRUE)
   } else {
     svn_version <- "(unknown)"
+  }
+  if (is.na(get("has_proj_def.dat", envir=.RGDAL_CACHE))) {
+    assign("has_proj_def.dat", .Call("PROJ4_proj_def_dat_Installed",
+      PACKAGE="rgdal"), envir=.RGDAL_CACHE)
   }
 
   Smess <- paste('rgdal: version: ',

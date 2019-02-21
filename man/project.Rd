@@ -6,7 +6,8 @@
   Interface to the PROJ.4 library of projection functions for geographical position data, no datum transformation possible. Use \code{spTransform()} for extended support.
 }
 \usage{
-project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE)
+project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE,
+ allowNAs_if_not_legacy=FALSE)
 }
 
 \arguments{
@@ -15,6 +16,7 @@ project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE)
   \item{inv}{ default FALSE, if TRUE inverse projection to geographical coordinates }
   \item{use_ob_tran}{default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal; the user oblique transforms forward rather than inverse.}
   \item{legacy}{default TRUE, if FALSE, use transform C functions (enforced internally for Windows 32-bit platforms)}
+  \item{allowNAs_if_not_legacy}{used if legacy is FALSE, default FALSE; introduced to handle use of NAs as object separators in \pkg{oce}}
 }
 \details{
   Full details of projection arguments available from website below, and examples in file "epsg" in the data directory installed with PROJ.4.
@@ -24,7 +26,7 @@ Note that from PROJ.4 4.9.3, the definition of UTM is changed from TMERC to ETME
 \value{
   A two column matrix with projected coordinates.
 }
-\references{\url{http://proj.maptools.org/}}
+\references{\url{http://proj4.org/}}
 \author{Barry Rowlingson, Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{ The locations of Hawaii and Alaska in the data source are (putting it mildly) arbitrary, please avoid airlines using these positions.}
@@ -110,5 +112,16 @@ df[is.na(df$res),]
 df[!is.na(df$res) & !df$res,]
 # inverse equal to input
 row.names(df[!is.na(df$res) & df$res,])
+# oce data representation with NAs
+ll <- structure(c(12.1823368669203, 11.9149630062421, 12.3186076188739, 
+12.6207597184845, 12.9955172054652, 12.6316117692658, 12.4680041846297, 
+12.4366882666609, NA, NA, -5.78993051516384, -5.03798674888479, 
+-4.60623015708619, -4.43802336997614, -4.78110320396188, -4.99127125409291, 
+-5.24836150474498, -5.68430388755925, NA, NA), .Dim = c(10L, 
+2L), .Dimnames = list(NULL, c("longitude", "latitude")))
+try(xy0 <- project(ll, "+proj=moll", legacy=TRUE))
+try(xy1 <- project(ll, "+proj=moll", legacy=FALSE, allowNAs_if_not_legacy=FALSE))
+try(xy2 <- project(ll, "+proj=moll", legacy=FALSE, allowNAs_if_not_legacy=TRUE))
+if (exists("xy0")) all.equal(xy0, xy2)
 }
 \keyword{spatial}

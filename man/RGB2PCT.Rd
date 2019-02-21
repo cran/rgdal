@@ -24,13 +24,15 @@ The value returned is a either GDALTransientDataset or a list of a GDALTransient
 \author{Tim Keitt}
 
 \examples{
+\dontrun{
 logo <- system.file("pictures/Rlogo.jpg", package="rgdal")[1]
 x <- GDAL.open(logo)
 dim(x)
 dx <- RGB2PCT(x, band=1:3)
-displayDataset(dx)
+displayDataset(dx, reset.par=FALSE)
 dim(dx)
 GDAL.close(x)
 GDAL.close(dx)
+}
 }
 \keyword{spatial}

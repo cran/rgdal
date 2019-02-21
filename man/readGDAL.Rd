@@ -256,11 +256,12 @@ writeGDAL(t0, tf, type="Byte", colorTable=list(CT), catNames=list(cN),
  mvFlag=3L)
 attr(GDALinfo(tf, returnStats=FALSE, returnCategoryNames=TRUE),
  "CATlist")[[1]]
+\dontrun{
 ds <- GDAL.open(tf)
-displayDataset(ds)
+displayDataset(ds, reset.par=FALSE)
 t(col2rgb(getColorTable(ds)[1:4]))
 GDAL.close(ds)
-
+}
 fn <- system.file("pictures/test_envi_class.envi", package = "rgdal")[1]
 Gi <- GDALinfo(fn, returnColorTable=TRUE, returnCategoryNames=TRUE)
 CT <- attr(Gi, "ColorTable")[[1]]

@@ -32,7 +32,7 @@ extern "C" {
 //#define EJP
 
 // extern "C" {
-  SEXP ogrInfo(SEXP ogrsourcename, SEXP Layer){
+  SEXP RGDAL_ogrInfo(SEXP ogrsourcename, SEXP Layer){
     // return FIDs, nFields, fieldInfo
 
     SEXP ans, vec1, vec2, vec3,/*mat,*/drv, dvec;
@@ -282,7 +282,7 @@ extern "C" {
 extern "C" {
 #endif
 //extern "C" {
-  SEXP ogrFIDs(SEXP filename, SEXP layer){
+  SEXP RGDAL_ogrFIDs(SEXP filename, SEXP layer){
   SEXP fids, nf, ii;
   int /*layerNum,*/i;
   int nFeatures, pc=0;
@@ -963,7 +963,7 @@ SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer) {
 }
 
 
-SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
+SEXP RGDAL_ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     OGRLayer *poLayer;
 #ifdef GDALV2
     GDALDataset *poDS;
@@ -1049,7 +1049,7 @@ SEXP ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver) {
     return(R_NilValue);
 }
 
-SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver) {
+SEXP RGDAL_ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver) {
 #ifdef GDALV2
     GDALDriver *poDriver;
 #else
@@ -1087,7 +1087,7 @@ SEXP ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver) {
 }
 
 
-SEXP ogrListLayers (SEXP ogrSource) {
+SEXP RGDAL_ogrListLayers (SEXP ogrSource) {
 #ifdef GDALV2
     GDALDataset *poDS;
     GDALDriver *poDriver;
