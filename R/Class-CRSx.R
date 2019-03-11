@@ -46,7 +46,7 @@ checkCRSArgs <- function(uprojargs) {
   }
 # RSB 2015-05-21
 # fix for omission of proj_defs.dat in PROJ.4 4.9.1
-  if (!get("has_proj_def.dat", envir=.RGDAL_CACHE)) {
+  if ((!get("has_proj_def.dat", envir=.RGDAL_CACHE)) && (!PROJis6ormore())) {
       message("NOTE: rgdal::checkCRSArgs: no proj_defs.dat in PROJ.4 shared files")
       uprojargs <- proj_def_bug_fix(uprojargs)
   }

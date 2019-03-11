@@ -6,6 +6,11 @@ getPROJ4VersionInfo <- function() {
     res
 }
 
+PROJis6ormore <- function() {
+    verno <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]]
+    verno >= 600
+}
+
 getPROJ4libPath <- function() {
     res <- Sys.getenv("PROJ_LIB")
     res
@@ -413,6 +418,7 @@ projInfo <- function(type="proj") {
     res <- .Call("RGDAL_projInfo", t, PACKAGE="rgdal")
     if (type == "proj") res$description <- sapply(strsplit(as.character(
         res$description), "\n"), function(x) x[1])
+    if (type == "datum" && is.null(res)) warning("datum list not available for PROJ > 5")
     res <- data.frame(res)
     res
 }

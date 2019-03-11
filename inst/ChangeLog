@@ -1,3 +1,85 @@
+2019-03-11 09:19  rsbivand
+
+	* DESCRIPTION: tidy
+
+2019-03-08 19:10  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-03-08 19:09  rsbivand
+
+	* man/make_EPSG.Rd, src/proj_info6.cpp: fix EPSG messages where no
+	  proj_string
+
+2019-03-08 12:42  rsbivand
+
+	* src/proj_info6.cpp: add contexts to EPSG listing
+
+2019-03-08 12:33  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-03-08 12:32  rsbivand
+
+	* src/proj_info6.cpp: add contexts to EPSG listing
+
+2019-03-08 11:39  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-03-08 11:38  rsbivand
+
+	* DESCRIPTION: tidy
+
+2019-03-08 09:51  rsbivand
+
+	* src/proj_info6.cpp: Use Markus Metz g.proj PROJ6 listings
+
+2019-03-08 09:35  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/make_EPSG.R, man/make_EPSG.Rd,
+	  src/proj_info6.cpp, src/projectit.cpp: Use Markus Metz g.proj
+	  PROJ6 listings
+
+2019-03-06 13:39  rsbivand
+
+	* src/proj_info6.cpp: proj6 back-check to 5
+
+2019-03-06 13:04  rsbivand
+
+	* R/AAA.R: fix startup message
+
+2019-03-06 12:28  rsbivand
+
+	* src/proj_info6.cpp: Proj6 workarounds
+
+2019-03-06 09:56  rsbivand
+
+	* ChangeLog, inst/ChangeLog: passes check with PROJ 6.0.0
+
+2019-03-06 09:55  rsbivand
+
+	* configure, configure.ac: passes check with PROJ 6.0.0
+
+2019-03-06 09:50  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/Class-CRSx.R, R/make_EPSG.R, R/project.R,
+	  R/wrappers.R, configure, configure.ac, man/make_EPSG.Rd,
+	  src/Makevars.win, src/inverser.c, src/proj_info6.cpp,
+	  src/projectit.cpp: passes check with PROJ 6.0.0
+
+2019-03-04 14:25  rsbivand
+
+	* DESCRIPTION: tidy
+
+2019-03-04 14:19  rsbivand
+
+	* DESCRIPTION, src/gdal-bindings.cpp: try rchk fix
+
+2019-02-20 11:24  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2019-02-20 11:23  rsbivand
 
 	* R/AAA.R: place has_proj_def.dat earlier

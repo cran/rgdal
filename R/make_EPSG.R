@@ -1,7 +1,17 @@
 make_EPSG <- function(file) {
-        if (missing(file)) {
+        if (.Call("PROJ4VersionInfo", PACKAGE = "rgdal")[[2]] >= 600L &&
+            !missing(file)) {
+            warning("New proj interface does not use file argument")
+            file <- NULL
+        }
+        if (missing(file) || is.null(file)) {
             tf <- tempfile()
             n <- .Call("PROJcopyEPSG", tf, PACKAGE="rgdal")
+            if (.Call("PROJ4VersionInfo", PACKAGE = "rgdal")[[2]] >= 600L) {
+                if (n <= 0) stop("PROJ 6 database empty")
+                EPSG <- read.csv(tf, header=TRUE, stringsAsFactors=FALSE)
+                return(EPSG)
+            }
             if (n > 0) file <- tf
             else stop("Error opening epsg file")
        } else {

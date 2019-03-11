@@ -68,7 +68,7 @@ GDALcall <- function(object, option, ...) {
     assign("has_proj_def.dat", .Call("PROJ4_proj_def_dat_Installed",
       PACKAGE="rgdal"), envir=.RGDAL_CACHE)
   }
-  if (!get("has_proj_def.dat", envir=.RGDAL_CACHE)) {
+  if ((!get("has_proj_def.dat", envir=.RGDAL_CACHE)) && (!PROJis6ormore())) {
       projfrom <- proj_def_bug_fix(projfrom)
       projto <- proj_def_bug_fix(projto)
   }

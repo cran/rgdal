@@ -1,5 +1,6 @@
 /* Copyright (c) 2016 Barry Rowlingson */
 
+#include <proj_api.h>
 #if PJ_VERSION < 493
 #include <projects.h>
 
