@@ -589,7 +589,10 @@ RGDAL_CloseDataset(SEXP sxpDataset) {
   SEXP sxpHandle;
   PROTECT(sxpHandle = getObjHandle(sxpDataset));
 
-  if (sxpHandle == NULL) return(R_NilValue);
+  if (sxpHandle == NULL) {
+    UNPROTECT(1);
+    return(R_NilValue);
+  }
 
   const char *classname = asString(getAttrib(sxpDataset, R_ClassSymbol));
 
@@ -608,7 +611,7 @@ RGDAL_CloseDataset(SEXP sxpDataset) {
 }
 
 // FIXME rchk Function RGDAL_CloseDataset
-//  [PB] has possible protection stack imbalance rgdal/src/gdal-bindings.cpp:606
+//  [PB] has possible protection stack imbalance rgdal/src/gdal-bindings.cpp:608
 SEXP
 RGDAL_CreateDataset(SEXP sxpDriver, SEXP sDim, SEXP sType,
 		    SEXP sOpts, SEXP sFile) {

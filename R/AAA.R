@@ -61,7 +61,7 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
     paste(' GDAL binary built with GEOS:', getGDALwithGEOS(), "\n"),
     ' Loaded PROJ.4 runtime: ', getPROJ4VersionInfo(), '\n',
     paste(" Path to PROJ.4 shared files: ", pl[1], sep=""), "\n",
-    ifelse(get("has_proj_def.dat", envir=.RGDAL_CACHE), "", "WARNING: no proj_defs.dat in PROJ.4 shared files\n"), sep="")
+    ifelse((get("has_proj_def.dat", envir=.RGDAL_CACHE)  || (PROJis6ormore())), "", "WARNING: no proj_defs.dat in PROJ.4 shared files\n"), sep="")
     splVersion <- version_sp_linkingTo()
   Smess <- paste(Smess, "Linking to sp version:", splVersion, "\n")
   spVcheck <- NULL

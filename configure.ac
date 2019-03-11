@@ -297,7 +297,20 @@ if test "${proj_config_ok}" = yes; then
   AC_MSG_NOTICE([PROJ version: ${PROJ_VERSION}])
 fi
 
-PKG_CPPFLAGS=""
+PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
+
+if test "${PROJV1}" = "6"; then
+  AC_MSG_NOTICE([Support for PROJ >= 6.0.0 not yet available, deprecated API defined])
+  PKG_CPPFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+  PROJ6="yes"
+else
+  AC_MSG_NOTICE([PROJ version < 6.0.0])
+  PKG_CPPFLAGS=""
+  PROJ6="no"
+fi
+#AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
+
+#PKG_CPPFLAGS=""
 
 AC_ARG_WITH([proj-include],
     AC_HELP_STRING([--with-proj-include=DIR],
@@ -305,19 +318,21 @@ AC_ARG_WITH([proj-include],
     [proj_include_path=$withval])
 if test [ -n "$proj_include_path" ] ; then
    proj_include_path="-I${proj_include_path}"
-   AC_SUBST([PKG_CPPFLAGS],["${proj_include_path} ${INPKG_CPPFLAGS}"])
+   AC_SUBST([PKG_CPPFLAGS],["${PKG_CPPFLAGS} ${proj_include_path} ${INPKG_CPPFLAGS}"])
 else
   if test "${proj_config_ok}" = yes; then
     PROJ_INCLUDE_PATH=`${PROJ_CONFIG} --cflags`
     proj_include_path=${PROJ_INCLUDE_PATH}
-    AC_SUBST([PKG_CPPFLAGS],["${PROJ_INCLUDE_PATH} ${INPKG_CPPFLAGS}"])
+    AC_SUBST([PKG_CPPFLAGS],["${PKG_CPPFLAGS} ${PROJ_INCLUDE_PATH} ${INPKG_CPPFLAGS}"])
   fi
 fi
+#AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 
 # honor PKG_xx overrides
 # for CPPFLAGS we will superfluously double R's flags
 # since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
 CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
+AC_MSG_NOTICE([proj CPP flags: ${PKG_CPPFLAGS}])
 
 PKG_LIBS=""
           
@@ -385,6 +400,8 @@ else
   AC_MSG_RESULT(yes)
 fi
 
+if test ${PROJ_VERSION_H} -lt 493; then
+
 if test ${PROJ_VERSION_H} = 480 ; then
   ADDED_PKG_INCL_480=`pwd`"/inst/include"
   AC_SUBST([PKG_CPPFLAGS],["${PKG_CPPFLAGS} -I${ADDED_PKG_INCL_480}"])
@@ -422,6 +439,8 @@ if test "$STOP" = "stop" ; then
     exit 1
 fi
 
+fi # < 493 test for projects.h
+
 AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
 
 AC_ARG_WITH([proj-share],
@@ -434,7 +453,7 @@ fi
 
 
 
-
+if test ${PROJ6} = "no"; then
 
 [cat > proj_conf_test2.c <<_EOCONF
 #include <stdio.h>
@@ -491,6 +510,53 @@ if test "$STOP" = "stop" ; then
     exit 1
 fi
 
+else # test for new files if PROJ6
+
+[cat > proj_conf_test2.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+
+int main() {
+    PAFile fp;
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "proj.db", "rb");
+    if (fp == NULL) exit(1);
+    pj_ctx_fclose(ctx, fp);
+    exit(0);
+}
+_EOCONF]
+
+${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.c ${PKG_LIBS}
+if test [ -n "$proj_share_path" ] ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test2
+  proj_share=`echo $?`
+else
+  ./proj_conf_test2
+  proj_share=`echo $?`
+fi
+
+AC_MSG_CHECKING(PROJ.4: proj.db found and readable)
+if test ${proj_share} -eq 1 ; then
+    AC_MSG_RESULT(no)
+    STOP="stop"
+else
+    AC_MSG_RESULT(yes)
+fi
+
+rm -f proj_conf_test2.c proj_conf_test2
+
+if test "$STOP" = "stop" ; then
+    echo "Error: proj/proj.db not found"
+    echo "Either install missing proj support files, set PROJ_LIB to the"
+    echo "correct path, and if need be use the --with-proj-share="
+    echo "configure argument."
+    exit 1
+fi
+
+
+fi # don't test for old files if PROJ6
+
 
 [cat > proj_conf_test3.c <<_EOCONF
 #include <stdio.h>
@@ -544,6 +610,7 @@ if test "$WARN" = "warn" ; then
     echo "of proj-datumgrid-1.<latest>.zip from http://download.osgeo.org/proj/ in nad/."
 fi
 
+
 # Optional local copy of GDAL datadir and PROJ_LIB
 
 data_copy=no
@@ -588,6 +655,9 @@ fi
 AC_SUBST([PKG_CPPFLAGS], ["${INPKG_CPPFLAGS} ${GDAL_CPPFLAGS}"])
 if test [ -n "$proj_include_path" ] ; then
 AC_SUBST([PKG_CPPFLAGS], ["${PKG_CPPFLAGS} ${proj_include_path}"])
+fi
+if test ${PROJ6} = "yes" ; then
+AC_SUBST([PKG_CPPFLAGS], ["${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"])
 fi
 
 AC_SUBST([PKG_LIBS], ["${INPKG_LIBS} ${GDAL_LIBS}"])

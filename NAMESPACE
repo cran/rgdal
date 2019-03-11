@@ -7,6 +7,7 @@ importFrom(grDevices, gray, rgb, hsv, col2rgb)
 importFrom(graphics, par, image.default, text)
 importFrom(stats, sd, offset, na.omit)
 importFrom(utils, packageVersion)
+importFrom("utils", "read.csv")
 
 #exportMethods(spTransform)
 exportMethods(closeDataset)
