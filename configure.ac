@@ -287,26 +287,34 @@ if `$PROJ_CONFIG --exists` ; then
   AC_MSG_NOTICE([pkg-config proj exists, will use it])
   proj_config_ok=yes
 else
+  AC_MSG_NOTICE([pkg-config proj not available])
+  echo "  set PKG_CONFIG_PATH to the directory containing proj.pc"
   proj_config_ok=no
 fi
 
 PROJ_VERSION=""
+PROJ6=""
 
 if test "${proj_config_ok}" = yes; then
   PROJ_VERSION=`${PROJ_CONFIG} --modversion`
   AC_MSG_NOTICE([PROJ version: ${PROJ_VERSION}])
-fi
 
-PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
+  PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
 
-if test "${PROJV1}" = "6"; then
-  AC_MSG_NOTICE([Support for PROJ >= 6.0.0 not yet available, deprecated API defined])
-  PKG_CPPFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
-  PROJ6="yes"
+  if test "${PROJV1}" = "6"; then
+    AC_MSG_NOTICE([Support for PROJ >= 6.0.0 not yet available, deprecated API defined])
+    PKG_CPPFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+    PROJ6="yes"
+  else
+    AC_MSG_NOTICE([PROJ version < 6.0.0])
+    PKG_CPPFLAGS=""
+    PROJ6="no"
+  fi
+
 else
-  AC_MSG_NOTICE([PROJ version < 6.0.0])
-  PKG_CPPFLAGS=""
-  PROJ6="no"
+
+  AC_MSG_NOTICE([PROJ version not determined using pkg-config proj])
+
 fi
 #AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 
@@ -352,6 +360,19 @@ else
   fi
 fi
 
+AC_ARG_WITH([proj_api],
+    [  --with-proj_api[=ARG]        legacy proj_api.h while still available, or current proj.h (ARG="proj_api.h"(default), "proj.h")],,)
+
+AC_MSG_CHECKING([PROJ header API:])
+
+if test "$with_proj_api" = "" ; then
+  PROJ_API="proj_api.h"
+else
+  PROJ_API="$with_proj_api"
+fi
+
+AC_MSG_RESULT(${PROJ_API})
+
 LIBS="${INLIBS} ${PKG_LIBS}"
 #PKG_LIBS="${PKG_LIBS} -lproj"
 #AC_MSG_NOTICE([${CFLAGS} ${PKG_CPPFLAGS}])
@@ -368,23 +389,29 @@ int main() {
 _EOCONF]
 
 if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test1 proj_conf_test1.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
+  PROJ_VERSION_H=`./proj_conf_test1`
   AC_MSG_RESULT(yes)
 else
-  AC_MSG_RESULT(no)
-  AC_MSG_ERROR([proj_api.h not found in standard or given locations.])
+  if test `${CC} ${CFLAGS} ${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H -o proj_conf_test1 proj_conf_test1.c ${PKG_LIBS} 2> /dev/null; echo $?` = 0; then
+    PROJ6="yes"
+    PKG_CPPFLAGS="${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+    PROJ_VERSION_H=`./proj_conf_test1`
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([proj_api.h not found in standard or given locations.])
+  fi
 fi
-
-PROJ_VERSION_H=`./proj_conf_test1`
 
 rm -f proj_conf_test1.c proj_conf_test1
 
-#AC_MSG_NOTICE(["${PROJ_VERSION} ${PROJ_VERSION_H}"])
+#AC_MSG_NOTICE(["|${PROJ_VERSION}| |${PROJ_VERSION_H}|"])
 
-if test ${PROJ_VERSION} = "" ; then
+if test -n "${PROJ_VERSION}" ; then
   AC_MSG_CHECKING([PROJ version agreement])
   PROJ_VERSION_DOT=`echo ${PROJ_VERSION} | tr -d "."`
 #echo "|${PROJ_VERSION}| |${PROJ_VERSION_DOT}| |${PROJ_VERSION_H}|"
-  if test ${PROJ_VERSION_DOT}$ = ${PROJ_VERSION_H}$; then
+  if test "${PROJ_VERSION_DOT}$" = "${PROJ_VERSION_H}$"; then
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
@@ -440,6 +467,8 @@ if test "$STOP" = "stop" ; then
 fi
 
 fi # < 493 test for projects.h
+
+
 
 AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
 

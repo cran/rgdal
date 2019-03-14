@@ -43,10 +43,10 @@ projNAD <- function() {
     if (.Platform$OS.type == "windows" && .Platform$r_arch == "i386") 
         legacy <- FALSE
     if (!legacy) {
-     if (!inv) {
-        if (allowNAs_if_not_legacy) {
-          nas <- is.na(xy[,1]) | is.na(xy[,1])
-        }
+      if (allowNAs_if_not_legacy) {
+       nas <- is.na(xy[,1]) | is.na(xy[,1])
+      }
+      if (!inv) {
         attr(nc, "ob_tran") <- as.integer(use_ob_tran)
         if (attr(nc, "ob_tran") == 0L) {
           res <- .Call("transform", "+proj=longlat", proj, nc,

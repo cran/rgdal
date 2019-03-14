@@ -123,5 +123,15 @@ try(xy0 <- project(ll, "+proj=moll", legacy=TRUE))
 try(xy1 <- project(ll, "+proj=moll", legacy=FALSE, allowNAs_if_not_legacy=FALSE))
 try(xy2 <- project(ll, "+proj=moll", legacy=FALSE, allowNAs_if_not_legacy=TRUE))
 if (exists("xy0")) all.equal(xy0, xy2)
+xy0 <- structure(c(1217100.8468177, 1191302.229156, 1232143.28841193, 
+1262546.27733232, 1299648.82357849, 1263011.18154638, 1246343.17808186, 
+1242654.33986052, NA, NA, -715428.207551599, -622613.577983058, 
+-569301.605757784, -548528.530156422, -590895.949857199, -616845.926397351, 
+-648585.161643274, -702393.1160979, NA, NA), .Dim = c(10L, 2L
+), .Dimnames = list(NULL, c("longitude", "latitude")))
+try(ll0 <- project(ll, "+proj=moll", inv=TRUE, legacy=TRUE))
+try(ll1 <- project(ll, "+proj=moll", inv=TRUE, legacy=FALSE, allowNAs_if_not_legacy=FALSE))
+try(ll2 <- project(ll, "+proj=moll", inv=TRUE, legacy=FALSE, allowNAs_if_not_legacy=TRUE))
+if (exists("ll0")) all.equal(ll0, ll2)
 }
 \keyword{spatial}

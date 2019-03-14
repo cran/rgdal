@@ -1,6 +1,6 @@
 
-R version 3.5.0 (2018-04-23) -- "Joy in Playing"
-Copyright (C) 2018 The R Foundation for Statistical Computing
+R version 3.5.3 (2019-03-11) -- "Great Truth"
+Copyright (C) 2019 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -17,20 +17,20 @@ Type 'q()' to quit R.
 
 > suppressPackageStartupMessages(library(rgdal))
 > getPROJ4VersionInfo()
-[1] "Rel. 5.1.0, June 1st, 2018, [PJ_VERSION: 510]"
+[1] "Rel. 6.0.0, March 1st, 2019, [PJ_VERSION: 600]"
 > getGDALVersionInfo()
-[1] "GDAL 2.2.4, released 2018/03/19"
+[1] "GDAL 2.4.0, released 2018/12/14"
 > d <- system.file("vectors", package="rgdal")
 > shps <- ogrListLayers(d)
 > sapply(shps, function(l) OGRSpatialRef(d, l))
-                                                                                             trin_inca_pl03 
-                                                                                                         NA 
-                                                                                   kiritimati_primary_roads 
-                                                        "+proj=utm +zone=4 +datum=WGS84 +units=m +no_defs " 
-                                                                                                     cities 
-                                                                     "+proj=longlat +datum=WGS84 +no_defs " 
-                                                                                                   scot_BNG 
-"+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +datum=OSGB36 +units=m +no_defs " 
+                                                                                                                                                     trin_inca_pl03 
+                                                                                                                                                                 NA 
+                                                                                                                                           kiritimati_primary_roads 
+                                                                                                                "+proj=utm +zone=4 +datum=WGS84 +units=m +no_defs " 
+                                                                                                                                                             cities 
+                                                                                                                             "+proj=longlat +datum=WGS84 +no_defs " 
+                                                                                                                                                           scot_BNG 
+"+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs " 
 > OGRSpatialRef(file.path(d, "airports.gml"), "airports")
 [1] NA
 > OGRSpatialRef(file.path(d, "ps_cant_31.MIF"), "ps_cant_31")
@@ -40,43 +40,25 @@ Type 'q()' to quit R.
 > OGRSpatialRef(file.path(d, "test_trk2.gpx"), "tracks")
 [1] "+proj=longlat +datum=WGS84 +no_defs "
 > OGRSpatialRef(file.path(d, "PacoursIKA2.TAB"), "PacoursIKA2")
-[1] "+proj=lcc +lat_1=45.898918964419 +lat_2=47.696014502038 +lat_0=46.8 +lon_0=0 +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs "
+[1] "+proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=0 +k_0=0.9998774200000193 +x_0=600000 +y_0=2200000.000000325 +a=6378249.2 +b=6356515.000000472 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs "
 > d <- system.file("pictures", package="rgdal")
-> f <- sort(list.files(d))
-> for (i in f[-c(2,8,11)]) {
-+  print(i)
+> f <- c("SP27GTIF.TIF", "cea.tif", "erdas_spnad83.tif", "scaleoffset.vrt",
++  "test_envi_class.envi")
+> for (i in f) {
++  #print(i)
 +  ds <- GDAL.open(file.path(d, i))
 +  ref <- getProjectionRef(ds)
 +  GDAL.close(ds)
-+  print(ref)
++  #print(ref)
 +  cat("file: ", i, ", SRS: ", ref, "\n")
 + }
-[1] "Rlogo.jpg"
-[1] ""
-file:  Rlogo.jpg , SRS:   
-[1] "SP27GTIF.TIF"
-[1] "+proj=tmerc +lat_0=36.66666666666666 +lon_0=-88.33333333333333 +k=0.9999749999999999 +x_0=152400.3048006096 +y_0=0 +datum=NAD27 +units=us-ft +no_defs "
 file:  SP27GTIF.TIF , SRS:  +proj=tmerc +lat_0=36.66666666666666 +lon_0=-88.33333333333333 +k=0.9999749999999999 +x_0=152400.3048006096 +y_0=0 +datum=NAD27 +units=us-ft +no_defs  
-[1] "big_int_arc_file.asc"
-[1] ""
-file:  big_int_arc_file.asc , SRS:   
-[1] "cea.tif"
-[1] "+proj=cea +lon_0=-117.333333333333 +lat_ts=33.75 +x_0=0 +y_0=0 +datum=NAD27 +units=m +no_defs "
 file:  cea.tif , SRS:  +proj=cea +lon_0=-117.333333333333 +lat_ts=33.75 +x_0=0 +y_0=0 +datum=NAD27 +units=m +no_defs  
-[1] "erdas_spnad83.tif"
-[1] "+proj=tmerc +lat_0=30 +lon_0=-82.16666666666667 +k=0.9999 +x_0=200000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs "
 file:  erdas_spnad83.tif , SRS:  +proj=tmerc +lat_0=30 +lon_0=-82.16666666666667 +k=0.9999 +x_0=200000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs  
-[1] "logo.jpg"
-[1] ""
-file:  logo.jpg , SRS:   
-[1] "scaleoffset.vrt"
-[1] "+proj=utm +zone=18 +datum=WGS84 +units=m +no_defs "
 file:  scaleoffset.vrt , SRS:  +proj=utm +zone=18 +datum=WGS84 +units=m +no_defs  
-[1] "test_envi_class.envi"
-[1] "+proj=longlat +datum=WGS84 +no_defs "
 file:  test_envi_class.envi , SRS:  +proj=longlat +datum=WGS84 +no_defs  
 > 
 > 
 > proc.time()
    user  system elapsed 
-  0.345   0.022   0.360 
+  0.431   0.036   0.463 

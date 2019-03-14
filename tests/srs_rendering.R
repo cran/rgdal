@@ -10,13 +10,14 @@ OGRSpatialRef(file.path(d, "Up.tab"), "Up")
 OGRSpatialRef(file.path(d, "test_trk2.gpx"), "tracks")
 OGRSpatialRef(file.path(d, "PacoursIKA2.TAB"), "PacoursIKA2")
 d <- system.file("pictures", package="rgdal")
-f <- sort(list.files(d))
-for (i in f[-c(2,8,11)]) {
- print(i)
+f <- c("SP27GTIF.TIF", "cea.tif", "erdas_spnad83.tif", "scaleoffset.vrt",
+ "test_envi_class.envi")
+for (i in f) {
+ #print(i)
  ds <- GDAL.open(file.path(d, i))
  ref <- getProjectionRef(ds)
  GDAL.close(ds)
- print(ref)
+ #print(ref)
  cat("file: ", i, ", SRS: ", ref, "\n")
 }
 
