@@ -297,5 +297,10 @@ g <- GDALinfo(fn)
 attr(g, 'ScaleOffset')
 g
 
+fl <- system.file("pictures/MR5905167_372.nc", package="rgdal")[1]
+if (file.exists(fl)) {
+  flstr <- paste0("NETCDF:\"", fl, "\":TEMP")
+  if ("netCDF" \%in\% gdalDrivers()$name) GDALinfo(flstr)
+}
 }
 \keyword{spatial}

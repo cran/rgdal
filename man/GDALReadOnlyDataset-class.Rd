@@ -56,7 +56,7 @@ getGeoTransFunc(dataset)
 }
 \arguments{
  \item{dataset}{An object inheriting from class 'GDALReadOnlyDataset'}
- \item{filename}{A string giving the file to read from}
+ \item{filename}{name of file to contain raster data object; will be normalized with \code{\link{normalizePath}} if it is a file}
 % \item{x}{An object inheriting from class 'GDALReadOnlyDataset'}
 % \item{offset}{Number of rows and columns from the origin (usually the
 %    upper left corner) to begin reading from}

@@ -20,6 +20,14 @@ assertClass <- function(object, class) {
                     'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32',
                     'CFloat32', 'CFloat64')
 
+.normalize_if_path <- function(file, mustWork = NA) {
+  if (file.exists(file)) {
+    file <- normalizePath(file, mustWork = mustWork)
+  }
+  file
+}
+
+
 setClass('GDALMajorObject',
          representation(handle = 'externalptr'))
  
@@ -123,7 +131,7 @@ setMethod('initialize', 'GDALReadOnlyDataset',
                   allowedDrivers <- as.character(allowedDrivers)
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset',
-                        normalizePath(filename, mustWork=FALSE), 
+                        .normalize_if_path(filename, mustWork=NA), 
 			TRUE, silent, allowedDrivers, options, PACKAGE="rgdal")
               }
             } else {
@@ -149,7 +157,7 @@ setMethod('initialize', 'GDALDataset',
                   allowedDrivers <- as.character(allowedDrivers)
               slot(.Object, 'handle') <- {
                 .Call('RGDAL_OpenDataset', 
-                        normalizePath(filename, mustWork=FALSE), 
+                        .normalize_if_path(filename, mustWork=NA), 
 			FALSE, silent, allowedDrivers, options, PACKAGE="rgdal")
               }
             } else {

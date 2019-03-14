@@ -1,3 +1,54 @@
+2019-03-13 10:15  rsbivand
+
+	* inst/pictures/MR5905167_372.nc, man/readGDAL.Rd,
+	  tests/srs_rendering.R, tests/srs_rendering.Rout.save: adding
+	  netCDF test file
+
+2019-03-13 08:57  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-03-13 08:57  rsbivand
+
+	* R/gdal.R, man/GDALReadOnlyDataset-class.Rd: test for file exists
+	  before normalizePath when reading rasters
+
+2019-03-12 12:27  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-03-12 12:26  rsbivand
+
+	* R/project.R, man/project.Rd: fix NA handling for i386 project()
+
+2019-03-12 11:08  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2019-03-12 11:04  rsbivand
+
+	* src/inverser.c: re-order inversetest header order
+
+2019-03-12 10:21  rsbivand
+
+	* configure: tidy
+
+2019-03-12 10:20  rsbivand
+
+	* DESCRIPTION: tidy
+
+2019-03-12 10:16  rsbivand
+
+	* configure, configure.ac: fix configure.ac tests
+
+2019-03-11 13:49  rsbivand
+
+	* configure: tidy
+
+2019-03-11 09:20  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2019-03-11 09:19  rsbivand
 
 	* DESCRIPTION: tidy
