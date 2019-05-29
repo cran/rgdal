@@ -24,7 +24,7 @@ showEPSG(p4s)
 \value{
   A character string containing the WKT representation of the PROJ.4 string.
 }
-\references{\url{http://www.gdal.org/osr_tutorial.html}}
+\references{\url{https://gdal.org/tutorials/osr_api_tut.html}}
 \author{Roger Bivand}
 
 \seealso{\code{\link[sp]{is.projected}}, \code{\link[sp]{CRS-class}}}
