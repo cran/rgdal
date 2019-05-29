@@ -120,16 +120,15 @@ fi
 AC_MSG_CHECKING(gdal-config usability)
 if test `${GDAL_CONFIG} --version`;
 then
-
-	GDAL_CPPFLAGS=`${GDAL_CONFIG} --cflags`
-	GDAL_LIBS=`${GDAL_CONFIG} --libs`
-        GDAL_VERSION=`${GDAL_CONFIG} --version`
-        GDAL_DEP_LIBS=`${GDAL_CONFIG} --dep-libs`
-        GDAL_DATADIR=`${GDAL_CONFIG} --datadir`
-        gdalok=yes
-        AC_MSG_RESULT(yes)
+  GDAL_CPPFLAGS=`${GDAL_CONFIG} --cflags`
+  GDAL_LIBS=`${GDAL_CONFIG} --libs`
+  GDAL_VERSION=`${GDAL_CONFIG} --version`
+  GDAL_DEP_LIBS=`${GDAL_CONFIG} --dep-libs`
+  GDAL_DATADIR=`${GDAL_CONFIG} --datadir`
+  gdalok=yes
+  AC_MSG_RESULT(yes)
 else
-        AC_MSG_RESULT(no)
+      AC_MSG_RESULT(no)
 	echo "Error: gdal-config not found"
 	echo "The gdal-config script distributed with GDAL could not be found."
 	echo "If you have not installed the GDAL libraries, you can"
@@ -142,7 +141,6 @@ else
 	echo ""
 
 	exit 1
-
 fi
 
 AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
@@ -174,15 +172,17 @@ else
 fi
 
 
-AC_MSG_CHECKING([GDAL version <= 2.5.0])
-if test ${GDAL_MAJOR} -lt 2 ; then
+AC_MSG_CHECKING([GDAL version <= 2.5 or >= 3.0])
+if test ${GDAL_MAJOR} -lt 2 -o ${GDAL_MAJOR} -gt 2; then
   AC_MSG_RESULT(yes)
 else
-  if test ${GDAL_MAJOR} = 2 -a ${GDAL_MINOR} -le 5 ; then
-    AC_MSG_RESULT(yes)
-  else
-    AC_MSG_RESULT(no)
-    AC_MSG_ERROR([GDAL version out of bounds])
+  if test ${GDAL_MAJOR} = 2; then
+    if test ${GDAL_MINOR} -le 5 ; then
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+      AC_MSG_ERROR([GDAL version out of bounds])
+    fi
   fi
 fi
 
@@ -268,13 +268,28 @@ else
   fi
 fi
 
+GDAL_GE_250="no"
+GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
+GDAL_MOD_VER=`echo $GDAL_VERSION | cut -d "." -f2`
+if test "${GDAL_MAJ_VER}" = 2 ; then
+  if test "${GDAL_MOD_VER}" -ge 5 ; then
+    GDAL_GE_250="yes"
+  fi
+else
+  if test "${GDAL_MAJ_VER}" -ge 3 ; then
+    GDAL_GE_250="yes"
+  fi
+fi
+
 GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
 AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/pcs.csv readable)
 if test -r "${GDAL_DATA_TEST_FILE}" ; then
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
+  if test "${GDAL_GE_250}" = no; then
+    AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
+  fi
 fi
 
 # PROJ.4

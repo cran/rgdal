@@ -1,3 +1,24 @@
+2019-05-03 07:42  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: block versions 2.6-2.9
+
+2019-04-03 07:49  edzer
+
+	* configure, configure.ac: make pcs.csv check compulsory only for
+	  GDAL < 2.5.0
+
+2019-03-13 13:56  rsbivand
+
+	* configure, configure.ac: add configure argument --with-proj_api
+
+2019-03-13 10:24  rsbivand
+
+	* inst/pictures/SOURCES: tidy
+
+2019-03-13 10:16  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2019-03-13 10:15  rsbivand
 
 	* inst/pictures/MR5905167_372.nc, man/readGDAL.Rd,
