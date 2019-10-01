@@ -39,12 +39,14 @@ SEXP OGR_write(SEXP inp)
     SEXP ans, wkbtype_attr, comms, ofld_nms;
     int verbose = INTEGER_POINTER(getAttrib(VECTOR_ELT(inp, 5),
         install("verbose")))[0];
-    int pc=0, i, j, k, is_shpfile;
+    int pc=0, i, j, k, is_shpfile, shp_edge_case_fix;
 
     PROTECT(ans = NEW_CHARACTER(1)); pc++;
     PROTECT(wkbtype_attr = NEW_INTEGER(1)); pc++;
     is_shpfile = INTEGER_POINTER(getAttrib(VECTOR_ELT(inp, 3),
       install("is_shpfile")))[0]; 
+    shp_edge_case_fix = INTEGER_POINTER(getAttrib(VECTOR_ELT(inp, 3),
+      install("shp_edge_case_fix")))[0]; 
 
     installErrorHandler();
 #ifdef GDALV2

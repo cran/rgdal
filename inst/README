@@ -75,7 +75,7 @@ http://trac.osgeo.org/gdal/wiki/DownloadSource
 
 PROJ.4 is available at:
 
-https://proj4.org/
+https://proj.org/
 
 If installing PROJ.4 from RPM binaries, note that four RPM files are
 required: "proj", "proj-devel", "proj-epsg" and "proj-nad". The third and

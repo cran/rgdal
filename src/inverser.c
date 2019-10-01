@@ -1,4 +1,5 @@
 /* Copyright (c) 2016 Barry Rowlingson */
+typedef int make_iso_compilers_happy;
 
 #ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 #include <projects.h>

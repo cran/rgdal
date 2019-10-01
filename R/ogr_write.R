@@ -1,4 +1,4 @@
-writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL) {
+writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL, shp_edge_case_fix=FALSE) {
     if (missing(dsn)) stop("missing dsn")
     stopifnot(is.character(dsn))
     stopifnot(length(dsn) == 1L)
@@ -22,6 +22,9 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
 # fix for over-eager internal checking in the KML driver 090114
     }
     is_shpfile <- driver == "ESRI Shapefile"
+    stopifnot(is.logical(is_shpfile))
+    stopifnot(length(is_shpfile) == 1)
+    stopifnot(!is.na(is_shpfile))
     stopifnot(inherits(obj, "Spatial"))
     if (gridded(obj)) {
         obj <- as(obj, "SpatialPointsDataFrame")
@@ -170,6 +173,10 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     attr(nf, "verbose") <- as.logical(verbose)
     driver <- as.character(driver)
     attr(driver, "is_shpfile") <- is_shpfile
+    stopifnot(is.logical(shp_edge_case_fix))
+    stopifnot(length(shp_edge_case_fix) == 1)
+    stopifnot(!is.na(shp_edge_case_fix))
+    attr(driver, "shp_edge_case_fix") <- shp_edge_case_fix && is_shpfile
     
     pre <- list(obj, as.character(dsn), as.character(layer), 
         driver, as.integer(nobj), nf,
@@ -190,7 +197,8 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
             output_diver=driver, output_n=nobj, output_nfields=nf,
             output_fields=fld_names, output_fclasses=ogr_ftype, 
             dataset_options=dataset_options, layer_options=layer_options,
-            morphToESRI=morphToESRI, FIDs=FIDs)
+            morphToESRI=morphToESRI, FIDs=FIDs,
+            shp_edge_case_fix=shp_edge_case_fix)
         return(res)
 # add FIDs 130502
     } 
