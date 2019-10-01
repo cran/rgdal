@@ -39,7 +39,7 @@ PROJ is currently run under the OSGeo MetaCRS PSC, and is also historically
 https://github.com/OSGeo/proj.4/blob/master/AUTHORS. 
 PROJ uses the MIT license. The software was initially released by the USGS 
 in the public domain. When Frank Warmerdam took over the development of 
-PROJ it was moved under the MIT license: https://proj4.org/about.html.
+PROJ it was moved under the MIT license: https://proj.org/about.html.
 
 Both PROJ and GDAL provide metadata files derived from other providers, and
 licensed under varying conditions, mostly precluding the arbitrary 
@@ -49,5 +49,5 @@ binary packages. Their provenance is not fully documented, but some lists are
 available, for example: https://github.com/OSGeo/proj.4/blob/master/nad/README.
 Work is in progress to link the provided data files to their licenses, such as:
 http://www.epsg.org/Termsofuse.aspx. Additional non-free metadata files may 
-be added as shown in: https://proj4.org/resource_files.html.
+be added as shown in: https://proj.org/resource_files.html.
 

@@ -1,3 +1,46 @@
+2019-10-01 11:58  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: fix configure.ac for R
+	  4.0.0
+
+2019-09-03 08:09  rsbivand
+
+	* configure, configure.ac: remove R CMD config CPP
+
+2019-08-18 12:11  rsbivand
+
+	* R/ogr_write.R, man/writeOGR.Rd, src/OGR_write.cpp,
+	  tests/tripup.R, tests/tripup.Rout.save: checking shapefile issue
+	  with GDAL #1788
+
+2019-08-16 19:28  rsbivand
+
+	* DESCRIPTION, inst/etc/obj_with_comments.RData,
+	  inst/etc/test_dfs.RData, tests/tripup.R: ESRI Shapefile driver
+	  writing MULTIPOLYGON as POLYGON
+
+2019-06-30 16:31  rsbivand
+
+	* src/inverser.c: do something in src/inverter.c to block warning
+
+2019-06-07 08:04  rsbivand
+
+	* DESCRIPTION, LICENSE.note, inst/README, man/project.Rd,
+	  man/spTransform-methods.Rd: proj4.org links -> proj.org
+
+2019-06-06 16:48  edzer
+
+	* configure, configure.ac: run silent on OSX/static against
+	  GDAL3.0.0, PROJ6.1.0
+
+2019-05-28 11:01  rsbivand
+
+	* man/showWKT.Rd: tidy
+
+2019-05-28 10:53  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2019-05-03 07:42  rsbivand
 
 	* DESCRIPTION, configure, configure.ac: block versions 2.6-2.9

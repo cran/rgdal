@@ -9,7 +9,7 @@
 writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
  layer_options=NULL, verbose = FALSE, check_exists=NULL,
  overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL,
- encoding=NULL)
+ encoding=NULL, shp_edge_case_fix=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,6 +25,7 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
   \item{delete_dsn}{default FALSE, may be set to TRUE if \code{overwrite_layer} reports that the data source cannot be updated; this will delete data and must be used with extreme caution, its behaviour varies between drivers, and accommodates changes that may appear in GDAL 1.8}
   \item{morphToESRI}{default NULL, in which case set TRUE if driver is \dQuote{ESRI Shapefile} or FALSE otherwise; may be used to override this default}
   \item{encoding}{default NULL, if set to a character string, it will be used to convert output strings from the given value to UTF-8 encoding.}
+  \item{shp_edge_case_fix}{default FALSE, if TRUE, attempt to work around MULTIPOLYGON to POLYGON degradation in ESRI Shapefile output with two toiching exterior rings in a single feature (not yet implemented).}
 }
 \details{
   Working out which combination of dsn, layer, and driver (and option) values give the desired output takes time and care, and is constrained by the ability of drivers to write output; many are read-only. Use of the references given is highly advisable, with searches in the archives of other software using GDAL/OGR. Note that for the \dQuote{ESRI Shapefile} driver and GDAL >= 1.9, the \code{layer_options} value of \sQuote{ENCODING=\dQuote{LDID/CP1252}} or other values found on \url{http://www.autopark.ru/ASBProgrammerGuide/DBFSTRUC.HTM} to set the encoding byte of the output DBF file (link refered to in ogr/ogrsf_frmts/shape/ogrshapelayer.cpp. The effect of setting the LDID may vary depending on whether GDAL is built with iconv or not, and on the setting of the CPL Option \dQuote{SHAPE_ENCODING}.

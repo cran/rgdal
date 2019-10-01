@@ -1,6 +1,9 @@
 suppressPackageStartupMessages(library(rgdal))
 load(system.file("etc/test_dfs.RData", package="rgdal"))
 load(system.file("etc/obj_with_comments.RData", package="rgdal"))
+Ps1_nc <- Ps1
+comment(Ps1_nc) <- NULL
+comment(slot(Ps1_nc, "polygons")[[1]]) <- NULL
 drivers <- c("GeoJSON", "ESRI Shapefile")
 drivers <- drivers[drivers %in% ogrDrivers()$name]
 tfbase <- tempfile()
@@ -92,4 +95,22 @@ cat("aMPh with driver:", driver, "\n")
 unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 cat(" coords", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+tf <- paste0(tfbase, driver, "Ps1", sep=".")
+writeOGR(SpatialPolygonsDataFrame(Ps1, data=df1), tf, "GeoJSON",
+ driver=driver, verbose=TRUE)
+#rP <- as(readOGR(tf, "GeoJSON", verbose=FALSE), "SpatialPolygons")
+rP <- as(readOGR(tf, verbose=FALSE), "SpatialPolygons")
+cat("Ps1 with driver:", driver, "\n")
+unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
+cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
+cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+tf <- paste0(tfbase, driver, "Ps1_nc", sep=".")
+writeOGR(SpatialPolygonsDataFrame(Ps1_nc, data=df1), tf, "GeoJSON",
+ driver=driver, verbose=TRUE)
+#rP <- as(readOGR(tf, "GeoJSON", verbose=FALSE), "SpatialPolygons")
+rP <- as(readOGR(tf, verbose=FALSE), "SpatialPolygons")
+cat("Ps1_nc with driver:", driver, "\n")
+unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
+cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
+cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
 }

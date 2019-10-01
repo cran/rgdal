@@ -1,6 +1,6 @@
 
-R version 3.3.3 (2017-03-06) -- "Another Canoe"
-Copyright (C) 2017 The R Foundation for Statistical Computing
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -18,6 +18,9 @@ Type 'q()' to quit R.
 > suppressPackageStartupMessages(library(rgdal))
 > load(system.file("etc/test_dfs.RData", package="rgdal"))
 > load(system.file("etc/obj_with_comments.RData", package="rgdal"))
+> Ps1_nc <- Ps1
+> comment(Ps1_nc) <- NULL
+> comment(slot(Ps1_nc, "polygons")[[1]]) <- NULL
 > drivers <- c("GeoJSON", "ESRI Shapefile")
 > drivers <- drivers[drivers %in% ogrDrivers()$name]
 > tfbase <- tempfile()
@@ -109,6 +112,24 @@ Type 'q()' to quit R.
 + unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 + cat(" coords", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 + cat(" holes", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
++ tf <- paste0(tfbase, driver, "Ps1", sep=".")
++ writeOGR(SpatialPolygonsDataFrame(Ps1, data=df1), tf, "GeoJSON",
++  driver=driver, verbose=TRUE)
++ #rP <- as(readOGR(tf, "GeoJSON", verbose=FALSE), "SpatialPolygons")
++ rP <- as(readOGR(tf, verbose=FALSE), "SpatialPolygons")
++ cat("Ps1 with driver:", driver, "\n")
++ unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
++ cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
++ cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
++ tf <- paste0(tfbase, driver, "Ps1_nc", sep=".")
++ writeOGR(SpatialPolygonsDataFrame(Ps1_nc, data=df1), tf, "GeoJSON",
++  driver=driver, verbose=TRUE)
++ #rP <- as(readOGR(tf, "GeoJSON", verbose=FALSE), "SpatialPolygons")
++ rP <- as(readOGR(tf, verbose=FALSE), "SpatialPolygons")
++ cat("Ps1_nc with driver:", driver, "\n")
++ unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
++ cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
++ cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
 + }
 Object initially classed as: wkbPolygon
 SFS comments in Polygons objects
@@ -176,6 +197,20 @@ aMPh with driver: GeoJSON
  holes TRUE 
 Object initially classed as: wkbPolygon
 SFS comments in Polygons objects
+Object reclassed as: wkbMultiPolygon
+Writing 1 wkbMultiPolygon objects
+Ps1 with driver: GeoJSON 
+ coords TRUE 
+ holes TRUE 
+Object initially classed as: wkbPolygon
+No SFS comments in Polygons objects
+Object reclassed as: wkbMultiPolygon
+Writing 1 wkbMultiPolygon objects
+Ps1_nc with driver: GeoJSON 
+ coords TRUE 
+ holes TRUE 
+Object initially classed as: wkbPolygon
+SFS comments in Polygons objects
 Writing 9 wkbPolygon objects
 P with driver: ESRI Shapefile 
  comment TRUE 
@@ -238,7 +273,21 @@ Writing 3 wkbMultiPolygon objects
 aMPh with driver: ESRI Shapefile 
  coords TRUE 
  holes TRUE 
+Object initially classed as: wkbPolygon
+SFS comments in Polygons objects
+Object reclassed as: wkbMultiPolygon
+Writing 1 wkbMultiPolygon objects
+Ps1 with driver: ESRI Shapefile 
+ coords TRUE 
+ holes TRUE 
+Object initially classed as: wkbPolygon
+No SFS comments in Polygons objects
+Object reclassed as: wkbMultiPolygon
+Writing 1 wkbMultiPolygon objects
+Ps1_nc with driver: ESRI Shapefile 
+ coords TRUE 
+ holes TRUE 
 > 
 > proc.time()
    user  system elapsed 
-  2.636   0.256   2.635 
+  3.314   0.040   3.368 
