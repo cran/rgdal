@@ -1,3 +1,16 @@
+2019-10-28 10:04  rsbivand
+
+	* configure: tidy
+
+2019-10-25 17:12  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: fix configure issue to copy
+	  through pkg-config proj --libs
+
+2019-10-01 12:00  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2019-10-01 11:58  rsbivand
 
 	* DESCRIPTION, configure, configure.ac: fix configure.ac for R

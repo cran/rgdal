@@ -364,6 +364,7 @@ CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
 AC_MSG_NOTICE([proj CPP flags: ${PKG_CPPFLAGS}])
 
 PKG_LIBS=""
+PROJ_LIB_PATH=""
           
 # dnl ditto for a library path
 AC_ARG_WITH([proj-lib],
@@ -380,6 +381,9 @@ else
     AC_SUBST([PKG_LIBS], ["${INPKG_LIBS} -lproj"])
   fi
 fi
+
+AC_MSG_NOTICE([PROJ LIBS: ${PKG_LIBS}])
+
 
 AC_ARG_WITH([proj_api],
     [  --with-proj_api[=ARG]        legacy proj_api.h while still available, or current proj.h (ARG="proj_api.h"(default), "proj.h")],,)
@@ -719,7 +723,11 @@ fi
 if test [ -n "$proj_lib_path" ] ; then
 AC_SUBST([PKG_LIBS], ["${PKG_LIBS} -L${proj_lib_path}"])
 fi
+if test [ -n "$PROJ_LIB_PATH" ] ; then
+AC_SUBST([PKG_LIBS], ["${PKG_LIBS} ${PROJ_LIB_PATH}"])
+else
 AC_SUBST([PKG_LIBS], ["${PKG_LIBS} -lproj"])
+fi
 
 AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 AC_MSG_NOTICE([Package LIBS: ${PKG_LIBS}])
