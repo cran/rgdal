@@ -90,12 +90,12 @@ options(warn=2L)
 for (i in seq(along=res)) {
   iprs <- paste("+proj=", projs[i], sep="")
   xy <- try(project(cbind(0, 0), iprs, legacy=TRUE), silent=TRUE)
-  if (class(xy) == "try-error") {
+  if (inherits(xy, "try-error")) {
     res[i] <- NA
     msgs[i] <- paste("fwd:", strsplit(xy, "\n")[[1]][2])
   } else {
     out <- try(project(xy, iprs, inv=TRUE, legacy=TRUE), silent=TRUE)
-    if (class(out) == "try-error") {
+    if (inherits(out, "try-error")) {
       res[i] <- NA
       msgs[i] <- paste("inv:", strsplit(out, "\n")[[1]][2])
     } else res[i] <- isTRUE(all.equal(cbind(0,0), out))
