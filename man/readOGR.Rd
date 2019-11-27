@@ -127,7 +127,7 @@ summary(scot_BNG)
 if ("GML" \%in\% ogrDrivers()$name) {
   dsn <- system.file("vectors/airports.gml", package = "rgdal")[1]
   airports <- try(readOGR(dsn=dsn, layer="airports"))
-  if (class(airports) != "try-error") summary(airports)
+  if (!inherits(airports, "try-error")) summary(airports)
 }
 dsn <- system.file("vectors/ps_cant_31.MIF", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="ps_cant_31")
@@ -143,9 +143,9 @@ Up <- readOGR(dsn=dsn, layer="Up")
 summary(Up)
 dsn <- system.file("vectors/test_trk2.gpx", package = "rgdal")[1]
 test_trk2 <- try(readOGR(dsn=dsn, layer="tracks"))
-if (class(test_trk2) != "try-error") summary(test_trk2)
+if (!inherits(test_trk2, "try-error")) summary(test_trk2)
 test_trk2pts <- try(readOGR(dsn=dsn, layer="track_points"))
-if (class(test_trk2pts) != "try-error") summary(test_trk2pts)
+if (!inherits(test_trk2pts, "try-error")) summary(test_trk2pts)
 dsn <- system.file("vectors", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="trin_inca_pl03")
 birds <- readOGR(dsn=dsn, layer="trin_inca_pl03")

@@ -1,5 +1,5 @@
 04900bc87d1705e739208db7cb178f3d *ChangeLog
-dcc3b5f93b8718e4b28d1b15c7008507 *DESCRIPTION
+2e47f9109bf84b074c8e8e4aefd3acb2 *DESCRIPTION
 5b70aa128f8fe5a3fba4ff1819b73d3f *LICENSE.note
 d558e2043adfc62ee8839b9d512e4a0f *NAMESPACE
 70745da3e946cd5d64f4c50a7e2e6497 *R/AAA.R
@@ -9,7 +9,7 @@ f3ad695c4980b5eaf5bba2c05c0b99d3 *R/gdal.R
 11f8551c09c3cc2706dd590be119c57c *R/llgrid.R
 63a516ba58f9383721c3c8304a882b2c *R/make_EPSG.R
 6e5ce8881f5959357a5cd7dcea96fcff *R/ogr.R
-7b88433866c96369531b5ffe662edb93 *R/ogr_sp.R
+294cf0940d05d7d59cb84767736d6970 *R/ogr_sp.R
 619a9b95aaea9a2264ed875654540d59 *R/ogr_write.R
 a8f04057890fe3ce0231aca57dd825c4 *R/project.R
 909af795ad76ee03c95b713d7ceaba9a *R/sgdf_gdal.R
@@ -31,7 +31,7 @@ ae6c75e0a8f467c056103fab998cb974 *configure.ac
 ad2bd3033cbe4ef4f705979cc9b146be *inst/SVN_VERSION
 9d82e9e61742c8326babd38650406dbf *inst/doc/OGR_shape_encoding.R
 fd3f59a7ce14b4bdb6a8184543e1114f *inst/doc/OGR_shape_encoding.Rnw
-0c70df638d1918b31b23cd2eb1898280 *inst/doc/OGR_shape_encoding.pdf
+47f2eb5bb43cd68efaaaeae8d3ad995f *inst/doc/OGR_shape_encoding.pdf
 d10362587da1620bf75891bdd76ca6e2 *inst/etc/obj_with_comments.RData
 c27ff1e4742c1e74c9b40e0368a0f268 *inst/etc/obj_without_comments.RData
 22ac3c5a5bf0b520d281c122d1490650 *inst/etc/point.cpg
@@ -108,12 +108,12 @@ cc627c41fb11166d0ecc558efb6477b0 *man/GDALReadOnlyDataset-methods.Rd
 bd2c1309f4d3aef5d5b06fe99ba4bfbf *man/closeDataset-methods.Rd
 7c9816eb76a4a6a4cbfc0675fc7766c5 *man/displayDataset.Rd
 811fff168bf6c83bbc9e458a807dda0f *man/llgrid.Rd
-41b046c593233cc78a04ae1a73ca7692 *man/make_EPSG.Rd
+7c3e7fe2b379df9df589286bc86b3298 *man/make_EPSG.Rd
 7b462e9587df48caf7ced08e987d31c4 *man/nor2k.Rd
 539b3846c510bf32c6619b2201428dea *man/projInfo.Rd
-0d764b54a773c07e2ea6bf03ebdbb9a9 *man/project.Rd
+7213dea52cc8a55f7a5828eefd75edcd *man/project.Rd
 7535b7a9adcda8ba353a5c891584b18e *man/readGDAL.Rd
-a27c32fe6f4038086c8fa944d8a521cc *man/readOGR.Rd
+5530dd58300542abc632fd53baa516dd *man/readOGR.Rd
 8ca058a6177d3b0bf2d8e6da4ae1642a *man/showWKT.Rd
 b9ee089bb8c2b9c2df1eb2a978894cf6 *man/spTransform-methods.Rd
 bcadb02d6e4b6a633ea643092ee4cd0b *man/wrappers.Rd

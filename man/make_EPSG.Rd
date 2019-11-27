@@ -29,12 +29,13 @@ make_EPSG(file)
 \examples{
 EPSG <- try(make_EPSG())
 # from PROJ 6.0.0, EPSG data is no longer stored in a flat file
-if (class(EPSG) != "try-error") attr(EPSG, "metadata") # PROJ.4 5.0.0 and later include EPSG version
-if (class(EPSG) != "try-error") EPSG[grep("Oslo", EPSG$note), 1:2]
-if (class(EPSG) != "try-error") EPSG[1925:1927, 3]
-if (class(EPSG) != "try-error") EPSG[grep("Poland", EPSG$note), 1:2]
-if (class(EPSG) != "try-error") EPSG[grep("Amersfoort", EPSG$note), 1:2]
-if (class(EPSG) != "try-error") EPSG[grep("North Carolina", EPSG$note), 1:2]
-if (class(EPSG) != "try-error") EPSG[2202, 3]
+if (!inherits(EPSG, "try-error")) attr(EPSG, "metadata") 
+# PROJ.4 5.0.0 and later include EPSG version
+if (!inherits(EPSG, "try-error")) EPSG[grep("Oslo", EPSG$note), 1:2]
+if (!inherits(EPSG, "try-error")) EPSG[1925:1927, 3]
+if (!inherits(EPSG, "try-error")) EPSG[grep("Poland", EPSG$note), 1:2]
+if (!inherits(EPSG, "try-error")) EPSG[grep("Amersfoort", EPSG$note), 1:2]
+if (!inherits(EPSG, "try-error")) EPSG[grep("North Carolina", EPSG$note), 1:2]
+if (!inherits(EPSG, "try-error")) EPSG[2202, 3]
 }
 \keyword{spatial}

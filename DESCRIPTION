@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the 'Geospatial' Data Abstraction Library
-Version: 1.4-7
-Date: 2019-10-25
+Version: 1.4-8
+Date: 2019-11-26
 Depends: R (>= 3.5.0), methods, sp (>= 1.1-0)
 Imports: grDevices, graphics, stats, utils
 LinkingTo: sp
@@ -33,7 +33,7 @@ SystemRequirements: for building from source: GDAL >= 1.11.4, library
         with installed external dependencies, for example rgdal_0.8-7
         for PROJ4 4.8.0 (March 2012).
 RoxygenNote: 6.1.1
-Packaged: 2019-10-28 10:18:36 UTC; rsb
+Packaged: 2019-11-26 20:18:55 UTC; rsb
 Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Tim Keitt [aut],
   Barry Rowlingson [aut, ctb],
@@ -46,4 +46,4 @@ Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Colin Rundel [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2019-10-28 17:00:02 UTC
+Date/Publication: 2019-11-27 20:02:30 UTC
