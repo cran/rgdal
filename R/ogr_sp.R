@@ -6,7 +6,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
         use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
-        integer64="no.loss", GDAL1_integer64_policy=FALSE) {
+        integer64="no.loss", GDAL1_integer64_policy=FALSE,
+        morphFromESRI=NULL, dumpSRS=FALSE, enforce_xy=NULL) {
 	if (missing(dsn)) stop("missing dsn")
         stopifnot(is.character(dsn))
         stopifnot(length(dsn) == 1L)
@@ -52,7 +53,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         
 	suppressMessages(ogr_info <- ogrInfo(dsn=dsn, layer=layer,
             encoding=encoding, use_iconv=use_iconv,
-            swapAxisOrder=swapAxisOrder, require_geomType=require_geomType))
+            swapAxisOrder=swapAxisOrder, require_geomType=require_geomType,
+            morphFromESRI=morphFromESRI, dumpSRS=dumpSRS))
         HAS_FEATURES <- TRUE
         if (!ogr_info$have_features) {
             if (dropNULLGeometries) {
@@ -200,19 +202,36 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         }
 
 # suggestion by Paul Hiemstra 070817
-	prj <- .Call("ogrP4S", as.character(dsn), enc2utf8(as.character(layer)), 
-		PACKAGE="rgdal")
+#        if (is.null(morphFromESRI)) {
+#            if (ogr_info$driver == "ESRI Shapefile") morphFromESRI <- TRUE
+#            else morphFromESRI <- FALSE
+#        }
+#        if (ogr_info$driver != "ESRI Shapefile" && morphFromESRI)
+#            morphFromESRI <- FALSE
+#        stopifnot(is.logical(morphFromESRI))
+#        stopifnot(length(morphFromESRI) == 1)
+#        stopifnot(is.logical(dumpSRS))
+#        stopifnot(length(dumpSRS) == 1)
+#	prj <- .Call("ogrP4S", as.character(dsn), enc2utf8(as.character(layer)),		as.logical(morphFromESRI), as.logical(dumpSRS), PACKAGE="rgdal")
+
+#        prj <- OGRSpatialRef(dsn=dsn, layer=layer, morphFromESRI=morphFromESRI,
+#          dumpSRS=dumpSRS, driver=ogr_info$driver, enforce_xy=enforce_xy)
+
+        prj <- ogr_info$p4s
+
 	if (!is.null(p4s)) {
           if (!is.na(prj)) {
-              warning("p4s= argument given as: ", p4s, "\n and read as: ", prj, 
-              "\n read string overridden by given p4s= argument value")
+            warning("p4s= argument given as: ", p4s, "\n and read as: ",
+              c(prj), "\n read string overridden by given p4s= argument value")
           }
         } else {
           p4s <- prj
         }
 
 	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
-
+#        if (new_proj_and_gdal()) wkt2 <- ogr_info$wkt2
+        oCRS <- new("CRS", projargs=p4s)
+        if (new_proj_and_gdal()) comment(oCRS) <- ogr_info$wkt2
 
 	geometry <- .Call("R_OGR_CAPI_features", as.character(dsn), 
 		enc2utf8(as.character(layer)), comments=addCommentsToPolygons,
@@ -320,7 +339,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 #		data <- data.frame(dlist)
 		row.names(data) <- NULL
 		res <- SpatialPointsDataFrame(coords=coords, data=data,
-			proj4string=CRS(p4s))
+			proj4string=oCRS)
 	} else if (u_eType == 2) { # lines
 		if (u_with_z != 0) warning("Z-dimension discarded")
 		n <- length(gFeatures)
@@ -339,7 +358,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 			}
 			lnList[[i]] <- Lines(lnlist, ID=as.character(fids[i]))
 		}
-		SL <- SpatialLines(lnList, proj4string=CRS(p4s))
+		SL <- SpatialLines(lnList, proj4string=oCRS)
 #		data <- data.frame(dlist, row.names=fids)
 		res <- SpatialLinesDataFrame(SL, data)
 	} else if (u_eType == 3) { # polygons
@@ -411,7 +430,7 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 		}
                 rm(gFeatures)
                 gc(verbose = FALSE)
-		SP <- SpatialPolygons(plList, proj4string=CRS(p4s))
+		SP <- SpatialPolygons(plList, proj4string=oCRS)
                 rm(plList)
                 gc(verbose = FALSE)
 #		data <- data.frame(dlist, row.names=fids)
@@ -421,33 +440,233 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	res
 }
 
-showWKT <- function(p4s, file=NULL, morphToESRI=TRUE) {
+showWKT <- function(p4s, file=NULL, morphToESRI=FALSE, enforce_xy=NULL) {
 
 	if (!is.character(p4s)) stop("invalid p4s object")
         stopifnot(length(p4s) == 1)
 	if (!is.logical(morphToESRI)) stop("invalid morphToESRI object")
-	res <- .Call("p4s_to_wkt", as.character(p4s), as.integer(morphToESRI), 
+        stopifnot(length(morphToESRI) == 1)
+        stopifnot(!is.na(morphToESRI))
+        if (!is.null(enforce_xy)) {
+            stopifnot(is.logical(enforce_xy))
+            stopifnot(length(enforce_xy) == 1L)
+            stopifnot(!is.na(enforce_xy))
+        } else {
+            enforce_xy <- get_enforce_xy()
+        }
+        attr(morphToESRI, "enforce_xy") <- enforce_xy
+	res <- .Call("p4s_to_wkt", as.character(p4s), morphToESRI, 
 		PACKAGE="rgdal")
 	if (!is.null(file)) cat(res, "\n", sep="", file=file)
 	res
 }
 
-showP4 <- function(wkt, morphFromESRI=TRUE) {
+showP4 <- function(wkt, morphFromESRI=FALSE, enforce_xy=NULL) {
 
 	if (!is.character(wkt)) stop("invalid wkt object")
         stopifnot(length(wkt) == 1)
 	if (!is.logical(morphFromESRI)) stop("invalid morphFromESRI object")
+        stopifnot(length(morphFromESRI) == 1)
+        stopifnot(!is.na(morphFromESRI))
+        if (!is.null(enforce_xy)) {
+            stopifnot(is.logical(enforce_xy))
+            stopifnot(length(enforce_xy) == 1L)
+            stopifnot(!is.na(enforce_xy))
+        } else {
+            enforce_xy <- get_enforce_xy()
+        }
+        attr(morphFromESRI, "enforce_xy") <- enforce_xy
 	res <- .Call("wkt_to_p4s", as.character(wkt),
-                as.integer(morphFromESRI), PACKAGE="rgdal")
+                morphFromESRI, PACKAGE="rgdal")
 	res
 }
 
 
-showEPSG <- function(p4s) {
+showEPSG <- function(p4s, enforce_xy=NULL) {
 
 	if (!is.character(p4s)) stop("invalid p4s object")
-	res <- .Call("ogrAutoIdentifyEPSG", as.character(p4s), PACKAGE="rgdal")
+        stopifnot(length(p4s) == 1L)
+        stopifnot(!is.na(p4s))
+        if (!is.null(enforce_xy)) {
+            stopifnot(is.logical(enforce_xy))
+            stopifnot(length(enforce_xy) == 1L)
+            stopifnot(!is.na(enforce_xy))
+        } else {
+            enforce_xy <- get_enforce_xy()
+        }
+        attr(p4s, "enforce_xy") <- enforce_xy
+
+	res <- .Call("ogrAutoIdentifyEPSG", p4s, PACKAGE="rgdal")
 	res
 }
 
+get_thin_PROJ6_warnings <- function() {
+    get("thin_PROJ6_warnings", envir=.RGDAL_CACHE)
+}
+
+set_thin_PROJ6_warnings <- function(value) {
+    stopifnot(is.logical(value))
+    stopifnot(length(value) == 1L)
+    stopifnot(!is.na(value))
+    assign("thin_PROJ6_warnings", value, envir=.RGDAL_CACHE)
+}
+
+get_rgdal_show_exportToProj4_warnings <- function() {
+  get("rgdal_show_exportToProj4_warnings", envir=.RGDAL_CACHE)
+}
+
+set_rgdal_show_exportToProj4_warnings <- function(value) {
+    stopifnot(is.logical(value))
+    stopifnot(length(value) == 1L)
+    stopifnot(!is.na(value))
+    assign("rgdal_show_exportToProj4_warnings", value, envir=.RGDAL_CACHE)
+}
+
+get_PROJ6_warnings_count <- function() {
+    get("PROJ6_warnings_count", envir=.RGDAL_CACHE)
+}
+
+get_enforce_xy <- function() {
+    get("enforce_xy", envir=.RGDAL_CACHE)
+}
+
+set_enforce_xy <- function(value) {
+    stopifnot(is.logical(value))
+    stopifnot(length(value) == 1L)
+    stopifnot(!is.na(value))
+    assign("enforce_xy", value, envir=.RGDAL_CACHE)
+}
+
+
+showSRID <- function(inSRID, format="WKT2", multiline="NO", enforce_xy=NULL, EPSG_to_init=TRUE#, prefer_proj=FALSE
+) {
+    valid_WKT_formats <- c("SFSQL", "WKT1_SIMPLE", "WKT1", "WKT1_GDAL",
+        "WKT1_ESRI", "WKT2_2015", "WKT2_2018", "WKT2") # add WKT2_2019 ??
+    valid_formats <- c("PROJ", valid_WKT_formats)
+    stopifnot(is.character(inSRID))
+    stopifnot(length(inSRID) == 1L)
+    stopifnot(is.character(format))
+    stopifnot(length(format) == 1L)
+    if (!(format %in% valid_formats)) stop("invalid format value")
+    out_format <- as.integer(NA)
+    if (format %in% valid_WKT_formats) out_format <- 1L
+    if (format == "PROJ") out_format <- 2L
+    if (!is.na(multiline) && is.logical(multiline)) {
+      multiline <- ifelse(multiline, "YES", "NO")
+    }
+    stopifnot(!is.na(multiline))
+    stopifnot(is.character(multiline))
+    stopifnot(length(multiline) == 1L)
+    if (!(multiline %in% c("YES", "NO"))) stop("invalid multiline value")
+    in_format <- as.integer(NA)
+    if (substring(inSRID, 1, 1) == " ") stop("string starts with space")
+    if (substring(inSRID, 1, 1) == "+") in_format = 1L
+    if (substring(inSRID, 1, 3) == "urn") in_format = 2L
+    if (substring(inSRID, 1, 2) == "PR") in_format = 3L
+    if (substring(inSRID, 1, 2) == "GE") in_format = 3L
+    if (substring(inSRID, 1, 2) == "BA") in_format = 3L
+    if (substring(inSRID, 1, 1) == "S") in_format = 3L
+    if (substring(inSRID, 1, 2) == "CO") in_format = 3L
+    if (substring(inSRID, 1, 4) == "EPSG") in_format = 4L
+    epsg <- as.integer(NA)
+    if (in_format == 4L) {
+        if (EPSG_to_init) {
+            in_format = 1L
+            inSRID <- paste0("+init=epsg:", substring(inSRID, 6, nchar(inSRID)))
+        } else {
+            epsg <- as.integer(substring(inSRID, 6, nchar(inSRID)))
+        }
+    }
+    format <- paste0("FORMAT=", format)
+    multiline <- paste0("MULTILINE=", multiline)
+    if (!is.null(enforce_xy)) {
+      stopifnot(is.logical(enforce_xy))
+      stopifnot(length(enforce_xy) == 1L)
+      stopifnot(!is.na(enforce_xy))
+    } else {
+        enforce_xy <- get_enforce_xy()
+    }
+
+    if (new_proj_and_gdal()) {
+        if (!is.na(in_format)) {
+            attr(in_format, "enforce_xy") <- enforce_xy
+#            if (prefer_proj) {
+#                res <- .Call("P6_SRID_proj", as.character(inSRID),
+#                    as.character(format), as.character(multiline), 
+#                    in_format, as.integer(epsg),
+#                    as.integer(out_format), PACKAGE="rgdal")
+#            } else {
+                res <- try(.Call("P6_SRID_show", as.character(inSRID),
+                    as.character(format), as.character(multiline), 
+                    in_format, as.integer(epsg),
+                    as.integer(out_format), PACKAGE="rgdal"), silent=TRUE)
+                if (inherits(res, "try-error"))
+                    stop(unclass(attr(res, "condition"))$message, "\n", inSRID) 
+#            }
+            no_towgs84 <- ((is.null(attr(res, "towgs84"))) || 
+                (all(nchar(attr(res, "towgs84")) == 0)))
+            if ((length(grep("towgs84|TOWGS84|Position Vector|Geocentric translations", c(res))) == 0L)
+                && !no_towgs84) warning("TOWGS84 discarded")
+            if ((!is.null(attr(res, "ellps"))) && 
+                (nchar(attr(res, "ellps")) > 0L) && 
+                (length(grep("ellps|ELLIPSOID", c(res))) == 0L)) {
+                if (length(grep("datum|DATUM", c(res))) == 0L) {
+                    msg <- paste0("Discarded ellps ", attr(res, "ellps"),
+                        " in CRS definition: ", c(res))
+                } else {
+                    msg <- ""
+                }
+                if (get_rgdal_show_exportToProj4_warnings()) {
+                 if (!get_thin_PROJ6_warnings()) {
+                    if (nchar(msg) > 0) warning(msg)
+                 } else {
+                    if (nchar(msg) > 0 && get("PROJ6_warnings_count",
+                        envir=.RGDAL_CACHE) == 0L) {
+                        warning(paste0("PROJ6/GDAL3 PROJ string degradation in workflow\n repeated warnings suppressed\n ", msg))
+                        assign("PROJ6_warnings_count",
+                            get("PROJ6_warnings_count",
+                            envir=.RGDAL_CACHE) + 1L, envir=.RGDAL_CACHE)
+                    }
+                 }
+                }
+            }
+#warning("Discarded ellps ", attr(res, "ellps"),
+#                    " in CRS definition")
+            if ((!is.null(attr(res, "datum"))) 
+                && (nchar(attr(res, "datum")) > 0L)
+                && (length(grep("datum|DATUM", c(res))) == 0L)) {
+                msg <- paste0("Discarded datum ", attr(res, "datum"),
+                    " in CRS definition")
+                if (!no_towgs84 && (length(grep("towgs84", c(res))) > 0L))
+                    msg <- paste0(msg, ",\n but +towgs84= values preserved")
+                if (get_P6_datum_hard_fail()) stop(msg)
+                else {
+                  if (get_rgdal_show_exportToProj4_warnings()) {
+                    if (!get_thin_PROJ6_warnings()) {
+                        warning(msg)
+                    } else {
+                        if (get("PROJ6_warnings_count",
+                            envir=.RGDAL_CACHE) == 0L) {
+                            warning(paste0("PROJ6/GDAL3 PROJ string degradation in workflow\n repeated warnings suppressed\n ", msg))
+                            assign("PROJ6_warnings_count",
+                                get("PROJ6_warnings_count",
+                                envir=.RGDAL_CACHE) + 1L, envir=.RGDAL_CACHE)
+                        }
+                    }
+                  }
+                }
+            }
+            res <- c(res)
+        } else {
+            stop("unknown input format")
+        }
+    } else {
+        if (!is.na(in_format) && in_format == 1L) {
+            res <- showWKT(inSRID)
+        } else {
+            stop("unknown input format")
+        }
+    }
+    res
+}
  

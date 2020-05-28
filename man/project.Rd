@@ -7,7 +7,7 @@
 }
 \usage{
 project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE,
- allowNAs_if_not_legacy=FALSE)
+ allowNAs_if_not_legacy=FALSE, coordOp = NULL, verbose = FALSE)
 }
 
 \arguments{
@@ -17,6 +17,8 @@ project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE,
   \item{use_ob_tran}{default FALSE, if TRUE and \dQuote{+proj=ob_tran}, use General Oblique Transformation with internalised from/to projection reversal; the user oblique transforms forward rather than inverse.}
   \item{legacy}{default TRUE, if FALSE, use transform C functions (enforced internally for Windows 32-bit platforms)}
   \item{allowNAs_if_not_legacy}{used if legacy is FALSE, default FALSE; introduced to handle use of NAs as object separators in \pkg{oce}}
+  \item{coordOp}{default NULL, for PROJ >= 6 used to pass through a pre-defined coordinate operation}
+  \item{verbose}{default FALSE, for PROJ >=6 used to show the coordinate operation used}
 }
 \details{
   Full details of projection arguments available from website below, and examples in file "epsg" in the data directory installed with PROJ.4.
@@ -120,18 +122,23 @@ ll <- structure(c(12.1823368669203, 11.9149630062421, 12.3186076188739,
 -5.24836150474498, -5.68430388755925, NA, NA), .Dim = c(10L, 
 2L), .Dimnames = list(NULL, c("longitude", "latitude")))
 try(xy0 <- project(ll, "+proj=moll", legacy=TRUE))
+if (!PROJis6ormore()) { # legacy=TRUE PROJ >= 6
 try(xy1 <- project(ll, "+proj=moll", legacy=FALSE, allowNAs_if_not_legacy=FALSE))
 try(xy2 <- project(ll, "+proj=moll", legacy=FALSE, allowNAs_if_not_legacy=TRUE))
 if (exists("xy0")) all.equal(xy0, xy2)
-xy0 <- structure(c(1217100.8468177, 1191302.229156, 1232143.28841193, 
-1262546.27733232, 1299648.82357849, 1263011.18154638, 1246343.17808186, 
-1242654.33986052, NA, NA, -715428.207551599, -622613.577983058, 
--569301.605757784, -548528.530156422, -590895.949857199, -616845.926397351, 
--648585.161643274, -702393.1160979, NA, NA), .Dim = c(10L, 2L
-), .Dimnames = list(NULL, c("longitude", "latitude")))
-try(ll0 <- project(ll, "+proj=moll", inv=TRUE, legacy=TRUE))
-try(ll1 <- project(ll, "+proj=moll", inv=TRUE, legacy=FALSE, allowNAs_if_not_legacy=FALSE))
-try(ll2 <- project(ll, "+proj=moll", inv=TRUE, legacy=FALSE, allowNAs_if_not_legacy=TRUE))
+}
+if (!exists("xy0")) xy0 <- structure(c(1217100.8468177, 1191302.229156,
+1232143.28841193, 1262546.27733232, 1299648.82357849, 1263011.18154638,
+1246343.17808186, 1242654.33986052, NA, NA, -715428.207551599,
+-622613.577983058, -569301.605757784, -548528.530156422, -590895.949857199,
+-616845.926397351, -648585.161643274, -702393.1160979, NA, NA), 
+.Dim = c(10L, 2L), .Dimnames = list(NULL, c("longitude", "latitude")))
+try(ll0 <- project(xy0, "+proj=moll", inv=TRUE, legacy=TRUE))
+if (!PROJis6ormore()) { # legacy=TRUE PROJ >= 6
+try(ll1 <- project(xy0, "+proj=moll", inv=TRUE, legacy=FALSE, allowNAs_if_not_legacy=FALSE))
+try(ll2 <- project(xy0, "+proj=moll", inv=TRUE, legacy=FALSE, allowNAs_if_not_legacy=TRUE))
 if (exists("ll0")) all.equal(ll0, ll2)
+}
+if (exists("ll0")) all.equal(ll0, ll)
 }
 \keyword{spatial}

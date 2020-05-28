@@ -12,7 +12,7 @@ These functions allow more direct access to some of the rgdal C API. These are a
 
 \usage{
 GDALcall(object, option, ...)
-rawTransform(projfrom, projto, n, x, y, z=NULL)
+rawTransform(projfrom, projto, n, x, y, z=NULL, wkt=FALSE)
 }
 
 
@@ -26,7 +26,7 @@ rawTransform(projfrom, projto, n, x, y, z=NULL)
   \item{x}{x coordinates}
   \item{y}{y coordinates}
   \item{z}{z coordinates}
-
+  \item{wkt}{default FALSE, if TRUE, the caller determines that projfrom and projto are wkt and that new_proj_and_gdal() returns TRUE to avoid multiple warnings when the function is called repetitively}
 }
 
 \value{

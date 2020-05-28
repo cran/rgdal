@@ -49,12 +49,18 @@ getGDALCheckVersion <- function() {
 }
 
 getGDALwithGEOS <- function() {
-    .Call("RGDAL_GDALwithGEOS", PACKAGE="rgdal")
+    res <- .Call("RGDAL_GDALwithGEOS", PACKAGE="rgdal")
+    if (is.character(res)) {
+        oo <- strsplit(res, "\n")[[1]]
+        res <- "GEOS_ENABLED=YES" %in% oo
+        attr(res, "GEOS_VERSION") <- substring(oo[grep("GEOS_VERSION", oo)], 14)
+    }
+    res
 }
 
 getGDAL_DATA_Path <- function() {
     res <- .Call("RGDAL_GDAL_DATA_Info", PACKAGE="rgdal")
-    res <- sub("prime_meridian.csv", "", res)
+    res <- sub("stateplane.csv", "", res)
     n <- nchar(res)
     res <- substring(res, 1, n-1)
     res
@@ -62,6 +68,23 @@ getGDAL_DATA_Path <- function() {
 
 version_sp_linkingTo <- function() {
     .Call("rgdal_sp_linkingTo_version")
+}
+
+
+get_cached_orig_PROJ_LIB <- function() {
+  get(".rgdal_old.PROJ_LIB", envir=.RGDAL_CACHE)
+}
+
+get_cached_orig_GDAL_DATA <- function() {
+  get(".rgdal_old.GDAL_DATA", envir=.RGDAL_CACHE)
+}
+
+get_cached_set_PROJ_LIB <- function() {
+  get(".rgdal_set.PROJ_LIB", envir=.RGDAL_CACHE)
+}
+
+get_cached_set_GDAL_DATA <- function() {
+  get(".rgdal_set.GDAL_DATA", envir=.RGDAL_CACHE)
 }
 
 
@@ -394,12 +417,21 @@ setMethod('dim', 'GDALReadOnlyDataset',
               c(nrows, ncols)
           })
 
-getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
+getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enforce_xy=NULL) {
 
   assertClass(dataset, 'GDALReadOnlyDataset')
 
   vs <- strsplit(strsplit(getGDALVersionInfo(), ",")[[1]][1], " ")[[1]][2]
   env_absent <- is.null(getCPLConfigOption("OVERRIDE_PROJ_DATUM_WITH_TOWGS84"))
+  wkt2 <- NULL
+  if (!is.null(enforce_xy)) {
+    stopifnot(is.logical(enforce_xy))
+    stopifnot(length(enforce_xy) == 1L)
+    stopifnot(!is.na(enforce_xy))
+  } else {
+      enforce_xy <- get_enforce_xy()
+  }
+
   if ((vs > "1.8.0") && env_absent) {
     if (is.null(OVERRIDE_PROJ_DATUM_WITH_TOWGS84))
       OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84()
@@ -407,13 +439,72 @@ getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
     stopifnot(length(OVERRIDE_PROJ_DATUM_WITH_TOWGS84) == 1)
     if (!OVERRIDE_PROJ_DATUM_WITH_TOWGS84) {
       setCPLConfigOption("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", "NO")
-      res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
+      res <- .Call('RGDAL_GetProjectionRef', dataset, enforce_xy, PACKAGE="rgdal")
       setCPLConfigOption("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", NULL)
     } else {
-      res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
+      res <- .Call('RGDAL_GetProjectionRef', dataset, enforce_xy, PACKAGE="rgdal")
     }
   } else {
-    res <- .Call('RGDAL_GetProjectionRef', dataset, PACKAGE="rgdal")
+    res <- .Call('RGDAL_GetProjectionRef', dataset, enforce_xy, PACKAGE="rgdal")
+  }
+  no_ellps <- FALSE
+  if (!(nchar(res) == 0L) && new_proj_and_gdal()) {
+    no_towgs84 <- all(nchar(attr(res, "towgs84")) == 0)
+    if ((length(grep("towgs84", c(res))) == 0L) && !no_towgs84)
+      warning("TOWGS84 discarded")
+    no_ellps <- (!is.null(attr(res, "ellps"))) &&
+        (nchar(attr(res, "ellps")) > 0L) &&
+        (length(grep("ellps", c(res))) == 0L)
+    no_ellps <- no_ellps && length(grep("datum", c(res))) == 0L
+    if (no_ellps) {
+      msg <- paste0("Discarded ellps ", attr(res, "ellps"),
+            " in CRS definition: ", c(res))
+      if (get_rgdal_show_exportToProj4_warnings()) {
+       if (!get_thin_PROJ6_warnings()) {
+        warning(msg)
+        } else {
+          if (get("PROJ6_warnings_count",
+            envir=.RGDAL_CACHE) == 0L) {
+            warning(paste0("PROJ6/GDAL3 PROJ string degradation in workflow\n repeated warnings suppressed\n ", msg))
+            assign("PROJ6_warnings_count",
+              get("PROJ6_warnings_count",
+              envir=.RGDAL_CACHE) + 1L, envir=.RGDAL_CACHE)
+            }
+          }
+         }
+    }
+# warning("Discarded ellps ", attr(res, "ellps"),
+#            " in CRS definition: ", c(res))
+    if ((!is.null(attr(res, "datum"))) && (nchar(attr(res, "datum")) > 0L)
+      && (length(grep("datum", c(res))) == 0L)) {
+      msg <- paste0("Discarded datum ", attr(res, "datum"),
+          " in CRS definition: ", c(res))
+      if (!no_towgs84 && (length(grep("towgs84", c(res))) > 0L))
+        msg <- paste0(msg, ",\n but +towgs84= values preserved")
+      if (get_P6_datum_hard_fail()) stop(msg)
+      else {
+       if (get_rgdal_show_exportToProj4_warnings()) {
+        if (!get_thin_PROJ6_warnings()) {
+          warning(msg)
+        } else {
+          if (get("PROJ6_warnings_count",
+            envir=.RGDAL_CACHE) == 0L) {
+            warning(paste0("PROJ6/GDAL3 PROJ string degradation in workflow\n repeated warnings suppressed\n ", msg))
+            assign("PROJ6_warnings_count",
+              get("PROJ6_warnings_count",
+              envir=.RGDAL_CACHE) + 1L, envir=.RGDAL_CACHE)
+            }
+          }
+         }
+        }
+#warning(msg)
+    }
+    if (new_proj_and_gdal()) wkt2 <- attr(res, "WKT2_2018")
+  }
+  res <- c(res)
+  if (new_proj_and_gdal()) {
+    if (no_ellps) res <- showSRID(wkt2, "PROJ")
+    comment(res) <- wkt2
   }
   res
 }
@@ -760,6 +851,7 @@ get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- function() {
 set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- function(value) {
         stopifnot(is.logical(value))
         stopifnot(length(value) == 1)
+        stopifnot(!is.na(value))
         assign("OVERRIDE_PROJ_DATUM_WITH_TOWGS84", value, envir = .RGDAL_CACHE)
         get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84()
 }

@@ -287,15 +287,15 @@ else
   fi
 fi
 
-GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
-AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/pcs.csv readable)
+GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/stateplane.csv"
+AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/stateplane.csv readable)
 if test -r "${GDAL_DATA_TEST_FILE}" ; then
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
-  if test "${GDAL_GE_250}" = no; then
-    AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
-  fi
+#  if test "${GDAL_GE_250}" = no; then
+    AC_MSG_ERROR([stateplane.csv not found in GDAL data directory.])
+#  fi
 fi
 
 # PROJ.4
@@ -320,11 +320,13 @@ if test "${proj_config_ok}" = yes; then
   PROJ_VERSION=`${PROJ_CONFIG} --modversion`
   AC_MSG_NOTICE([PROJ version: ${PROJ_VERSION}])
 
+  PROJ_VERSION_DOT=`echo ${PROJ_VERSION} | tr -d "."`
   PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
 
-  if test "${PROJV1}" = "6"; then
-    AC_MSG_NOTICE([Support for PROJ >= 6.0.0 not yet available, deprecated API defined])
-    PKG_CPPFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+  if test "${PROJV1}" -ge 6; then
+#    AC_MSG_NOTICE([Support for PROJ >= 6.0.0 not yet available, deprecated API defined])
+#    PKG_CPPFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+    PKG_CPPFLAGS="-DPROJ_H_API"
     PROJ6="yes"
   else
     AC_MSG_NOTICE([PROJ version < 6.0.0])
@@ -386,17 +388,36 @@ AC_MSG_NOTICE([PROJ LIBS: ${PKG_LIBS}])
 
 
 AC_ARG_WITH([proj_api],
-    [  --with-proj_api[=ARG]        legacy proj_api.h while still available, or current proj.h (ARG="proj_api.h"(default), "proj.h")],,)
+    [  --with-proj_api[=ARG]        legacy proj_api.h while still available, or current proj.h (ARG="proj_api.h", "proj.h"(default))],,)
 
 AC_MSG_CHECKING([PROJ header API:])
 
 if test "$with_proj_api" = "" ; then
-  PROJ_API="proj_api.h"
+  PROJ_API="proj.h"
 else
   PROJ_API="$with_proj_api"
 fi
 
 AC_MSG_RESULT(${PROJ_API})
+
+if test "${PROJ_API}" =  "proj.h" ; then
+
+if test ${PROJ6} = "yes"; then
+  projhok=yes
+  AC_CHECK_HEADER([proj.h],,projhok=no)
+  if test "${projhok}" = no; then
+    AC_MSG_ERROR([proj.h not found in given locations.])
+  fi
+  libprojok=yes
+  AC_CHECK_LIB([proj], [proj_context_create],,libprojok=no)
+  if test "${libprojok}" = no; then
+    AC_MSG_ERROR([proj_context_create not found in libproj.])
+  fi
+fi
+
+fi
+
+if test "${PROJ_API}" =  "proj_api.h"; then
 
 LIBS="${INLIBS} ${PKG_LIBS}"
 #PKG_LIBS="${PKG_LIBS} -lproj"
@@ -444,17 +465,32 @@ if test -n "${PROJ_VERSION}" ; then
   fi
 fi
 
+fi
+
+AC_MSG_CHECKING([Using GDAL < 3 with PROJ >= 6])
+if test ${GDAL_MAJOR} -lt 3 -a ${PROJ_VERSION_DOT} -ge 600; then
+    AC_MSG_RESULT(yes)
+    AC_MSG_ERROR([GDAL >= 3 should be used with PROJ >= 6])
+  else
+    AC_MSG_RESULT(no)
+fi
+
+if test "${PROJ6}" = "no" -o "${PROJ_API}" =  "proj_api.h"; then
+    PKG_CPPFLAGS="${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+fi
+#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
+
 AC_MSG_CHECKING([PROJ version >= 4.8.0])
-if test ${PROJ_VERSION_H} -lt 480 ; then
+if test ${PROJ_VERSION_DOT} -lt 480 ; then
   AC_MSG_RESULT(no)
   AC_MSG_ERROR([upgrade PROJ to 4.8.0 or later])
 else
   AC_MSG_RESULT(yes)
 fi
 
-if test ${PROJ_VERSION_H} -lt 493; then
+if test ${PROJ_VERSION_DOT} -lt 493; then
 
-if test ${PROJ_VERSION_H} = 480 ; then
+if test ${PROJ_VERSION_DOT} = 480 ; then
   ADDED_PKG_INCL_480=`pwd`"/inst/include"
   AC_SUBST([PKG_CPPFLAGS],["${PKG_CPPFLAGS} -I${ADDED_PKG_INCL_480}"])
   proj_include_path="${PKG_CPPFLAGS} -I${ADDED_PKG_INCL_480}"
@@ -493,9 +529,11 @@ fi
 
 fi # < 493 test for projects.h
 
+#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
 
 
-AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
+#AC_SUBST([PKG_CPPFLAGS],["-DP4CTX=1 ${PKG_CPPFLAGS}"])
+#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
 
 AC_ARG_WITH([proj-share],
     AC_HELP_STRING([--with-proj-share=SHARE_PATH],
@@ -505,11 +543,10 @@ if test [ -n "$proj_share_path" ] ; then
     AC_MSG_NOTICE([PROJ_LIB: ${proj_share_path}])
 fi
 
-
 if test ${PROJ6} = "no"; then
 
-AC_MSG_CHECKING(PROJ.6: )
-AC_MSG_RESULT(no)
+#AC_MSG_CHECKING(PROJ.6: )
+#AC_MSG_RESULT(no)
 
 [cat > proj_conf_test2.c <<_EOCONF
 #include <stdio.h>
@@ -570,20 +607,21 @@ else # test for new files if PROJ6
 
 [cat > proj_conf_test2.cpp <<_EOCONF
 #include <stdio.h>
-#include <proj_api.h>
+#include <stdlib.h>
+#include <proj.h>
 
 int main() {
-    PAFile fp;
-    projCtx ctx;
-    ctx = pj_get_default_ctx();
-    fp = pj_open_lib(ctx, "proj.db", "rb");
-    if (fp == NULL) exit(1);
-    pj_ctx_fclose(ctx, fp);
+    PJ_CONTEXT *ctx = proj_context_create();
+    if (proj_context_get_database_path(ctx) == NULL) {
+        proj_context_destroy(ctx);
+        exit(1);
+    }
+    proj_context_destroy(ctx);
     exit(0);
 }
 _EOCONF]
 
-${CXX} ${CPPFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.cpp ${PKG_LIBS} -lproj -lsqlite3
+${CXX} ${CPPFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.cpp ${PKG_LIBS} -lproj
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test2
   proj_share=`echo $?`
@@ -706,14 +744,53 @@ AC_MSG_NOTICE([Copy data for:])
 fi
 
 
+if test ${PROJ6} = "yes"; then
+  sqlok=yes
+  AC_CHECK_HEADER([sqlite3.h],,sqlok=no)
+  if test "${sqlok}" = no; then
+    AC_MSG_ERROR([sqlite3.h not found in given locations.])
+  fi
+  AC_CHECK_LIB([sqlite3], [sqlite3_libversion],,sqlok=no)
+  if test "${sqlok}" = no; then
+    AC_MSG_ERROR([sqlite3_libversion not found in libsqlite3.])
+  fi
+fi
+
+if test "${PROJV1}" -ge 7; then
+  curlok=yes
+  AC_CHECK_HEADER([curl/curl.h],,curlok=no)
+  if test "${curlok}" = no; then
+    AC_MSG_ERROR([curl.h not found in given locations.])
+  fi
+  AC_CHECK_LIB([curl], [curl_version],,curlok=no)
+  if test "${curlok}" = no; then
+    AC_MSG_ERROR([curl_version not found in libcurl.])
+  fi
+  tiffok=yes
+  AC_CHECK_HEADER([tiff.h],,tiffok=no)
+  if test "${tiffok}" = no; then
+    AC_MSG_ERROR([tiff.h not found in given locations.])
+  fi
+  AC_CHECK_LIB([tiff], [TIFFOpen],,tiffok=no)
+  if test "${tiffok}" = no; then
+    AC_MSG_ERROR([TIFFOpen not found in libtiff.])
+  fi
+fi
+
+#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
+
 # concluding substitution
 
 AC_SUBST([PKG_CPPFLAGS], ["${INPKG_CPPFLAGS} ${GDAL_CPPFLAGS}"])
+#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
 if test [ -n "$proj_include_path" ] ; then
+AC_MSG_NOTICE([INC_PATH: ${proj_include_path}])
 AC_SUBST([PKG_CPPFLAGS], ["${PKG_CPPFLAGS} ${proj_include_path}"])
 fi
+#AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
 if test ${PROJ6} = "yes" ; then
-AC_SUBST([PKG_CPPFLAGS], ["${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"])
+AC_SUBST([PKG_CPPFLAGS], ["${PKG_CPPFLAGS} -DPROJ_H_API"])
+#AC_SUBST([PKG_CPPFLAGS], ["${PKG_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"])
 fi
 
 AC_SUBST([PKG_LIBS], ["${INPKG_LIBS} ${GDAL_LIBS}"])
@@ -728,7 +805,12 @@ AC_SUBST([PKG_LIBS], ["${PKG_LIBS} ${PROJ_LIB_PATH}"])
 else
 AC_SUBST([PKG_LIBS], ["${PKG_LIBS} -lproj"])
 fi
-
+if test ${PROJ6} = "yes" ; then
+AC_SUBST([PKG_LIBS], ["${PKG_LIBS} -lsqlite3"])
+fi
+if test "${PROJV1}" -ge 7; then
+AC_SUBST([PKG_LIBS], ["${PKG_LIBS} -lcurl -ltiff"])
+fi
 AC_MSG_NOTICE([Package CPP flags: ${PKG_CPPFLAGS}])
 AC_MSG_NOTICE([Package LIBS: ${PKG_LIBS}])
 

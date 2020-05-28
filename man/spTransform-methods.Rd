@@ -26,6 +26,12 @@
 \alias{spTransform.SpatialPolygons}
 \alias{spTransform.SpatialPolygonsDataFrame}
 \alias{spTransform,SpatialPolygonsDataFrame,CRS-method}
+\alias{get_transform_wkt_comment}
+\alias{set_transform_wkt_comment}
+\alias{get_last_coordOp}
+\alias{get_enforce_xy}
+\alias{set_enforce_xy}
+
 \section{Methods}{\describe{
 
 \item{"ANY"}{default void method}
@@ -45,6 +51,19 @@
 \item{"SpatialGridDataFrame", CRSobj = CRS}{Because regular grids will usually not be regular after projection/datum transformation, the input object is coerced to a SpatialPointsDataFrame, and the transformation carried out on that object. A warning: \dQuote{Grid warping not available, coercing to points} is given.}
 
 }}
+
+\usage{
+get_transform_wkt_comment()
+set_transform_wkt_comment(value)
+get_enforce_xy()
+set_enforce_xy(value)
+get_last_coordOp()
+}
+
+\arguments{
+  \item{value}{A non-NA logical value}
+}
+
 \description{The \code{spTransform} methods provide transformation between datum(s) and conversion between projections (also known as projection and/or re-projection), from one unambiguously specified coordinate reference system to another, using PROJ.4 projection arguments. For simple projection, when no +datum tags are used, datum projection does not occur. When datum transformation is required, the +datum tag should be present with a valid value both in the CRS of the object to be transformed, and in the target CRS. In general +datum= is to be prefered to +ellps=, because the datum always fixes the ellipsoid, but the ellipsoid never fixes the datum. 
 
 In addition, the +towgs84 tag should be used where needed to make sure that datum transformation does take place. Parameters for +towgs84 will be taken from the bundled EPSG database if they are known unequivocally, but may be entered manually from known authorities. Not providing the appropriate +datum and +towgs84 tags may lead to coordinates being out by hundreds of metres. Unfortunately, there is no easy way to provide this information: the user has to know the correct metadata for the data being used, even if this can be hard to discover.}
@@ -66,6 +85,7 @@ Note that from PROJ.4 4.9.3, the definition of UTM is changed from TMERC to ETME
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \examples{
+set_thin_PROJ6_warnings(TRUE)
 data(state)
 states <- data.frame(state.x77, state.center)
 states <- states[states$x > -121,]
@@ -79,7 +99,7 @@ summary(state.merc)
 state.merc <- spTransform(states,
  CRS=CRS("+proj=merc +ellps=GRS80 +units=us-mi"))
 summary(state.merc)
-if (projNAD()) {
+if (PROJis6ormore() || (!PROJis6ormore() && projNAD())) {
 states <- data.frame(state.x77, state.center)
 states <- states[states$x > -121,]
 coordinates(states) <- c("x", "y")
@@ -98,8 +118,7 @@ print(coordinates(SFpoint_NAD83), digits=12)
 }
 data(meuse)
 coordinates(meuse) <- c("x", "y")
-proj4string(meuse) <- CRS(paste("+init=epsg:28992",
- "+towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812"))
+proj4string(meuse) <- CRS("+init=epsg:28992")
 # see http://trac.osgeo.org/gdal/ticket/1987
 summary(meuse)
 meuse.utm <- spTransform(meuse, CRS("+proj=utm +zone=32 +datum=WGS84"))
@@ -118,11 +137,12 @@ scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1],
    "scot_BNG")
 scot_LL <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
 plot(scot_LL, axes=TRUE)
+grdtxt_LL <- gridat(scot_LL)
 grd_LL <- gridlines(scot_LL, ndiscr=100)
 summary(grd_LL)
-grd_BNG <- spTransform(grd_LL, CRS(proj4string(scot_BNG)))
-grdtxt_LL <- gridat(scot_LL)
-grdtxt_BNG <- spTransform(grdtxt_LL, CRS(proj4string(scot_BNG)))
+target <- CRS(proj4string(scot_BNG))
+grd_BNG <- spTransform(grd_LL, target)
+grdtxt_BNG <- spTransform(grdtxt_LL, target)
 plot(scot_BNG, axes=TRUE, las=1)
 plot(grd_BNG, add=TRUE, lty=2)
 text(coordinates(grdtxt_BNG),
@@ -154,20 +174,20 @@ crds3 <- matrix(data=c(6, 47, 6, 55, 15, 55, 15, 47, 6, 47), ncol=2,
 byrow=TRUE, dimnames=list(NULL, c("lon", "lat")));
 spLines <- SpatialLines(list(Lines(list(Line(crds1), Line(crds2),
 Line(crds3)), ID="a")));
-spLines@proj4string <- CRS("+proj=longlat +ellps=sphere +no_defs");
+slot(spLines, "proj4string") <- CRS("+proj=longlat +ellps=sphere +no_defs");
 bbox(spLines);
-spLines_tr <- spTransform(spLines, CRS("+proj=ob_tran +o_proj=longlat
-+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
+spLines_tr <- spTransform(spLines, CRS(paste0("+proj=ob_tran +o_proj=longlat",
+" +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")),
 use_ob_tran=TRUE);
 bbox(spLines_tr)
 bbox(spTransform(spLines_tr, CRS("+proj=longlat +ellps=sphere"),
  use_ob_tran=TRUE))
 spPolygons <- SpatialPolygons(list(Polygons(list(Polygon(crds1),
 Polygon(crds2), Polygon(crds3)), ID="a")));
-spPolygons@proj4string <- CRS("+proj=longlat +ellps=sphere +no_defs");
+slot(spPolygons, "proj4string") <- CRS("+proj=longlat +ellps=sphere +no_defs");
 bbox(spPolygons);
-spPolygons_tr <- spTransform(spPolygons, CRS("+proj=ob_tran +o_proj=longlat
-+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
+spPolygons_tr <- spTransform(spPolygons, CRS(paste0("+proj=ob_tran",
+" +o_proj=longlat +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")),
 use_ob_tran=TRUE);
 bbox(spPolygons_tr)
 bbox(spTransform(spPolygons_tr, CRS("+proj=longlat +ellps=sphere"),

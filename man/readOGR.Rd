@@ -32,12 +32,15 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
  encoding=NULL, use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL,
- integer64="no.loss", GDAL1_integer64_policy=FALSE)
+ integer64="no.loss", GDAL1_integer64_policy=FALSE, morphFromESRI = NULL,
+ dumpSRS = FALSE, enforce_xy = NULL)
 ogrInfo(dsn, layer, encoding=NULL,
- use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL)
+ use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL,
+ morphFromESRI = NULL, dumpSRS = FALSE, enforce_xy = NULL)
 ogrFIDs(dsn, layer)
 ogrDrivers()
-OGRSpatialRef(dsn, layer)
+OGRSpatialRef(dsn, layer, morphFromESRI=NULL, dumpSRS = FALSE, driver = NULL,
+ enforce_xy = NULL)
 ogrListLayers(dsn)
 \method{print}{ogrinfo}(x, ...)
 }
@@ -60,6 +63,10 @@ ogrListLayers(dsn)
   \item{require_geomType}{, default NULL, if one of: \code{c("wkbPoint", "wkbLineString", "wkbPolygon")}, then in input with multiple geometry types, the chosen type will be read}
   \item{integer64}{default \dQuote{no.loss} (from rgdal 1.2.*). From GDAL 2, fields to be read may also take Integer64 values. As R has no such storage mode, three options are offered, analogous with \code{\link{type.convert}} for numeric conversion: \dQuote{allow.loss} which clamps to 32-bit signed integer (default < rgdal 1.2), \dQuote{warn.loss} - as \dQuote{allow.loss} but warns when clamping occurs, and \dQuote{no.loss}, which reads as a character string using the formatting applied by default by GDAL (default >= rgdal 1.2). The use of 64-bit integers is usually a misunderstanding, as such data is almost always a long key ID.}
   \item{GDAL1_integer64_policy}{default FALSE, if TRUE, Integer64 fields are read as doubles}
+  \item{morphFromESRI}{default NULL, morph from ESRI WKT1 dialect}
+  \item{dumpSRS}{dump SRS to stdout from inside GDAL to debug conversion - developer use only}
+  \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
+  \item{driver}{default NULL, driver found using \code{ogrListLayers} from the data source; otherwise already known and passed through from a calling function}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}
 }
@@ -94,6 +101,7 @@ Because some drivers support reading string, integer and real list fields, suppo
 }
 \seealso{\code{\link[sp]{SpatialPointsDataFrame-class}}, \code{\link[sp]{SpatialLinesDataFrame-class}}, \code{\link[sp]{SpatialPolygonsDataFrame-class}}, \code{\link[maptools]{readShapePoly}}, \code{\link[base]{iconv}}}
 \examples{
+set_thin_PROJ6_warnings(TRUE)
 ogrDrivers()
 dsn <- system.file("vectors", package = "rgdal")[1]
 ogrListLayers(dsn)
@@ -108,6 +116,7 @@ ow <- options("warn")$warn
 options("warn"=1)
 cities <- readOGR(dsn=dsn, layer="cities")
 str(slot(cities, "data"))
+if (new_proj_and_gdal()) comment(slot(cities, "proj4string"))
 cities$POPULATION <- type.convert(as.character(cities$POPULATION),
   na.strings="-99", numerals="no.loss")
 str(slot(cities, "data"))
@@ -120,20 +129,26 @@ ogrInfo(dsn=dsn, layer="kiritimati_primary_roads")
 OGRSpatialRef(dsn=dsn, layer="kiritimati_primary_roads")
 kiritimati_primary_roads <- readOGR(dsn=dsn, layer="kiritimati_primary_roads")
 summary(kiritimati_primary_roads)
+if (new_proj_and_gdal()) comment(slot(kiritimati_primary_roads, "proj4string"))
 ogrInfo(dsn=dsn, layer="scot_BNG")
 OGRSpatialRef(dsn=dsn, layer="scot_BNG")
 scot_BNG <- readOGR(dsn=dsn, layer="scot_BNG")
 summary(scot_BNG)
+if (new_proj_and_gdal()) comment(slot(scot_BNG, "proj4string"))
 if ("GML" \%in\% ogrDrivers()$name) {
   dsn <- system.file("vectors/airports.gml", package = "rgdal")[1]
   airports <- try(readOGR(dsn=dsn, layer="airports"))
-  if (!inherits(airports, "try-error")) summary(airports)
+  if (!inherits(airports, "try-error")) {
+    summary(airports)
+    if (new_proj_and_gdal()) comment(slot(airports, "proj4string"))
+  }
 }
 dsn <- system.file("vectors/ps_cant_31.MIF", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="ps_cant_31")
 ps_cant_31 <- readOGR(dsn=dsn, layer="ps_cant_31")
 summary(ps_cant_31)
 sapply(as(ps_cant_31, "data.frame"), class)
+if (new_proj_and_gdal()) comment(slot(ps_cant_31, "proj4string"))
 ps_cant_31 <- readOGR(dsn=dsn, layer="ps_cant_31", stringsAsFactors=FALSE)
 summary(ps_cant_31)
 sapply(as(ps_cant_31, "data.frame"), class)
@@ -141,15 +156,23 @@ dsn <- system.file("vectors/Up.tab", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="Up")
 Up <- readOGR(dsn=dsn, layer="Up")
 summary(Up)
+if (new_proj_and_gdal()) comment(slot(Up, "proj4string"))
 dsn <- system.file("vectors/test_trk2.gpx", package = "rgdal")[1]
 test_trk2 <- try(readOGR(dsn=dsn, layer="tracks"))
-if (!inherits(test_trk2, "try-error")) summary(test_trk2)
+if (!inherits(test_trk2, "try-error")) {
+  summary(test_trk2)
+  if (new_proj_and_gdal()) comment(slot(test_trk2, "proj4string"))
+}
 test_trk2pts <- try(readOGR(dsn=dsn, layer="track_points"))
-if (!inherits(test_trk2pts, "try-error")) summary(test_trk2pts)
+if (!inherits(test_trk2pts, "try-error")) {
+  summary(test_trk2pts)
+  if (new_proj_and_gdal()) comment(slot(test_trk2pts, "proj4string"))
+}
 dsn <- system.file("vectors", package = "rgdal")[1]
 ogrInfo(dsn=dsn, layer="trin_inca_pl03")
 birds <- readOGR(dsn=dsn, layer="trin_inca_pl03")
 summary(birds)
+if (new_proj_and_gdal()) comment(slot(birds, "proj4string"))
 dsn <- system.file("vectors/PacoursIKA2.TAB", package = "rgdal")[1]
 try(ogrInfo(dsn, "PacoursIKA2"))
 ogrInfo(dsn, "PacoursIKA2", require_geomType="wkbPoint")

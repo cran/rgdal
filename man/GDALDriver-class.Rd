@@ -13,6 +13,10 @@
 \alias{getCPLConfigOption}
 \alias{setCPLConfigOption}
 \alias{rgdal_extSoftVersion}
+\alias{get_cached_orig_PROJ_LIB}
+\alias{get_cached_set_PROJ_LIB}
+\alias{get_cached_orig_GDAL_DATA}
+\alias{get_cached_set_GDAL_DATA}
 \title{Class "GDALDriver": GDAL Driver Object}
 
 \description{\code{GDALDriver} objects encapsulate GDAL file format
@@ -46,6 +50,10 @@ getGDALwithGEOS()
 rgdal_extSoftVersion()
 getCPLConfigOption(ConfigOption)
 setCPLConfigOption(ConfigOption, value)
+get_cached_orig_PROJ_LIB()
+get_cached_orig_GDAL_DATA()
+get_cached_set_PROJ_LIB()
+get_cached_set_GDAL_DATA()
 }
 \arguments{
   \item{driver}{An object inheriting from class 'GDALDriver'}
@@ -65,6 +73,8 @@ setCPLConfigOption(ConfigOption, value)
     \item{\code{getGDALVersionInfo}:}{returns the version of the GDAL runtime shared object.}
     \item{\code{getGDALCheckVersion}:}{checks the version of the GDAL headers used when building the package (GDAL_VERSION_MAJOR, GDAL_VERSION_MINOR) - if the two versions differ, problems may arise (the C++ API/ABI may have changed), and rgdal should be re-installed}
     \item{\code{getGDALwithGEOS}:}{because drivers may behave differently if GDAL itself was built with GEOS support, the function uses a heuristic to check whether GDAL has access to the GEOS Union function or not}
+    \item{\code{get_cached_orig_PROJ_LIB}, \code{get_cached_orig_GDAL_DATA}}{The values of environment variables PROJ_LIB and GDAL_DATA as read when this package was loaded}
+    \item{\code{get_cached_set_PROJ_LIB}, \code{get_cached_set_GDAL_DATA}}{If not \code{""}, the values set when loading this package to point to metadata files included in CRAN binary packages}
 }
 }
 

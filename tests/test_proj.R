@@ -1,18 +1,19 @@
 suppressPackageStartupMessages(library(rgdal))
+set_thin_PROJ6_warnings(TRUE)
 data(state)
 xy <- cbind(state.center$x, state.center$y)
 res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80")
 res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80",
  inv=TRUE)
 stopifnot(isTRUE(all.equal(res1, xy)))
-crds <- matrix(data=c(9.05, 48.52), ncol=2)
-a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",
+(crds <- matrix(data=c(9.05, 48.52), ncol=2))
+(a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",
  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
- use_ob_tran=TRUE)
+ use_ob_tran=TRUE, verbose=TRUE))
 stopifnot(isTRUE(all.equal(a, matrix(c(-5.917698, -1.87195), ncol=2), tolerance=.Machine$double.eps ^ 0.25)))
-a1 <- project(a, paste("+proj=ob_tran +o_proj=longlat",
+(a1 <- project(a, paste("+proj=ob_tran +o_proj=longlat",
  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
- inv=TRUE, use_ob_tran=TRUE)
+ inv=TRUE, use_ob_tran=TRUE, verbose=TRUE))
 stopifnot(isTRUE(all.equal(a1, crds, tolerance=.Machine$double.eps ^ 0.25)))
 states <- data.frame(state.x77, state.center)
 states <- states[states$x > -121,]

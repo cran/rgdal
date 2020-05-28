@@ -57,13 +57,14 @@ SEXP RGDAL_CloseDataset(SEXP sxpDataset);
 SEXP RGDAL_DeleteFile(SEXP sxpDriver, SEXP sxpFileName);
 
 SEXP RGDAL_GetDescription(SEXP sxpObj);
-SEXP RGDAL_GetProjectionRef(SEXP sDataset);
+SEXP RGDAL_GetProjectionRef(SEXP sDataset, SEXP enforce_xy);
 SEXP RGDAL_GetYSize(SEXP sRasterBand);
 SEXP RGDAL_GetXSize(SEXP sRasterBand);
 SEXP RGDAL_GetGeoTransform(SEXP sxpDataset);
 SEXP RGDAL_SetGeoTransform(SEXP sxpDataset, SEXP GeoTransform);
 SEXP RGDAL_GetMetadata(SEXP sDataset, SEXP tag);
 SEXP RGDAL_SetProject(SEXP sxpDataset, SEXP proj4string);
+SEXP RGDAL_SetProject_WKT2(SEXP sxpDataset, SEXP WKT2string, SEXP enforce_xy);
 SEXP RGDAL_SetNoDataValue(SEXP sxpRasterBand, SEXP NoDataValue);
 
 SEXP RGDAL_GetRasterYSize(SEXP sDataset);
@@ -99,32 +100,42 @@ SEXP RGDAL_CPLSetConfigOption(SEXP inOption, SEXP value);
 SEXP RGDAL_CPLGetConfigOption(SEXP inOption);
 SEXP RGDAL_CPL_RECODE_ICONV(void);
 
-SEXP RGDAL_checkCRSArgs(SEXP args);
-SEXP PROJcopyEPSG(SEXP tf);
 SEXP RGDAL_ogrInfo(SEXP ogrsourcename, SEXP Layer);
 SEXP R_OGR_types(SEXP dsn, SEXP layer);
 SEXP RGDAL_ogrFIDs(SEXP filename, SEXP layer);
 SEXP ogr_GetDriverNames(void);
-SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer);
 SEXP RGDAL_ogrListLayers (SEXP ogrSource);
 SEXP ogrDataFrame(SEXP ogrSource, SEXP Layer, SEXP FIDs, SEXP iFields);
 SEXP R_OGR_CAPI_features(SEXP dsn, SEXP layer, SEXP comments);
 //SEXP make_Polygonlist(SEXP iG);
-SEXP p4s_to_wkt(SEXP p4s, SEXP esri);
-SEXP wkt_to_p4s(SEXP wkt, SEXP esri);
-SEXP ogrAutoIdentifyEPSG(SEXP p4s);
 SEXP OGR_write(SEXP inp);
 SEXP RGDAL_ogrDeleteLayer (SEXP ogrSource, SEXP Layer, SEXP ogrDriver);
 SEXP RGDAL_ogrDeleteDataSource (SEXP ogrSource, SEXP ogrDriver);
 SEXP ogrCheckExists (SEXP ogrSource, SEXP Layer);
-SEXP PROJ4VersionInfo(void);
-SEXP PROJ4NADsInstalled(void);
-SEXP PROJ4_proj_def_dat_Installed(void);
-SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z);
-SEXP RGDAL_projInfo(SEXP type);
-SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran);
-SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran);
 
+SEXP RGDAL_checkCRSArgs(SEXP args); // both
+SEXP PROJcopyEPSG(SEXP tf); // both
+SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer, SEXP morphFromESRI, SEXP dumpSRS); // GDAL
+SEXP p4s_to_wkt(SEXP p4s, SEXP esri);// GDAL
+SEXP wkt_to_p4s(SEXP wkt, SEXP esri);// GDAL
+SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);// GDAL
+//SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);
+SEXP ogrAutoIdentifyEPSG(SEXP p4s);// GDAL
+SEXP list_coordinate_ops(SEXP source, SEXP target, SEXP area_of_interest, SEXP strict_containment, SEXP vis_order); // both
+SEXP PROJ4VersionInfo(void); // different
+SEXP PROJ4NADsInstalled(void); // both, different at R level ??
+SEXP PROJ4_proj_def_dat_Installed(void); // both, different at R level ??
+SEXP get_proj_search_path(void); // both
+SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z); // both
+SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z); // both
+SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2);
+SEXP proj_network_enabled(); // both
+SEXP RGDAL_projInfo(SEXP type); // both
+SEXP R_GDAL_OSR_PROJ();// GDAL
+SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran); // both
+SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran); // both
+SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp); // both
+SEXP project_ng_coordOp(SEXP proj, SEXP inv); // both
 
 #ifdef __cplusplus
 }

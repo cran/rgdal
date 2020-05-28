@@ -40,7 +40,7 @@ getRasterData(dataset, band = NULL, offset = c(0, 0),
 getRasterTable(dataset, band = NULL, offset = c(0, 0), 
   region.dim = dim(dataset))
 
-getProjectionRef(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = NULL)
+getProjectionRef(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = NULL, enforce_xy = NULL)
 
 getRasterBand(dataset, band = 1)
 
@@ -72,6 +72,7 @@ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84(value)
   \item{x}{integer variable for conversion}
   \item{base}{If Byte input, 8, if Int16 or UInt16, 16}
   \item{OVERRIDE_PROJ_DATUM_WITH_TOWGS84}{logical value, default NULL, which case the cached option set by \code{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84} is used. Ignored if the GDAL version is less than \dQuote{1.8.0} or if the CPLConfigOption variable is already set}
+  \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
   \item{value}{logical value to set OVERRIDE_PROJ_DATUM_WITH_TOWGS84}
 }
 

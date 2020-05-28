@@ -1,5 +1,4 @@
 ### R code from vignette source 'OGR_shape_encoding.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: OGR_shape_encoding.Rnw:66-67

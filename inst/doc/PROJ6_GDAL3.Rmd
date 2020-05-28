@@ -1,0 +1,1305 @@
+---
+title: "Migration to PROJ6/GDAL3"
+author: "Roger Bivand"
+output:
+  html_document:
+    toc: true
+bibliography: PROJ.bib
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{Migration to PROJ6/GDAL3}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Status 22 April 2020
+
+[R spatial follows GDAL and PROJ development](https://www.r-spatial.org/r/2020/03/17/wkt.html) describes the main points of the status now. **sp** uses WKT2 CRS with PROJ6+/GDAL3+. **sp** and **rgdal** read, write, and project and transform objects using PROJ strings before PROJ6/GDAL3 and when **raster** calls `rgdal::rawTransform()` with PROJ6+/GDAL3+. **sp** and **rgdal** read, write, and project and transform objects using WKT2_2019 strings from PROJ6/GDAL3. The mechanism used is described in the R-spatial blog. 
+
+This rolling RFC (not many comments) depicts the state of play from October 2019 to April 2020, involving a lot of reverse dependency testing of almost 1000 CRAN packages. When the development versions of **sp** (>= 1.4-2) and **rgdal** (>= 1.5-8) are submitted to CRAN, a fair number of reverse dependencies will be broken (as with recent **sf** releases). Some maintainers sensibly find that fixing the PROJ6/GDAL3 transition is sufficiently invasive to make it sensible to re-base to **sf** from **sp**. Others are regretably unresponsive so far, many find it hard to check on PROJ6+/GDAL3.
+
+For further links (in addition to the blog post), see (https://github.com/r-spatial/discuss/issues/28), and **sf** github issues: https://github.com/r-spatial/sf/issues/1146, https://github.com/r-spatial/sf/issues/1187, https://github.com/r-spatial/sf/issues/1231, 
+https://github.com/r-spatial/sf/issues/1328 and many others.
+
+We've established that we should have preferred WKT over PROJ strings starting eight years ago: https://lists.osgeo.org/pipermail/gdal-dev/2012-November/034558.html (read the last paragraph), and possibly even earlier.
+
+
+# Migration to PROJ6/GDAL3
+
+## PROJ
+
+Because so much open source (and other) software uses the PROJ library and framework, many are affected when PROJ upgrades. Until very recently, PROJ has been seen as very reliable, and the changes taking place now are intended to confirm and reinforce this reliability. Before PROJ 5 (PROJ 6 is out now, PROJ 7 is coming early in 2020), the `+datum=` tag was used, perhaps with `+towgs84=` with three or seven coefficients, and possibly `+nadgrids=` where datum transformation grids were available. However, transformations from one projection to another first inversed to longitude-latitude in WGS84, then projected on to the target projection.
+
+
+
+'Fast-forward 35 years and PROJ.4 is everywhere: It provides coordinate handling for almost every geospatial program, open or closed source. Today,  we  see  a  drastical  increase  in  the  need  for  high  accuracy  GNSS  coordinate  handling, especially in the agricultural and construction engineering sectors.  This need for geodetic-accuracy transformations  is  not  satisfied  by  "classic  PROJ.4".  But  with  the  ubiquity  of  PROJ.4,  we  can provide these transformations "everywhere", just by implementing them as part of PROJ.4' [@evers+knudsen17].
+
+
+
+Following the introduction of geodetic modules and pipelines in PROJ 5 [@knudsen+evers17; @evers+knudsen17], PROJ 6 moves further. Changes in the legacy PROJ representation and WGS84 transformation hub have been coordinated through the [GDAL barn raising](https://gdalbarn.com/) initiative. Crucially WGS84 often ceases to be the pivot for moving between datums. A new OGC WKT is coming, and an SQLite EPSG file database has replaced CSV files. SRS will begin to support 3D by default, adding time too as SRS change. See also [PROJ migration notes](https://proj.org/development/migration.html).
+
+There are very useful postings on the PROJ mailing list from Martin Desruisseaux, first [proposing clarifications](https://lists.osgeo.org/pipermail/proj/2019-July/008748.html) and a [follow-up](https://lists.osgeo.org/pipermail/proj/2019-August/008750.html) including a summary:
+
+> * "Early binding" ≈ hub transformation technique.
+
+> * "Late binding" ≈ hub transformation technique NOT used, replaced by
+a more complex technique consisting in searching parameters in the
+EPSG database after the transformation context (source, target,
+epoch, area of interest) is known.
+
+> * The problem of hub transformation technique is independent of WGS84.
+It is caused by the fact that transformations to/from the hub are
+approximate. Any other hub we could invent in replacement of WGS84
+will have the same problem, unless we can invent a hub for which
+transformations are exact (I think that if such hub existed, we
+would have already heard about it).
+
+> The solution proposed by ISO 19111 (in my understanding) is:
+
+> * Forget about hub (WGS84 or other), unless the simplicity of
+early-binding is considered more important than accuracy.
+
+> * Associating a CRS to a coordinate set (geometry or raster) is no
+longer sufficient. A {CRS, epoch} tuple must be associated. ISO
+19111 calls this tuple "Coordinate metadata". From a programmatic
+API point of view, this means that getCoordinateReferenceSystem()
+method in Geometry objects (for instance) needs to be replaced by a
+getCoordinateMetadata() method.
+
+For users of North American spatial data, this [ESRI news item](https://www.esri.com/about/newsroom/arcuser/moving-from-static-spatial-reference-systems-in-2022/) gives a broad-brush picture of some of the motivations and oncoming changes.
+
+## Impacts of GDAL barnraising on **sp** workflows
+
+The following examples will contrast the behaviour of PROJ4/GDAL2 (similar to PROJ5/GDAL2, and PROJ4/GDAL1) and PROJ6+/GDAL3+. In particular, the behaviour of the `exportToProj4()` function in GDAL's `OGRSpatialReference` class has changed:
+
+> Warning
+    Use of this function is discouraged. Its behaviour in GDAL >= 3 / PROJ >= 6 is significantly different from earlier versions. In particular +datum will only encode WGS84, NAD27 and NAD83, and +towgs84/+nadgrids terms will be missing most of the time. PROJ strings to encode CRS should be considered as a a legacy solution. Using a AUTHORITY:CODE or WKT representation is the recommended way.
+    
+(https://gdal.org/doxygen/classOGRSpatialReference.html#a271b3de4caf844135b0c61e634860f2b); see also (https://github.com/r-spatial/sf/issues/1187) and links therein to (https://github.com/r-spatial/discuss/issues/28) and (https://github.com/r-spatial/sf/issues/1146).
+
+This function is used for both raster and vector data read through GDAL to provide the PROJ 4 string used to specify the coordinate reference system of **sp** `"Spatial"` objects using the `"CRS"` (S4, new style) class. Such classes cannot be modified without making it impossible for users to load serialised objects, such as **sp** RDS objects from GADM [for example for Norway](https://gadm.org/download_country_v3.html).
+
+My fork of **sp** (https://github.com/rsbivand/sp) is currently at 1.3-3 or higher, and contains extra code conditionally using the development version of **rgdal** on the R-Forge repository at 1.5-1 or higher. The commented out blocks marked PROJ4/GDAL2 were generated on a Windows platform with **sp** 1.3-2 and **rgdal** 1.4-7, using PROJ4/GDAL2. The other commented out blocks were **sp** fork and **rgdal** development version, revision 886. The uncommented output is what the package build platform put there.
+
+
+```{r}
+library(sp)
+packageVersion("sp")
+```
+
+```{r}
+## [1] '1.3.3'
+```
+
+```{r}
+## PROJ4/GDAL2 [1] '1.3.2'
+```
+
+The `"CRS"` class definition is unchanged going forward to maintain backward compatibility.
+
+```{r}
+getClass("CRS")
+```
+
+```{r}
+rgdal::rgdal_extSoftVersion()
+```
+
+```{r}
+##           GDAL GDAL_with_GEOS           PROJ             sp 
+##        "3.0.2"         "TRUE"        "6.2.1"        "1.3-3"
+```
+
+```{r}
+## PROJ4/GDAL2           GDAL GDAL_with_GEOS         PROJ.4             sp 
+## PROJ4/GDAL2        "2.2.3"         "TRUE"        "4.9.3"        "1.3-1"
+```
+
+```{r}
+packageVersion("rgdal")
+```
+
+```{r}
+## [1] '1.5.1'
+```
+
+```{r}
+## PROJ4/GDAL2 [1] '1.4.7'
+```
+
+The changes introduced affect `CRS()` when **rgdal** is available; if **rgdal** is not available, the `"CRS"` object just contains a lightly checked PROJ-style string. Because some terms are deprecated or defunct from PROJ6/GDAL3, we need to be careful. GDAL's `exportToProj4()` uses the PROJ `proj_as_proj_string()` function in its new API to return the PROJ string. Terms which are deprecated or defunct may be omitted. In the PROJ6+/GDAL3+ case, `CRS()` calls `rgdal::checkCRSArgs_ng()`, a new generation function replacing the legacy `rgdal::checkCRSArgs()` function. 
+
+It passes on the input PROJ-style string to `rgdal::showSRID()`, which is a many-to-many converter. It can take PROJ-style strings, WKT strings, urn-style strings and EPSG-style strings, and converts to WKT (many types) and PROJ. The PROJ-to-PROJ conversion is equivalent to PROJ4/GDAL2 behaviour, using `importFromProj4()` and friends to instantiate an SRS object in GDAL, and `exportToProj4()` and `exportToWkt()` to emit strings. If the output string appears to be missing a specification term implied by the input, a warning is given; the warnings are at present overly cautious.
+
+```{r}
+(crs <- CRS("+proj=longlat +ellps=WGS84"))
+```
+
+```{r}
+## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO"):
+## Discarded datum Unknown_based_on_WGS84_ellipsoid in CRS definition
+
+## CRS arguments: +proj=longlat +ellps=WGS84 +no_defs
+```
+
+In `rgdal::checkCRSArgs_ng()`, `rgdal::showSRID()` may be called several times. If the passed `"CRS"` object only has a non-NA PROJ-style string, this is used to populate the SRS object, as in this case. In addition to emitting a checked PROJ string, a WKT2 string is also returned (WKT2_2018), and this string is assigned as a `comment()` to the `"CRS"` object. This representation is far more robust than the PROJ-style string, giving authorities and table look-up ID values. (*WKT comment strings are reported here split across lines, because some find right-scrolling unpretty; the real format is as a character string on one line only*).
+
+```{r}
+cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
+```
+
+```{r}
+## [1] "GEOGCRS[\"unknown\", DATUM[\"Unknown based on WGS84 ellipsoid\",
+## ELLIPSOID[\"WGS 84\", 6378137, 298.257223563, LENGTHUNIT[\"metre\", 1],
+## ID[\"EPSG\", 7030]]], PRIMEM[\"Greenwich\", 0, ANGLEUNIT[\"degree\",
+## 0.0174532925199433], ID[\"EPSG\", 8901]], CS[ellipsoidal, 2], AXIS[\"longitude\",
+## east, ORDER[1], ANGLEUNIT[\"degree\", 0.0174532925199433, ID[\"EPSG\", 9122]]],
+## AXIS[\"latitude\", north, ORDER[2], ANGLEUNIT[\"degree\", 0.0174532925199433,
+## ID[\"EPSG\", 9122]]]]"
+```
+
+For the PROJ4/GDAL2 (and similar) cases, if **rgdal** is available, `CRS()` calls `rgdal::checkCRSArgs()`, calling `RGDAL_checkCRSArgs()`, a compiled function, which calls `pj_init_plus()` in PROJ to check the validity of the string and possibly expand terms. If this succeeds, `pj_get_def()` is used to return the PROJ string. Both of these functions are part of the deprecated PROJ API that is still accessible in PROJ 6, but will soon be made defunct. 
+
+```{r}
+## PROJ4/GDAL2 CRS arguments: +proj=longlat +ellps=WGS84
+```
+
+A number of further examples will be given here, including the case of one of three `+datum=` values that are still acknowledged in GDAL3/PROJ6: `WGS84`, `NAD27` and `NAD83`.
+
+```{r}
+(crs <- CRS("+proj=longlat +datum=WGS84"))
+```
+
+```{r}
+## CRS arguments: +proj=longlat +datum=WGS84 +no_defs
+```
+
+```{r}
+cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
+```
+
+```{r}
+## [1] "GEOGCRS[\"unknown\", DATUM[\"World Geodetic System 1984\",
+## ELLIPSOID[\"WGS 84\", 6378137, 298.257223563, LENGTHUNIT[\"metre\", 1]], 
+## ID[\"EPSG\", 6326]], PRIMEM[\"Greenwich\", 0, ANGLEUNIT[\"degree\",
+## 0.0174532925199433], ID[\"EPSG\", 8901]], CS[ellipsoidal, 2], AXIS[\"longitude\",
+## east, ORDER[1], ANGLEUNIT[\"degree\", 0.0174532925199433, ID[\"EPSG\", 9122]]],
+## AXIS[\"latitude\", north, ORDER[2], ANGLEUNIT[\"degree\", 0.0174532925199433,
+## ID[\"EPSG\", 9122]]]]"
+```
+
+```{r}
+## PROJ4/GDAL2 CRS arguments:
+## PROJ4/GDAL2  +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0
+```
+
+We know that `+datum`, `+towgs84`, `+nadgrids` and `+init` are fragile, so we'll try one:
+
+```{r}
+(crs <- CRS("+proj=longlat +towgs84=0,0,0"))
+```
+
+```{r}
+## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO"): Discarded datum WGS_1984 in CRS definition,
+##  but +towgs84= values preserved
+
+## CRS arguments:
+##  +proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs
+```
+
+The comment here includes the `+towgs84` parameters (three of them), while the PROJ string gives seven.
+
+```{r}
+cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
+```
+
+```{r}
+## [1] "BOUNDCRS[SOURCECRS[GEOGCRS[\"unknown\", DATUM[\"World Geodetic System 1984\",
+## ELLIPSOID[\"WGS 84\", 6378137, 298.257223563, LENGTHUNIT[\"metre\", 1]], ID[\"EPSG\",
+## 6326]], PRIMEM[\"Greenwich\", 0, ANGLEUNIT[\"degree\", 0.0174532925199433],
+## ID[\"EPSG\", 8901]], CS[ellipsoidal, 2], AXIS[\"longitude\", east, ORDER[1],
+## ANGLEUNIT[\"degree\", 0.0174532925199433, ID[\"EPSG\", 9122]]], AXIS[\"latitude\",
+## north, ORDER[2], ANGLEUNIT[\"degree\", 0.0174532925199433, ID[\"EPSG\", 9122]]]]],
+## TARGETCRS[GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS
+## 84\", 6378137, 298.257223563, LENGTHUNIT[\"metre\", 1]]], PRIMEM[\"Greenwich\", 0,
+## ANGLEUNIT[\"degree\", 0.0174532925199433]], CS[ellipsoidal, 2], AXIS[\"latitude\",
+## north, ORDER[1], ANGLEUNIT[\"degree\", 0.0174532925199433]], AXIS[\"longitude\", east,
+## ORDER[2], ANGLEUNIT[\"degree\", 0.0174532925199433]], ID[\"EPSG\", 4326]]],
+## ABRIDGEDTRANSFORMATION[\"Transformation from unknown to WGS84\", METHOD[\"Geocentric
+## translations (geog2D domain)\", ID[\"EPSG\", 9603]], PARAMETER[\"X-axis translation\",
+## 0, ID[\"EPSG\", 8605]], PARAMETER[\"Y-axis translation\", 0, ID[\"EPSG\", 8606]],
+## PARAMETER[\"Z-axis translation\", 0, ID[\"EPSG\", 8607]]]]"
+```
+
+```{r}
+## PROJ4/GDAL2 CRS arguments:
+## PROJ4/GDAL2  +proj=longlat +towgs84=0,0,0 +ellps=WGS84
+```
+
+The `+init` value is still accepted, but not repeated in the output:
+
+```{r}
+(crs <- CRS("+init=epsg:4326"))
+```
+
+```{r}
+## CRS arguments: +proj=longlat +datum=WGS84 +no_defs
+```
+
+```{r}
+cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
+```
+
+```{r}
+## [1] "GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\", 
+## 6378137, 298.257223563, LENGTHUNIT[\"metre\", 1]], ID[\"EPSG\", 6326]],
+## PRIMEM[\"Greenwich\", 0, ANGLEUNIT[\"degree\", 0.0174532925199433], ID[\"EPSG\",
+## 8901]], CS[ellipsoidal, 2], AXIS[\"longitude\", east, ORDER[1], ANGLEUNIT[\"degree\",
+## 0.0174532925199433, ID[\"EPSG\", 9122]]], AXIS[\"latitude\", north, ORDER[2],
+## ANGLEUNIT[\"degree\", 0.0174532925199433, ID[\"EPSG\", 9122]]],
+## USAGE[SCOPE[\"unknown\"], AREA[\"World\"], BBOX[-90, -180, 90, 180]]]"
+```
+
+```{r}
+## PROJ4/GDAL2 CRS arguments:
+## PROJ4/GDAL2  +init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84
+## PROJ4/GDAL2 +towgs84=0,0,0
+```
+
+An early warning of difficulties with discarded `+datum` values came with the GB datum:
+
+```{r, eval=FALSE}
+(crs <- CRS("+init=epsg:27700"))
+```
+
+```{r}
+## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO"):
+## Discarded datum OSGB_1936 in CRS definition
+
+## CRS arguments:
+##  +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
+## +y_0=-100000 +ellps=airy +units=m +no_defs
+```
+
+Here, the comment has all the information that would be needed to carry out coordinate operations, but the PROJ string is defective for GDAL3/PROJ6, giving at best ballpark accuracy.
+
+```{r, eval=FALSE}
+cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
+```
+
+```{r}
+## [1] "PROJCRS[\"OSGB 1936 / British National Grid\", BASEGEOGCRS[\"OSGB 1936\",
+## DATUM[\"OSGB 1936\", ELLIPSOID[\"Airy 1830\", 6377563.396, 299.3249646,
+## LENGTHUNIT[\"metre\", 1]]], PRIMEM[\"Greenwich\", 0, ANGLEUNIT[\"degree\",
+## 0.0174532925199433]], ID[\"EPSG\", 4277]], CONVERSION[\"British National Grid\",
+## METHOD[\"Transverse Mercator\", ID[\"EPSG\", 9807]], PARAMETER[\"Latitude of natural
+## origin\", 49, ANGLEUNIT[\"degree\", 0.0174532925199433], ID[\"EPSG\", 8801]],
+## PARAMETER[\"Longitude of natural origin\", -2, ANGLEUNIT[\"degree\",
+## 0.0174532925199433], ID[\"EPSG\", 8802]], PARAMETER[\"Scale factor at natural
+## origin\", 0.9996012717, SCALEUNIT[\"unity\", 1], ID[\"EPSG\", 8805]],
+## PARAMETER[\"False easting\", 400000, LENGTHUNIT[\"metre\", 1], ID[\"EPSG\", 8806]],
+## PARAMETER[\"False northing\", -100000, LENGTHUNIT[\"metre\", 1], ID[\"EPSG\", 8807]],
+## ID[\"EPSG\", 19916]], CS[Cartesian, 2], AXIS[\"(E)\", east, ORDER[1],
+## LENGTHUNIT[\"metre\", 1, ID[\"EPSG\", 9001]]], AXIS[\"(N)\", north, ORDER[2],
+## LENGTHUNIT[\"metre\", 1, ID[\"EPSG\", 9001]]], USAGE[SCOPE[\"unknown\"], AREA[\"UK -
+## Britain and UKCS 49°46'N to 61°01'N,  7°33'W to 3°33'E\"], BBOX[49.75, -9.2, 61.14, 2.88]]]"
+```
+
+In PROJ4/GDAL2, the `+datum` and `+towgs84` values give much better transformation accuracy from the PROJ string.
+
+```{r}
+## PROJ4/GDAL2 CRS arguments:
+## PROJ4/GDAL2  +init=epsg:27700 +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717
+## PROJ4/GDAL2 +x_0=400000 +y_0=-100000 +datum=OSGB36 +units=m +no_defs
+## PROJ4/GDAL2 +ellps=airy
+## PROJ4/GDAL2 +towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894
+```
+
+From **sp** 1.3-3 (my fork), `CRS()` takes a third argument to the legacy two, `projargs=` and `doCheckCRSArgs=TRUE`: `SRS_string=NULL`. This can take any string that `rgdal::showSRID()` can handle. The warning follows use of `exportToProj4()`:
+
+```{r}
+run <- rgdal::new_proj_and_gdal()
+```
+
+
+```{r, eval=run}
+(crs <- CRS(SRS_string = "EPSG:27700"))
+```
+
+```{r}
+## Warning in showSRID(SRS_string, format = "PROJ", multiline = "NO"):
+## Discarded datum OSGB_1936 in CRS definition
+
+## CRS arguments:
+##  +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
+## +y_0=-100000 +ellps=airy +units=m +no_defs
+```
+
+```{r, eval=run}
+cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
+```
+
+```{r}
+## [1] "PROJCRS[\"OSGB 1936 / British National Grid\", BASEGEOGCRS[\"OSGB 1936\",
+## DATUM[\"OSGB 1936\", ELLIPSOID[\"Airy 1830\", 6377563.396, 299.3249646,
+## LENGTHUNIT[\"metre\", 1]]], PRIMEM[\"Greenwich\", 0, ANGLEUNIT[\"degree\",
+## 0.0174532925199433]], ID[\"EPSG\", 4277]], CONVERSION[\"British National Grid\",
+## METHOD[\"Transverse Mercator\", ID[\"EPSG\", 9807]], PARAMETER[\"Latitude of natural
+## origin\", 49, ANGLEUNIT[\"degree\", 0.0174532925199433], ID[\"EPSG\", 8801]],
+## PARAMETER[\"Longitude of natural origin\", -2, ANGLEUNIT[\"degree\",
+## 0.0174532925199433], ID[\"EPSG\", 8802]], PARAMETER[\"Scale factor at natural
+## origin\", 0.9996012717, SCALEUNIT[\"unity\", 1], ID[\"EPSG\", 8805]],
+## PARAMETER[\"False easting\", 400000, LENGTHUNIT[\"metre\", 1], ID[\"EPSG\", 8806]],
+## PARAMETER[\"False northing\", -100000, LENGTHUNIT[\"metre\", 1], ID[\"EPSG\", 8807]]],
+## CS[Cartesian, 2], AXIS[\"(E)\", east, ORDER[1], LENGTHUNIT[\"metre\", 1]],
+## AXIS[\"(N)\", north, ORDER[2], LENGTHUNIT[\"metre\", 1]], USAGE[SCOPE[\"unknown\"],
+## AREA[\"UK - Britain and UKCS 49°46'N to 61°01'N,  7°33'W to 3°33'E\"], BBOX[49.75,
+## -9.2, 61.14, 2.88]], ID[\"EPSG\", 27700]]"
+```
+
+We can also use a more detailed PROJ string, but without any improvement of the output PROJ representation; the comment is OK:
+
+```{r, eval=run}
+(crs <- CRS("+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +datum=OSGB36 +units=m +no_defs"))
+```
+
+```{r}
+## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO"):
+## Discarded datum OSGB_1936 in CRS definition
+
+## CRS arguments:
+##  +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
+## +y_0=-100000 +ellps=airy +units=m +no_defs
+```
+
+
+```{r, eval=run}
+cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
+```
+
+```{r}
+## [1] "PROJCRS[\"unknown\", BASEGEOGCRS[\"unknown\", DATUM[\"OSGB 1936\",
+## ELLIPSOID[\"Airy 1830\", 6377563.396, 299.3249646, LENGTHUNIT[\"metre\", 1]],
+## ID[\"EPSG\", 6277]], PRIMEM[\"Greenwich\", 0, ANGLEUNIT[\"degree\",
+## 0.0174532925199433], ID[\"EPSG\", 8901]]], CONVERSION[\"unknown\", METHOD[\"Transverse
+## Mercator\", ID[\"EPSG\", 9807]], PARAMETER[\"Latitude of natural origin\", 49,
+## ANGLEUNIT[\"degree\", 0.0174532925199433], ID[\"EPSG\", 8801]], PARAMETER[\"Longitude
+## of natural origin\", -2, ANGLEUNIT[\"degree\", 0.0174532925199433], ID[\"EPSG\",
+## 8802]], PARAMETER[\"Scale factor at natural origin\", 0.9996012717,
+## SCALEUNIT[\"unity\", 1], ID[\"EPSG\", 8805]], PARAMETER[\"False easting\", 400000,
+## LENGTHUNIT[\"metre\", 1], ID[\"EPSG\", 8806]], PARAMETER[\"False northing\", -100000,
+## LENGTHUNIT[\"metre\", 1], ID[\"EPSG\", 8807]]], CS[Cartesian, 2], AXIS[\"(E)\", east,
+## ORDER[1], LENGTHUNIT[\"metre\", 1, ID[\"EPSG\", 9001]]], AXIS[\"(N)\", north,
+## ORDER[2], LENGTHUNIT[\"metre\", 1, ID[\"EPSG\", 9001]]]]"
+```
+
+`rgdal::showSRID()` is quite versatile, so we can display a multiline WKT string as well:
+
+```{r, eval=run}
+if (packageVersion("rgdal") >= "1.5.1") cat(rgdal::showSRID("+init=epsg:27700", format="WKT2_2018", multiline="YES"), "\n")
+```
+
+```{r}
+## PROJCRS["OSGB 1936 / British National Grid",
+##     BASEGEOGCRS["OSGB 1936",
+##         DATUM["OSGB 1936",
+##             ELLIPSOID["Airy 1830",6377563.396,299.3249646,
+##                 LENGTHUNIT["metre",1]]],
+##         PRIMEM["Greenwich",0,
+##             ANGLEUNIT["degree",0.0174532925199433]],
+##         ID["EPSG",4277]],
+##     CONVERSION["British National Grid",
+##         METHOD["Transverse Mercator",
+##             ID["EPSG",9807]],
+##         PARAMETER["Latitude of natural origin",49,
+##             ANGLEUNIT["degree",0.0174532925199433],
+##             ID["EPSG",8801]],
+##         PARAMETER["Longitude of natural origin",-2,
+##             ANGLEUNIT["degree",0.0174532925199433],
+##             ID["EPSG",8802]],
+##         PARAMETER["Scale factor at natural origin",0.9996012717,
+##             SCALEUNIT["unity",1],
+##             ID["EPSG",8805]],
+##         PARAMETER["False easting",400000,
+##             LENGTHUNIT["metre",1],
+##             ID["EPSG",8806]],
+##         PARAMETER["False northing",-100000,
+##             LENGTHUNIT["metre",1],
+##             ID["EPSG",8807]],
+##         ID["EPSG",19916]],
+##     CS[Cartesian,2],
+##         AXIS["(E)",east,
+##             ORDER[1],
+##             LENGTHUNIT["metre",1,
+##                 ID["EPSG",9001]]],
+##         AXIS["(N)",north,
+##             ORDER[2],
+##             LENGTHUNIT["metre",1,
+##                 ID["EPSG",9001]]],
+##     USAGE[
+##         SCOPE["unknown"],
+##         AREA["UK - Britain and UKCS 49°46'N to 61°01'N, 7°33'W to 3°33'E"],
+##         BBOX[49.75,-9.2,61.14,2.88]]]
+```
+
+So far, `"CRS"` objects created on creation from **sp**, and from reading rasters and vectors in **rgdal**, are furnished with WKT comments. These are used to instantiate SRS objects when writing raster and vector objects. What remains is to convert the compiled `transform()` function and `spTransform()` methods to use the WKT comments if available instead of the PROJ string in the `"CRS"` object in each `"Spatial"` object.
+
+## Coordinate operations
+
+```{r}
+library(rgdal)
+```
+
+
+```{r}
+## rgdal: version: 1.5-1, (SVN revision 870)
+##  Geospatial Data Abstraction Library extensions to R successfully loaded
+##  Loaded GDAL runtime: GDAL 3.0.2, released 2019/10/28
+##  Path to GDAL shared files: 
+##  GDAL binary built with GEOS: TRUE 
+##  Loaded PROJ.4 runtime: Rel. 6.2.1, November 1st, 2019, [PJ_VERSION: 621]
+##  Path to PROJ.4 shared files: (autodetected)
+##  Linking to sp version: 1.3-3
+```
+
+
+```{r}
+run <- new_proj_and_gdal()
+```
+
+We can first show what happens when searching for instantiable coordinate operations. These are coordinate operations that can be created by look-up in the PROJ database given the information in the input description. Here the datum has been discarded.
+
+```{r, eval=run}
+(discarded_datum <- showSRID("EPSG:27700", "PROJ"))
+```
+
+```{r}
+## Warning in showSRID("EPSG:27700", "PROJ"): Discarded datum OSGB_1936 in CRS
+## definition
+```
+ 
+Consequently, when searching for coordinate operations to transform to geographical coordinates and the WGS84 datum, and using `importFromProj4()` to instantiate the source SRS, the only operation found only has the Airy ellipse information to guide its search. The `list_coordOps()` function takes two SRS descriptions, and returns coordinate operations found by look-up. We need to add the `type` tag to a PROJ string here.
+
+```{r, eval=run}
+(x <- list_coordOps(paste0(discarded_datum, " +type=crs"), "EPSG:4326"))
+```
+
+```{r}
+## Candidate coordinate operations found:  1 
+## Strict containment:  FALSE 
+## Visualization order:  TRUE 
+## Source: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
+##         +y_0=-100000 +ellps=airy +units=m +no_defs +type=crs
+## Target: EPSG:4326 
+## Best instantiable operation has only ballpark accuracy 
+## Description: Inverse of unknown + Ballpark geographic offset from unknown to
+##              WGS 84 + axis order change (2D)
+## Definition:  +proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2
+##              +k=0.9996012717 +x_0=400000 +y_0=-100000
+##              +ellps=airy +step +proj=unitconvert +xy_in=rad
+##              +xy_out=deg
+```
+
+The `best_instantiable_coordOp()` function retuns the best instantiable coordinate operation, in this case the only one, with a description attribute. This is the current best available in calling `spTransform()` with `"CRS"` objects with discarded `+datum=` tags.
+
+```{r, eval=run}
+best_instantiable_coordOp(x)
+```
+
+```{r}
+## Warning in best_instantiable_coordOp(x): Best instantiable operation has only
+## ballpark accuracy
+## [1] "+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717
+## +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=unitconvert +xy_in=rad +xy_out=deg"
+## attr(,"description")
+## [1] "Inverse of unknown + Ballpark geographic offset from unknown to WGS 84 + 
+## axis order change (2D)"
+```
+
+If we add back the discarded `+datum=` tag with a valid value, we give the search process what it needs to find more coordinate operations.
+
+```{r, eval=run}
+list_coordOps(paste0(discarded_datum, " +datum=OSGB36 +type=crs"), "EPSG:4326")
+```
+
+Now we have 7 operations, one the ballpark accuracy operation with unknown accuracy found above, 5 others that can be instantiated, of which the best has 2m accuracy, and an operation that cannot be instantiated because a publically available grid is missing. On download and installation of this grid, 1m accuracy could be achieved.
+
+```{r}
+## Candidate coordinate operations found:  7 
+## Strict containment:  FALSE 
+## Visualization order:  TRUE 
+## Source: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
+##         +y_0=-100000 +ellps=airy +units=m +no_defs
+##         +datum=OSGB36 +type=crs
+## Target: EPSG:4326 
+## Best instantiable operation has accuracy: 2 m
+## Description: Inverse of unknown + axis order change (2D) + OSGB 1936 to WGS
+##              84 (6) + axis order change (2D)
+## Definition:  +proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2
+##              +k=0.9996012717 +x_0=400000 +y_0=-100000
+##              +ellps=airy +step +proj=push +v_3 +step +proj=cart
+##              +ellps=airy +step +proj=helmert +x=446.448
+##              +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247 +rz=0.842
+##              +s=-20.489 +convention=position_vector +step +inv
+##              +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step
+##              +proj=unitconvert +xy_in=rad +xy_out=deg
+## Operation 6 is lacking 1 grid with accuracy 1 m
+## Missing grid: OSTN15_NTv2_OSGBtoETRS.gsb 
+## URL: https://download.osgeo.org/proj/proj-datumgrid-europe-latest.zip
+```
+
+If we pass the source WKT string to `list_coordOps()` we get 6 operations back, now without the ballpark accuracy operation; this would be the situation in which WKT comments if present were used to construct the source and target SRS:
+
+```{r, eval=run}
+wkt_source_datum <- showSRID("EPSG:27700", "WKT2")
+wkt_target_datum <- showSRID("EPSG:4326", "WKT2")
+(x <- list_coordOps(wkt_source_datum, wkt_target_datum))
+```
+
+```{r}
+## Candidate coordinate operations found:  6 
+## Strict containment:  FALSE 
+## Visualization order:  TRUE 
+## Source: PROJCRS["OSGB 1936 / British National Grid", BASEGEOGCRS["OSGB
+##         1936", DATUM["OSGB 1936", ELLIPSOID["Airy 1830",
+##         6377563.396, 299.3249646, LENGTHUNIT["metre", 1]]],
+##         PRIMEM["Greenwich", 0, ANGLEUNIT["degree",
+##         0.0174532925199433]], ID["EPSG", 4277]],
+##         CONVERSION["British National Grid", METHOD["Transverse
+##         Mercator", ID["EPSG", 9807]], PARAMETER["Latitude of
+##         natural origin", 49, ANGLEUNIT["degree",
+##         0.0174532925199433], ID["EPSG", 8801]],
+##         PARAMETER["Longitude of natural origin", -2,
+##         ANGLEUNIT["degree", 0.0174532925199433], ID["EPSG",
+##         8802]], PARAMETER["Scale factor at natural origin",
+##         0.9996012717, SCALEUNIT["unity", 1], ID["EPSG", 8805]],
+##         PARAMETER["False easting", 400000, LENGTHUNIT["metre",
+##         1], ID["EPSG", 8806]], PARAMETER["False northing",
+##         -100000, LENGTHUNIT["metre", 1], ID["EPSG", 8807]]],
+##         CS[Cartesian, 2], AXIS["(E)", east, ORDER[1],
+##         LENGTHUNIT["metre", 1]], AXIS["(N)", north, ORDER[2],
+##         LENGTHUNIT["metre", 1]], USAGE[SCOPE["unknown"],
+##         AREA["UK - Britain and UKCS 49°46'N to 61°01'N, 7°33'W
+##         to 3°33'E"], BBOX[49.75, -9.2, 61.14, 2.88]],
+##         ID["EPSG", 27700]]
+## Target: GEOGCRS["WGS 84", DATUM["World Geodetic System 1984",
+##         ELLIPSOID["WGS 84", 6378137, 298.257223563,
+##         LENGTHUNIT["metre", 1]]], PRIMEM["Greenwich", 0,
+##         ANGLEUNIT["degree", 0.0174532925199433]],
+##         CS[ellipsoidal, 2], AXIS["geodetic latitude (Lat)",
+##         north, ORDER[1], ANGLEUNIT["degree",
+##         0.0174532925199433]], AXIS["geodetic longitude (Lon)",
+##         east, ORDER[2], ANGLEUNIT["degree",
+##         0.0174532925199433]], USAGE[SCOPE["unknown"],
+##         AREA["World"], BBOX[-90, -180, 90, 180]], ID["EPSG",
+##         4326]]
+## Best instantiable operation has accuracy: 2 m
+## Description: Inverse of British National Grid + OSGB 1936 to WGS 84 (6) +
+##              axis order change (2D)
+## Definition:  +proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2
+##              +k=0.9996012717 +x_0=400000 +y_0=-100000
+##              +ellps=airy +step +proj=push +v_3 +step +proj=cart
+##              +ellps=airy +step +proj=helmert +x=446.448
+##              +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247 +rz=0.842
+##              +s=-20.489 +convention=position_vector +step +inv
+##              +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step
+##              +proj=unitconvert +xy_in=rad +xy_out=deg
+## Operation 6 is lacking 1 grid with accuracy 1 m
+## Missing grid: OSTN15_NTv2_OSGBtoETRS.gsb 
+## URL: https://download.osgeo.org/proj/proj-datumgrid-europe-latest.zip
+```
+
+```{r, eval=run}
+best_instantiable_coordOp(x)
+```
+
+```{r}
+## [1] "+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717
+## +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=push +v_3 +step +proj=cart
+## +ellps=airy +step +proj=helmert +x=446.448 +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247
+## +rz=0.842 +s=-20.489 +convention=position_vector +step +inv +proj=cart +ellps=WGS84
+## +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg"
+## attr(,"description")
+## [1] "Inverse of British National Grid + OSGB 1936 to WGS 84 (6) + axis order change (2D)"
+```
+
+Turning to a different example, a Brazilian UTM25S Corrego Alegre 1970-72 datum, and looking for coordinate operations transform to UTM25S SIRGAS 2000, we see that a `+towgs84=` tag was preserved.
+
+```{r, eval=run}
+discarded_datum <- showSRID("EPSG:22525", "PROJ")
+```
+
+```{r}
+## Warning in showSRID("EPSG:22525", "PROJ"): Discarded datum Corrego_Alegre_1970-72 in CRS definition,
+##  but +towgs84= values preserved
+```
+
+This meant that while only ballpark accuracy is reported, a Helmert transformation is carried out:
+
+```{r, eval=run}
+(x <- list_coordOps(paste0(discarded_datum, " +type=crs"), "EPSG:31985"))
+```
+
+
+```{r}
+## Candidate coordinate operations found:  1 
+## Strict containment:  FALSE 
+## Visualization order:  TRUE 
+## Source: +proj=utm +zone=25 +south +ellps=intl
+##         +towgs84=-205.57,168.77,-4.12,0,0,0,0 +units=m +no_defs
+##         +type=crs
+## Target: EPSG:31985 
+## Best instantiable operation has only ballpark accuracy 
+## Description: Inverse of UTM zone 25S + Transformation from unknown to WGS84
+##              + Inverse of SIRGAS 2000 to WGS 84 (1) + UTM zone
+##              25S
+## Definition:  +proj=pipeline +step +inv +proj=utm +zone=25 +south +ellps=intl
+##              +step +proj=push +v_3 +step +proj=cart +ellps=intl
+##              +step +proj=helmert +x=-205.57 +y=168.77 +z=-4.12
+##              +rx=0 +ry=0 +rz=0 +s=0 +convention=position_vector
+##              +step +inv +proj=cart +ellps=GRS80 +step +proj=pop
+##              +v_3 +step +proj=utm +zone=25 +south +ellps=GRS80
+```
+
+
+```{r, eval=run}
+best_instantiable_coordOp(x)
+```
+
+```{r}
+## Warning in best_instantiable_coordOp(x): Best instantiable operation has only
+## ballpark accuracy
+## [1] "+proj=pipeline +step +inv +proj=utm +zone=25 +south +ellps=intl +step
+## +proj=push +v_3 +step +proj=cart +ellps=intl +step +proj=helmert +x=-205.57
+## +y=168.77 +z=-4.12 +rx=0 +ry=0 +rz=0 +s=0 +convention=position_vector +step +inv
+## +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=25 +south
+## +ellps=GRS80"
+## attr(,"description")
+## [1] "Inverse of UTM zone 25S + Transformation from unknown to WGS84 + Inverse of
+## SIRGAS 2000 to WGS 84 (1) + UTM zone 25S"
+```
+
+If we move to input WKT strings when searching for coordinate operations, we get to the same result with unknown accuracy but using a Helmert transformation:
+
+```{r, eval=run}
+wkt_source_datum <- showSRID("EPSG:22525", "WKT2")
+wkt_target_datum <- showSRID("EPSG:31985", "WKT2")
+(x <- list_coordOps(wkt_source_datum, wkt_target_datum))
+```
+
+```{r}
+## Candidate coordinate operations found:  1 
+## Strict containment:  FALSE 
+## Visualization order:  TRUE 
+## Source: BOUNDCRS[SOURCECRS[PROJCRS["Corrego Alegre 1970-72 / UTM zone
+##         25S", BASEGEOGCRS["Corrego Alegre 1970-72",
+##         DATUM["Corrego Alegre 1970-72",
+##         ELLIPSOID["International 1924", 6378388, 297,
+##         LENGTHUNIT["metre", 1]]], PRIMEM["Greenwich", 0,
+##         ANGLEUNIT["degree", 0.0174532925199433]], ID["EPSG",
+##         4225]], CONVERSION["UTM zone 25S", METHOD["Transverse
+##         Mercator", ID["EPSG", 9807]], PARAMETER["Latitude of
+##         natural origin", 0, ANGLEUNIT["degree",
+##         0.0174532925199433], ID["EPSG", 8801]],
+##         PARAMETER["Longitude of natural origin", -33,
+##         ANGLEUNIT["degree", 0.0174532925199433], ID["EPSG",
+##         8802]], PARAMETER["Scale factor at natural origin",
+##         0.9996, SCALEUNIT["unity", 1], ID["EPSG", 8805]],
+##         PARAMETER["False easting", 500000, LENGTHUNIT["metre",
+##         1], ID["EPSG", 8806]], PARAMETER["False northing",
+##         10000000, LENGTHUNIT["metre", 1], ID["EPSG", 8807]]],
+##         CS[Cartesian, 2], AXIS["(E)", east, ORDER[1],
+##         LENGTHUNIT["metre", 1]], AXIS["(N)", north, ORDER[2],
+##         LENGTHUNIT["metre", 1]], USAGE[SCOPE["unknown"],
+##         AREA["Brazil - east of 36°W onshore"], BBOX[-10.1, -36,
+##         -4.99, -34.74]], ID["EPSG", 22525]]],
+##         TARGETCRS[GEOGCRS["WGS 84", DATUM["World Geodetic
+##         System 1984", ELLIPSOID["WGS 84", 6378137,
+##         298.257223563, LENGTHUNIT["metre", 1]]],
+##         PRIMEM["Greenwich", 0, ANGLEUNIT["degree",
+##         0.0174532925199433]], CS[ellipsoidal, 2],
+##         AXIS["latitude", north, ORDER[1], ANGLEUNIT["degree",
+##         0.0174532925199433]], AXIS["longitude", east, ORDER[2],
+##         ANGLEUNIT["degree", 0.0174532925199433]], ID["EPSG",
+##         4326]]], ABRIDGEDTRANSFORMATION["Corrego Alegre 1970-72
+##         to WGS 84 (3)", VERSION["PBS-Bra 1983"],
+##         METHOD["Geocentric translations (geog2D domain)",
+##         ID["EPSG", 9603]], PARAMETER["X-axis translation",
+##         -205.57, ID["EPSG", 8605]], PARAMETER["Y-axis
+##         translation", 168.77, ID["EPSG", 8606]],
+##         PARAMETER["Z-axis translation", -4.12, ID["EPSG",
+##         8607]], USAGE[SCOPE["Medium and small scale mapping."],
+##         AREA["Brazil - Corrego Alegre 1970-1972"], BBOX[-33.78,
+##         -58.16, -2.68, -34.74]], ID["EPSG", 6192],
+##         REMARK["Formed by concatenation of tfms codes 6191 and
+##         1877. Used by Petrobras and ANP until February 2005
+##         when replaced by Corrego Alegre 1970-72 to WGS 84 (4)
+##         (tfm code 6194)."]]]
+## Target:
+## BOUNDCRS[SOURCECRS[PROJCRS["SIRGAS 2000 / UTM zone 25S",
+##         BASEGEOGCRS["SIRGAS 2000", DATUM["Sistema de Referencia
+##         Geocentrico para las AmericaS 2000", ELLIPSOID["GRS
+##         1980", 6378137, 298.257222101, LENGTHUNIT["metre",
+##         1]]], PRIMEM["Greenwich", 0, ANGLEUNIT["degree",
+##         0.0174532925199433]], ID["EPSG", 4674]],
+##         CONVERSION["UTM zone 25S", METHOD["Transverse
+##         Mercator", ID["EPSG", 9807]], PARAMETER["Latitude of
+##         natural origin", 0, ANGLEUNIT["degree",
+##         0.0174532925199433], ID["EPSG", 8801]],
+##         PARAMETER["Longitude of natural origin", -33,
+##         ANGLEUNIT["degree", 0.0174532925199433], ID["EPSG",
+##         8802]], PARAMETER["Scale factor at natural origin",
+##         0.9996, SCALEUNIT["unity", 1], ID["EPSG", 8805]],
+##         PARAMETER["False easting", 500000, LENGTHUNIT["metre",
+##         1], ID["EPSG", 8806]], PARAMETER["False northing",
+##         10000000, LENGTHUNIT["metre", 1], ID["EPSG", 8807]]],
+##         CS[Cartesian, 2], AXIS["(E)", east, ORDER[1],
+##         LENGTHUNIT["metre", 1]], AXIS["(N)", north, ORDER[2],
+##         LENGTHUNIT["metre", 1]], USAGE[SCOPE["unknown"],
+##         AREA["Brazil - 36°W to 30°W"], BBOX[-23.8, -36, 4.19,
+##         -29.99]], ID["EPSG", 31985]]], TARGETCRS[GEOGCRS["WGS
+##         84", DATUM["World Geodetic System 1984", ELLIPSOID["WGS
+##         84", 6378137, 298.257223563, LENGTHUNIT["metre", 1]]],
+##         PRIMEM["Greenwich", 0, ANGLEUNIT["degree",
+##         0.0174532925199433]], CS[ellipsoidal, 2],
+##         AXIS["latitude", north, ORDER[1], ANGLEUNIT["degree",
+##         0.0174532925199433]], AXIS["longitude", east, ORDER[2],
+##         ANGLEUNIT["degree", 0.0174532925199433]], ID["EPSG",
+##         4326]]], ABRIDGEDTRANSFORMATION["SIRGAS 2000 to WGS 84
+##         (1)", VERSION["OGP-C&S America"], METHOD["Geocentric
+##         translations (geog2D domain)", ID["EPSG", 9603]],
+##         PARAMETER["X-axis translation", 0, ID["EPSG", 8605]],
+##         PARAMETER["Y-axis translation", 0, ID["EPSG", 8606]],
+##         PARAMETER["Z-axis translation", 0, ID["EPSG", 8607]],
+##         USAGE[SCOPE["Accuracy 1m."], AREA["Latin America -
+##         SIRGAS 2000 by country"], BBOX[-59.87, -122.19, 32.72,
+##         -25.28]], ID["EPSG", 15894]]]
+## Best instantiable operation has only ballpark accuracy 
+## Description: Inverse of UTM zone 25S + Corrego Alegre 1970-72 to WGS 84 (3)
+##              + Inverse of SIRGAS 2000 to WGS 84 (1) + UTM zone
+##              25S
+## Definition:  +proj=pipeline +step +inv +proj=utm +zone=25 +south +ellps=intl
+##              +step +proj=push +v_3 +step +proj=cart +ellps=intl
+##              +step +proj=helmert +x=-205.57 +y=168.77 +z=-4.12
+##              +step +inv +proj=cart +ellps=GRS80 +step +proj=pop
+##              +v_3 +step +proj=utm +zone=25 +south +ellps=GRS80
+```
+
+If we define the look-up terms directly, in this case and unlike that for the OSGB36 datum, we find more operations than when using WKT strings. Now we find one operation with known accuracy (5m), and that a further operation would be possible if a required grid had been present, this grid is not in the PROJ download archive, as no URL is given. 
+
+```{r, eval=run}
+(x <- list_coordOps("EPSG:22525", "EPSG:31985"))
+```
+
+```{r}
+## Candidate coordinate operations found:  2 
+## Strict containment:  FALSE 
+## Visualization order:  TRUE 
+## Source: EPSG:22525 
+## Target: EPSG:31985 
+## Best instantiable operation has accuracy: 5 m
+## Description: Inverse of UTM zone 25S + Corrego Alegre 1970-72 to SIRGAS 2000
+##              (2) + UTM zone 25S
+## Definition:  +proj=pipeline +step +inv +proj=utm +zone=25 +south +ellps=intl
+##              +step +proj=push +v_3 +step +proj=cart +ellps=intl
+##              +step +proj=helmert +x=-206.05 +y=168.28 +z=-3.82
+##              +step +inv +proj=cart +ellps=GRS80 +step +proj=pop
+##              +v_3 +step +proj=utm +zone=25 +south +ellps=GRS80
+## Operation 2 is lacking 1 grid with accuracy 2 m
+## Missing grid: CA7072_003.gsb
+```
+
+
+
+```{r, eval=run}
+best_instantiable_coordOp(x)
+```
+
+
+```{r}
+## [1] "+proj=pipeline +step +inv +proj=utm +zone=25 +south +ellps=intl +step
+## +proj=push +v_3 +step +proj=cart +ellps=intl +step +proj=helmert +x=-206.05
+## +y=168.28 +z=-3.82 +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step
+## +proj=utm +zone=25 +south +ellps=GRS80"
+## attr(,"description")
+## [1] "Inverse of UTM zone 25S + Corrego Alegre 1970-72 to SIRGAS 2000 (2) + 
+## UTM zone 25S"
+```
+
+## Transformations
+
+The problem raised by the modernisation of PROJ can be encapsulated in this example of Scotland (once again the commented out runs are from a PROJ62/GDAL30 platform, the live runs from the platform building the vignette):
+
+```{r}
+scot_BNG <- readOGR(system.file("vectors", package="rgdal"), "scot_BNG")
+```
+
+```{r}
+## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
+## dumpSRS): Discarded datum OSGB_1936 in CRS definition: +proj=tmerc +lat_0=49
+## +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs
+## OGR data source with driver: ESRI Shapefile 
+## Source: "/home/rsb/lib/r_libs/rgdal/vectors", layer: "scot_BNG"
+## with 56 features
+## It has 13 fields
+## Warning in OGRSpatialRef(dsn = dsn, layer = layer, morphFromESRI =
+## morphFromESRI, : Discarded datum OSGB_1936 in CRS definition: +proj=tmerc
+## +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy
+## +units=m +no_defs
+## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO"): Discarded
+## datum Unknown_based_on_Airy_1830_ellipsoid in CRS definition
+```
+
+On reading with PROJ6/GDAL3, we discard the `+datum` tag, so losing information and ending up with a bounding box with positional accuracy degraded to an unknown extent, using the pre-PROJ6 adaptation CRS representation:
+
+```{r}
+(load_status <- get_transform_wkt_comment())
+```
+
+```{r}
+## [1] TRUE
+```
+
+(Again, commented output blocks are run on a PROJ6/GDAL3 platform). This demonstration was impacted by PROJ 6.3.0 fragility, with the `+ellps=` tag vanishing (with the `+units=` tag) apparently arbitrarily. A tentative diagnosis is that the datum node of the OGRSpatialReference object becomes unavailable, although why some change in PROJ leads to this aberation is unknown.
+
+```{r}
+set_transform_wkt_comment(FALSE)
+scot_LL <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
+(b0 <- bbox(scot_LL))
+```
+
+```{r}
+##         min       max
+## x -8.621387 -0.753056
+## y 54.626555 60.843843
+```
+
+We might fake the PROJ string by extracting the `"CRS"` object:
+
+```{r}
+(crs <- slot(scot_BNG, "proj4string"))
+```
+
+```{r}
+## CRS arguments:
+##  +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
+## +y_0=-100000 +ellps=airy +units=m +no_defs
+```
+
+
+```{r}
+slot(crs, "projargs")
+```
+
+```{r}
+## [1] "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000
+## +ellps=airy +units=m +no_defs"
+```
+
+and updating the PROJ string in-place if we know a sensible incantation:
+
+```{r}
+slot(crs, "projargs") <- paste0(slot(crs, "projargs"), " +datum=OSGB36")
+slot(scot_BNG, "proj4string") <- crs
+scot_LL1 <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
+(b1 <- bbox(scot_LL1))
+```
+
+```{r}
+##         min       max
+## x -8.622158 -0.755071
+## y 54.626633 60.843232
+```
+
+The two bounding boxes differ a good deal:
+
+```{r}
+all.equal(b0, b1, scale=1)
+```
+
+```{r}
+## [1] "Mean absolute difference: 0.0008689328"
+```
+
+The SW corner of Scotland differs by about 50m, the NE corner by almost 130m:
+
+```{r}
+diag(spDists(t(b0), t(b1), longlat=TRUE))*1000
+```
+
+```{r}
+## [1]  50.56708 128.99003
+```
+
+
+Re-instating the use of WKT comments lets us use the transformation path which instantiates the coordinate operation from the WKT strings in the `"CRS"` object comments:
+
+```{r}
+set_transform_wkt_comment(load_status)
+```
+
+```{r}
+scot_BNG <- readOGR(system.file("vectors", package="rgdal"), "scot_BNG")
+```
+
+```{r}
+## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
+## dumpSRS): Discarded datum OSGB_1936 in CRS definition: +proj=tmerc +lat_0=49
+## +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs
+## OGR data source with driver: ESRI Shapefile 
+## Source: "/home/rsb/lib/r_libs/rgdal/vectors", layer: "scot_BNG"
+## with 56 features
+## It has 13 fields
+## Warning in OGRSpatialRef(dsn = dsn, layer = layer, morphFromESRI =
+## morphFromESRI, : Discarded datum OSGB_1936 in CRS definition: +proj=tmerc
+## +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy
+## +units=m +no_defs
+## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO"): Discarded
+## datum Unknown_based_on_Airy_1830_ellipsoid in CRS definition
+```
+
+In **rgdal** 1.5-2, the coordinate operation lookup is done once for the first matrix of coordinates, and passed then on to subsequent transformations:
+
+```{r}
+system.time(scot_LL2 <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84")))
+```
+
+```{r}
+##    user  system elapsed 
+##   0.095   0.000   0.096
+```
+
+
+Timings for **rgdal** 1.5-1, when look-up was repeated for each matrix of coordinates:
+
+```{r}
+##    user  system elapsed 
+##   3.431   0.037   3.546
+```
+
+```{r}
+(b2 <- bbox(scot_LL2))
+```
+
+```{r}
+##         min        max
+## x -8.622158 -0.7550709
+## y 54.626633 60.8432318
+```
+
+```{r}
+all.equal(b1, b2, scale=1)
+```
+
+```{r}
+## [1] "Mean absolute difference: 3.361822e-08"
+```
+
+The coordinate operation last used may be retrieved with (default empty):
+
+```{r}
+get_last_coordOp()
+```
+
+```{r}
+## [1] "+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717
+## +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=push +v_3 +step +proj=cart
+## +ellps=airy +step +proj=helmert +x=446.448 +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247
+## +rz=0.842 +s=-20.489 +convention=position_vector +step +inv +proj=cart +ellps=WGS84
+## +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg"
+```
+
+If a given coordinate operation needs to be repeated, a good deal of time can be saved, as searches for coordinate operations take place once for `"SpatialPoints"` objects, but for `"SpatialLines"` and `"SpatialPolygons"` objects once for each "`Line"` or `"Polygon"` object:
+
+```{r, eval=run}
+system.time(scot_LL3 <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"),
+                                    coordOp=get_last_coordOp()))
+```
+
+```{r}
+##    user  system elapsed 
+##   0.066   0.002   0.070
+```
+
+
+```{r, eval=run}
+all.equal(b2, bbox(scot_LL3), scale=1)
+```
+
+```{r}
+## [1] TRUE
+```
+
+The possibility of speeding up frequently used coordinate operations shows how listing candidate coordinate operations from a direct search lets us use functions from the previous section:
+
+
+```{r, eval=run}
+wkt_source_datum <- comment(slot(scot_BNG, "proj4string"))
+wkt_target_datum <- comment(CRS("+proj=longlat +datum=WGS84"))
+x <- list_coordOps(wkt_source_datum, wkt_target_datum)
+system.time(scot_LL4 <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"),
+                                    coordOp=best_instantiable_coordOp(x)))
+```
+
+```{r}
+##    user  system elapsed 
+##   0.066   0.002   0.069
+```
+
+
+```{r, eval=run}
+all.equal(b2, bbox(scot_LL4), scale=1)
+```
+
+```{r}
+## [1] TRUE
+```
+
+## Axis swapping
+
+Luigi Ranghetti and Lorenzo Busetto provided [input](http://rpubs.com/ranghetti/sptransform-issue) with regard to axis swapping in **rgdal**. The task is to provide round-trip coordinate identity for four CRS. Here, we use just **sp**/**rgdal** to create the input objects:
+
+
+```{r}
+library(rgdal)
+```
+
+```{r}
+packageVersion("rgdal")
+rgdal_extSoftVersion()
+```
+
+
+```{r}
+pt0_lonlat <- SpatialPoints(matrix(c(10,46), nrow=1), proj4string= CRS("+init=epsg:4326"))
+pt0_laea89 <- spTransform(pt0_lonlat, CRS("+init=epsg:3035"))
+pt0_wgs32n <- spTransform(pt0_lonlat, CRS("+init=epsg:32632"))
+pt0_psmerc <- spTransform(pt0_lonlat, CRS("+init=epsg:3857"))
+```
+
+```{r}
+coordinates(pt0_lonlat)
+```
+
+```{r}
+coordinates(pt0_laea89)
+```
+
+
+```{r}
+coordinates(pt0_wgs32n)
+```
+
+
+```{r}
+coordinates(pt0_psmerc)
+```
+
+We put the input (source) objects into a list:
+
+```{r}
+from <- list(pt0_lonlat=pt0_lonlat, pt0_psmerc=pt0_psmerc, pt0_wgs32n=pt0_wgs32n, pt0_laea89=pt0_laea89)
+names(from)
+```
+
+```{r}
+sapply(from, proj4string)
+```
+
+and the target EPSG codes into a vector:
+
+```{r}
+to <- c("4326", "3857", "32632", "3035")
+```
+
+From SVN revision 903, a global **rgdal** option can be set to enforce visualization order in `spTransform()` methods (the default value when the package is loaded is `TRUE`) when no `coordOp=` argument is given, and the coordinate operation has to be found automatically:
+
+```{r}
+get_enforce_xy()
+set_enforce_xy(FALSE)
+get_enforce_xy()
+```
+
+```{r}
+run <- TRUE
+if (packageVersion("sp") < "1.3.3") run <- FALSE
+if (packageVersion("rgdal") < "1.5.3") run <- FALSE
+if (run && !rgdal::new_proj_and_gdal()) run <- FALSE
+```
+
+
+Setting it to false gives failing round-trips for two of the four CRS:
+
+```{r, warning=FALSE, message=FALSE, eval=run}
+out_EPSG_non_viz <- matrix(as.logical(NA), nrow=4, ncol=4)
+colnames(out_EPSG_non_viz) <- names(from)
+rownames(out_EPSG_non_viz) <- to
+for (j in seq(along=from)) {
+  for (i in seq(along=to)) {
+    pt1 <- spTransform(from[[j]], CRS(SRS_string = paste0("EPSG:", to[i])))
+    out_EPSG_non_viz[i, j] <- isTRUE(all.equal(coordinates(from[[i]]),
+      coordinates(pt1)))
+  }
+}
+out_EPSG_non_viz
+```
+
+Resetting to the default (`TRUE`) value gives round-trip success:
+
+```{r}
+set_enforce_xy(TRUE)
+get_enforce_xy()
+```
+
+```{r, warning=FALSE, message=FALSE, eval=run}
+out_EPSG <- matrix(as.logical(NA), nrow=4, ncol=4)
+colnames(out_EPSG) <- names(from)
+rownames(out_EPSG) <- to
+for (j in seq(along=from)) {
+  for (i in seq(along=to)) {
+    pt1 <- spTransform(from[[j]], CRS(SRS_string = paste0("EPSG:", to[i])))
+    out_EPSG[i, j] <- isTRUE(all.equal(coordinates(from[[i]]),
+      coordinates(pt1)))
+  }
+}
+out_EPSG
+```
+
+If we instantiate the target CRS simply using a PROJ string with `+init=` rather than using the `CRS()` `SRS_string=` argument, it appears that visualization order is chosen anyway, whatever the status of `enforce_xy`:
+
+```{r}
+get_enforce_xy()
+set_enforce_xy(FALSE)
+get_enforce_xy()
+```
+
+```{r, warning=FALSE, message=FALSE}
+out_init_non_viz <- matrix(as.logical(NA), nrow=4, ncol=4)
+colnames(out_init_non_viz) <- names(from)
+rownames(out_init_non_viz) <- to
+for (j in seq(along=from)) {
+  for (i in seq(along=to)) {
+    pt1 <- spTransform(from[[j]], CRS(paste0("+init=epsg:", to[i])))
+    out_init_non_viz[i, j] <- isTRUE(all.equal(coordinates(from[[i]]),
+      coordinates(pt1)))
+  }
+}
+out_init_non_viz
+```
+
+```{r}
+set_enforce_xy(TRUE)
+get_enforce_xy()
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+out_init <- matrix(as.logical(NA), nrow=4, ncol=4)
+colnames(out_init) <- names(from)
+rownames(out_init) <- to
+for (j in seq(along=from)) {
+  for (i in seq(along=to)) {
+    pt1 <- spTransform(from[[j]], CRS(paste0("+init=epsg:", to[i])))
+    out_init[i, j] <- isTRUE(all.equal(coordinates(from[[i]]),
+      coordinates(pt1)))
+  }
+}
+out_init
+```
+
+Finally, by listing candidate coordinate operations first, and choosing the best one, use can be made of the `list_coordOps()` `visualization_order=` argument, with default value `TRUE`; here it is given explicitly. This gives round trip success:
+
+```{r, warning=FALSE, message=FALSE, eval=run}
+out_EPSG <- matrix(as.logical(NA), nrow=4, ncol=4)
+colnames(out_EPSG) <- names(from)
+rownames(out_EPSG) <- to
+for (j in seq(along=from)) {
+  for (i in seq(along=to)) {
+    coo1 <- list_coordOps(comment(slot(from[[j]], "proj4string")),
+                          comment(CRS(SRS_string = paste0("EPSG:", to[i]))),
+                          visualization_order=TRUE)
+    pt1 <- spTransform(from[[j]], CRS(SRS_string = paste0("EPSG:", to[i])),
+      coordOp=best_instantiable_coordOp(coo1))
+    out_EPSG[i, j] <- isTRUE(all.equal(coordinates(from[[i]]),
+      coordinates(pt1)))
+  }
+}
+out_EPSG
+```
+
+The setting of the `list_coordOps()` `visualization_order=` argument overrides the global option value (as would setting `enforce_xy=` in calls to `spTransform()`):
+
+```{r, warning=FALSE, message=FALSE, eval=run}
+out_EPSG_non_viz1 <- matrix(as.logical(NA), nrow=4, ncol=4)
+colnames(out_EPSG_non_viz1) <- names(from)
+rownames(out_EPSG_non_viz1) <- to
+for (j in seq(along=from)) {
+  for (i in seq(along=to)) {
+    coo1 <- list_coordOps(comment(slot(from[[j]], "proj4string")),
+                          comment(CRS(SRS_string = paste0("EPSG:", to[i]))),
+                          visualization_order=FALSE)
+    pt1 <- spTransform(from[[j]], CRS(SRS_string = paste0("EPSG:", to[i])),
+      coordOp=best_instantiable_coordOp(coo1))
+    out_EPSG_non_viz1[i, j] <- isTRUE(all.equal(coordinates(from[[i]]),
+      coordinates(pt1)))
+  }
+}
+out_EPSG_non_viz1
+```
+
+
+```{r, warning=FALSE, message=FALSE, eval=run}
+out_EPSG_non_viz2 <- matrix(as.logical(NA), nrow=4, ncol=4)
+colnames(out_EPSG_non_viz2) <- names(from)
+rownames(out_EPSG_non_viz2) <- to
+for (j in seq(along=from)) {
+  for (i in seq(along=to)) {
+    pt1 <- spTransform(from[[j]], CRS(SRS_string = paste0("EPSG:", to[i])),
+      enforce_xy=FALSE)
+    out_EPSG_non_viz2[i, j] <- isTRUE(all.equal(coordinates(from[[i]]),
+      coordinates(pt1)))
+  }
+}
+out_EPSG_non_viz2
+```
+
+## Adapting `project()` for PROJ 6+
+
+It was originally intended to retire `project()`, because of the need to focus on `spTransform()`. Because it turned out that more packages than anticipated use `project()`, it has been adapted for the new setting. The declared projection will be accepted as a PROJ string, a WKT2 string, or similar, and new PROJ functions are used first to extract the geographical CRS from the given projected CRS, and a transformation found either forward from geographical to projected or inverse from projected to geographical. It now uses `proj_trans()` internally to convert single coordinates, so permitting the handling of out-of-domain coordinates. Note that no adaptation has been made for `legacy=FALSE` because as yet no Windows 32-bit build of PROJ or GDAL have been tried - `legacy=FALSE` uses the pre-PROJ6 compiled function `transform()`. The `verbose=` argument shows the chosen transformation pipeline:
+
+```{r}
+ll <- structure(c(12.1823368669203, 11.9149630062421, 12.3186076188739, 
+12.6207597184845, 12.9955172054652, 12.6316117692658, 12.4680041846297, 
+12.4366882666609, NA, NA, -5.78993051516384, -5.03798674888479, 
+-4.60623015708619, -4.43802336997614, -4.78110320396188, -4.99127125409291, 
+-5.24836150474498, -5.68430388755925, NA, NA), .Dim = c(10L, 
+2L), .Dimnames = list(NULL, c("longitude", "latitude")))
+try(xy0 <- project(ll, "+proj=moll", legacy=TRUE, verbose=TRUE))
+if (!exists("xy0")) xy0 <- structure(c(1217100.8468177, 1191302.229156,
+1232143.28841193, 1262546.27733232, 1299648.82357849, 1263011.18154638,
+1246343.17808186, 1242654.33986052, NA, NA, -715428.207551599,
+-622613.577983058, -569301.605757784, -548528.530156422, -590895.949857199,
+-616845.926397351, -648585.161643274, -702393.1160979, NA, NA), 
+.Dim = c(10L, 2L), .Dimnames = list(NULL, c("longitude", "latitude")))
+try(ll0 <- project(xy0, "+proj=moll", inv=TRUE, legacy=TRUE, verbose=TRUE))
+if (exists("ll0")) all.equal(ll, ll0)
+```
+
+It is possible to use the `coordOp=` argument to pass through a known transformation pipeline:
+
+```{r}
+try(xy1 <- project(ll, "+proj=moll", legacy=TRUE, coordOp=paste("+proj=pipeline +step",
+"+proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=moll +lon_0=0 +x_0=0 +y_0=0 ellps=WGS84")))
+try(ll1 <- project(xy1, "+proj=moll", inv=TRUE, legacy=TRUE, coordOp=paste("+proj=pipeline +step", 
+"+inv +proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +step +proj=unitconvert +xy_in=rad +xy_out=deg")))
+if (exists("ll1")) all.equal(ll, ll1)
+```
+
+```{r}
+WKT <- CRS("+proj=moll")
+try(xy2 <- project(ll, comment(WKT), legacy=TRUE, verbose=TRUE))
+try(ll2 <- project(xy1, comment(WKT), inv=TRUE, legacy=TRUE, verbose=TRUE))
+if (exists("ll2")) all.equal(ll, ll2)
+```
+
+

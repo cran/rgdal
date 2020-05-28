@@ -1,0 +1,158 @@
+## -----------------------------------------------------------------------------
+library(rgdal)
+data("GridsDatums")
+GridsDatums[grep("Netherlands", GridsDatums$country),]
+
+## ---- echo=FALSE--------------------------------------------------------------
+mvrun <- FALSE
+if (require(mapview, quietly=TRUE) && .Platform$OS.type == "unix") mvrun <- TRUE
+
+## ---- eval=mvrun--------------------------------------------------------------
+demo(meuse, ask=FALSE, package="sp", echo=FALSE)
+library(mapview)
+mapview(meuse, zcol="zinc")
+
+## ---- echo=FALSE--------------------------------------------------------------
+odd_run <- FALSE
+if (PROJis6ormore()) odd_run <- TRUE
+
+## ---- eval=odd_run------------------------------------------------------------
+ellps <- projInfo("ellps")
+(clrk66 <- ellps[ellps$name=="clrk66",])
+
+## ---- eval=odd_run------------------------------------------------------------
+#eval(parse(text=clrk66$major))
+#eval(parse(text=clrk66$ell))
+a <- 6378206.4
+b <- 6356583.8
+print(sqrt((a^2-b^2)/a^2), digits=10)
+
+## -----------------------------------------------------------------------------
+shpr <- strsplit(attr(getPROJ4libPath(), "search_path"), ifelse(.Platform$OS.type == "unix", ":", ";"))[[1]]
+shpr
+
+## ---- echo=FALSE, results='hide'----------------------------------------------
+if (is.null(shpr)) odd_run <- FALSE
+
+## ---- echo=FALSE, results='hide'----------------------------------------------
+run <- FALSE
+if (require("RSQLite", quietly=TRUE)) run <- TRUE
+
+## ---- eval=run && odd_run-----------------------------------------------------
+library(RSQLite)
+db <- dbConnect(SQLite(), dbname=file.path(shpr[length(shpr)], "proj.db"))
+dbListTables(db)
+
+## ---- eval=run && odd_run-----------------------------------------------------
+dbReadTable(db, "metadata")
+
+## ---- warning=TRUE------------------------------------------------------------
+b_pump <- readOGR(system.file("vectors/b_pump.gpkg", package="rgdal"))
+
+## ---- warning=TRUE------------------------------------------------------------
+proj4string(b_pump)
+
+## ---- eval=odd_run------------------------------------------------------------
+if (packageVersion("sp") > "1.4.1") {
+  WKT <- wkt(b_pump)
+} else {
+  WKT <- comment(slot(b_pump, "proj4string"))
+}
+cat(WKT, "\n")
+
+## ---- eval=run && odd_run-----------------------------------------------------
+cov <- dbReadTable(db, "coordinate_operation_view")
+cov[grep("OSGB", cov$name), c(1, 3, 4, 9, 16)]
+
+## ---- eval=odd_run------------------------------------------------------------
+list_coordOps(paste0(proj4string(b_pump), " +type=crs"), "EPSG:4326")
+
+## ---- eval=odd_run------------------------------------------------------------
+set_transform_wkt_comment(FALSE)
+isballpark <- spTransform(b_pump, CRS(SRS_string="EPSG:4326"))
+get_last_coordOp()
+
+## -----------------------------------------------------------------------------
+print(coordinates(isballpark), digits=10)
+
+## ---- eval=odd_run------------------------------------------------------------
+list_coordOps(WKT, "EPSG:4326")
+
+## ---- eval=run && odd_run-----------------------------------------------------
+helm <- dbReadTable(db, "helmert_transformation_table")
+helm[helm$code == "1314",c(1:3, 15:17, 20:22, 25)]
+dbDisconnect(db)
+
+## ---- eval=odd_run------------------------------------------------------------
+set_transform_wkt_comment(TRUE)
+is2m <- spTransform(b_pump, CRS(SRS_string="EPSG:4326"))
+get_last_coordOp()
+
+## ---- eval=odd_run------------------------------------------------------------
+print(coordinates(is2m), digits=10)
+
+## ---- eval=odd_run------------------------------------------------------------
+c(spDists(isballpark, is2m)*1000)
+
+## ---- echo=FALSE--------------------------------------------------------------
+mrun <- FALSE
+if (require(maptools, quietly=TRUE)) mrun <- TRUE
+
+## ---- eval=mrun && odd_run----------------------------------------------------
+c(maptools::gzAzimuth(coordinates(isballpark), coordinates(is2m)))
+
+## ---- eval=odd_run------------------------------------------------------------
+(a <- project(coordinates(b_pump), proj4string(b_pump), inv=TRUE, verbose=TRUE))
+(b <- project(coordinates(b_pump), WKT, inv=TRUE))
+
+## ---- eval=odd_run------------------------------------------------------------
+all.equal(a, b)
+c(spDists(coordinates(isballpark), a)*1000)
+
+## ---- echo=FALSE, results='hide'----------------------------------------------
+run <- run && (attr(getPROJ4VersionInfo(), "short") >= 700)
+
+## ---- echo=FALSE, results='hide'----------------------------------------------
+run <- run && shpr[1] == "/home/rsb/.local/share/proj"
+
+## ---- eval=run----------------------------------------------------------------
+unlink(file.path(shpr[1], "cache.db"))
+rgdal:::is_proj_network_enabled()
+
+## ---- eval=run----------------------------------------------------------------
+Sys.setenv("PROJ_NETWORK"="ON")
+rgdal:::is_proj_network_enabled()
+
+## ---- eval=run----------------------------------------------------------------
+list_coordOps(WKT, "EPSG:4326")
+
+## ---- eval=run----------------------------------------------------------------
+system.time(is1m <- spTransform(b_pump, CRS(SRS_string="EPSG:4326")))
+
+## ---- eval=run----------------------------------------------------------------
+get_last_coordOp()
+
+## ---- eval=run----------------------------------------------------------------
+print(coordinates(is1m), digits=10)
+
+## ---- eval=run----------------------------------------------------------------
+c(spDists(is2m, is1m)*1000)
+
+## ---- eval=mrun && run--------------------------------------------------------
+c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
+
+## ---- eval=run----------------------------------------------------------------
+library(RSQLite)
+db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
+dbListTables(db)
+dbReadTable(db, "chunks")
+dbDisconnect(db)
+
+## ---- eval=run----------------------------------------------------------------
+Sys.setenv("PROJ_NETWORK"="OFF")
+rgdal:::is_proj_network_enabled()
+
+## ---- eval=mvrun && run-------------------------------------------------------
+library(mapview)
+mapview(is2m, map.type="OpenStreetMap", legend=FALSE) + mapview(is1m, col.regions="green", legend=FALSE) + mapview(isballpark, col.regions="red", legend=FALSE)
+
