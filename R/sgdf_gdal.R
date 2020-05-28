@@ -23,6 +23,9 @@ open.SpatialGDAL = function(con, ..., silent = FALSE,
 #	p4s <- .Call("RGDAL_GetProjectionRef", grod, PACKAGE="rgdal")
 	p4s <- getProjectionRef(grod, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
+        if (new_proj_and_gdal()) wkt2 <- comment(p4s)
+        oCRS <- CRS(c(p4s))
+        if (new_proj_and_gdal()) comment(oCRS) <- wkt2
 	gt = .Call('RGDAL_GetGeoTransform', grod, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	# [1] 178400     40      0 334000      0    -40
@@ -47,7 +50,7 @@ open.SpatialGDAL = function(con, ..., silent = FALSE,
 
 	data = new("SpatialGDAL", 
 		bbox = x@bbox,
-		proj4string = CRS(p4s), 
+		proj4string = oCRS, 
 		grid = grid,
 		# data = data.frame(), 
 		grod = grod,
@@ -84,7 +87,7 @@ copy.SpatialGDAL = function(dataset, fname, driver =
 
 	data = new("SpatialGDALWrite", 
 		bbox = bbox(dataset),
-		proj4string = CRS(proj4string(dataset)), 
+		proj4string = slot(dataset, "proj4string"), 
 		grid = dataset@grid, grod = grod, name = fname)
 	return(data)
 }

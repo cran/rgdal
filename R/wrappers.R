@@ -13,7 +13,32 @@
 
 
 .gd_SetProject <- function(object, proj4string) {
+# NOT UPDATED FOR PROJ >= 6
+if (new_proj_and_gdal()) warning("NOT UPDATED FOR PROJ >= 6")
     .Call("RGDAL_SetProject", object, proj4string, PACKAGE="rgdal")
+}
+
+#RH: not tested yet.
+.gd_SetProjectWkt <- function(object, crs, enforce_xy=NULL) {
+    if (new_proj_and_gdal()) {
+        iCRS <- slot(crs, "projargs")
+        wkt2 <- comment(crs)
+        if (!is.null(wkt2)) {
+            if (!is.null(enforce_xy)) {
+                stopifnot(is.logical(enforce_xy))
+                stopifnot(length(enforce_xy) == 1L)
+                stopifnot(!is.na(enforce_xy))
+            } else {
+                enforce_xy <- get_enforce_xy()
+            }
+            .Call("RGDAL_SetProject_WKT2", object, wkt2, enforce_xy, PACKAGE = "rgdal")
+		} else {
+			warning("NO WKT AVAILABLE FOR PROJ >= 6")
+			.Call("RGDAL_SetProject", object, proj4string, PACKAGE="rgdal")
+		}
+	} else {
+		.Call("RGDAL_SetProject", object, proj4string, PACKAGE="rgdal")	
+	}
 }
 
 
@@ -46,6 +71,8 @@ GDALcall <- function(object, option, ...) {
 		.gd_SetNoDataValue(object, ...)
 	} else if (option == 'SetGeoTransform') {
 		.gd_SetGeoTransform(object, ...)
+	} else if (option == 'SetProjectWkt') {
+		.gd_SetProjectWkt(object, ...)
 	} else if (option == 'SetProject') {
 		.gd_SetProject(object, ...)
 	} else if (option == 'SetStatistics') {
@@ -64,6 +91,8 @@ GDALcall <- function(object, option, ...) {
 
 .gd_transform <- function(projfrom, projto, n, x, y, z=NULL) {
 # pkgdown work-around
+# NOT UPDATED FOR PROJ >= 6
+if (new_proj_and_gdal()) warning("NOT UPDATED FOR PROJ >= 6")
   if (is.na(get("has_proj_def.dat", envir=.RGDAL_CACHE))) {
     assign("has_proj_def.dat", .Call("PROJ4_proj_def_dat_Installed",
       PACKAGE="rgdal"), envir=.RGDAL_CACHE)
@@ -77,8 +106,29 @@ GDALcall <- function(object, option, ...) {
 }
 
 # exported version
-rawTransform <- function(projfrom, projto, n, x, y, z=NULL) {
+rawTransform <- function(projfrom, projto, n, x, y, z=NULL, wkt=FALSE) {
+	if (wkt) { 
+		# the caller determines that projfrom and projto are wkt 
+		# and that new_proj_and_gdal() returns TRUE
+		# to avoid multiple warnings when the function is called repetitively
+		return( .Call("transform_ng",projfrom, projto, NULL,
+			n, x, y, z, PACKAGE="rgdal") )
+	}
+		
 # pkgdown work-around
+        if (new_proj_and_gdal()) {
+          warning("Using PROJ not WKT2 strings")
+          if (length(grep("+init", projfrom)) > 0)
+              projfrom <- slot(CRS(projfrom),  "projargs")
+          if (length(grep("+init", projto)) > 0)
+              projto <- slot(CRS(projto),  "projargs")
+          if (is.null(z)) res <- .Call("transform_ng", # redundant if/else?
+              paste0(projfrom, " +type=crs"), paste0(projto, " +type=crs"),
+              NULL, n, x, y, NULL, PACKAGE="rgdal")
+          else res <- .Call("transform_ng", paste0(projfrom, " +type=crs"),
+              paste0(projto, " +type=crs"), NULL, n, x, y, z, PACKAGE="rgdal")
+          return(res)
+        }
         if (is.na(get("has_proj_def.dat", envir=.RGDAL_CACHE))) {
           assign("has_proj_def.dat", .Call("PROJ4_proj_def_dat_Installed",
           PACKAGE="rgdal"), envir=.RGDAL_CACHE)

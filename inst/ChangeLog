@@ -1,3 +1,647 @@
+2020-05-22 08:03  rsbivand
+
+	* R/AAA.R: add options access to mute exportToProj4 degradation
+	  warnings
+
+2020-05-21 15:18  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-05-21 15:18  rsbivand
+
+	* R/ogr.R: add options access to mute exportToProj4 degradation
+	  warnings
+
+2020-05-21 14:49  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-05-21 14:48  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/gdal.R, R/ogr.R, R/ogr_sp.R,
+	  man/showWKT.Rd: add options access to mute exportToProj4
+	  degradation warnings
+
+2020-05-18 13:12  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-05-18 13:10  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: tidy
+
+2020-05-18 12:46  rsbivand
+
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
+
+2020-05-18 08:46  rsbivand
+
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
+
+2020-05-18 08:16  rsbivand
+
+	* NAMESPACE: try to get new vignette to build on old PROJ
+
+2020-05-18 08:07  rsbivand
+
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
+
+2020-05-18 08:03  rsbivand
+
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
+
+2020-05-16 18:02  rsbivand
+
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
+
+2020-05-16 17:36  rsbivand
+
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
+
+2020-05-16 14:04  rsbivand
+
+	* NAMESPACE: try to get new vignette to build on old PROJ
+
+2020-05-16 13:57  rsbivand
+
+	* inst/vectors/b_pump.gpkg: try to get new vignette to build on old
+	  PROJ
+
+2020-05-16 13:37  rsbivand
+
+	* NAMESPACE: try to get new vignette to build on old PROJ
+
+2020-05-16 13:36  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: try to get new
+	  vignette to build on old PROJ
+
+2020-05-16 13:24  rsbivand
+
+	* DESCRIPTION, NAMESPACE: try to get new vignette to build on old
+	  PROJ
+
+2020-05-16 13:20  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: try to get new
+	  vignette to build on old PROJ
+
+2020-05-16 12:28  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-05-16 12:11  rsbivand
+
+	* ChangeLog, DESCRIPTION, R/list_coordOps.R, configure,
+	  data/GridsDatums.rda, inst/ChangeLog, man/GridsDatums.Rd,
+	  src/rgdal.h, tests/srs_rendering.Rout.save,
+	  vignettes/CRS_projections_transformations.Rmd,
+	  vignettes/PROJ.bib: add new vignette
+
+2020-05-01 13:26  rsbivand
+
+	* man/wrappers.Rd: tidy
+
+2020-05-01 02:23  rhijmans
+
+	* R/wrappers.R: wkt argument to "rawTransform" and fixes to
+	  .gd_SetProjectWkt
+
+2020-05-01 02:20  rhijmans
+
+	* tools/winlibs.R: fixed path that checks if winlibs are present
+
+2020-04-30 03:47  rhijmans
+
+	* R/wrappers.R: added .gd_SetProjectWkt wrapper for
+	  RGDAL_SetProject_WKT2
+
+2020-04-29 09:23  rsbivand
+
+	* src/gdal-bindings.cpp: LENGTH -> XLENGTH
+
+2020-04-28 17:24  rsbivand
+
+	* src/gdal-bindings.cpp: first try to use long vectors for reading
+
+2020-04-27 13:37  rsbivand
+
+	* R/AAA.R, R/project.R, src/init.c, src/proj_info6.cpp,
+	  src/projectit.cpp, src/rgdal.h: clear Windows GCC warnings
+
+2020-04-27 10:56  rsbivand
+
+	* src/Makevars.win, src/gdal-bindings.cpp, tools/winlibs.R: move
+	  Windows binary to GDAL3
+
+2020-04-22 12:35  rsbivand
+
+	* vignettes/PROJ6_GDAL3.Rmd: tidy
+
+2020-04-22 08:54  rsbivand
+
+	* src/ogr_proj.cpp: tidy
+
+2020-04-21 19:14  rsbivand
+
+	* DESCRIPTION, R/Class-CRSx.R, R/wrappers.R: adapting
+	  rawTransform() - first attempt
+
+2020-04-19 15:04  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/Class-CRSx.R, R/project.R, configure,
+	  configure.ac, man/project.Rd, man/spTransform-methods.Rd,
+	  src/init.c, src/inverser.c, src/proj_info6.cpp,
+	  src/proj_network7.cpp, src/projectit.cpp, src/rgdal.h,
+	  tests/srs_rendering.Rout.save, tests/test_proj.Rout.save,
+	  vignettes/PROJ6_GDAL3.Rmd: moving to submit
+
+2020-04-07 13:21  rsbivand
+
+	* R/project.R: removing unneeded sp warning from use of
+	  proj4string()
+
+2020-04-02 12:56  rsbivand
+
+	* R/Class-CRSx.R, R/ogr_sp.R: simplify bad SRID string error
+	  messages
+
+2020-03-28 11:15  rsbivand
+
+	* configure: tidy
+
+2020-03-28 11:14  rsbivand
+
+	* ChangeLog, R/AAA.R, inst/ChangeLog: tidy
+
+2020-03-18 14:46  rsbivand
+
+	* src/proj_info6.cpp: resolve many proj_normalize_for_visualization
+	  messages for multiple geometries
+
+2020-03-05 14:36  rsbivand
+
+	* R/ogr_sp.R: LAS WKT attempts
+
+2020-03-05 12:22  rsbivand
+
+	* R/ogr_sp.R: add CO for COMP WKT
+
+2020-03-04 12:28  rsbivand
+
+	* R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp: address PROJ 4.9.3
+	  crash when passed modern WKT
+
+2020-02-24 12:06  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/project.R, src/proj_network7.cpp: PROJ7
+	  CDN status report
+
+2020-02-23 19:03  rsbivand
+
+	* src/proj_network7.cpp: start network code for 7
+
+2020-02-23 19:01  rsbivand
+
+	* src/init.c, src/proj_network7.cpp, src/projectit.cpp,
+	  src/rgdal.h: start network code for 7
+
+2020-02-23 18:05  rsbivand
+
+	* src/projectit.cpp: remove duplicate dummy function
+
+2020-02-23 17:34  rsbivand
+
+	* src/proj_info6.cpp, src/projectit.cpp: complete SRS compare
+
+2020-02-23 16:12  edzer
+
+	* src/proj_info6.cpp: compile for 6.0.0 < PROJ < 6.3.0
+
+2020-02-16 19:47  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/gdal.R, man/GDALDriver-class.Rd: handles
+	  https://github.com/r-spatial/discuss/issues/31
+
+2020-02-11 09:38  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-02-11 09:37  rsbivand
+
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: all multiline WKT2 from
+	  file
+
+2020-02-11 07:52  rsbivand
+
+	* ChangeLog, configure, inst/ChangeLog: tidy
+
+2020-02-10 20:48  rsbivand
+
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: fix PROJ < 6 unused
+	  vis_order
+
+2020-02-10 19:58  rsbivand
+
+	* R/Class-CRSx.R, R/project.R, man/CRS-class.Rd,
+	  src/proj_info6.cpp: fix comparing CRS issues
+
+2020-02-10 19:30  rsbivand
+
+	* man/CRS-class.Rd, src/proj_info6.cpp, src/projectit.cpp: fix
+	  comparing CRS issues
+
+2020-02-10 14:25  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd,
+	  src/init.c, src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h:
+	  add PROJ-based CRS comparison
+
+2020-02-05 12:16  rsbivand
+
+	* DESCRIPTION, R/Class-CRSx.R: multiline WKT2 in CRS
+
+2020-01-29 13:22  rsbivand
+
+	* vignettes/PROJ6_GDAL3.Rmd: fix edge case in vignette
+
+2020-01-29 11:40  rsbivand
+
+	* configure, configure.ac: add configure check for sqlite3
+
+2020-01-29 10:55  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: add configure check for
+	  sqlite3
+
+2020-01-08 10:23  rsbivand
+
+	* R/ogr_sp.R, man/showWKT.Rd, src/init.c, src/proj_info6.cpp,
+	  src/projectit.cpp, src/rgdal.h: tried but backed out of PROJ
+	  showSRID()
+
+2020-01-07 14:24  rsbivand
+
+	* R/ogr_sp.R, man/showWKT.Rd, src/init.c, src/ogr_proj.cpp,
+	  src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h: start on
+	  using PROJ for string conversion
+
+2020-01-07 13:17  rsbivand
+
+	* man/project.Rd, man/spTransform-methods.Rd,
+	  vignettes/PROJ6_GDAL3.Rmd: add project() to vignette
+
+2020-01-06 21:49  rsbivand
+
+	* src/projectit.cpp: project() adapted for PROJ >= 6
+
+2020-01-06 20:16  rsbivand
+
+	* R/project.R, man/project.Rd, src/init.c, src/proj_info6.cpp,
+	  src/projectit.cpp, src/rgdal.h, tests/test_proj.R: project()
+	  adapted for PROJ >= 6
+
+2020-01-04 15:58  rsbivand
+
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R: PROJ 6.3.0 fragility
+
+2020-01-02 16:42  rsbivand
+
+	* src/ogr_proj.cpp: PROJ 6.3.0 fragility
+
+2020-01-02 15:16  rsbivand
+
+	* man/CRS-class.Rd, man/llgrid.Rd: PROJ 6.3.0 fragility
+
+2020-01-02 14:59  rsbivand
+
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, src/OGR_write.cpp,
+	  src/gdal-bindings.cpp, src/ogr_proj.cpp: PROJ 6.3.0 fragility
+
+2020-01-01 17:31  rsbivand
+
+	* src/OGR_write.cpp: PROJ 6.3.0 fragility
+
+2020-01-01 17:04  rsbivand
+
+	* R/ogr.R, man/spTransform-methods.Rd, vignettes/PROJ6_GDAL3.Rmd:
+	  PROJ 6.3.0 fragility
+
+2020-01-01 14:16  rsbivand
+
+	* R/ogr_sp.R, man/spTransform-methods.Rd,
+	  vignettes/PROJ6_GDAL3.Rmd: PROJ 6.3.0 fragility
+
+2020-01-01 13:26  rsbivand
+
+	* R/ogr_sp.R: PROJ 6.3.0 fragility
+
+2020-01-01 13:07  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp: PROJ 6.3.0
+	  fragility
+
+2020-01-01 11:52  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, src/ogr_proj.cpp: PROJ 6.3.0 fragility
+
+2020-01-01 11:21  rsbivand
+
+	* DESCRIPTION: PROJ 6.3.0 fragility
+
+2020-01-01 11:13  rsbivand
+
+	* man/spTransform-methods.Rd, src/init.c, src/ogr_proj.cpp,
+	  src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h,
+	  vignettes/PROJ6_GDAL3.Rmd: PROJ 6.3.0 fragility
+
+2019-12-26 17:53  rsbivand
+
+	* vignettes/PROJ6_GDAL3.Rmd: extend use of enforce_xy
+	  argument/global setting to AxisPolicy settings
+
+2019-12-26 17:45  rsbivand
+
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sp_gdal.R,
+	  man/GDALRasterBand-class.Rd, man/readGDAL.Rd, man/readOGR.Rd,
+	  man/showWKT.Rd, src/gdal-bindings.cpp, src/init.c,
+	  src/ogr_proj.cpp, src/rgdal.h: extend use of enforce_xy
+	  argument/global setting to AxisPolicy settings
+
+2019-12-25 17:59  rsbivand
+
+	* vignettes/PROJ6_GDAL3.Rmd: attempt to apply visualization order
+	  in spTransform
+
+2019-12-25 17:40  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/ogr_sp.R, R/project.R,
+	  man/spTransform-methods.Rd, src/ogr_proj.cpp, src/proj_info6.cpp,
+	  vignettes/PROJ6_GDAL3.Rmd: attempt to apply visualization order
+	  in spTransform
+
+2019-12-21 08:42  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/ogr_sp.R, man/readGDAL.Rd, man/readOGR.Rd,
+	  man/showWKT.Rd, man/spTransform-methods.Rd, man/writeOGR.Rd,
+	  src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  tests/test_proj.R, vignettes/PROJ6_GDAL3.Rmd: first attempt to
+	  impose GDAL OAMS_TRADITIONAL_GIS_ORDER
+
+2019-12-17 13:32  rsbivand
+
+	* R/ogr_sp.R: tidy
+
+2019-12-17 13:28  rsbivand
+
+	* configure: tidy
+
+2019-12-17 13:27  rsbivand
+
+	* R/ogr_sp.R, man/make_EPSG.Rd, man/project.Rd, man/readOGR.Rd:
+	  tidy
+
+2019-11-20 20:35  rsbivand
+
+	* R/ogr_sp.R, R/project.R: drop +init= in PROJ fallback
+
+2019-11-16 20:24  rsbivand
+
+	* DESCRIPTION, R/project.R, vignettes/PROJ6_GDAL3.Rmd: lookup
+	  coordinate operation per spTransform call
+
+2019-11-15 19:43  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/gdal.R, R/project.R, configure,
+	  configure.ac, man/spTransform-methods.Rd, src/gdal-bindings.cpp,
+	  src/init.c, src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h,
+	  vignettes/PROJ6_GDAL3.Rmd: adding transform_ng() using PROJ6
+
+2019-11-14 13:30  rsbivand
+
+	* NAMESPACE, R/list_coordOps.R, man/list_coordOps.Rd,
+	  vignettes/PROJ6_GDAL3.Rmd: add coordOps to vignette
+
+2019-11-13 20:01  rsbivand
+
+	* NAMESPACE, R/list_coordOps.R, man/list_coordOps.Rd,
+	  src/proj_info6.cpp: print method for coordOps objects
+
+2019-11-13 09:26  rsbivand
+
+	* vignettes/PROJ6_GDAL3.Rmd: line breaks in WKT vignette strings
+
+2019-11-12 17:43  rsbivand
+
+	* vignettes/PROJ6_GDAL3.Rmd: vignette progress
+
+2019-11-12 16:54  rsbivand
+
+	* vignettes/PROJ6_GDAL3.Rmd: tidy
+
+2019-11-12 14:16  rsbivand
+
+	* vignettes/PROJ.bib, vignettes/PROJ6_GDAL3.Rmd: start adding
+	  vignette
+
+2019-11-12 14:16  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R: start adding vignette
+
+2019-11-12 09:46  rsbivand
+
+	* R/Class-CRSx.R: protect against leading space in PROJ string
+
+2019-11-11 16:04  rsbivand
+
+	* NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd: trying to handle
+	  sp::CRS() adaptation
+
+2019-11-08 13:24  rsbivand
+
+	* configure, configure.ac: tidy
+
+2019-11-08 09:28  rsbivand
+
+	* DESCRIPTION: vector write WKT2-based if CRS comment present
+
+2019-11-08 09:27  rsbivand
+
+	* DESCRIPTION: vector write WKT2-based if CRS comment present
+
+2019-11-07 15:10  rsbivand
+
+	* R/Class-CRSx.R: tidy
+
+2019-11-06 18:41  rsbivand
+
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: vector write WKT2-based
+	  if CRS comment present
+
+2019-11-06 14:54  rsbivand
+
+	* src/gdal-bindings.cpp: vector write WKT2-based if CRS comment
+	  present
+
+2019-11-06 14:41  rsbivand
+
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: vector write WKT2-based
+	  if CRS comment present
+
+2019-11-06 14:20  rsbivand
+
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp:
+	  vector write WKT2-based if CRS comment present
+
+2019-11-06 11:14  rsbivand
+
+	* src/ogr_proj.cpp: vector write WKT2-based if CRS comment present
+
+2019-11-06 09:40  rsbivand
+
+	* src/OGR_write.cpp: vector write WKT2-based if CRS comment present
+
+2019-11-05 19:08  rsbivand
+
+	* man/list_coordOps.Rd, src/OGR_write.cpp: vector write WKT2-based
+	  if CRS comment present
+
+2019-11-03 18:52  rsbivand
+
+	* R/sp_gdal.R, R/wrappers.R, man/readGDAL.Rd,
+	  src/gdal-bindings.cpp, src/init.c, src/rgdal.h: write raster
+	  files with WKT2 comments
+
+2019-11-02 19:51  rsbivand
+
+	* R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R, R/subs.R, man/readGDAL.Rd,
+	  tests/srs_rendering.R, tests/srs_rendering.Rout.save: retrieving
+	  WKT2 strings from raster files to use as comments
+
+2019-11-01 21:36  rsbivand
+
+	* man/readOGR.Rd: retrieving WKT2 strings from files to use as
+	  comments
+
+2019-11-01 21:20  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, src/gdal-bindings.cpp, src/ogr_proj.cpp:
+	  retrieving WKT2 strings from files to use as comments
+
+2019-11-01 14:30  rsbivand
+
+	* R/ogr_sp.R, man/showWKT.Rd: approaching roundtrip CRS testing
+
+2019-11-01 14:10  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R: approaching roundtrip CRS testing
+
+2019-11-01 13:28  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp:
+	  approaching roundtrip CRS testing
+
+2019-10-31 19:46  rsbivand
+
+	* R/gdal.R, tests/srs_rendering.R, tests/srs_rendering.Rout.save:
+	  add tests for discarded datum values on raster read
+
+2019-10-31 18:05  rsbivand
+
+	* src/gdal-bindings.cpp: starting raster datum discarding detection
+
+2019-10-31 12:53  rsbivand
+
+	* src/ogr_proj.cpp, src/proj_info6.cpp: code tidying
+
+2019-10-31 12:22  rsbivand
+
+	* R/gdal.R, R/project.R, src/gdal-bindings.cpp, src/init.c,
+	  src/proj_info6.cpp, src/rgdal.h: code tidying
+
+2019-10-31 11:27  rsbivand
+
+	* R/ogr.R: add towgs84 presence to datum warning
+
+2019-10-31 10:08  rsbivand
+
+	* NAMESPACE, R/ogr.R, R/ogr_sp.R, R/project.R, man/projInfo.Rd,
+	  man/readOGR.Rd, src/init.c, src/ogr_proj.cpp, src/proj_info6.cpp,
+	  src/rgdal.h: code tidying
+
+2019-10-30 19:50  rsbivand
+
+	* R/ogr_sp.R: add tests for discarded datum values on read
+
+2019-10-30 19:43  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/ogr.R, R/ogr_sp.R, R/project.R,
+	  man/showWKT.Rd, src/ogr_proj.cpp: add tests for discarded datum
+	  values on read
+
+2019-10-30 13:49  rsbivand
+
+	* src/ogr_proj.cpp: tidy
+
+2019-10-30 12:58  rsbivand
+
+	* man/list_coordOps.Rd, src/ogr_proj.cpp: tidy
+
+2019-10-30 12:40  rsbivand
+
+	* src/ogr_proj.cpp: tidy
+
+2019-10-30 12:06  rsbivand
+
+	* src/ogr_proj.cpp: tidy
+
+2019-10-30 11:54  rsbivand
+
+	* src/ogr_proj.cpp: tidy
+
+2019-10-29 19:58  rsbivand
+
+	* src/ogr_proj.cpp, src/proj_info6.cpp: collect datum status from
+	  SRS
+
+2019-10-29 14:31  rsbivand
+
+	* src/ogr_proj.cpp: adding extra output when dumpSRS to detect
+	  datum on input
+
+2019-10-29 12:22  rsbivand
+
+	* R/ogr.R, R/ogr_sp.R, R/ogr_write.R, man/readOGR.Rd,
+	  man/writeOGR.Rd, src/OGR_write.cpp, src/init.c, src/ogr_proj.cpp,
+	  src/rgdal.h: add dumpSRS arguments to show SRS inside GDAL for
+	  vector
+
+2019-10-29 10:29  rsbivand
+
+	* R/list_coordOps.R, man/list_coordOps.Rd: adding PROJ 6 list
+	  coord. operations
+
+2019-10-29 10:20  rsbivand
+
+	* configure: tidy
+
+2019-10-29 10:19  rsbivand
+
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/ogr.R, R/ogr_sp.R,
+	  man/projInfo.Rd, man/readOGR.Rd, man/showWKT.Rd, src/init.c,
+	  src/ogr_proj.cpp, src/proj_info6.cpp, src/projectit.cpp,
+	  src/rgdal.h: adding PROJ 6 list coord. operations
+
+2019-10-28 10:05  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2019-10-28 10:04  rsbivand
 
 	* configure: tidy

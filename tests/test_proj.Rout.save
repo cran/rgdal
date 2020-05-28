@@ -1,6 +1,6 @@
 
-R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
-Copyright (C) 2017 The R Foundation for Statistical Computing
+R version 4.0.0 beta (2020-04-13 r78215) -- "Arbor Day"
+Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -16,25 +16,43 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > suppressPackageStartupMessages(library(rgdal))
+> set_thin_PROJ6_warnings(TRUE)
 > data(state)
 > xy <- cbind(state.center$x, state.center$y)
 > res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80")
 > res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80",
 +  inv=TRUE)
 > stopifnot(isTRUE(all.equal(res1, xy)))
-> crds <- matrix(data=c(9.05, 48.52), ncol=2)
-> a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",
+> (crds <- matrix(data=c(9.05, 48.52), ncol=2))
+     [,1]  [,2]
+[1,] 9.05 48.52
+> (a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",
 +  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
-+  use_ob_tran=TRUE)
++  use_ob_tran=TRUE, verbose=TRUE))
+proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step inv
+proj=ob_tran o_proj=longlat o_lon_p=-162 o_lat_p=39.25 lon_0=180
+ellps=sphere step proj=unitconvert xy_in=rad xy_out=deg
+          [,1]     [,2]
+[1,] -5.917698 -1.87195
 > stopifnot(isTRUE(all.equal(a, matrix(c(-5.917698, -1.87195), ncol=2), tolerance=.Machine$double.eps ^ 0.25)))
-> a1 <- project(a, paste("+proj=ob_tran +o_proj=longlat",
+> (a1 <- project(a, paste("+proj=ob_tran +o_proj=longlat",
 +  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
-+  inv=TRUE, use_ob_tran=TRUE)
++  inv=TRUE, use_ob_tran=TRUE, verbose=TRUE))
+proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step inv
+proj=ob_tran o_proj=longlat o_lon_p=-162 o_lat_p=39.25 lon_0=180
+ellps=sphere step proj=unitconvert xy_in=rad xy_out=deg
+     [,1]  [,2]
+[1,] 9.05 48.52
 > stopifnot(isTRUE(all.equal(a1, crds, tolerance=.Machine$double.eps ^ 0.25)))
 > states <- data.frame(state.x77, state.center)
 > states <- states[states$x > -121,]
 > coordinates(states) <- c("x", "y")
 > proj4string(states) <- CRS("+proj=longlat +ellps=clrk66")
+Warning message:
+In showSRID(uprojargs, format = "PROJ", multiline = "NO") :
+  PROJ6/GDAL3 PROJ string degradation in workflow
+ repeated warnings suppressed
+ Discarded datum Unknown based on Clarke 1866 ellipsoid in CRS definition
 > state.ll83 <- spTransform(states, CRS("+proj=longlat +ellps=GRS80"))
 > state.ll <- spTransform(state.ll83, CRS("+proj=longlat +ellps=clrk66"))
 > stopifnot(isTRUE(all.equal(coordinates(states), coordinates(state.ll))))
@@ -43,9 +61,13 @@ Type 'q()' to quit R.
 > a <- spTransform(spPoint, CRS(paste("+proj=ob_tran +o_proj=longlat",
 +  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")),
 +  use_ob_tran=TRUE)
+Warning message:
+In proj4string(x) : CRS object has comment, which is lost in output
 > stopifnot(isTRUE(all.equal(unname(coordinates(a)), matrix(c(-5.917698, -1.87195), ncol=2), tolerance=.Machine$double.eps ^ 0.25)))
 > a1 <- spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
 +  use_ob_tran=TRUE)
+Warning message:
+In proj4string(x) : CRS object has comment, which is lost in output
 > stopifnot(isTRUE(all.equal(unname(coordinates(a1)), unname(coordinates(spPoint)), tolerance=.Machine$double.eps ^ 0.25)))
 > sp <- SpatialPoints(matrix(c(1, 1), nrow=1), proj4string=CRS("+init=epsg:4326"))
 > sp.tr <- spTransform(sp, CRS("+init=epsg:3857"))
@@ -54,4 +76,4 @@ Type 'q()' to quit R.
 > 
 > proc.time()
    user  system elapsed 
-  0.488   0.023   0.507 
+  0.464   0.035   0.493 

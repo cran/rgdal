@@ -1,8 +1,9 @@
-# Copyright (c) 2003-12 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
+# Copyright (c) 2003-20 by Barry Rowlingson, Roger Bivand, and Edzer Pebesma
 
 getPROJ4VersionInfo <- function() {
     res0 <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")
     res <- paste(res0[[1]], ", [PJ_VERSION: ", res0[[2]], "]", sep="")
+    attr(res, "short") <- res0[[2]]
     res
 }
 
@@ -11,8 +12,34 @@ PROJis6ormore <- function() {
     verno >= 600
 }
 
+GDALis3ormore <- function() {
+    substring(getGDALVersionInfo(), 6, 6) >= "3"
+}
+
+new_proj_and_gdal <- function() {
+    PROJis6ormore() && GDALis3ormore()
+}
+
+is_proj_network_enabled <- function() {
+    .Call("proj_network_enabled", PACKAGE="rgdal")
+}
+
+GDAL_OSR_PROJ <- function() {
+    res <- .Call("R_GDAL_OSR_PROJ", PACKAGE="rgdal")
+    if (is.null(res)) return(res)
+    res1 <- (res[1]*100)+(res[2]*10)+res[3]
+    verno <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]]
+    if (res1 != verno) warning("GDAL built with PROJ ", res1,
+        " not running ", verno)
+    res1
+}
+
 getPROJ4libPath <- function() {
     res <- Sys.getenv("PROJ_LIB")
+    if (new_proj_and_gdal()) {
+        attr(res, "search_path") <- .Call("get_proj_search_path",
+            PACKAGE="rgdal")
+    }
     res
 }
 
@@ -20,7 +47,36 @@ projNAD <- function() {
     .Call("PROJ4NADsInstalled", PACKAGE="rgdal")
 }
 
-"project" <- function(xy, proj, inv=FALSE, use_ob_tran=FALSE, legacy=TRUE, allowNAs_if_not_legacy=FALSE) {
+get_P6_datum_hard_fail <- function() {
+    get("P6_datum_hard_fail", envir=.RGDAL_CACHE)
+}
+
+set_P6_datum_hard_fail <- function(value) {
+    stopifnot(is.logical(value))
+    stopifnot(length(value) == 1L)
+    stopifnot(!is.na(value))
+    assign("P6_datum_hard_fail", value, envir=.RGDAL_CACHE)
+}
+
+get_transform_wkt_comment <- function() {
+    get("transform_wkt_comment", envir=.RGDAL_CACHE)
+}
+
+set_transform_wkt_comment <- function(value) {
+    stopifnot(is.logical(value))
+    stopifnot(length(value) == 1L)
+    stopifnot(!is.na(value))
+    assign("transform_wkt_comment", value, envir=.RGDAL_CACHE)
+}
+
+get_last_coordOp <- function() {
+    get(".last_coordOp", envir=.RGDAL_CACHE)
+}
+
+"project" <- function(xy, proj, inv=FALSE, use_ob_tran=FALSE, legacy=TRUE, allowNAs_if_not_legacy=FALSE, coordOp=NULL, verbose=FALSE) {
+
+#    if (new_proj_and_gdal()) 
+#        warning("project() will not be adapted for PROJ 6 and is deprecated")
 
     if (!is.numeric(xy)) stop("xy not numeric")
     if (is.matrix(xy)) nc <- dim(xy)[1]
@@ -40,11 +96,11 @@ projNAD <- function() {
 # 120820 RSB
         } else inv <- !inv
     }
-    if (.Platform$OS.type == "windows" && .Platform$r_arch == "i386") 
-        legacy <- FALSE
+    if (.Platform$OS.type == "windows" && .Platform$r_arch == "i386" &&
+        !new_proj_and_gdal()) legacy <- FALSE
     if (!legacy) {
       if (allowNAs_if_not_legacy) {
-       nas <- is.na(xy[,1]) | is.na(xy[,1])
+       nas <- is.na(xy[,1]) | is.na(xy[,2])
       }
       if (!inv) {
         attr(nc, "ob_tran") <- as.integer(use_ob_tran)
@@ -92,24 +148,48 @@ projNAD <- function() {
         }
      }
     } else {
-     if(!inv) {
+        if (new_proj_and_gdal()) {
+            if (is.null(coordOp)) {
+                if (substring(proj, 1, 1) == "+") {
+                    if (length(grep("\\+init", proj)) > 0L)
+                        proj <- comment(CRS(proj))
+                    if (length(grep(" \\+type=crs", proj)) == 0L)
+                        proj <- paste0(proj, " +type=crs")
+                }
+                coordOp <- .Call("project_ng_coordOp", proj, as.logical(inv),
+                    #as.logical(use_ob_tran), 
+                    PACKAGE="rgdal")
+            }
+            if (verbose) cat(strwrap(coordOp), sep="\n")
+            res <- .Call("project_ng",
+                as.integer(nc),
+                as.double(xy[,1]),
+                as.double(xy[,2]),
+                NULL,
+                as.logical(inv),
+                as.logical(use_ob_tran),
+                coordOp,
+                PACKAGE="rgdal")
+        } else {
+            if(!inv) {
 # 160404 RSB convert to .Call()
-      res <- .Call("RGDAL_project",
+            res <- .Call("RGDAL_project",
                 as.integer(nc),
                 as.double(xy[,1]),
                 as.double(xy[,2]),
                 proj,
                 as.logical(use_ob_tran),
                 PACKAGE="rgdal")
-     } else {
-      res <- .Call("project_inv",
+            } else {
+                res <- .Call("project_inv",
                 as.integer(nc),
                 as.double(xy[,1]),
                 as.double(xy[,2]),
                 proj,
                 as.logical(use_ob_tran),
                 PACKAGE="rgdal")
-     }
+            }
+        }
     }
     out <- cbind(res[[1]], res[[2]])
     if (!is.null(colnames(xy))) colnames(out) <- colnames(xy)
@@ -120,34 +200,78 @@ projNAD <- function() {
 ## From: Martin Aleksandrov Ivanov <Martin.Ivanov@geogr.uni-giessen.de>
 # ob_tran when isTRUE(is.projected())
 
-if (!isGeneric("is.projected"))
-	setGeneric("is.projected", function(obj)
-		standardGeneric("is.projected"))
+#if (packageVersion("sp") < "1.4.2") {
 
-is_projected_crs <- function (obj) 
-{
-    p4str <- CRSargs(obj)
-    if (is.na(p4str) || !nzchar(p4str)) 
-        return(as.logical(NA))
-    else {
-        res <- grep("longlat", p4str, fixed = TRUE)
-        if (length(res) == 0) 
-            return(TRUE)
-        else return(FALSE)
-    }
-}
+#if (!isGeneric("is.projected"))
+#	setGeneric("is.projected", function(obj)
+#		standardGeneric("is.projected"))
+#
+#is_projected_crs <- function (obj) 
+#{
+#    p4str <- CRSargs(obj)
+#    if (is.na(p4str) || !nzchar(p4str)) 
+#        return(as.logical(NA))
+#    else {
+#        res <- grep("longlat", p4str, fixed = TRUE)
+#        if (length(res) == 0) 
+#            return(TRUE)
+#        else return(FALSE)
+#    }
+#}
 
-setMethod("is.projected", signature("CRS"), is_projected_crs)
+#setMethod("is.projected", signature("CRS"), is_projected_crs)
+
+#}
 
 if (!isGeneric("spTransform"))
 	setGeneric("spTransform", function(x, CRSobj, ...)
 		standardGeneric("spTransform"))
 
 "spTransform.SpatialPoints" <-  function(x, CRSobj, ...) {
-	if (is.na(proj4string(x))) 
-		stop("No transformation possible from NA reference system")
-	if (is.na(CRSargs(CRSobj))) 
-		stop("No transformation possible to NA reference system")
+        if (new_proj_and_gdal()) {
+          if (get_transform_wkt_comment()) {
+            if (is.null(comment(slot(x, "proj4string")))) {
+                from_args <- paste0(slot(slot(x, "proj4string"),
+                  "projargs"), " +type=crs")
+                warning("NULL source CRS comment, falling back to PROJ string")
+	        if (is.na(from_args)) 
+		    stop("No transformation possible from NA source CRS")
+                if (length(grep("\\+init\\=", from_args)) > 0) {
+                    warning("+init dropped in PROJ string")
+                    strres <- unlist(strsplit(from_args, " "))
+                    from_args <- paste(strres[-grep("\\+init\\=", strres)],
+                        collapse=" ")
+                }
+            } else {
+                from_args <- comment(slot(x, "proj4string"))
+            }
+            if (is.null(comment(CRSobj))) {
+                warning("NULL target CRS comment, falling back to PROJ string")
+	        to_args <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+	        if (is.na(to_args)) 
+		    stop("No transformation possible to NA target CRS")
+                if (length(grep("\\+init\\=", to_args)) > 0) {
+                    warning("+init dropped in PROJ string")
+                    strres <- unlist(strsplit(to_args, " "))
+                    to_args <- paste(strres[-grep("\\+init\\=", strres)],
+                        collapse=" ")
+                }
+            } else {
+                to_args <- comment(CRSobj)
+            }
+          } else {
+            from_args <- paste0(slot(slot(x, "proj4string"), "projargs"),
+              " +type=crs")
+            to_args <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+          }
+        } else {
+	    from_args <- proj4string(x)
+	    if (is.na(from_args)) 
+		stop("No transformation possible from NA from reference system")
+	    to_args <- slot(CRSobj, "projargs")
+	    if (is.na(to_args)) 
+		stop("No transformation possible to NA to reference system")
+        }
 	dots = list(...)
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
@@ -162,7 +286,7 @@ if (!isGeneric("spTransform"))
               else use_ob_tran <- 1L
             }
             if (use_ob_tran != 0L) {
-              if (is.projected(x) || is.projected(CRSobj))
+              if (is.projected(x) || length(grep("longlat", slot(CRSobj, "projargs"))) == 0)
                 stop("Use ob_tran to or from unprojected objects only")
             }
           } else {
@@ -171,13 +295,57 @@ if (!isGeneric("spTransform"))
         } else {
           use_ob_tran <- 0L
         }
+        if (!is.null(dots$enforce_xy)) {
+          stopifnot(is.logical(dots$enforce_xy))
+          stopifnot(length(dots$enforce_xy) == 1L)
+          stopifnot(!is.na(dots$enforce_xy))
+          enforce_xy <- dots$enforce_xy
+        } else {
+            enforce_xy <- get_enforce_xy()
+        }
+        coordOp <- NULL
+        if (!is.null(dots$coordOp)) {
+            coordOp <- dots$coordOp
+        }
 	crds <- coordinates(x)
 	crds.names <- dimnames(crds)[[2]] # crds is matrix
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
         if (ncol(crds) == 2) {
-	    res <- .Call("transform", proj4string(x), slot(CRSobj, "projargs"), n,
-		as.double(crds[,1]), as.double(crds[,2]), NULL, PACKAGE="rgdal")
+            if (new_proj_and_gdal()) {
+                if (use_ob_tran == 0L) {
+                    attr(n, "enforce_xy") <- enforce_xy
+                    res <- .Call("transform_ng", from_args, to_args, coordOp, n,
+		        as.double(crds[,1]), as.double(crds[,2]), NULL,
+		        PACKAGE="rgdal")
+                    out_coordOp <- res[[5]]
+                } else {
+                    if (use_ob_tran == -1L) {
+                        inv <- TRUE
+                        proj <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+                    }
+                    if (use_ob_tran == 1L) {
+                        inv <- FALSE
+                        proj <- paste0(slot(slot(x, "proj4string"),
+                            "projargs"), " +type=crs")
+                    }
+                    if (use_ob_tran == 0L) use_ob_tran1 <- FALSE
+                    else use_ob_tran1 <- TRUE
+                    if (is.null(coordOp)) {
+                        out_coordOp <- .Call("project_ng_coordOp", proj,
+                            as.logical(inv), #as.logical(use_ob_tran1),
+                            PACKAGE="rgdal")
+                    }
+                    res <- .Call("project_ng", as.integer(n), 
+                        as.double(crds[,1]), as.double(crds[,2]), NULL,
+                        as.logical(inv), as.logical(use_ob_tran1),
+                        out_coordOp, PACKAGE="rgdal")
+                }
+            } else {
+	        res <- .Call("transform", from_args, to_args, n,
+                    as.double(crds[,1]), as.double(crds[,2]), NULL,
+                    PACKAGE="rgdal")
+            }
 	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
@@ -186,9 +354,40 @@ if (!isGeneric("spTransform"))
 	    }
 	    crds[,1:2] <- cbind(res[[1]], res[[2]])
         } else {
-	    res <- .Call("transform", proj4string(x), slot(CRSobj, "projargs"), n,
+            if (new_proj_and_gdal()) {
+                if (use_ob_tran == 0L) {
+                    attr(n, "enforce_xy") <- enforce_xy
+                    res <- .Call("transform_ng", from_args, to_args, coordOp, n,
+		        as.double(crds[,1]), as.double(crds[,2]),
+                        as.double(crds[,3]), PACKAGE="rgdal")
+                    out_coordOp <- res[[6]]
+                } else {
+                    if (use_ob_tran == -1L) {
+                        inv <- TRUE
+                        proj <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+                    }
+                    if (use_ob_tran == 1L) {
+                        inv <- FALSE
+                        proj <- paste0(slot(slot(x, "proj4string"),
+                            "projargs"), " +type=crs")
+                    }
+                    if (use_ob_tran == 0L) use_ob_tran1 <- FALSE
+                    else use_ob_tran1 <- TRUE
+                    if (is.null(coordOp)) {
+                        out_coordOp <- .Call("project_ng_coordOp", proj,
+                            as.logical(inv), #as.logical(use_ob_tran1),
+                            PACKAGE="rgdal")
+                    }
+                    res <- .Call("project_ng", as.integer(n), 
+                        as.double(crds[,1]), as.double(crds[,2]),
+                        as.double(crds[,3]), as.logical(inv), 
+                        as.logical(use_ob_tran1), out_coordOp, PACKAGE="rgdal")
+                }
+            } else {
+	    res <- .Call("transform", from_args, to_args, n,
 		as.double(crds[,1]), as.double(crds[,2]), as.double(crds[,3]),
                 PACKAGE="rgdal")
+            }
 	    if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))
                 || any(!is.finite(res[[3]]))) {
 		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]])
@@ -200,6 +399,8 @@ if (!isGeneric("spTransform"))
 	    crds[,1:3] <- cbind(res[[1]], res[[2]], res[[3]])
         }
 	# make sure coordinate names are set back:
+        if (new_proj_and_gdal()) assign(".last_coordOp", gsub(" ",
+            " +", paste0("+", out_coordOp)), envir=.RGDAL_CACHE)
 	dimnames(crds)[[2]] <- crds.names
 	x <- SpatialPoints(coords=crds, proj4string=CRSobj)
 	x
@@ -213,8 +414,14 @@ setMethod("spTransform", signature("SpatialPoints", "CRS"), spTransform.SpatialP
 	resSP <- spTransform(xSP, CRSobj, ...)
 	# xDF <- as(x, "data.frame")
 	xDF <- x@data # little need to add unique row.names here!
-	res <- SpatialPointsDataFrame(coords=coordinates(resSP), data=xDF,
-		coords.nrs = numeric(0), proj4string = CRS(proj4string(resSP)))
+        if (packageVersion("sp") > "1.4.1") {
+            crs <- rebuild_CRS(slot(resSP, "proj4string"))
+        } else {
+            rebuild_CRS <- NULL
+            crs <- CRS(proj4string(resSP))
+        }
+        res <- SpatialPointsDataFrame(coords=coordinates(resSP), data=xDF,
+		coords.nrs = numeric(0), proj4string = crs)
 	res
 }
 setMethod("spTransform", signature("SpatialPointsDataFrame", "CRS"), 
@@ -235,13 +442,46 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 
 
 ".spTransform_Line" <- function(x, to_args, from_args, ii, jj,
-                use_ob_tran) {
+                use_ob_tran, coordOp, enforce_xy) {
 	crds <- slot(x, "coords")
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
-	res <- .Call("transform", from_args, to_args, n,
+        if (new_proj_and_gdal()) {
+            if (use_ob_tran == 0L) {
+                attr(n, "enforce_xy") <- enforce_xy
+                res <- .Call("transform_ng", from_args, to_args, coordOp, n,
+		    as.double(crds[,1]), as.double(crds[,2]), NULL,
+		    PACKAGE="rgdal")
+                out_coordOp <- res[[5]]
+            } else {
+                if (use_ob_tran == -1L) {
+                    inv <- TRUE
+                    if (is.null(attr(to_args, "p4s"))) proj <- to_args
+                    else proj <- paste0(attr(to_args, "p4s"), " +type=crs")
+                }
+                if (use_ob_tran == 1L) {
+                    inv <- FALSE
+                    if (is.null(attr(from_args, "p4s"))) proj <- from_args
+                    else proj <- paste0(attr(from_args, "p4s"), " +type=crs")
+                }
+                if (use_ob_tran == 0L) use_ob_tran1 <- FALSE
+                else use_ob_tran1 <- TRUE
+                if (is.null(coordOp)) {
+                    coordOp <- .Call("project_ng_coordOp", proj,
+                        as.logical(inv), #as.logical(use_ob_tran1),
+                        PACKAGE="rgdal")
+                }
+                res <- .Call("project_ng", as.integer(n), 
+                    as.double(crds[,1]), as.double(crds[,2]), NULL,
+                    as.logical(inv), as.logical(use_ob_tran1),
+                    coordOp, PACKAGE="rgdal")
+                out_coordOp <- coordOp
+            }
+        } else {
+	    res <- .Call("transform", from_args, to_args, n,
 		as.double(crds[,1]), as.double(crds[,2]), NULL,
 		PACKAGE="rgdal")
+        }
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
@@ -251,33 +491,84 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
 	}
 	crds <- cbind(res[[1]], res[[2]])
 	x <- Line(coords=crds)
+        if (new_proj_and_gdal()) attr(x, "coordOp") <- out_coordOp
 	x
 }
 
 #setMethod("spTransform", signature("Sline", "CRS"), spTransform.Sline)
 
 ".spTransform_Lines" <- function(x, to_args, from_args, ii,
-                use_ob_tran) {
+                use_ob_tran, coordOp, enforce_xy) {
 	ID <- slot(x, "ID")
 	input <- slot(x, "Lines")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
-	for (i in 1:n) output[[i]] <- .spTransform_Line(input[[i]], 
+        out_coordOp <- NULL
+	for (i in 1:n) {
+            output[[i]] <- .spTransform_Line(input[[i]], 
 		to_args=to_args, from_args=from_args, ii=ii, jj=i,
-                use_ob_tran=use_ob_tran)
+                use_ob_tran=use_ob_tran, coordOp=coordOp, enforce_xy=enforce_xy)
+            if (is.null(coordOp) && new_proj_and_gdal() && i == 1) {
+                out_coordOp <- attr(output[[i]], "coordOp")
+                coordOp <-  gsub(" ", " +", paste0("+", out_coordOp))
+            }
+            attr(output[[i]], "coordOp") <- NULL
+        }
 	x <- Lines(output, ID)
+        if (new_proj_and_gdal()) attr(x, "coordOp") <- out_coordOp
 	x
 }
 
 #setMethod("spTransform", signature("Slines", "CRS"), spTransform.Slines)
 
 "spTransform.SpatialLines" <- function(x, CRSobj, ...) {
-	from_args <- proj4string(x)
-	if (is.na(from_args)) 
-		stop("No transformation possible from NA reference system")
-	to_args <- slot(CRSobj, "projargs")
-	if (is.na(to_args)) 
-		stop("No transformation possible to NA reference system")
+        if (new_proj_and_gdal()) {
+          if (get_transform_wkt_comment()) {
+            if (is.null(comment(slot(x, "proj4string")))) {
+                from_args <- paste0(slot(slot(x, "proj4string"),
+                  "projargs"), " +type=crs")
+                warning("NULL source CRS comment, falling back to PROJ string")
+	        if (is.na(from_args)) 
+		    stop("No transformation possible from NA source CRS")
+                if (length(grep("\\+init\\=", from_args)) > 0) {
+                    warning("+init dropped in PROJ string")
+                    strres <- unlist(strsplit(from_args, " "))
+                    from_args <- paste(strres[-grep("\\+init\\=", strres)],
+                        collapse=" ")
+                }
+            } else {
+                from_args <- comment(slot(x, "proj4string"))
+                attr(from_args, "p4s") <- slot(slot(x, "proj4string"),
+                    "projargs")
+            }
+            if (is.null(comment(CRSobj))) {
+                warning("NULL target CRS comment, falling back to PROJ string")
+	        to_args <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+	        if (is.na(to_args)) 
+		    stop("No transformation possible to NA target CRS")
+                if (length(grep("\\+init\\=", to_args)) > 0) {
+                    warning("+init dropped in PROJ string")
+                    strres <- unlist(strsplit(to_args, " "))
+                    to_args <- paste(strres[-grep("\\+init\\=", strres)],
+                        collapse=" ")
+                }
+            } else {
+                to_args <- comment(CRSobj)
+                attr(to_args, "p4s") <- slot(CRSobj, "projargs")
+            }
+          } else {
+            from_args <- paste0(slot(slot(x, "proj4string"), "projargs"),
+              " +type=crs")
+            to_args <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+          }
+        } else {
+	    from_args <- proj4string(x)
+	    if (is.na(from_args)) 
+		stop("No transformation possible from NA from reference system")
+	    to_args <- slot(CRSobj, "projargs")
+	    if (is.na(to_args)) 
+		stop("No transformation possible to NA to reference system")
+        }
 	dots = list(...)
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
@@ -292,7 +583,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
               else use_ob_tran <- 1L
             }
             if (use_ob_tran != 0L) {
-              if (is.projected(x) || is.projected(CRSobj))
+              if (is.projected(x) || length(grep("longlat", slot(CRSobj, "projargs"))) == 0)
                 stop("Use ob_tran to or from unprojected objects only")
             }
           } else {
@@ -301,13 +592,34 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
         } else {
           use_ob_tran <- 0L
         }
+        if (!is.null(dots$enforce_xy)) {
+          stopifnot(is.logical(dots$enforce_xy))
+          stopifnot(length(dots$enforce_xy) == 1L)
+          stopifnot(!is.na(dots$enforce_xy))
+          enforce_xy <- dots$enforce_xy
+        } else {
+            enforce_xy <- get_enforce_xy()
+        }
+        coordOp <- NULL
+        if (!is.null(dots$coordOp)) {
+            coordOp <- dots$coordOp
+        }
 	input <- slot(x, "lines")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
-	for (i in 1:n) output[[i]] <- .spTransform_Lines(input[[i]], 
+	for (i in 1:n) {
+            output[[i]] <- .spTransform_Lines(input[[i]], 
 		to_args=to_args, from_args=from_args, ii=i,
-                use_ob_tran=use_ob_tran)
-	res <- SpatialLines(output, proj4string=CRS(to_args))
+                use_ob_tran=use_ob_tran, coordOp=coordOp, enforce_xy=enforce_xy)
+            if (is.null(coordOp) && new_proj_and_gdal() && i == 1) {
+                out_coordOp <- attr(output[[i]], "coordOp")
+                coordOp <-  gsub(" ", " +", paste0("+", out_coordOp))
+            }
+            attr(output[[i]], "coordOp") <- NULL
+        }
+        if (new_proj_and_gdal()) assign(".last_coordOp", coordOp,
+            envir=.RGDAL_CACHE)
+	res <- SpatialLines(output, proj4string=CRSobj)
 	res
 }
 setMethod("spTransform", signature("SpatialLines", "CRS"), spTransform.SpatialLines)
@@ -324,13 +636,46 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 
 
 ".spTransform_Polygon" <- function(x, to_args, from_args, ii, jj,
-                use_ob_tran) {
+                use_ob_tran, coordOp, enforce_xy) {
 	crds <- slot(x, "coords")
 	n <- nrow(crds)
         attr(n, "ob_tran") <- use_ob_tran
-	res <- .Call("transform", from_args, to_args, n,
+        if (new_proj_and_gdal()) {
+            if (use_ob_tran == 0L) {
+                attr(n, "enforce_xy") <- enforce_xy
+                res <- .Call("transform_ng", from_args, to_args, coordOp, n,
+		    as.double(crds[,1]), as.double(crds[,2]), NULL,
+		    PACKAGE="rgdal")
+                out_coordOp <- res[[5]]
+            } else {
+                if (use_ob_tran == -1L) {
+                    inv <- TRUE
+                    if (is.null(attr(to_args, "p4s"))) proj <- to_args
+                    else proj <- paste0(attr(to_args, "p4s"), " +type=crs")
+                }
+                if (use_ob_tran == 1L) {
+                    inv <- FALSE
+                    if (is.null(attr(from_args, "p4s"))) proj <- from_args
+                    else proj <- paste0(attr(from_args, "p4s"), " +type=crs")
+                }
+                if (use_ob_tran == 0L) use_ob_tran1 <- FALSE
+                else use_ob_tran1 <- TRUE
+                if (is.null(coordOp)) {
+                    coordOp <- .Call("project_ng_coordOp", proj,
+                        as.logical(inv), #as.logical(use_ob_tran1),
+                        PACKAGE="rgdal")
+                }
+                res <- .Call("project_ng", as.integer(n), 
+                    as.double(crds[,1]), as.double(crds[,2]), NULL,
+                    as.logical(inv), as.logical(use_ob_tran1),
+                    coordOp, PACKAGE="rgdal")
+                out_coordOp <- coordOp
+            }
+        } else {
+	    res <- .Call("transform", from_args, to_args, n,
 		as.double(crds[,1]), as.double(crds[,2]), NULL,
 		PACKAGE="rgdal")
+        }
 	if (any(!is.finite(res[[1]])) || any(!is.finite(res[[2]]))) {
 		k <- which(!is.finite(res[[1]]) | !is.finite(res[[2]]))
 		cat("non finite transformation detected:\n")
@@ -340,32 +685,83 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
 	}
 	crds <- cbind(res[[1]], res[[2]])
 	x <- Polygon(coords=crds)
+        if (new_proj_and_gdal()) attr(x, "coordOp") <- out_coordOp
 	x
 }
 
 
 ".spTransform_Polygons" <- function(x, to_args, from_args, ii,
-                use_ob_tran) {
+                use_ob_tran, coordOp, enforce_xy) {
 	ID <- slot(x, "ID")
 	input <- slot(x, "Polygons")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
-	for (i in 1:n) output[[i]] <- .spTransform_Polygon(input[[i]], 
+        out_coordOp <- NULL
+	for (i in 1:n) {
+            output[[i]] <- .spTransform_Polygon(input[[i]], 
 		to_args=to_args, from_args=from_args, ii=ii, jj=i,
-                use_ob_tran=use_ob_tran)
+                use_ob_tran=use_ob_tran, coordOp=coordOp, enforce_xy=enforce_xy)
+            if (is.null(coordOp) && new_proj_and_gdal() && i == 1) {
+                out_coordOp <- attr(output[[i]], "coordOp")
+                coordOp <-  gsub(" ", " +", paste0("+", out_coordOp))
+            }
+            attr(output[[i]], "coordOp") <- NULL
+        }
 	res <- Polygons(output, ID)
         if (!is.null(comment(x))) comment(res) <- comment(x)
+        if (new_proj_and_gdal()) attr(res, "coordOp") <- out_coordOp
 	res
 }
 
 
 "spTransform.SpatialPolygons" <- function(x, CRSobj, ...) {
-	from_args <- proj4string(x)
-	if (is.na(from_args)) 
-		stop("No transformation possible from NA reference system")
-	to_args <- slot(CRSobj, "projargs")
-	if (is.na(to_args)) 
-		stop("No transformation possible to NA reference system")
+        if (new_proj_and_gdal()) {
+          if (get_transform_wkt_comment()) {
+            if (is.null(comment(slot(x, "proj4string")))) {
+                from_args <- paste0(slot(slot(x, "proj4string"), "projargs"),
+                  " +type=crs")
+                warning("NULL source CRS comment, falling back to PROJ string")
+	        if (is.na(from_args)) 
+		    stop("No transformation possible from NA source CRS")
+                if (length(grep("\\+init\\=", from_args)) > 0) {
+                    warning("+init dropped in PROJ string")
+                    strres <- unlist(strsplit(from_args, " "))
+                    from_args <- paste(strres[-grep("\\+init\\=", strres)],
+                        collapse=" ")
+                }
+            } else {
+                from_args <- comment(slot(x, "proj4string"))
+                attr(from_args, "p4s") <- slot(slot(x, "proj4string"),
+                    "projargs")
+            }
+            if (is.null(comment(CRSobj))) {
+                warning("NULL target CRS comment, falling back to PROJ string")
+	        to_args <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+	        if (is.na(to_args)) 
+		    stop("No transformation possible to NA target CRS")
+                if (length(grep("\\+init\\=", to_args)) > 0) {
+                    warning("+init dropped in PROJ string")
+                    strres <- unlist(strsplit(to_args, " "))
+                    to_args <- paste(strres[-grep("\\+init\\=", strres)],
+                        collapse=" ")
+                }
+            } else {
+                to_args <- comment(CRSobj)
+                attr(to_args, "p4s") <- slot(CRSobj, "projargs")
+            }
+          } else {
+            from_args <- paste0(slot(slot(x, "proj4string"), "projargs"),
+              " +type=crs")
+            to_args <- paste0(slot(CRSobj, "projargs"), " +type=crs")
+          }
+        } else {
+	    from_args <- proj4string(x)
+	    if (is.na(from_args)) 
+		stop("No transformation possible from NA from reference system")
+	    to_args <- slot(CRSobj, "projargs")
+	    if (is.na(to_args)) 
+		stop("No transformation possible to NA to reference system")
+        }
 	dots = list(...)
         if (!is.null(dots$use_ob_tran)) {
           stopifnot(is.logical(dots$use_ob_tran))
@@ -380,7 +776,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
               else use_ob_tran <- 1L
             }
             if (use_ob_tran != 0L) {
-              if (is.projected(x) || is.projected(CRSobj))
+              if (is.projected(x) || length(grep("longlat", slot(CRSobj, "projargs"))) == 0)
                 stop("Use ob_tran to or from unprojected objects only")
             }
           } else {
@@ -389,12 +785,33 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
         } else {
           use_ob_tran <- 0L
         }
+        if (!is.null(dots$enforce_xy)) {
+          stopifnot(is.logical(dots$enforce_xy))
+          stopifnot(length(dots$enforce_xy) == 1L)
+          stopifnot(!is.na(dots$enforce_xy))
+          enforce_xy <- dots$enforce_xy
+        } else {
+            enforce_xy <- get_enforce_xy()
+        }
+        coordOp <- NULL
+        if (!is.null(dots$coordOp)) {
+            coordOp <- dots$coordOp
+        }
 	input <- slot(x, "polygons")
 	n <- length(input)
 	output <- vector(mode="list", length=n)
-	for (i in 1:n) output[[i]] <- .spTransform_Polygons(input[[i]], 
+	for (i in 1:n) {
+            output[[i]] <- .spTransform_Polygons(input[[i]], 
 		to_args=to_args, from_args=from_args, ii=i,
-                use_ob_tran=use_ob_tran)
+                use_ob_tran=use_ob_tran, coordOp=coordOp, enforce_xy=enforce_xy)
+            if (is.null(coordOp) && new_proj_and_gdal() && i == 1) {
+                out_coordOp <- attr(output[[i]], "coordOp")
+                coordOp <-  gsub(" ", " +", paste0("+", out_coordOp))
+            }
+            attr(output[[i]], "coordOp") <- NULL
+        }
+        if (new_proj_and_gdal()) assign(".last_coordOp", coordOp, 
+            envir=.RGDAL_CACHE)
 	res <- SpatialPolygons(output, pO=slot(x, "plotOrder"), 
 		proj4string=CRSobj)
 	res

@@ -23,11 +23,13 @@ exportClass(GDALReadOnlyDataset)
 exportClass(GDALTransientDataset)
 exportClass(SpatialGDAL, SpatialGDALWrite)
 
-export(rgdal_extSoftVersion)
+export(rgdal_extSoftVersion, PROJis6ormore, GDALis3ormore, GDAL_OSR_PROJ, 
+ new_proj_and_gdal)
 
 export(project, make_EPSG, projInfo, getPROJ4VersionInfo, getPROJ4libPath,
   projNAD)
-export(CRSargs, checkCRSArgs)
+export(CRSargs, checkCRSArgs, checkCRSArgs_ng, compare_CRS)
+export(get_P6_datum_hard_fail, set_P6_datum_hard_fail, get_transform_wkt_comment, set_transform_wkt_comment, get_last_coordOp, get_thin_PROJ6_warnings, set_thin_PROJ6_warnings, get_enforce_xy, set_enforce_xy, get_rgdal_show_exportToProj4_warnings, set_rgdal_show_exportToProj4_warnings, get_PROJ6_warnings_count)
 export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
 export(getGDALDriverNames, getDriverName, getDriverLongName, gdalDrivers)
 export(getDescription)
@@ -36,7 +38,8 @@ export(getRasterBand, getRasterBlockSize)
 export(toSigned, toUnSigned)
 export(getDriver, GDAL.close, GDAL.open, getColorTable,
   getGeoTransFunc, sub.GDROD, SGDF2PCT, vec2RGB, asSGDF_GROD, RGB2PCT)
-export(make_EPSG, project, readGDAL, writeGDAL, showWKT, showEPSG, showP4, create2GDAL)
+export(make_EPSG, project, readGDAL, writeGDAL, create2GDAL)
+export(showWKT, showEPSG, showP4, showSRID, list_coordOps, best_instantiable_coordOp)
 export(readOGR, ogrInfo, ogrFIDs, ogrDrivers, writeOGR, ogrListLayers)
 export(GDALinfo, print.GDALobj, getGDALVersionInfo, getGDALCheckVersion, getGDAL_DATA_Path, getGDALwithGEOS)
 export(displayDataset)
@@ -57,6 +60,9 @@ export(get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84,
 
 export(getCPLConfigOption, setCPLConfigOption)
 
+export(get_cached_orig_PROJ_LIB, get_cached_orig_GDAL_DATA,
+ get_cached_set_PROJ_LIB, get_cached_set_GDAL_DATA)
+
 #S3method(spTransform, SpatialPoints)
 #S3method(spTransform, SpatialPointsDataFrame)
 #S3method(spTransform, SpatialLines)
@@ -69,3 +75,8 @@ S3method(open, SpatialGDAL)
 S3method(close, SpatialGDAL)
 S3method(close, SpatialGDALWrite)
 S3method(print, summary.SpatialGDAL)
+S3method(print, coordOps)
+
+
+
+

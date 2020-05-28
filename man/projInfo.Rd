@@ -3,6 +3,10 @@
 \alias{getPROJ4VersionInfo}
 \alias{getPROJ4libPath}
 \alias{projNAD}
+\alias{GDALis3ormore}
+\alias{PROJis6ormore}
+\alias{new_proj_and_gdal}
+\alias{GDAL_OSR_PROJ}
 %\alias{checkCRSArgs}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{List PROJ.4 tag information}
@@ -14,6 +18,10 @@ projInfo(type = "proj")
 getPROJ4VersionInfo()
 getPROJ4libPath()
 projNAD()
+GDAL_OSR_PROJ()
+GDALis3ormore()
+PROJis6ormore()
+new_proj_and_gdal()
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,7 +33,7 @@ projNAD()
 \value{
   A data frame with a name and description column, and two extra columns for the "ellps" and "datum" tags.
 }
-\references{\url{http://proj.maptools.org/}}
+\references{\url{https://proj.org/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{Loading the rgdal package changes the \code{PROJ\_LIB} environmental variable to the PROJ.4 support files bundles with the package.}

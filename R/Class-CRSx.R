@@ -1,4 +1,4 @@
-# Copyright (c) 2003-4 by Barry Rowlingson and Roger Bivand
+# Copyright (c) 2003-19 by Barry Rowlingson and Roger Bivand
 
 #.valid.CRSobj <- function(object) {
 #	if (exists("is.R") && is.function(is.R) && is.R()) {
@@ -25,14 +25,19 @@
 	if (!is(object, "CRS")) stop("not a CRS object")
 
 	if (!is.na(object@projargs)) {
-		res <- (checkCRSArgs(object@projargs)[[2]])
-                res <- paste(unique(unlist(strsplit(res, " "))), 
-			collapse=" ")
-                return(sub("^\\s+", "", res))
+            if (new_proj_and_gdal()) 
+                res <- (checkCRSArgs_ng(object@projargs)[[2]])
+            else res <- (checkCRSArgs(object@projargs)[[2]])
+            res <- paste(unique(unlist(strsplit(res, " "))), 
+		collapse=" ")
+            return(sub("^\\s+", "", res))
 	} else return(as.character(NA))
 }
 
-checkCRSArgs <- function(uprojargs) {
+checkCRSArgs <- function(uprojargs=NA_character_) {
+  if (packageVersion("rgdal") >= "1.5.1" && length(grep("ob_tran", uprojargs)) > 0L) {
+    return(list(TRUE, uprojargs))
+  }
 # pkgdown work-around
   if (is.na(get("has_proj_def.dat", envir=.RGDAL_CACHE))) {
     assign("has_proj_def.dat", .Call("PROJ4_proj_def_dat_Installed",
@@ -71,6 +76,91 @@ checkCRSArgs <- function(uprojargs) {
           res[[2]] <- sub("+no_defs", "+no_off +no_defs", res[[2]], fixed=TRUE)
   }
   res
+}
+
+checkCRSArgs_ng <- function(uprojargs=NA_character_, SRS_string=NULL) {
+  no_SRS <- is.null(SRS_string)
+  no_PROJ <- is.na(uprojargs)
+  res <- vector(mode="list", length=3L)
+  res[[1]] <- FALSE
+  res[[2]] <- NA_character_
+  res[[3]] <- NA_character_
+  if (!no_SRS) {
+    stopifnot(is.character(SRS_string))
+    stopifnot(length(SRS_string) == 1L)
+  }
+  if (!no_PROJ) {
+    stopifnot(is.character(uprojargs))
+    stopifnot(length(uprojargs) == 1L)
+  }
+  if (!no_SRS) {
+    uprojargs1 <- try(showSRID(SRS_string, format="PROJ", multiline="NO"),
+        silent=TRUE)
+    if (inherits(uprojargs1, "try-error")) {
+      res[[1]] <- FALSE
+      res[[2]] <- NA_character_
+    } else {
+      res[[1]] <- TRUE
+      res[[2]] <- uprojargs1
+    }
+    wkt2 <- showSRID(SRS_string, format="WKT2", multiline="YES")
+    if (!inherits(wkt2, "try-error")) res[[3]] <- wkt2
+  } else if (!no_PROJ) {
+    uprojargs <- sub("^\\s+", "", uprojargs)
+    uprojargs1 <- showSRID(uprojargs, format="PROJ", multiline="NO")
+    if (inherits(uprojargs1, "try-error")) {
+      res[[1]] <- FALSE
+      res[[2]] <- NA_character_
+    } else {
+      res[[1]] <- TRUE
+      res[[2]] <- uprojargs1
+    }
+    wkt2 <- showSRID(uprojargs, format="WKT2", multiline="YES")
+    if (!inherits(wkt2, "try-error")) res[[3]] <- wkt2
+  }
+  res
+}
+
+compare_CRS <- function(CRS1, CRS2) {
+    stopifnot(new_proj_and_gdal())
+    stopifnot(inherits(CRS1, "CRS"))
+    stopifnot(inherits(CRS2, "CRS"))
+    type1 <- FALSE
+    if (is.null(comment(CRS1))) {
+        from_args <- paste0(slot(CRS1, "projargs"), " +type=crs")
+        warning("NULL source CRS comment, falling back to PROJ string")
+        if (is.na(from_args)) 
+	    stop("No transformation possible from NA source CRS")
+        if (length(grep("\\+init\\=", from_args)) > 0) {
+            warning("+init dropped in PROJ string")
+            strres <- unlist(strsplit(from_args, " "))
+            from_args <- paste(strres[-grep("\\+init\\=", strres)],
+                collapse=" ")
+        }
+    } else {
+       type1 <- TRUE
+       from_args <- comment(CRS1)
+    }
+    type2 <- FALSE
+    if (is.null(comment(CRS2))) {
+        warning("NULL target CRS comment, falling back to PROJ string")
+        to_args <- paste0(slot(CRS2, "projargs"), " +type=crs")
+        if (is.na(to_args)) 
+	    stop("No transformation possible to NA target CRS")
+        if (length(grep("\\+init\\=", to_args)) > 0) {
+            warning("+init dropped in PROJ string")
+            strres <- unlist(strsplit(to_args, " "))
+            to_args <- paste(strres[-grep("\\+init\\=", strres)], collapse=" ")
+        }
+    } else {
+        type2 <- TRUE
+        to_args <- comment(CRS2)
+    }
+    res0 <- .Call("CRS_compare", as.character(from_args), as.character(to_args),
+        as.logical(type1), as.logical(type2), PACKAGE="rgdal")
+    res <- as.logical(res0)
+    names(res) <- c("strict", "equivalent", "equivalent_except_axis_order")
+    res
 }
 
 proj_def_bug_fix <- function(uprojargs) {

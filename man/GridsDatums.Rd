@@ -5,7 +5,7 @@
 \description{A data.frame of years and months of Grids & Datums column publications by country and country code.}
 \usage{data("GridsDatums")}
 \format{
-  A data frame with 207 observations on the following 4 variables.
+  A data frame with 241 observations on the following 4 variables.
   \describe{
     \item{\code{country}}{name of PE&RS column}
     \item{\code{month}}{issue month}

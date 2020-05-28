@@ -1,4 +1,4 @@
-writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL, shp_edge_case_fix=FALSE) {
+writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL, shp_edge_case_fix=FALSE, dumpSRS=FALSE) {
     if (missing(dsn)) stop("missing dsn")
     stopifnot(is.character(dsn))
     stopifnot(length(dsn) == 1L)
@@ -108,6 +108,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         morphToESRI <- ifelse(is_shpfile, TRUE, FALSE)
     stopifnot(is.logical(morphToESRI))
     stopifnot(length(morphToESRI) == 1)
+    stopifnot(!is.na(morphToESRI))
 
     nf <- length(dfcls)
     ldata <- vector(mode="list", length=nf)
@@ -177,12 +178,16 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
     stopifnot(length(shp_edge_case_fix) == 1)
     stopifnot(!is.na(shp_edge_case_fix))
     attr(driver, "shp_edge_case_fix") <- shp_edge_case_fix && is_shpfile
+    stopifnot(is.logical(dumpSRS))
+    stopifnot(length(dumpSRS) == 1)
+    stopifnot(!is.na(dumpSRS))
+    attr(morphToESRI, "dumpSRS") <- dumpSRS
     
     pre <- list(obj, as.character(dsn), as.character(layer), 
         driver, as.integer(nobj), nf,
         as.character(fld_names), as.integer(ogr_ftype), ldata, 
         as.character(dataset_options), as.character(layer_options),
-        as.logical(morphToESRI), as.integer(FIDs))
+        morphToESRI, as.integer(FIDs))
     res <- .Call("OGR_write", pre, PACKAGE="rgdal")
     NAs <- !(fld_names == attr(res, "ofld_nms"))
     if (any(NAs) && is_shpfile) {

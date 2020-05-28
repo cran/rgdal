@@ -1,11 +1,18 @@
-GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE, allowedDrivers=NULL, options=NULL) {
+GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE, allowedDrivers=NULL, enforce_xy=NULL, options=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent,
               allowedDrivers=allowedDrivers, options=options)
 	d <- dim(x)[1:2]
         dr <- getDriverName(getDriver(x))
+        if (!is.null(enforce_xy)) {
+            stopifnot(is.logical(enforce_xy))
+            stopifnot(length(enforce_xy) == 1L)
+            stopifnot(!is.na(enforce_xy))
+        } else {
+            enforce_xy <- get_enforce_xy()
+        }
 #	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
-	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
+	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
 	gt <- .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure") && !silent)
@@ -217,6 +224,9 @@ asGDALROD_SGDF <- function(from) {
 #	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
+        if (new_proj_and_gdal()) wkt2 <- comment(p4s)
+        oCRS <- CRS(c(p4s))
+        if (new_proj_and_gdal()) comment(oCRS) <- wkt2
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	if (any(gt[c(3,5)] != 0.0)) stop("Diagonal grid not permitted")
@@ -240,13 +250,13 @@ asGDALROD_SGDF <- function(from) {
 #		names(df) = paste("band", 1:d[3], sep="")
 #	}
 	return(SpatialGridDataFrame(grid = grid, 
-		data = as.data.frame(data), proj4string=CRS(p4s)))
+		data = as.data.frame(data), proj4string=oCRS))
 #		data = data.frame(df), proj4string=CRS(p4s)))
 }
 
 setAs("GDALReadOnlyDataset", "SpatialGridDataFrame", asGDALROD_SGDF)
 
-asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL) {
+asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enforce_xy=NULL) {
 	if (!extends(class(x), "GDALReadOnlyDataset"))
 		stop("x must be or extend a GDALReadOnlyDataset")
 	d = dim(x)
@@ -262,8 +272,18 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 # suggestion by Paul Hiemstra 070817
 	if (is.null(p4s)) 
 #	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
-	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
+            if (!is.null(enforce_xy)) {
+                stopifnot(is.logical(enforce_xy))
+                stopifnot(length(enforce_xy) == 1L)
+                stopifnot(!is.na(enforce_xy))
+            } else {
+                enforce_xy <- get_enforce_xy()
+            }
+	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
+        if (new_proj_and_gdal()) wkt2 <- comment(p4s)
+        oCRS <- CRS(c(p4s))
+        if (new_proj_and_gdal()) comment(oCRS) <- wkt2
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	if (any(gt[c(3,5)] != 0.0)) stop("Diagonal grid not permitted")
@@ -295,11 +315,11 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 #	df1 <- data.frame(df)
 	df1 <- as.data.frame(data)
 	data = SpatialGridDataFrame(grid = grid, 
-		data = df1, proj4string=CRS(p4s))
+		data = df1, proj4string=oCRS)
 	return(data)
 }
 
-readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, options=NULL) {
+readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, enforce_xy=NULL, options=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x = GDAL.open(fname, silent=silent,
               allowedDrivers=allowedDrivers, options=options)
@@ -326,8 +346,18 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 # suggestion by Paul Hiemstra 070817
 	if (is.null(p4s)) 
 #	    p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
-	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
+            if (!is.null(enforce_xy)) {
+                stopifnot(is.logical(enforce_xy))
+                stopifnot(length(enforce_xy) == 1L)
+                stopifnot(!is.na(enforce_xy))
+            } else {
+                enforce_xy <- get_enforce_xy()
+            }
+	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
+        if (new_proj_and_gdal()) wkt2 <- comment(p4s)
+        oCRS <- CRS(c(p4s))
+        if (new_proj_and_gdal()) comment(oCRS) <- wkt2
 	gt = .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 	# [1] 178400     40      0 334000      0    -40
@@ -382,7 +412,7 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 #			names(df) = paste("band", 1:d[3], sep="")
 #		}
 		data = SpatialGridDataFrame(grid = grid, 
-			data = as.data.frame(data), proj4string=CRS(p4s))
+			data = as.data.frame(data), proj4string=oCRS)
 	}
         assign("silent", opSilent, envir=.RGDAL_CACHE)
 	return(data)
@@ -390,7 +420,7 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
 
 writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32", 
 		mvFlag = NA, options=NULL, copy_drivername = "GTiff",
-                setStatistics=FALSE, colorTables=NULL, catNames=NULL)
+                setStatistics=FALSE, colorTables=NULL, catNames=NULL, enforce_xy=NULL)
 {
 	if (nchar(fname) == 0) stop("empty file name")
         x <- gdalDrivers()
@@ -399,7 +429,7 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 	    tds.create <- create2GDAL(dataset=dataset,
                 drivername=copy_drivername, type=type,
                 mvFlag=mvFlag, fname=NULL, setStatistics=setStatistics,
-                colorTables=colorTables, catNames=catNames)
+                colorTables=colorTables, catNames=catNames, enforce_xy=enforce_xy)
             tds.copy <- copyDataset(tds.create, driver=drivername, fname=fname)
             GDAL.close(tds.create)
 	    saveDataset(tds.copy, fname, options=options)
@@ -409,7 +439,7 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 	    tds.out <- create2GDAL(dataset=dataset, drivername=drivername, 
 		type=type, mvFlag=mvFlag, options=options, fname=fname,
                 setStatistics=setStatistics,  colorTables=colorTables,
-                catNames=catNames)
+                catNames=catNames, enforce_xy=enforce_xy)
 	    saveDataset(tds.out, fname, options=options)
 # RSB 120921
             GDAL.close(tds.out)
@@ -420,7 +450,7 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 	invisible(fname)
 }
 
-create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname=NULL, setStatistics=FALSE, colorTables=NULL, catNames=NULL)
+create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname=NULL, setStatistics=FALSE, colorTables=NULL, catNames=NULL, enforce_xy=NULL)
 {
 	stopifnot(gridded(dataset))
 	fullgrid(dataset) = TRUE
@@ -449,12 +479,30 @@ create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag =
 		offset[2] + (dims[2] -0.5) * cellsize[2], 0.0, -cellsize[2])
 	.Call("RGDAL_SetGeoTransform", tds.out, gt, PACKAGE = "rgdal")
 
-	p4s <- proj4string(dataset)
-	if (!is.na(p4s) && nchar(p4s) > 0) {
-	    .Call("RGDAL_SetProject", tds.out, p4s, PACKAGE = "rgdal")
+        if (new_proj_and_gdal()) {
+            iCRS <- slot(dataset, "proj4string")
+            wkt2 <- comment(iCRS)
+            if (!is.null(wkt2)) {
+                if (!is.null(enforce_xy)) {
+                    stopifnot(is.logical(enforce_xy))
+                    stopifnot(length(enforce_xy) == 1L)
+                    stopifnot(!is.na(enforce_xy))
+                } else {
+                    enforce_xy <- get_enforce_xy()
+                }
+                .Call("RGDAL_SetProject_WKT2", tds.out, wkt2, enforce_xy, PACKAGE = "rgdal")
+            } else {
+                if (getDriverName(getDriver(tds.out)) == "RST") 
+                    stop("RST files must have a valid CRS")
+            }
         } else {
-            if (getDriverName(getDriver(tds.out)) == "RST") 
-                stop("RST files must have a valid coordinate reference system")
+	    p4s <- proj4string(dataset)
+	    if (!is.na(p4s) && nchar(p4s) > 0) {
+	        .Call("RGDAL_SetProject", tds.out, p4s, PACKAGE = "rgdal")
+            } else {
+                if (getDriverName(getDriver(tds.out)) == "RST") 
+                    stop("RST files must have a valid CRS")
+            }
         }
         if (!is.null(colorTables)) {
             stopifnot(is.list(colorTables))
@@ -523,12 +571,12 @@ toUnSigned <- function(x, base) {
     as.integer(x)
 }
 
-"GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, options=NULL) {
+"GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, enforce_xy=NULL, options=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent,
               allowedDrivers=allowedDrivers, options=options)
 #        p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
-        p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
+        p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
 	GDAL.close(x)
         p4s
 }

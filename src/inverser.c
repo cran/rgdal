@@ -1,7 +1,7 @@
 /* Copyright (c) 2016 Barry Rowlingson */
 typedef int make_iso_compilers_happy;
 
-#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#ifndef PROJ_H_API
 #include <projects.h>
 #include <proj_api.h>
 #if PJ_VERSION < 493

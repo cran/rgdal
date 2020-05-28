@@ -54,6 +54,9 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 #	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
 	if (nchar(p4s) == 0) p4s <- as.character(NA)
+        if (new_proj_and_gdal()) wkt2 <- comment(p4s)
+        oCRS <- CRS(c(p4s))
+        if (new_proj_and_gdal()) comment(oCRS) <- wkt2
 
 	# retrieve data:
 	if (any(gt[c(3,5)] != 0)) {
@@ -101,7 +104,7 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
 			df = as.data.frame(df)
 			names(df) = paste("band", 1:d[3], sep="")
 		}
-		data = SpatialGridDataFrame(grid, df, proj4string=CRS(p4s))
+		data = SpatialGridDataFrame(grid, df, proj4string=oCRS)
 	}
 	return(data)
 }

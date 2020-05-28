@@ -28,6 +28,7 @@ and text function for labels }
 }
 \seealso{\code{\link[sp]{is.projected}}, \code{\link[sp]{CRS-class}}}
 \examples{
+set_thin_PROJ6_warnings(TRUE)
 data(meuse)
 coordinates(meuse) = ~x+y
 proj4string(meuse) <- CRS("+init=epsg:28992")

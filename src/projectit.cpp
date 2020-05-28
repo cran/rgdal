@@ -14,6 +14,7 @@
 extern "C" {
 #endif
 /* #include <projects.h> */
+#ifndef PROJ_H_API
 #include <proj_api.h>
 /* BDR 131123 */
 #ifndef P4CTX
@@ -130,6 +131,51 @@ PROJ4_proj_def_dat_Installed(void) {
 #define MAX_LINE_LEN 512	/* maximal line length supported.     */
 
 #ifndef PROJ6
+
+SEXP get_proj_search_path(void) {
+    Rprintf("Not available for PROJ version < 6");
+    return(R_NilValue);
+}
+
+
+SEXP list_coordinate_ops(SEXP source, SEXP target, SEXP area_of_interest, SEXP strict_containment, SEXP viz_order) {
+    Rprintf("Not available for PROJ version < 6");
+    return(R_NilValue);
+}
+
+SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2) {
+    Rprintf("Not available for PROJ version < 6");
+    return(R_NilValue);
+}
+
+SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z) {
+    Rprintf("Not available for PROJ version < 6");
+    return(R_NilValue);
+}
+
+SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp) {
+    Rprintf("Not available for PROJ version < 6");
+    return(R_NilValue);
+}
+
+SEXP project_ng_coordOp(SEXP proj, SEXP inv) {
+    Rprintf("Not available for PROJ version < 6");
+    return(R_NilValue);
+}
+
+SEXP proj_network_enabled() {
+//    Rprintf("Not available for PROJ version < 7");
+    return(R_NilValue);
+}
+
+
+/*SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
+    SEXP epsg, SEXP out_format) {
+
+    return(R_NilValue);
+
+}*/
+
 
 SEXP
 PROJcopyEPSG(SEXP tf) {
@@ -682,6 +728,7 @@ SEXP RGDAL_projInfo(SEXP type) {
 }
 #endif
 
+#endif // not PROJ_H_API 
 
 #ifdef __cplusplus
 }

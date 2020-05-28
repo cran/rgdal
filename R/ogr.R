@@ -8,7 +8,8 @@
 
 #
 ogrInfo <- function(dsn, layer, encoding=NULL,
-  use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL) {
+  use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
+  morphFromESRI=NULL, dumpSRS=FALSE, enforce_xy=NULL) {
   if (missing(dsn)) stop("missing dsn")
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
@@ -168,7 +169,17 @@ ogrInfo <- function(dsn, layer, encoding=NULL,
   ogrinfo$deleted_geometries <- deleted_geometries
   ogrinfo$dsn <- dsn
   ogrinfo$layer <- layer
-  ogrinfo$p4s <- OGRSpatialRef(dsn, layer)
+  if (is.null(morphFromESRI)) {
+    if (ogrinfo$driver == "ESRI Shapefile") morphFromESRI <- TRUE
+    else morphFromESRI <- FALSE
+  }
+  if (ogrinfo$driver != "ESRI Shapefile" && morphFromESRI)
+    morphFromESRI <- FALSE
+  p4s0 <- OGRSpatialRef(dsn, layer, morphFromESRI=morphFromESRI,
+    dumpSRS=dumpSRS, enforce_xy=enforce_xy)
+  if (new_proj_and_gdal()) wkt2 <- comment(p4s0)
+  ogrinfo$p4s <- c(p4s0)
+  if (new_proj_and_gdal()) ogrinfo$wkt2 <- wkt2
   if (!is.null(require_geomType))
     attr(ogrinfo, "require_geomType") <- require_geomType
   if (!is.null(keepGeoms)) attr(ogrinfo, "keepGeoms") <- keepGeoms
@@ -239,15 +250,96 @@ ogrDrivers <- function() {
   res
 }
 
-"OGRSpatialRef" <- function(dsn, layer) {
+OGRSpatialRef <- function(dsn, layer, morphFromESRI=NULL, dumpSRS=FALSE,
+  driver=NULL, enforce_xy=NULL) {
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
+  if (is.null(driver)) driver <- attr(ogrListLayers(dsn), "driver")
+  if (is.null(morphFromESRI)) {
+    if (driver == "ESRI Shapefile") morphFromESRI <- TRUE
+    else morphFromESRI <- FALSE
+  }
+  if (driver != "ESRI Shapefile" && morphFromESRI)
+    morphFromESRI <- FALSE
+  stopifnot(is.logical(morphFromESRI))
+  stopifnot(length(morphFromESRI) == 1L)
 # copy sf::st_read.default usage
   if (length(dsn) == 1 && file.exists(dsn))
     dsn <- enc2utf8(normalizePath(dsn))
   layer <- enc2utf8(layer)
-  .Call("ogrP4S", as.character(dsn), as.character(layer),
-        PACKAGE="rgdal")
+  stopifnot(is.logical(dumpSRS))
+  stopifnot(length(dumpSRS) == 1)
+  stopifnot(!is.na(dumpSRS))
+  if (!is.null(enforce_xy)) {
+    stopifnot(is.logical(enforce_xy))
+    stopifnot(length(enforce_xy) == 1L)
+    stopifnot(!is.na(enforce_xy))
+  } else {
+      enforce_xy <- get_enforce_xy()
+  }
+  attr(dumpSRS, "enforce_xy") <- enforce_xy
+  wkt2 <- NULL
+  no_ellps <- FALSE
+  res <- .Call("ogrP4S", as.character(dsn), as.character(layer),
+        as.logical(morphFromESRI), dumpSRS, PACKAGE="rgdal")
+  if (!is.na(res) && new_proj_and_gdal()) {
+    no_towgs84 <- ((is.null(attr(res, "towgs84"))) || 
+      (all(nchar(attr(res, "towgs84")) == 0)))
+    if ((length(grep("towgs84", c(res))) == 0L) && !no_towgs84)
+      warning("TOWGS84 discarded")
+    no_ellps <- (!is.null(attr(res, "ellps"))) &&
+        (nchar(attr(res, "ellps")) > 0L) &&
+        (length(grep("ellps", c(res))) == 0L) 
+    no_ellps <- no_ellps && length(grep("datum", c(res))) == 0L
+    if (no_ellps) {
+      msg <- paste0("Discarded ellps ", attr(res, "ellps"),
+            " in CRS definition: ", c(res))
+      if (get_rgdal_show_exportToProj4_warnings()) {
+       if (!get_thin_PROJ6_warnings()) {
+        warning(msg)
+        } else {
+          if (get("PROJ6_warnings_count",
+            envir=.RGDAL_CACHE) == 0L) {
+            warning(paste0("PROJ6/GDAL3 PROJ string degradation in workflow\n repeated warnings suppressed\n ", msg))
+            assign("PROJ6_warnings_count",
+              get("PROJ6_warnings_count",
+              envir=.RGDAL_CACHE) + 1L, envir=.RGDAL_CACHE)
+          }
+      }
+     }
+    }
+    if ((!is.null(attr(res, "datum"))) && (nchar(attr(res, "datum")) > 0L)
+      && (length(grep("datum", c(res))) == 0L)) {
+      msg <- paste0("Discarded datum ", attr(res, "datum"),
+          " in CRS definition: ", c(res))
+      if (!no_towgs84 && (length(grep("towgs84", c(res))) > 0L))
+        msg <- paste0(msg, ",\n but +towgs84= values preserved")
+      if (get_P6_datum_hard_fail()) stop(msg)
+      else {
+      if (get_rgdal_show_exportToProj4_warnings()) {
+        if (!get_thin_PROJ6_warnings()) {
+          warning(msg)
+        } else {
+          if (get("PROJ6_warnings_count",
+            envir=.RGDAL_CACHE) == 0L) {
+            warning(paste0("PROJ6/GDAL3 PROJ string degradation in workflow\n repeated warnings suppressed\n ", msg))
+            assign("PROJ6_warnings_count",
+              get("PROJ6_warnings_count",
+              envir=.RGDAL_CACHE) + 1L, envir=.RGDAL_CACHE)
+            }
+          }
+         }
+        }
+#warning(msg)
+    }
+    if (new_proj_and_gdal()) wkt2 <- attr(res, "WKT2_2018")
+  }
+  res <- c(res)
+  if (new_proj_and_gdal()) {
+    if (no_ellps) res <- showSRID(wkt2, "PROJ")
+    comment(res) <- wkt2
+  }
+  res
 }
 
 ogrListLayers <- function(dsn) {

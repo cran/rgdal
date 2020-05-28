@@ -17,21 +17,21 @@ than creation.}
 \usage{ 
 readGDAL(fname, offset, region.dim, output.dim, band, p4s=NULL, ...,
  half.cell=c(0.5, 0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL,
- allowedDrivers = NULL, options=NULL)
+ allowedDrivers = NULL, enforce_xy = NULL, options=NULL)
 asSGDF_GROD(x, offset, region.dim, output.dim, p4s=NULL, ...,
- half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
+ half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enforce_xy = NULL)
 writeGDAL(dataset, fname, drivername = "GTiff", type = "Float32",
  mvFlag = NA, options=NULL, copy_drivername = "GTiff", setStatistics=FALSE,
- colorTables = NULL, catNames=NULL)
+ colorTables = NULL, catNames=NULL, enforce_xy = NULL)
 create2GDAL(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA,
  options=NULL, fname = NULL, setStatistics=FALSE, colorTables = NULL,
- catNames=NULL)
+ catNames=NULL, enforce_xy = NULL)
 GDALinfo(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE,
  returnStats=TRUE, returnColorTable=FALSE,
  OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE,
- allowedDrivers = NULL, options=NULL)
+ allowedDrivers = NULL, enforce_xy = NULL, options=NULL)
 GDALSpatialRef(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL,
- allowedDrivers = NULL, options=NULL)
+ allowedDrivers = NULL, enforce_xy = NULL, options=NULL)
 }
 
 \arguments{
@@ -73,6 +73,7 @@ value works for \sQuote{Int32}, \sQuote{Float32}, \sQuote{Float64}, but
 suitable in-range value that fits the data type should be used for other 
 data types, for example 255 for \sQuote{Byte}, -32768 for \sQuote{Int16}, 
 and so on; see Details below.}
+\item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
 \item{options}{driver-specific options to be passed to the GDAL driver; only available for opening datasets from GDAL 2.0; 
 see copying and creation details below}
 \item{setStatistics}{default FALSE, if TRUE, attempt to set per-band 
@@ -140,6 +141,7 @@ use \code{\link[sp]{flipVertical}}.}
 \author{Edzer Pebesma, Roger Bivand}
 
 \examples{
+set_thin_PROJ6_warnings(TRUE)
 library(grid)
 GDALinfo(system.file("external/test.ag", package="sp")[1])
 x <- readGDAL(system.file("external/test.ag", package="sp")[1])
@@ -178,18 +180,24 @@ proj4string(mg2)
 SP27GTIF <- readGDAL(system.file("pictures/SP27GTIF.TIF", 
 package = "rgdal")[1], output.dim=c(100,100))
 summary(SP27GTIF)
+slot(SP27GTIF, "proj4string")
+if (new_proj_and_gdal()) comment(slot(SP27GTIF, "proj4string"))
 image(SP27GTIF, col=grey(1:99/100))
-
 GDALinfo(system.file("pictures/cea.tif", package = "rgdal")[1])
-GDALSpatialRef(system.file("pictures/cea.tif", package = "rgdal")[1])
+(o <- GDALSpatialRef(system.file("pictures/cea.tif", package = "rgdal")[1]))
+if (new_proj_and_gdal()) comment(o)
 cea <- readGDAL(system.file("pictures/cea.tif", package = "rgdal")[1], 
 output.dim=c(100,100))
 summary(cea)
 image(cea, col=grey(1:99/100))
+slot(cea, "proj4string")
+if (new_proj_and_gdal()) comment(slot(cea, "proj4string"))
 fn <- system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1]
 erdas_spnad83 <- readGDAL(fn, offset=c(50, 100), region.dim=c(400, 400), 
 output.dim=c(100,100))
 summary(erdas_spnad83)
+slot(erdas_spnad83, "proj4string")
+if (new_proj_and_gdal()) comment(slot(erdas_spnad83, "proj4string"))
 image(erdas_spnad83, col=grey(1:99/100))
 erdas_spnad83a <- readGDAL(fn, offset=c(50, 100), region.dim=c(400, 400))
 bbox(erdas_spnad83)
@@ -198,13 +206,22 @@ gridparameters(erdas_spnad83)
 gridparameters(erdas_spnad83a)
 tf <- tempfile()
 writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte", options=NULL)
-all.equal(erdas_spnad83, readGDAL(tf))
+erdas_spnad83_0 <- readGDAL(tf)
+slot(erdas_spnad83_0, "proj4string")
+if (new_proj_and_gdal()) comment(slot(erdas_spnad83_0, "proj4string"))
+all.equal(erdas_spnad83, erdas_spnad83_0)
 writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte", 
 options="INTERLEAVE=PIXEL")
-all.equal(erdas_spnad83, readGDAL(tf))
+erdas_spnad83_1 <- readGDAL(tf)
+slot(erdas_spnad83_1, "proj4string")
+if (new_proj_and_gdal()) comment(slot(erdas_spnad83_1, "proj4string"))
+all.equal(erdas_spnad83, erdas_spnad83_1)
 writeGDAL(erdas_spnad83, tf, drivername="GTiff", type="Byte",
 options=c("INTERLEAVE=PIXEL", "COMPRESS=DEFLATE"))
-all.equal(erdas_spnad83, readGDAL(tf))
+erdas_spnad83_2 <- readGDAL(tf)
+slot(erdas_spnad83_2, "proj4string")
+if (new_proj_and_gdal()) comment(slot(erdas_spnad83_2, "proj4string"))
+all.equal(erdas_spnad83, erdas_spnad83_2)
 
 x <- GDAL.open(system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1])
 erdas_spnad83 <- asSGDF_GROD(x, output.dim=c(100,100))
