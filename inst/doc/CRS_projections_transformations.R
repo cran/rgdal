@@ -14,7 +14,7 @@ mapview(meuse, zcol="zinc")
 
 ## ---- echo=FALSE--------------------------------------------------------------
 odd_run <- FALSE
-if (PROJis6ormore()) odd_run <- TRUE
+if (PROJis6ormore() && GDALis3ormore()) odd_run <- TRUE
 
 ## ---- eval=odd_run------------------------------------------------------------
 ellps <- projInfo("ellps")
@@ -27,11 +27,11 @@ a <- 6378206.4
 b <- 6356583.8
 print(sqrt((a^2-b^2)/a^2), digits=10)
 
-## -----------------------------------------------------------------------------
+## ---- eval=odd_run------------------------------------------------------------
 shpr <- strsplit(attr(getPROJ4libPath(), "search_path"), ifelse(.Platform$OS.type == "unix", ":", ";"))[[1]]
 shpr
 
-## ---- echo=FALSE, results='hide'----------------------------------------------
+## ---- echo=FALSE, results='hide', eval=odd_run--------------------------------
 if (is.null(shpr)) odd_run <- FALSE
 
 ## ---- echo=FALSE, results='hide'----------------------------------------------
@@ -46,10 +46,10 @@ dbListTables(db)
 ## ---- eval=run && odd_run-----------------------------------------------------
 dbReadTable(db, "metadata")
 
-## ---- warning=TRUE------------------------------------------------------------
+## ---- warning=TRUE, eval=odd_run----------------------------------------------
 b_pump <- readOGR(system.file("vectors/b_pump.gpkg", package="rgdal"))
 
-## ---- warning=TRUE------------------------------------------------------------
+## ---- warning=TRUE, eval=odd_run----------------------------------------------
 proj4string(b_pump)
 
 ## ---- eval=odd_run------------------------------------------------------------
@@ -72,7 +72,7 @@ set_transform_wkt_comment(FALSE)
 isballpark <- spTransform(b_pump, CRS(SRS_string="EPSG:4326"))
 get_last_coordOp()
 
-## -----------------------------------------------------------------------------
+## ---- eval=odd_run------------------------------------------------------------
 print(coordinates(isballpark), digits=10)
 
 ## ---- eval=odd_run------------------------------------------------------------
@@ -109,50 +109,50 @@ c(maptools::gzAzimuth(coordinates(isballpark), coordinates(is2m)))
 all.equal(a, b)
 c(spDists(coordinates(isballpark), a)*1000)
 
-## ---- echo=FALSE, results='hide'----------------------------------------------
+## ---- echo=FALSE, results='hide', eval=odd_run--------------------------------
 run <- run && (attr(getPROJ4VersionInfo(), "short") >= 700)
 
-## ---- echo=FALSE, results='hide'----------------------------------------------
+## ---- echo=FALSE, results='hide', eval=odd_run--------------------------------
 run <- run && shpr[1] == "/home/rsb/.local/share/proj"
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 unlink(file.path(shpr[1], "cache.db"))
 rgdal:::is_proj_network_enabled()
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 Sys.setenv("PROJ_NETWORK"="ON")
 rgdal:::is_proj_network_enabled()
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 list_coordOps(WKT, "EPSG:4326")
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 system.time(is1m <- spTransform(b_pump, CRS(SRS_string="EPSG:4326")))
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 get_last_coordOp()
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 print(coordinates(is1m), digits=10)
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 c(spDists(is2m, is1m)*1000)
 
-## ---- eval=mrun && run--------------------------------------------------------
+## ---- eval=mrun && run && odd_run---------------------------------------------
 c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 library(RSQLite)
 db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
 dbListTables(db)
 dbReadTable(db, "chunks")
 dbDisconnect(db)
 
-## ---- eval=run----------------------------------------------------------------
+## ---- eval=run && odd_run-----------------------------------------------------
 Sys.setenv("PROJ_NETWORK"="OFF")
 rgdal:::is_proj_network_enabled()
 
-## ---- eval=mvrun && run-------------------------------------------------------
+## ---- eval=mvrun && run && odd_run--------------------------------------------
 library(mapview)
 mapview(is2m, map.type="OpenStreetMap", legend=FALSE) + mapview(is1m, col.regions="green", legend=FALSE) + mapview(isballpark, col.regions="red", legend=FALSE)
 

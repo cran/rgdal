@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 /* #include <projects.h> */
-#ifndef PROJ_H_API
+#ifndef PROJ_H_API // PROJ_H_API
 #include <proj_api.h>
 /* BDR 131123 */
 #ifndef P4CTX
@@ -130,41 +130,39 @@ PROJ4_proj_def_dat_Installed(void) {
 
 #define MAX_LINE_LEN 512	/* maximal line length supported.     */
 
-#ifndef PROJ6
-
 SEXP get_proj_search_path(void) {
-    Rprintf("Not available for PROJ version < 6");
+    Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
 
 SEXP list_coordinate_ops(SEXP source, SEXP target, SEXP area_of_interest, SEXP strict_containment, SEXP viz_order) {
-    Rprintf("Not available for PROJ version < 6");
+    Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
 SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2) {
-    Rprintf("Not available for PROJ version < 6");
+    Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
 SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z) {
-    Rprintf("Not available for PROJ version < 6");
+    Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
 SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp) {
-    Rprintf("Not available for PROJ version < 6");
+    Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
 SEXP project_ng_coordOp(SEXP proj, SEXP inv) {
-    Rprintf("Not available for PROJ version < 6");
+    Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
 SEXP proj_network_enabled() {
-//    Rprintf("Not available for PROJ version < 7");
+//    Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
@@ -176,6 +174,7 @@ SEXP proj_network_enabled() {
 
 }*/
 
+#ifndef PROJ6
 
 SEXP
 PROJcopyEPSG(SEXP tf) {
@@ -184,15 +183,15 @@ PROJcopyEPSG(SEXP tf) {
 
 #if PJ_VERSION <= 480
     FILE *fp;
-#else
+#else // PJ_VERSION <= 480
     PAFile fp;
-#endif
+#endif // PJ_VERSION <= 480
     FILE *fptf;
     char buf[MAX_LINE_LEN+1];   /* input buffer */
     int i=0;
 #ifdef P4CTX
     projCtx ctx;
-#endif
+#endif // P4CTX
 
     PROTECT(ans=NEW_INTEGER(1));
     INTEGER_POINTER(ans)[0] = 0;
@@ -205,9 +204,9 @@ PROJcopyEPSG(SEXP tf) {
 #ifdef P4CTX
     ctx = pj_get_default_ctx();
     fp = pj_open_lib(ctx, "epsg", "rb");
-#else
+#else // P4CTX
     fp = pj_open_lib("epsg", "rb");
-#endif
+#endif //  P4CTX
 #endif /* OSGEO4W */
     if (fp == NULL) INTEGER_POINTER(ans)[0] = 0;
     else {
@@ -216,9 +215,9 @@ PROJcopyEPSG(SEXP tf) {
             INTEGER_POINTER(ans)[0] = 0;
 #if PJ_VERSION <= 480
             fclose(fp);
-#else
+#else // PJ_VERSION <= 480
             pj_ctx_fclose(ctx, fp);
-#endif
+#endif // PJ_VERSION <= 480
             UNPROTECT(1);
             return(ans);
         }
@@ -228,17 +227,17 @@ PROJcopyEPSG(SEXP tf) {
         while (
 #if PJ_VERSION <= 480
             fgets(buf, MAX_LINE_LEN+1, fp)
-#else
+#else // PJ_VERSION <= 480
             pj_ctx_fgets(ctx, buf, MAX_LINE_LEN+1, fp)
-#endif
+#endif // PJ_VERSION <= 480
             != NULL) {
 	    if (fputs(buf, fptf) == EOF) {  /* error writing data */
                 INTEGER_POINTER(ans)[0] = 0;
 #if PJ_VERSION <= 480
                 fclose(fp);
-#else
+#else // PJ_VERSION <= 480
                 pj_ctx_fclose(ctx, fp);
-#endif
+#endif // PJ_VERSION <= 480
                 fclose(fptf);
                 UNPROTECT(1);
                 return(ans);
@@ -248,9 +247,9 @@ PROJcopyEPSG(SEXP tf) {
         INTEGER_POINTER(ans)[0] = i;
 #if PJ_VERSION <= 480
         fclose(fp);
-#else
+#else // PJ_VERSION <= 480
         pj_ctx_fclose(ctx, fp);
-#endif
+#endif // PJ_VERSION <= 480
         fclose(fptf);
     }
     
@@ -258,7 +257,7 @@ PROJcopyEPSG(SEXP tf) {
 
     return(ans);
 }
-#endif
+#endif // PROJ6
 
 
 SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran) {
@@ -348,7 +347,7 @@ SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran) {
     pj_free(pj);
     error("No inverse for this projection");
   };
-#endif
+#endif // PJ_VERSION < 493
   PROTECT(res = NEW_LIST(2));
   SET_VECTOR_ELT(res, 0, NEW_NUMERIC(nn));
   SET_VECTOR_ELT(res, 1, NEW_NUMERIC(nn));
@@ -584,7 +583,7 @@ struct PJ_UNITS {
 	char	*name;	/* comments */
 #if PJ_VERSION >= 500
 	double   factor;       /* to_meter factor in actual numbers */
-#endif
+#endif // PJ_VERSION >= 500 
 };
 struct PJ_UNITS *pj_get_units_ref( void );
 
@@ -694,7 +693,7 @@ SEXP RGDAL_projInfo(SEXP type) {
 		COPY_TO_USER_STRING(lu->name));
             n++;
         }
-#else
+#else // PJ_VERSION < 500
         PROTECT(ans = NEW_LIST(4)); pc++;
         PROTECT(ansnames = NEW_CHARACTER(4)); pc++;
         SET_STRING_ELT(ansnames, 0, COPY_TO_USER_STRING("id"));
@@ -720,15 +719,15 @@ SEXP RGDAL_projInfo(SEXP type) {
             NUMERIC_POINTER(VECTOR_ELT(ans, 3))[n] = lu->factor;
             n++;
         }
-#endif
+#endif // PJ_VERSION < 500
     } else error("no such type");
     
     UNPROTECT(pc);
     return(ans);
 }
-#endif
+#endif // not PROJ_H_API
 
-#endif // not PROJ_H_API 
+#endif //  
 
 #ifdef __cplusplus
 }

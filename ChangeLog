@@ -1,3 +1,67 @@
+2020-06-09 10:01  rsbivand
+
+	* DESCRIPTION, man/make_EPSG.Rd: remove direct link to
+	  http://www.epsg.org
+
+2020-06-08 14:47  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-06-08 14:47  rsbivand
+
+	* R/AAA.R, vignettes/CRS_projections_transformations.Rmd: tidy
+
+2020-06-05 10:15  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-06-05 10:13  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R, configure, configure.ac, man/readOGR.Rd,
+	  src/OGR_write.cpp, src/inverser.c,
+	  vignettes/CRS_projections_transformations.Rmd: checking multiple
+	  exSoft versions
+
+2020-06-02 13:26  rsbivand
+
+	* configure, configure.ac: addressing configure issues
+
+2020-06-02 07:47  rsbivand
+
+	* configure, configure.ac: addressing configure issues
+
+2020-06-02 06:50  rsbivand
+
+	* configure, configure.ac: addressing configure issues
+
+2020-05-31 15:31  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-05-31 15:30  rsbivand
+
+	* configure, configure.ac: addressing configure issues
+
+2020-05-29 17:00  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-05-29 16:59  rsbivand
+
+	* configure, configure.ac, man/CRS-class.Rd, src/inverser.c,
+	  src/proj6.cpp, src/proj_info6.cpp, src/projectit.cpp,
+	  vignettes/CRS_projections_transformations.Rmd: expose configure
+	  arg --with-proj_api=proj_api.h for broken homebrew
+
+2020-05-29 14:13  rsbivand
+
+	* DESCRIPTION, vignettes/CRS_projections_transformations.Rmd: fix
+	  PROJ < 6 & GDAL < 3 vignette issues
+
+2020-05-22 08:07  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2020-05-22 08:03  rsbivand
 
 	* R/AAA.R: add options access to mute exportToProj4 degradation
