@@ -229,7 +229,11 @@ SEXP OGR_write(SEXP inp)
 #else
         if (poSRS->importFromWkt((const char **) ppszInput) != OGRERR_NONE) {
 #endif
-            GDALClose( poDS );
+#ifdef GDALV2
+                GDALClose( poDS );
+#else
+                OGRDataSource::DestroyDataSource( poDS );
+#endif
             poSRS->Release();
             uninstallErrorHandlerAndTriggerError();
             error("Can't parse WKT2-style parameter string");

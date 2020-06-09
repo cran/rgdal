@@ -65,7 +65,7 @@ data(meuse)
 coordinates(meuse) <- c("x", "y")
 proj4string(meuse) <- CRS("+init=epsg:28992")
 CRSargs(CRS(proj4string(meuse)))
-run <- attr(getPROJ4VersionInfo(), "short") >= 630
+run <- attr(getPROJ4VersionInfo(), "short") >= 630 && GDALis3ormore()
 if (run) {
 c1 <- CRS("+init=epsg:4326")
 c2 <- CRS("+proj=longlat")

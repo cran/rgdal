@@ -27,7 +27,7 @@ lines or \code{layer="track_points"} points.
 }
 \usage{
 readOGR(dsn, layer, verbose = TRUE, p4s=NULL, 
- stringsAsFactors=default.stringsAsFactors(), 
+ stringsAsFactors=as.logical(NA), 
  drop_unsupported_fields=FALSE,
  pointDropZ=FALSE, dropNULLGeometries=TRUE,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
@@ -50,7 +50,7 @@ ogrListLayers(dsn)
   \item{layer}{layer name (varies by driver, may be a file name without extension). From rgdal 1.2.*, layer may be missing, in which case ogrListLayers examines the dsn, and fails if there are no layers, silently reads the only layer if only one layer is found, and reads the first layer if multiple layers are present, issuing a warning that layer should be given explicitly.}
   \item{verbose}{report progress}
   \item{p4s}{PROJ4 string defining CRS, if default NULL, the value is read from the OGR data set} 
-  \item{stringsAsFactors}{logical: should character vectors be converted to factors? The \sQuote{factory-fresh} default is \code{TRUE}, but this can be changed by setting \code{\link{options}(stringsAsFactors = FALSE)} (see \code{link[base]{data.frame}}).}
+  \item{stringsAsFactors}{logical: should character vectors be converted to factors? Default NA, which uses the deprecated \code{default.stringsAsFactors()} in R < 4.1.0 (see \code{link[base]{data.frame}}). Before R 4, strings were converted to factors by default, as argument value TRUE. See \url{https://developer.r-project.org/Blog/public/2020/02/16/stringsasfactors/index.html} for details of changes.}
   \item{drop\_unsupported\_fields}{default FALSE, if TRUE skip fields other than String, Integer, and Real; Date, Time and DateTime are converted to String}
   \item{pointDropZ}{default FALSE, if TRUE, discard third coordinates for point geometries; third coordinates are alway discarded for line and polygon geometries}
   \item{dropNULLGeometries}{default TRUE, drop both declared NULL geometries, and empty geometries with no coordinates; if FALSE, return a data frame with the attribute values of the NULL and empty geometries. From 1.3-6, setting FALSE also works when there are no geometries at all, returning a data.frame including all FIDs}

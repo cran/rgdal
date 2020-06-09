@@ -1,6 +1,7 @@
 /* Copyright (c) 2016 Barry Rowlingson */
 typedef int make_iso_compilers_happy;
 
+#ifndef NEW_PROJ_WITH_OLD_GDAL
 #ifndef PROJ_H_API
 #include <projects.h>
 #include <proj_api.h>
@@ -10,6 +11,7 @@ int inversetest(PJ *P){
   return (P->inv ? 1: 0);
 
 }
+#endif
 #endif
 #endif
 

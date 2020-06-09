@@ -1,7 +1,7 @@
 # Copyright 2006-2016 Roger Bivand
 
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, 
-        stringsAsFactors=default.stringsAsFactors(),
+        stringsAsFactors=as.logical(NA),
         drop_unsupported_fields=FALSE,
 	pointDropZ=FALSE, dropNULLGeometries=TRUE, useC=TRUE,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
@@ -49,6 +49,13 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             length(require_geomType)==1)
           m_require_geomType <- match(require_geomType, WKB)
           stopifnot(!is.na(m_require_geomType) || m_require_geomType <= 3)
+        }
+        if(is.na(stringsAsFactors)) {
+            stringsAsFactors <-
+                if(getRversion() < "4.1.0")
+                    default.stringsAsFactors()
+                else
+                    FALSE
         }
         
 	suppressMessages(ogr_info <- ogrInfo(dsn=dsn, layer=layer,
