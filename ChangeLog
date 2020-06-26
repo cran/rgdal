@@ -1,3 +1,65 @@
+2020-06-25 17:40  rsbivand
+
+	* DESCRIPTION, configure, man/llgrid.Rd, man/readGDAL.Rd,
+	  vignettes/CRS_projections_transformations.Rmd: remove submission
+	  warnings
+
+2020-06-25 12:44  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-06-25 12:43  rsbivand
+
+	* src/proj6.cpp: logic correction
+
+2020-06-25 09:26  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-06-25 09:23  rsbivand
+
+	* man/projInfo.Rd, src/proj6.cpp, tests/test_proj.Rout.save:
+	  condition projInfo-units on PROJ >=7.1
+
+2020-06-23 15:45  rsbivand
+
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, R/wrappers.R: add warning muting
+	  option to rawTransform
+
+2020-06-18 07:40  rsbivand
+
+	* R/ogr_sp.R: add BOUNDEDCRS to showSRID() list
+
+2020-06-14 19:22  rsbivand
+
+	* configure, configure.ac: patch from Bennet Fauber
+	  https://stat.ethz.ch/pipermail/r-sig-geo/2020-June/028227.html
+
+2020-06-13 15:32  rsbivand
+
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R: correct thinned count of CRS
+	  warnings
+
+2020-06-12 18:38  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/project.R, src/init.c, src/proj6.cpp,
+	  src/proj_info6.cpp, src/proj_network7.cpp, src/projectit.cpp,
+	  src/rgdal.h, vignettes/CRS_projections_transformations.Rmd: first
+	  attempt to regain control of PROJ_LIB
+
+2020-06-11 12:05  rsbivand
+
+	* DESCRIPTION, configure, configure.ac: add AC_LANG(C++) line 487
+	  configure.ac for static build for PROJ 6
+
+2020-06-09 10:04  rsbivand
+
+	* configure: tidy
+
+2020-06-09 10:03  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2020-06-09 10:01  rsbivand
 
 	* DESCRIPTION, man/make_EPSG.Rd: remove direct link to

@@ -29,7 +29,7 @@ Defining the CRS became necessary when integrating other data with a different C
 
 ```{r, echo=FALSE}
 mvrun <- FALSE
-if (require(mapview, quietly=TRUE) && .Platform$OS.type == "unix") mvrun <- TRUE
+if (require(mapview, quietly=TRUE) && .Platform$OS.type == "unix" && require(curl, quietly=TRUE) && curl::has_internet()) mvrun <- TRUE
 ```
 
 ```{r, eval=mvrun}
@@ -236,6 +236,12 @@ run <- run && (attr(getPROJ4VersionInfo(), "short") >= 700)
 run <- run && shpr[1] == "/home/rsb/.local/share/proj"
 ```
 
+```{r}
+run
+shpr
+```
+
+
 ```{r, eval=run && odd_run}
 unlink(file.path(shpr[1], "cache.db"))
 rgdal:::is_proj_network_enabled()
@@ -289,8 +295,8 @@ If we look in the SQLite database of downloaded grids, we see that the grid comp
 ```{r, eval=run && odd_run}
 library(RSQLite)
 db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
-dbListTables(db)
-dbReadTable(db, "chunks")
+(tbls <- dbListTables(db))
+if ("chunks" %in% tbls) dbReadTable(db, "chunks")
 dbDisconnect(db)
 ```
 

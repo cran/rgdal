@@ -28,7 +28,7 @@ new_proj_and_gdal()
   \item{type}{One of these tags: \code{c("proj", "ellps", "datum", "units")}}
 }
 \details{
- The output data frame lists the information given by the proj application with flags -lp, -le, -ld or -lu.
+ The output data frame lists the information given by the proj application with flags -lp, -le, -ld or -lu. From PROJ 6, \code{"datum"} is not available. From PROJ 7.1.0, \code{"units"} returns the conversion factor as numeric, not character.
 }
 \value{
   A data frame with a name and description column, and two extra columns for the "ellps" and "datum" tags.
@@ -36,11 +36,13 @@ new_proj_and_gdal()
 \references{\url{https://proj.org/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
-\note{Loading the rgdal package changes the \code{PROJ\_LIB} environmental variable to the PROJ.4 support files bundles with the package.}
+\note{Loading the rgdal package may change the \code{PROJ\_LIB} environmental variable to the PROJ.4 support files if bundled with binary packages.}
 
 \examples{
 getPROJ4VersionInfo()
 projInfo()
+projInfo("ellps")
+projInfo("units")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

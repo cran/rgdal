@@ -116,8 +116,20 @@ rawTransform <- function(projfrom, projto, n, x, y, z=NULL, wkt=FALSE) {
 	}
 		
 # pkgdown work-around
-        if (new_proj_and_gdal()) {
-          warning("Using PROJ not WKT2 strings")
+          if (new_proj_and_gdal()) {
+              if (get_rgdal_show_exportToProj4_warnings()) {
+                 if (!get_thin_PROJ6_warnings()) {
+                    warning("Using PROJ not WKT2 strings")
+                 } else {
+                    if (get("PROJ6_warnings_count", envir=.RGDAL_CACHE) == 0L) {
+                        warning(paste0("PROJ/GDAL PROJ string degradation in workflow\n repeated warnings suppressed\n ", " Using PROJ not WKT2 strings"))
+                    }
+                    assign("PROJ6_warnings_count",
+                        get("PROJ6_warnings_count", envir=.RGDAL_CACHE) + 1L,
+                        envir=.RGDAL_CACHE)
+              }
+          }
+
           if (length(grep("+init", projfrom)) > 0)
               projfrom <- slot(CRS(projfrom),  "projargs")
           if (length(grep("+init", projto)) > 0)

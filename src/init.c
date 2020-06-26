@@ -71,6 +71,7 @@ static R_CallMethodDef CallEntries[] = {
     {"PROJ4VersionInfo", (DL_FUNC) &PROJ4VersionInfo, 0},
     {"PROJ4NADsInstalled", (DL_FUNC) &PROJ4NADsInstalled, 0},
     {"get_proj_search_path", (DL_FUNC) &get_proj_search_path, 0},
+    {"set_proj_search_path", (DL_FUNC) &set_proj_search_path, 1},
     {"PROJ4_proj_def_dat_Installed", (DL_FUNC) &PROJ4_proj_def_dat_Installed, 0},
     {"transform", (DL_FUNC) &transform, 6},
     {"transform_ng", (DL_FUNC) &transform_ng, 7},

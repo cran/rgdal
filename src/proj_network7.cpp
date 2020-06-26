@@ -16,6 +16,7 @@ SEXP proj_network_enabled() {
 #if PROJ_VERSION_MAJOR > 6
     SEXP res;
     PJ_CONTEXT *ctx = proj_context_create();
+// use of non-default context needed for environment variable trick
     int rs;
     rs = proj_context_is_network_enabled(ctx);
     PROTECT(res = NEW_LOGICAL(1));
