@@ -43,6 +43,20 @@ getPROJ4libPath <- function() {
     res
 }
 
+set_proj_search_paths <- function(paths) {
+    PV <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]]
+    if (PV >= 600 && PV < 700) {
+        stopifnot(is.character(paths))
+        stopifnot(length(paths) == 1)
+        stopifnot(dir.exists(paths[1]))
+# length restricted to 1 for PROJ 6
+        res <- .Call("set_proj_search_path", paths[1], PACKAGE="rgdal")
+    } else {
+        res <- ""
+    }
+    res
+}
+
 projNAD <- function() {
     .Call("PROJ4NADsInstalled", PACKAGE="rgdal")
 }

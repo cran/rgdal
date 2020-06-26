@@ -50,7 +50,7 @@ ellps=sphere step proj=unitconvert xy_in=rad xy_out=deg
 > proj4string(states) <- CRS("+proj=longlat +ellps=clrk66")
 Warning message:
 In showSRID(uprojargs, format = "PROJ", multiline = "NO") :
-  PROJ6/GDAL3 PROJ string degradation in workflow
+  PROJ/GDAL PROJ string degradation in workflow
  repeated warnings suppressed
  Discarded datum Unknown based on Clarke 1866 ellipsoid in CRS definition
 > state.ll83 <- spTransform(states, CRS("+proj=longlat +ellps=GRS80"))

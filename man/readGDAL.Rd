@@ -134,7 +134,7 @@ this need not mean that the data are flipped. Examine a display of the
 data compared with your knowledge of the file to determine whether this
 is the case (one known case is interpolation files created under Qgis
 up to February 2010 at least). To retreive the correct orientation,
-use \code{\link[sp]{flipVertical}}.}
+use \code{\link[sp]{flip}}.}
 
 \seealso{ \code{\link[sp]{image}}, \code{\link[maptools]{asciigrid}} }
 

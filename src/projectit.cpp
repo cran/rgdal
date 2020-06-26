@@ -135,6 +135,10 @@ SEXP get_proj_search_path(void) {
     return(R_NilValue);
 }
 
+SEXP set_proj_search_path(SEXP path) {
+    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
 
 SEXP list_coordinate_ops(SEXP source, SEXP target, SEXP area_of_interest, SEXP strict_containment, SEXP viz_order) {
     Rprintf("Not available for deprecated API");

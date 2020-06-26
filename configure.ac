@@ -234,7 +234,7 @@ GDALAllRegister();
 #endif
 _EOCONF]
 
-AC_MSG_CHECKING(gdal: linking with --libs only)
+AC_MSG_CHECKING(GDAL: linking with --libs only)
 ${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cc ${LIBS} 2> errors.txt
 if test `echo $?` -ne 0 ; then
 gdalok=no
@@ -244,7 +244,7 @@ AC_MSG_RESULT(yes)
 fi
 
 if test "${gdalok}" = no; then
-AC_MSG_CHECKING(gdal: linking with --libs and --dep-libs)
+AC_MSG_CHECKING(GDAL: linking with --libs and --dep-libs)
 LIBS="${LIBS} ${GDAL_DEP_LIBS}"
 gdalok=yes
 ${CXX} ${CPPFLAGS} -o gdal_test gdal_test.cc ${LIBS} 2>> errors.txt
@@ -373,8 +373,7 @@ fi # proj_include_path
 # for CPPFLAGS we will superfluously double R's flags
 # since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
 CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
-AC_MSG_NOTICE([proj CPP flags: ${PKG_CPPFLAGS}])
-
+AC_MSG_NOTICE([PROJ CPP flags: ${PKG_CPPFLAGS}])
 PKG_LIBS=""
 PROJ_LIB_PATH=""
           
@@ -397,6 +396,7 @@ else # proj_lib_path
   fi # proj_config_ok
 fi # proj_lib_path
 
+LIBS="${PKG_LIBS} ${LIBS}"
 AC_MSG_NOTICE([PROJ LIBS: ${PKG_LIBS}])
 
 
@@ -482,6 +482,9 @@ rm -f proj_conf_test_proj_api.c proj_conf_test_proj_api
   fi
 fi # PROJ_API = ""
 
+dnl PROJ >= 6 contains C++ code, so AC_CHECK_LIB needs to be
+dnl with the C++ runtime (and rgdal is going to use C++).
+AC_LANG(C++)
 
 if test "${PROJ_API}" =  "proj.h" ; then # proj.h
 
@@ -713,7 +716,9 @@ int main() {
 }
 _EOCONF]
 
-${CXX} ${CPPFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.cpp ${PKG_LIBS} -lproj
+dnl PROJ >= 6 needs C++ runtime and libsqlite3 (and perhaps more)
+dnl when statically linked.
+${CXX} ${CPPFLAGS} ${PKG_CPPFLAGS} -o proj_conf_test2 proj_conf_test2.cpp ${PKG_LIBS} -lproj -lsqlite3
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test2
   proj_share=`echo $?`

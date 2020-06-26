@@ -5,7 +5,7 @@ GridsDatums[grep("Netherlands", GridsDatums$country),]
 
 ## ---- echo=FALSE--------------------------------------------------------------
 mvrun <- FALSE
-if (require(mapview, quietly=TRUE) && .Platform$OS.type == "unix") mvrun <- TRUE
+if (require(mapview, quietly=TRUE) && .Platform$OS.type == "unix" && require(curl, quietly=TRUE) && curl::has_internet()) mvrun <- TRUE
 
 ## ---- eval=mvrun--------------------------------------------------------------
 demo(meuse, ask=FALSE, package="sp", echo=FALSE)
@@ -115,6 +115,10 @@ run <- run && (attr(getPROJ4VersionInfo(), "short") >= 700)
 ## ---- echo=FALSE, results='hide', eval=odd_run--------------------------------
 run <- run && shpr[1] == "/home/rsb/.local/share/proj"
 
+## -----------------------------------------------------------------------------
+run
+shpr
+
 ## ---- eval=run && odd_run-----------------------------------------------------
 unlink(file.path(shpr[1], "cache.db"))
 rgdal:::is_proj_network_enabled()
@@ -144,8 +148,8 @@ c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
 ## ---- eval=run && odd_run-----------------------------------------------------
 library(RSQLite)
 db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
-dbListTables(db)
-dbReadTable(db, "chunks")
+(tbls <- dbListTables(db))
+if ("chunks" %in% tbls) dbReadTable(db, "chunks")
 dbDisconnect(db)
 
 ## ---- eval=run && odd_run-----------------------------------------------------

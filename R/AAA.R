@@ -18,10 +18,17 @@ load_stuff <- function() {
   assign(".rgdal_old.GDAL_DATA", Sys.getenv("GDAL_DATA"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.NEEDED", FALSE, envir=.RGDAL_CACHE)
   if (file.exists(system.file("proj/nad.lst", package = "rgdal")[1])) {
-    Sys.setenv("PROJ_LIB"=system.file("proj", package = "rgdal")[1])
-    Sys.setenv("GDAL_DATA"=system.file("gdal", package = "rgdal")[1])
+  prj = system.file("proj", package = "rgdal")[1]
+    if (PROJis6ormore() && 
+      .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]] < 700) {
+      set_is <- set_proj_search_paths(prj)
+    } else {
+      Sys.setenv("PROJ_LIB"=prj)
+    }
     assign(".rgdal_set.PROJ_LIB", Sys.getenv("PROJ_LIB"), envir=.RGDAL_CACHE)
-    assign(".rgdal_set.GDAL_DATA", Sys.getenv("GDAL_DATA"), envir=.RGDAL_CACHE)
+    Sys.setenv("GDAL_DATA"=system.file("gdal", package = "rgdal")[1])
+    assign(".rgdal_set.GDAL_DATA", Sys.getenv("GDAL_DATA"),
+      envir=.RGDAL_CACHE)
     assign(".rgdal_old.NEEDED", TRUE, envir=.RGDAL_CACHE)
   } else if (.Platform$OS.type == "windows") {
     assign(".rgdal_OSGeo4W", Sys.getenv("OSGEO4W_ROOT"), envir=.RGDAL_CACHE)
@@ -105,6 +112,10 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
   if (!is.null(spVcheck) && !spVcheck) paste(Smess, 
     "sp version used to install rgdal and loaded sp version differ\n")
   if (PROJis6ormore()) Smess <- paste(Smess, "To mute warnings of possible GDAL/OSR exportToProj4() degradation,\nuse options(\"rgdal_show_exportToProj4_warnings\"=\"none\") before loading rgdal.\n", sep="")
+  if (nzchar(get(".rgdal_set.PROJ_LIB", envir=.RGDAL_CACHE))) {
+    Smess <- paste(Smess, "Overwritten PROJ_LIB was ",
+      get(".rgdal_set.PROJ_LIB", envir=.RGDAL_CACHE), "\n", sep="")
+  }
   packageStartupMessage(Smess, appendLF = FALSE)
 }
 
