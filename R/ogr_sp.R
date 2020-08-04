@@ -576,6 +576,7 @@ showSRID <- function(inSRID, format="WKT2", multiline="NO", enforce_xy=NULL, EPS
     if (substring(inSRID, 1, 1) == "S") in_format = 3L
     if (substring(inSRID, 1, 2) == "CO") in_format = 3L
     if (substring(inSRID, 1, 4) == "EPSG") in_format = 4L
+    if (substring(inSRID, 1, 4) == "ESRI") in_format = 5L
     epsg <- as.integer(NA)
     if (in_format == 4L) {
         if (EPSG_to_init) {
@@ -598,19 +599,12 @@ showSRID <- function(inSRID, format="WKT2", multiline="NO", enforce_xy=NULL, EPS
     if (new_proj_and_gdal()) {
         if (!is.na(in_format)) {
             attr(in_format, "enforce_xy") <- enforce_xy
-#            if (prefer_proj) {
-#                res <- .Call("P6_SRID_proj", as.character(inSRID),
-#                    as.character(format), as.character(multiline), 
-#                    in_format, as.integer(epsg),
-#                    as.integer(out_format), PACKAGE="rgdal")
-#            } else {
                 res <- try(.Call("P6_SRID_show", as.character(inSRID),
                     as.character(format), as.character(multiline), 
                     in_format, as.integer(epsg),
                     as.integer(out_format), PACKAGE="rgdal"), silent=TRUE)
                 if (inherits(res, "try-error"))
                     stop(unclass(attr(res, "condition"))$message, "\n", inSRID) 
-#            }
             no_towgs84 <- ((is.null(attr(res, "towgs84"))) || 
                 (all(nchar(attr(res, "towgs84")) == 0)))
             if ((length(grep("towgs84|TOWGS84|Position Vector|Geocentric translations", c(res))) == 0L)

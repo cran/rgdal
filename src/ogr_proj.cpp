@@ -72,6 +72,14 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
 	    error("Can't parse EPSG-style code");
         }
         uninstallErrorHandlerAndTriggerError();
+    } else if (INTEGER_POINTER(in_format)[0] == 5L) {
+        installErrorHandler();
+        if (hSRS->SetFromUserInput((const char *) CHAR(STRING_ELT(inSRID, 0))) != OGRERR_NONE) {
+            delete hSRS;
+            uninstallErrorHandlerAndTriggerError();
+	    error("Can't parse user input string");
+        }
+        uninstallErrorHandlerAndTriggerError();
     }
 
     if (hSRS != NULL) {
@@ -155,7 +163,7 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
 
 SEXP R_GDAL_OSR_PROJ() {
 
-#if GDAL_VERSION_MAJOR >= 3
+#if ((GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR == 0 && GDAL_VERSION_REV >= 1) || (GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR > 0) || (GDAL_VERSION_MAJOR > 3))
         SEXP OSRProjVersion;
         int pnMajor, pnMinor, pnPatch, pc=0;
 

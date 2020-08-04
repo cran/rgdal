@@ -1,11 +1,11 @@
 Package: rgdal
 Title: Bindings for the 'Geospatial' Data Abstraction Library
-Version: 1.5-12
-Date: 2020-06-25
+Version: 1.5-15
+Date: 2020-08-03
 Depends: R (>= 3.5.0), methods, sp (>= 1.1-0)
 Imports: grDevices, graphics, stats, utils
 LinkingTo: sp
-Suggests: knitr, RSQLite, maptools, mapview, markdown, curl
+Suggests: knitr, RSQLite, maptools, mapview, rmarkdown, curl
 NeedsCompilation: yes
 Description: Provides bindings to the 'Geospatial' Data Abstraction Library ('GDAL') (>= 1.11.4) and access to projection/transformation operations from the 'PROJ' library. Use is made of classes defined in the 'sp' package. Raster and vector map data can be imported into R, and raster and vector 'sp' objects exported. The 'GDAL' and 'PROJ' libraries are external to the package, and, when installing the package from source, must be correctly installed first; it is important that 'GDAL' < 3 be matched with 'PROJ' < 6. From 'rgdal' 1.5-8, installed with to 'GDAL' >=3, 'PROJ' >=6 and 'sp' >= 1.4, coordinate reference systems use 'WKT2_2019' strings, not 'PROJ' strings. 'Windows' and 'macOS' binaries (including 'GDAL', 'PROJ' and their dependencies) are provided on 'CRAN'. 
 Authors@R: c(
@@ -20,7 +20,7 @@ Authors@R: c(
 	person("Jeroen", "Ooms", role = "ctb"),
 	person("Colin", "Rundel", role = "ctb"))
 License: GPL (>= 2)
-URL: http://rgdal.r-forge.r-project.org, https://www.gdal.org,
+URL: http://rgdal.r-forge.r-project.org, https://gdal.org,
         https://proj.org, https://r-forge.r-project.org/projects/rgdal/
 SystemRequirements: PROJ (>= 4.8.0, https://proj.org/download.html) and
         GDAL (>= 1.11.4, https://gdal.org/download.html), with versions
@@ -29,7 +29,7 @@ SystemRequirements: PROJ (>= 4.8.0, https://proj.org/download.html) and
         argument '--with-proj_api="proj_api.h"'.
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
-Packaged: 2020-06-25 17:43:29 UTC; rsb
+Packaged: 2020-08-03 15:33:24 UTC; rsb
 Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Tim Keitt [aut],
   Barry Rowlingson [aut, ctb],
@@ -42,4 +42,4 @@ Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Colin Rundel [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2020-06-26 06:10:06 UTC
+Date/Publication: 2020-08-04 04:20:03 UTC

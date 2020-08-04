@@ -111,8 +111,8 @@ rawTransform <- function(projfrom, projto, n, x, y, z=NULL, wkt=FALSE) {
 		# the caller determines that projfrom and projto are wkt 
 		# and that new_proj_and_gdal() returns TRUE
 		# to avoid multiple warnings when the function is called repetitively
-		return( .Call("transform_ng",projfrom, projto, NULL,
-			n, x, y, z, PACKAGE="rgdal") )
+		return( .Call("transform_ng", projfrom, projto, NULL,
+			n, x, y, z, NULL, PACKAGE="rgdal") )
 	}
 		
 # pkgdown work-around
@@ -136,9 +136,9 @@ rawTransform <- function(projfrom, projto, n, x, y, z=NULL, wkt=FALSE) {
               projto <- slot(CRS(projto),  "projargs")
           if (is.null(z)) res <- .Call("transform_ng", # redundant if/else?
               paste0(projfrom, " +type=crs"), paste0(projto, " +type=crs"),
-              NULL, n, x, y, NULL, PACKAGE="rgdal")
+              NULL, n, x, y, NULL, NULL, PACKAGE="rgdal")
           else res <- .Call("transform_ng", paste0(projfrom, " +type=crs"),
-              paste0(projto, " +type=crs"), NULL, n, x, y, z, PACKAGE="rgdal")
+              paste0(projto, " +type=crs"), NULL, n, x, y, z, NULL, PACKAGE="rgdal")
           return(res)
         }
         if (is.na(get("has_proj_def.dat", envir=.RGDAL_CACHE))) {

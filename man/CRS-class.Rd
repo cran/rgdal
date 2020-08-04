@@ -36,7 +36,7 @@ compare_CRS(CRS1, CRS2)
   \item{SRS_string}{default NULL, experimental in connection with adaptation to GDAL>=3/PROJ>=6; a valid WKT string or SRS definition such as \code{"EPSG:4326"}}
   \item{CRS1, CRS2}{objects of class \code{"CRS"}}
 }
-\references{\url{http://proj.org/}}
+\references{\url{https://proj.org/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{

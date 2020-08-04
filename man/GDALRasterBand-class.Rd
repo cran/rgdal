@@ -96,7 +96,7 @@ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84(value)
   }
 }
 
-\note{The OVERRIDE_PROJ_DATUM_WITH_TOWGS84 argument is used to revert GDAL behaviour to pre-1.8.0 status; from 1.8.0, any input datum may be discarded if the input also includes a towgs84 tag in conversion to the PROJ.4 representation, see \url{http://trac.osgeo.org/gdal/ticket/4880} and \url{http://lists.osgeo.org/pipermail/gdal-dev/2012-November/034550.html}. The cached value of OVERRIDE_PROJ_DATUM_WITH_TOWGS84 will also be used in \code{open.SpatialGDAL}, \code{sub.GDROD}, and \code{asGDALROD_SGDF}, which do not have a suitable argument}
+\note{The OVERRIDE_PROJ_DATUM_WITH_TOWGS84 argument is used to revert GDAL behaviour to pre-1.8.0 status; from 1.8.0, any input datum may be discarded if the input also includes a towgs84 tag in conversion to the PROJ.4 representation, see \url{https://trac.osgeo.org/gdal/ticket/4880} and \url{https://lists.osgeo.org/pipermail/gdal-dev/2012-November/034550.html}. The cached value of OVERRIDE_PROJ_DATUM_WITH_TOWGS84 will also be used in \code{open.SpatialGDAL}, \code{sub.GDROD}, and \code{asGDALROD_SGDF}, which do not have a suitable argument}
 
 
 \author{Timothy H. Keitt, modified by Roger Bivand}

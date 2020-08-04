@@ -70,6 +70,9 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
   rver <- getGDALVersionInfo()
 
   gdl <- getGDAL_DATA_Path()
+#  skip_writable <- Sys.getenv("PROJ_SKIP_READ_USER_WRITABLE_DIRECTORY")
+#  if (nchar(skip_writable) == 0)
+#    Sys.setenv("PROJ_SKIP_READ_USER_WRITABLE_DIRECTORY"="true")
   pl <- getPROJ4libPath()
   if (nchar(pl) == 0) {
     if (is.null(attr(pl, "search_path"))) pl <- "(autodetected)"
@@ -101,9 +104,12 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
     'Loaded PROJ runtime: ', getPROJ4VersionInfo(), '\n',
     paste("Path to PROJ shared files: ", pl[1], sep=""), "\n",
     ifelse((get("has_proj_def.dat", envir=.RGDAL_CACHE)  || (PROJis6ormore())), "", "WARNING: no proj_defs.dat in PROJ.4 shared files\n"), sep="")
-  CDN_enabled <- is_proj_network_enabled()
-  if (!is.null(CDN_enabled))
-    Smess <- paste(Smess, "PROJ CDN enabled:", CDN_enabled, "\n", sep="")
+  CDN_enabled <- is_proj_CDN_enabled()
+  if (!is.null(CDN_enabled)) {
+    Smess <- paste(Smess, "PROJ CDN enabled: ", CDN_enabled, "\n", sep="")
+    if (CDN_enabled) paste(Smess, "PROJ CDN directory: ",
+        proj_CDN_user_writable_dir(), "\n", sep="")
+  }
   splVersion <- version_sp_linkingTo()
   Smess <- paste(Smess, "Linking to sp version:", splVersion, "\n", sep="")
   spVcheck <- NULL

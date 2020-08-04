@@ -7,7 +7,8 @@
 }
 \usage{
 project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE,
- allowNAs_if_not_legacy=FALSE, coordOp = NULL, verbose = FALSE)
+ allowNAs_if_not_legacy=FALSE, coordOp = NULL, verbose = FALSE,
+ use_aoi=TRUE)
 }
 
 \arguments{
@@ -19,6 +20,7 @@ project(xy, proj, inv = FALSE, use_ob_tran=FALSE, legacy=TRUE,
   \item{allowNAs_if_not_legacy}{used if legacy is FALSE, default FALSE; introduced to handle use of NAs as object separators in \pkg{oce}}
   \item{coordOp}{default NULL, for PROJ >= 6 used to pass through a pre-defined coordinate operation}
   \item{verbose}{default FALSE, for PROJ >=6 used to show the coordinate operation used}
+  \item{use_aoi}{With PROJ >= 6, use the area of interest defined as the range of \code{xy} in limiting the search for candidate coordinate operations; set FALSE if \code{use_ob_tran} is TRUE}
 }
 \details{
   Full details of projection arguments available from website below, and examples in file "epsg" in the data directory installed with PROJ.4.
@@ -28,7 +30,7 @@ Note that from PROJ.4 4.9.3, the definition of UTM is changed from TMERC to ETME
 \value{
   A two column matrix with projected coordinates.
 }
-\references{\url{http://proj.org/}}
+\references{\url{https://proj.org/}}
 \author{Barry Rowlingson, Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{ The locations of Hawaii and Alaska in the data source are (putting it mildly) arbitrary, please avoid airlines using these positions.}
@@ -46,6 +48,11 @@ plot(cbind(state.center$x, state.center$y), asp=1, type="n")
 text(cbind(state.center$x, state.center$y), state.abb)
 plot(res, asp=1, type="n")
 text(res, state.abb)
+broke_proj <- FALSE
+pv <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]]
+# https://github.com/OSGeo/PROJ/issues/1525
+if (pv >= 600 && pv < 620) broke_proj <- TRUE
+if (!broke_proj) {
 crds <- matrix(data=c(9.05, 48.52), ncol=2)
 a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",
  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
@@ -56,6 +63,7 @@ project(a, paste("+proj=ob_tran +o_proj=longlat",
  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
  inv=TRUE, use_ob_tran=TRUE)
 #added after posting by Martin Ivanov
+}
 #
 getPROJ4VersionInfo()
 # Test for UTM == TMERC (<= 4.9.2) or UTM == ETMERC (> 4.9.2)

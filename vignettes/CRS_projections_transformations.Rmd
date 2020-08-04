@@ -4,11 +4,15 @@ author: "Roger Bivand"
 output:
   html_document:
     toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
 bibliography: PROJ.bib
 link-citations: yes
 vignette: >
   %\VignetteIndexEntry{CRS, projections and transformations}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -17,6 +21,9 @@ vignette: >
 Changes in the representation of coordinate reference systems (CRS), and of operations on coordinates, that have been occurring over decades must now be implemented in the way spatial objects are handled in R packages. Up to the 1990s, most spatial data simply used the coordinates given by the local mapping authority; for example, the  Meuse bank data set used a planar representation in metres, which turned out to be `EPSG:28992`, "Amersfoort / RD New". A major resource for finding out why CRS were specified as they were are [Clifford J. Mugnier's columns](https://www.asprs.org/asprs-publications/grids-and-datums) in *Photogrammetric Engineering & Remote Sensing*, references to which are available in **rgdal**; the Netherlands were covered in the February 2003 column:
 
 ```{r}
+td <- tempfile()
+dir.create(td)
+Sys.setenv("PROJ_USER_WRITABLE_DIRECTORY"=td)
 library(rgdal)
 data("GridsDatums")
 GridsDatums[grep("Netherlands", GridsDatums$country),]
@@ -29,18 +36,24 @@ Defining the CRS became necessary when integrating other data with a different C
 
 ```{r, echo=FALSE}
 mvrun <- FALSE
-if (require(mapview, quietly=TRUE) && .Platform$OS.type == "unix" && require(curl, quietly=TRUE) && curl::has_internet()) mvrun <- TRUE
+#if (require(mapview, quietly=TRUE) && .Platform$OS.type == "unix" && require(curl, quietly=TRUE) && curl::has_internet()) mvrun <- TRUE
 ```
 
-```{r, eval=mvrun}
+```{r, eval=FALSE}
 demo(meuse, ask=FALSE, package="sp", echo=FALSE)
 library(mapview)
-mapview(meuse, zcol="zinc")
+x <- mapview(meuse, zcol="zinc")
+mapshot(x, file="meuse.png")
 ```
+
+```{r}
+knitr::include_graphics(system.file("misc/meuse.png", package="rgdal"))
+```
+
 
 # Coordinate reference system representation
 
-The **mapproj** package provided coordinate reference system and projection support for the **maps** package. From `mapproj/src/map.h`, line 20, we can see that the eccentricity of the Earth is defined as `0.08227185422`, corrresponding to the Clark 1866 ellipsoid (Iliffe and Lott 2008):
+The **mapproj** package provided coordinate reference system and projection support for the **maps** package. From `mapproj/src/map.h`, line 20, we can see that the eccentricity of the Earth is defined as `0.08227185422`, corrresponding to the Clark 1866 ellipsoid [@iliffe]:
 
 ```{r, echo=FALSE}
 odd_run <- FALSE
@@ -63,7 +76,7 @@ print(sqrt((a^2-b^2)/a^2), digits=10)
 
 With a very few exceptions, projections included in `mapproj::mapproject()` use the Clarke 1866 ellipsoid, with the remainder using a sphere with the Clarke 1866 major axis radius. The function returns coordinates for visualization in an unknown metric; no inverse projections are available.
 
-Like many other free and open source software projects around 2000, R spatial development chose to use the best open source library and infrastructure then available, PROJ.4. Version 4.4 was published by Frank Warmerdam in 2000, based on Gerald Evenden's earlier work. This earlier work was a library for forward and inverse projection using a key-value string interface to describe the required projection (Evenden 1990). The key-value string is taken as `+key=value`, where `=value` could be omitted for some keys, and the definition of each projection is built up from space-separated key-value string, such as `+proj=utm +zone=25 +south` for Universal Transverse Mercator zone 25 in the southern hemisphere. 
+Like many other free and open source software projects around 2000, R spatial development chose to use the best open source library and infrastructure then available, PROJ.4. Version 4.4 was published by Frank Warmerdam in 2000, based on Gerald Evenden's earlier work. This earlier work was a library for forward and inverse projection using a key-value string interface to describe the required projection [@evenden:90]. The key-value string is taken as `+key=value`, where `=value` could be omitted for some keys, and the definition of each projection is built up from space-separated key-value string, such as `+proj=utm +zone=25 +south` for Universal Transverse Mercator zone 25 in the southern hemisphere. 
 
 ## PROJ.4 2000-2018
 
@@ -73,14 +86,13 @@ The `ellps=` key was followed by the `+datum=`, `+nadgrids=` and `+towgs84=` key
 
 The PROJ.4 framework functioned well for projection before it was expected to handle datum tranformation too. Within the remit of single mapping agencies, some adaptation could still provide help, say  using `+nadgrids=` in parts of North America (NAD, North American Datum), but where positional data from multiple agencies was being integrated, the framework was showing its age. For example, from about 2010 it was observed that the `+datum=` and `+towgs84=` keys sometimes provided contradictory values, leading functions in GDAL reading raster files to prefer `+towgs84=` values  to `+datum=` values. For users for whom accuracy of better than about 150m was irrelevant, using coordinate reference systems correctly defined in terms of the underlying geographical coordinates was less important, but this is still about five Landsat cells.
 
-While the representation of coordinate reference systems (sometimes supplemented by coordinate operations to transform the underlying geographical coordinates to WGS84) as PROJ.4 strings continued to work adequately, changes were occurring. Many file formats chose to use WKT (well-known text) string representations, starting from the 2007 edition of the ISO standard (ISO 2019). This placed the file reading and writing functions offered by GDAL under stress, especially the `exportToProj4()` function, as an increasing number of specification components really did not map adequately from the WKT string representation to the PROJ.4 string representation. Another change was that pivoting through a chosen hub when transforming coordinates (in PROJ.4 WGS84) meant that accuracy was lost transforming from the source to the hub, and more was lost from the hub to the target. Why not transform from source to target in one step if possible?
+While the representation of coordinate reference systems (sometimes supplemented by coordinate operations to transform the underlying geographical coordinates to WGS84) as PROJ.4 strings continued to work adequately, changes were occurring. Many file formats chose to use WKT (well-known text) string representations, starting from the 2007 edition of the ISO standard [@iso19111]. This placed the file reading and writing functions offered by GDAL under stress, especially the `exportToProj4()` function, as an increasing number of specification components really did not map adequately from the WKT string representation to the PROJ.4 string representation. Another change was that pivoting through a chosen hub when transforming coordinates (in PROJ.4 WGS84) meant that accuracy was lost transforming from the source to the hub, and more was lost from the hub to the target. Why not transform from source to target in one step if possible?
 
-## PRØJ
+## PR$\phi$J
 
-Signalling changes, PROJ.4 changed its name to PRØJ, and began burning through major version numbers. PROJ 5 (2018) introduced transformation pipelines (Knudsen and Evers 2017; Evers and Knudsen 2017), representing coordinate operations using a syntax similar to PROJ.4 strings, but showing the whole operation pipeline. PROJ 6 (2019) followed up by shifting from ad-hoc text files for holding coordinate reference system and coordinate operation metadata to an SQLite database. In an increasing number of cases, more accurate coordinate operations could be supported using open access transformation grids, and the grid files needed were now tabulated in the SQLite database. This database is distributed with PROJ, and kept in a directory on the PROJ search path, usually the only or final directory (`getPROJ4libPath()` returns the current search path in an attribute). 
+Signalling changes, PROJ.4 changed its name to PR$\phi$J, and began burning through major version numbers. PROJ 5 (2018) introduced transformation pipelines [@knudsen+evers17; @evers+knudsen17], representing coordinate operations using a syntax similar to PROJ.4 strings, but showing the whole operation pipeline. PROJ 6 (2019) followed up by shifting from ad-hoc text files for holding coordinate reference system and coordinate operation metadata to an SQLite database. In an increasing number of cases, more accurate coordinate operations could be supported using open access transformation grids, and the grid files needed were now tabulated in the SQLite database. This database is distributed with PROJ, and kept in a directory on the PROJ search path, usually the only or final directory (`get_proj_search_paths()` returns a vector of current search paths). 
 ```{r, eval=odd_run}
-shpr <- strsplit(attr(getPROJ4libPath(), "search_path"), ifelse(.Platform$OS.type == "unix", ":", ";"))[[1]]
-shpr
+(shpr <- get_proj_search_paths())
 ```
 
 ```{r, echo=FALSE, results='hide', eval=odd_run}
@@ -111,7 +123,7 @@ For these reasons, **sf**  and **sp** are changing from PROJ.4 strings represent
 
 # Coordinate operations
 
-The introduction of interactive mapping using **mapview** and **tmap** among other packages highlights the need to set the coordinate reference system (CRS) of objects correctly, so that zooming does not reveal embarrassing divergences. Using the location of the Broad Street pump disabled by Dr John Snow to stop a cholera epidemic in Soho, London, in 1854 (Brody et al. 2000), we can start to see what steps are being taken. The point location of the pump is given in projected coordinates, defined in the British National Grid. The workflow used by `mapview::mapview()` is to transform first to WGS84 (EPSG:4326) using `sf::st_transform()` if need be, before permitting **leaflet** to project to Web Mercator (EPSG:3857) internally.
+The introduction of interactive mapping using **mapview** and **tmap** among other packages highlights the need to set the coordinate reference system (CRS) of objects correctly, so that zooming does not reveal embarrassing divergences. Using the location of the Broad Street pump disabled by Dr John Snow to stop a cholera epidemic in Soho, London, in 1854 [@brodyetal:00], we can start to see what steps are being taken. The point location of the pump is given in projected coordinates, defined in the British National Grid. The workflow used by `mapview::mapview()` is to transform first to WGS84 (EPSG:4326) using `sf::st_transform()` if need be, before permitting **leaflet** to project to Web Mercator (EPSG:3857) internally.
 
 ```{r, warning=TRUE, eval=odd_run}
 b_pump <- readOGR(system.file("vectors/b_pump.gpkg", package="rgdal"))
@@ -129,7 +141,6 @@ if (packageVersion("sp") > "1.4.1") {
 }
 cat(WKT, "\n")
 ```
-
 
 ## Pipelines
 
@@ -177,6 +188,7 @@ helm[helm$code == "1314",c(1:3, 15:17, 20:22, 25)]
 dbDisconnect(db)
 ```
 
+
 Using the WKT2 CRS representation, we can achieve 2m accuracy (or as the table says in other fields: "Oil exploration. Accuracy better than 4m and generally better than 2m":
 
 ```{r, eval=odd_run}
@@ -199,7 +211,7 @@ c(spDists(isballpark, is2m)*1000)
 
 ```{r, echo=FALSE}
 mrun <- FALSE
-if (require(maptools, quietly=TRUE)) mrun <- TRUE
+if (suppressPackageStartupMessages(require(maptools, quietly=TRUE))) mrun <- TRUE
 ```
 
 
@@ -224,41 +236,72 @@ c(spDists(coordinates(isballpark), a)*1000)
 ```
 
 
+### Areas of interest
+
+The search for candidate coordinate operations may be expedited if the area of interest is provided. This is a vector of minumum longitude and latitude followed by maximum longitude and latitude, so we need to inverse project the bounding box of projected **sp** objects and coerce that matrix into the required order:
+
+```{r, eval=run && odd_run}
+if (is.projected(b_pump)) { 
+  o <- project(t(unclass(bbox(b_pump))), wkt(b_pump), inv=TRUE)
+} else {
+  o <- t(unclass(bbox(b_pump)))
+}
+(aoi <- c(t(o + c(-0.1, +0.1))))
+```
+Without an area of interest, the coordinate operation look-up found 8 candidate operations, with a given area of interest, only 5 are found with the `strict_containment=` argument taking its default value of `FALSE`, so that the candidates found do not have to contain the area of interest strictly:
+
+```{r, eval=run && odd_run}
+nrow(list_coordOps(WKT, "EPSG:4326", area_of_interest=aoi))
+```
+In this case, changing this argument to `TRUE` makes no further difference:
+
+```{r, eval=run && odd_run}
+nrow(list_coordOps(WKT, "EPSG:4326", strict_containment=TRUE, area_of_interest=aoi))
+```
+Methods for projection and transformation use the area of interest implicit in the data object, controlled by an argument: `use_aoi`, default `TRUE`, for `+proj=ob_tran, `FALSE`.
+
 ## Transformation grid files
 
-PROJ 7 introduced on-demand downloading of (chunks of) transformation grids from a content delivery network to a user-writable directory on the PROJ search path (usually the first path component). The status of the downloaded grids is stored in another SQLite database, `cache.db`. Let is unlink this file, and check that **rgdal** is running with on-demand downloading disabled:
+PROJ 7 introduced on-demand downloading of (chunks of) transformation grids from a content delivery network to a user-writable directory on the PROJ search path (usually the first path component). The status of the downloaded grids is stored in another SQLite database, `cache.db`. The PR$\phi$J user-writable CDN directory is set as soon as the internal search path is queried, and for most uses, the default value will allow all programs using PR$\phi$J such as R packages, QGIS, GRASS, etc., to access any downloaded grids. Grids are checked for staleness at regular intervals. This directory may be set to a non-default value with the `PROJ_USER_WRITABLE_DIRECTORY` environment variable *before* **rgdal** (and any other package using PR$\phi$J) is loaded and attached, from PR$\phi$J >= 7.1.0. The code used at the beginning of this vignette is repeated here for convenience:
 
-```{r, echo=FALSE, results='hide', eval=odd_run}
-run <- run && (attr(getPROJ4VersionInfo(), "short") >= 700)
+
+```{r, eval=FALSE}
+td <- tempfile()
+dir.create(td)
+Sys.setenv("PROJ_USER_WRITABLE_DIRECTORY"=td)
+library(rgdal)
 ```
 
 ```{r, echo=FALSE, results='hide', eval=odd_run}
-run <- run && shpr[1] == "/home/rsb/.local/share/proj"
+run <- run && (attr(getPROJ4VersionInfo(), "short") >= 710)
 ```
 
-```{r}
-run
-shpr
+Let us check that **rgdal** is running with on-demand downloading disabled:
+
+```{r, eval=run && odd_run}
+is_proj_CDN_enabled()
 ```
+
+
+We can enable on-demand download using a function that reports the value of the PR$\phi$J CDN user-writable directory; we see that with this setting, network download is enabled:
+
+```{r, eval=run && odd_run}
+enable_proj_CDN()
+is_proj_CDN_enabled()
+```
+
+The reader will recall that the search path was stored in `shpr` above, the first element being the user-writable directory; at this point no SQLite database has been created:
+
+```{r, eval=run && odd_run}
+shpr[1]
+try(file.size(file.path(shpr[1], "cache.db")))
+```
+
+When we then search for candidate coordinate operations, we see that the operation using an absent grid now sees that download is enabled, and proposes the 1m accuracy candidate, because the required grid can be downloaded (again using the area of interest):
 
 
 ```{r, eval=run && odd_run}
-unlink(file.path(shpr[1], "cache.db"))
-rgdal:::is_proj_network_enabled()
-```
-
-
-We can (for now, this will be handled later in a function) enable on-demand download setting an environment variable; we see that with this setting, network download is enabled:
-
-```{r, eval=run && odd_run}
-Sys.setenv("PROJ_NETWORK"="ON")
-rgdal:::is_proj_network_enabled()
-```
-
-When we then search for candidate coordinate operations, we see that the operation using an absent grid now sees that download is enabled, and proposes the 1m accuracy candidate, because the required grid can be downloaded:
-
-```{r, eval=run && odd_run}
-list_coordOps(WKT, "EPSG:4326")
+list_coordOps(WKT, "EPSG:4326", area_of_interest=aoi)
 ```
 
 On making the transformation, we may see that the coordinate operation takes longer than expected, because on first pass the grid is downloaded from the network:
@@ -290,46 +333,41 @@ c(spDists(is2m, is1m)*1000)
 c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
 ```
 
+Now the SQLite grid cache database has been created and has grown in size:
+
+```{r, eval=run && odd_run}
+try(file.size(file.path(shpr[1], "cache.db")))
+```
+
 If we look in the SQLite database of downloaded grids, we see that the grid components that were downloaded. Here we have not yet used the area of interest to limit the number of chunks involved:
 
 ```{r, eval=run && odd_run}
 library(RSQLite)
 db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
-(tbls <- dbListTables(db))
-if ("chunks" %in% tbls) dbReadTable(db, "chunks")
+dbListTables(db)
+dbReadTable(db, "chunks")
 dbDisconnect(db)
 ```
 
-Finally, we disable grid download to return to the status existing when **rgdal** was attached. 
+Finally, we disable grid download to return to the status existing when **rgdal** was attached; the cached grids in this case, using an R temporary directory, will be discarded, but in usual workflows, grids are downloaded once, used often and updated seldom when the server versions change. 
 
 ```{r, eval=run && odd_run}
-Sys.setenv("PROJ_NETWORK"="OFF")
-rgdal:::is_proj_network_enabled()
+disable_proj_CDN()
+is_proj_CDN_enabled()
 ```
 
 
 The outcome positions are shown here; at zoom 18 we can see that the 1m accuracy green point matches the Open Street Map location of the pump very well:
 
-```{r, eval=mvrun && run && odd_run}
+```{r, eval=FALSE}
 library(mapview)
-mapview(is2m, map.type="OpenStreetMap", legend=FALSE) + mapview(is1m, col.regions="green", legend=FALSE) + mapview(isballpark, col.regions="red", legend=FALSE)
+x <- mapview(is2m, map.type="OpenStreetMap", legend=FALSE) + mapview(is1m, col.regions="green", legend=FALSE) + mapview(isballpark, col.regions="red", legend=FALSE)
+mapshot(x, file="snow.png")
+```
+
+```{r}
+knitr::include_graphics(system.file("misc/snow.png", package="rgdal"))
 ```
 
 ### References
-
-
-
-Brody, H., M. R. Rip, P. Vinten-Johansen, N. Paneth, and S. Rachman. 2000. “Map-Making and Myth-Making in Broad Street: The London Cholera Epidemic, 1854.” Lancet 356: 64–68.
-
-Evenden, Gerald I. 1990. Cartographic Projection Procedures for the UNIX Environment — a User’s Manual. (http://download.osgeo.org/proj/OF90-284.pdf).
-
-Evers, Kristian, and Thomas Knudsen. 2017. Transformation Pipelines for Proj.4. (https://www.fig.net/resources/proceedings/fig_proceedings/fig2017/papers/iss6b/ISS6B_evers_knudsen_9156.pdf).
-
-Iliffe, Jonathan, and Roger Lott. 2008. Datums and Map Projections: For Remote Sensing, GIS and Surveying. Boca Raton: CRC.
-
-ISO. 2019. ISO 19111:2019 Geographic Information – Referencing by Coordinates. (https://www.iso.org/standard/74039.html).
-
-Knudsen, Thomas, and Kristian Evers. 2017. Transformation Pipelines for Proj.4. (https://meetingorganizer.copernicus.org/EGU2017/EGU2017-8050.pdf).
-
-Warmerdam, Frank. 2010. Slaying the Datum Shift Dragon. (http://fwarmerdam.blogspot.com/2010/03/in-last-few-weeks-i-believe-i-have-made.html).
 

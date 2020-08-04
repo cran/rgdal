@@ -64,7 +64,7 @@ copy.SpatialGDAL(dataset, fname, driver = getDriver(dataset@grod),
 \item{allowedDrivers}{a character vector of suggested driver short names may be provided starting from GDAL 2.0}
 \item{options}{driver-specific options to be passed to the GDAL driver; only available for opening datasets from GDAL 2.0}
 }
-\note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{http://trac.osgeo.org/gdal/ticket/3031})}
+\note{Non-fatal CPL errors may be displayed for some drivers, currently for the AIG ArcInfo 9.3 binary raster driver using GDAL >= 1.6.2; the data has been read correctly, but the contents of the info directory did not meet the specifications used to reverse engineer the driver used in GDAL (see \url{https://trac.osgeo.org/gdal/ticket/3031})}
 
 \author{ Edzer Pebesma, \email{edzer.pebesma@uni-muenster.de} }
 

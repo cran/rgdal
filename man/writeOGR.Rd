@@ -49,7 +49,7 @@ The \code{overwrite_layer} and \code{delete_dsn} arguments are provided only for
 \section{\code{writeOGR} Polygon bug in 1.1-1}{
 In fixing a bug in the correct handling of SFS polygon geometries in version 1.1-1, a further bug was introduced affecting cases of wkbPolygon (not wkbMultiPolygon) output where SFS hole status in the output object was (correctly) defined in the comment to Polygons objects. The error only occurred when all the Polygons objects had one exterior ring, and zero or more interior rings. The error led to the coordinates of the rings cumulating, because the rings were not emptied before assigning the next ring. Version 1.1-2 corrects the error; thanks to  JamesWorrall for a complete bug report \url{https://stat.ethz.ch/pipermail/r-sig-geo/2015-December/023796.html}.
 }
-\references{\url{https://gdal.org/drivers/vector/index.html}, \url{https://examples.oreilly.com/webmapping/}}
+\references{\url{https://gdal.org/drivers/vector/index.html}, \url{https://resources.oreilly.com/examples/9780596008659}}
 \author{Roger Bivand}
 
 \seealso{\code{\link{readOGR}}}

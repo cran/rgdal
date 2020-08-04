@@ -19,11 +19,30 @@ RBIN="${R_HOME}/bin/R"
 #: ${CPP=`"${RBIN}" CMD config CPP`}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
+: ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
 # AC_SUBST([CC],["clang"])
 # AC_SUBST([CXX],["clang++"])
 AC_MSG_NOTICE([CC: ${CC}])
 AC_MSG_NOTICE([CXX: ${CXX}])
+AC_MSG_NOTICE([CFLAGS: ${CFLAGS}])
+AC_MSG_NOTICE([CPPFLAGS: ${CPPFLAGS}])
+AC_MSG_NOTICE([CXXFLAGS: ${CXXFLAGS}])
+AC_MSG_NOTICE([LDFLAGS: ${LDFLAGS}])
+
+AC_ARG_ENABLE([loadflags], 
+    [AC_HELP_STRING([--enable-loadflags=yes/no],
+    [use value of R CMD config LDFLAGS for configure, default yes])], 
+    [loadflags=${enableval}], 
+    [loadflags="yes"])
+
+#echo "loadflags: $loadflags"
+
+if test [ "${loadflags}" == "no" ] ; then
+    LDFLAGS=""
+    AC_MSG_NOTICE(value of R CMD config LDFLAGS not used for configure)
+fi
+AC_MSG_NOTICE([LDFLAGS: ${LDFLAGS}])
 
 #CXX_11
 

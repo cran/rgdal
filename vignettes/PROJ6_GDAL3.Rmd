@@ -4,11 +4,15 @@ author: "Roger Bivand"
 output:
   html_document:
     toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
 bibliography: PROJ.bib
 link-citations: yes
 vignette: >
   %\VignetteIndexEntry{Migration to PROJ6/GDAL3}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

@@ -90,6 +90,9 @@ showSRID(paste0(prj, " +towgs84=370.936,-108.938,435.682"), "WKT2")
 if (run) {
 showSRID(paste0(prj, " +nadgrids=OSTN15_NTv2_OSGBtoETRS.gsb"), "WKT2")
 }
+if (run) {
+showSRID("ESRI:102761", "WKT2")
+}
 }
 \keyword{spatial}
 

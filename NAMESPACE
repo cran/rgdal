@@ -47,6 +47,8 @@ export(open.SpatialGDAL, copy.SpatialGDAL)
 export(llgridlines)
 export(GDALcall)
 export(rawTransform)
+export(is_proj_CDN_enabled, enable_proj_CDN, disable_proj_CDN)
+export(get_proj_search_paths, set_proj_search_paths, proj_CDN_user_writable_dir)
 
 #export(spTransform, spTransform.SpatialPoints, 
 #  spTransform.SpatialPointsDataFrame, spTransform.SpatialLines, 

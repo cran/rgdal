@@ -22,7 +22,7 @@ displayDataset(x, offset=c(0, 0), region.dim=dim(x), reduction = 1,
 \value{
 a list of the image data, the colour table, and the par() values on entry.
 }
-\references{\url{http://www.gdal.org/}}
+\references{\url{https://gdal.org/}}
 \author{Tim Keitt}
 
 \examples{

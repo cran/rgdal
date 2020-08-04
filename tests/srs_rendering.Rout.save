@@ -1,5 +1,5 @@
 
-R version 4.0.0 (2020-04-24) -- "Arbor Day"
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -17,11 +17,11 @@ Type 'q()' to quit R.
 
 > suppressPackageStartupMessages(library(rgdal))
 > getPROJ4VersionInfo()
-[1] "Rel. 7.0.1, May 1st, 2020, [PJ_VERSION: 701]"
+[1] "Rel. 7.1.0, August 1st, 2020, [PJ_VERSION: 710]"
 attr(,"short")
-[1] 701
+[1] 710
 > getGDALVersionInfo()
-[1] "GDAL 3.1.0, released 2020/05/03"
+[1] "GDAL 3.1.1, released 2020/06/22"
 > d <- system.file("vectors", package="rgdal")
 > #shps <- ogrListLayers(d)
 > (o <- OGRSpatialRef(d, "trin_inca_pl03"))
@@ -142,4 +142,4 @@ In getProjectionRef(ds, OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = FALSE) :
 > 
 > proc.time()
    user  system elapsed 
-  0.432   0.030   0.456 
+  0.423   0.033   0.456 

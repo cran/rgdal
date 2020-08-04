@@ -6,6 +6,18 @@ res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80")
 res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80",
  inv=TRUE)
 stopifnot(isTRUE(all.equal(res1, xy)))
+states <- data.frame(state.x77, state.center)
+states <- states[states$x > -121,]
+coordinates(states) <- c("x", "y")
+proj4string(states) <- CRS("+proj=longlat +ellps=clrk66")
+state.ll83 <- spTransform(states, CRS("+proj=longlat +ellps=GRS80"))
+state.ll <- spTransform(state.ll83, CRS("+proj=longlat +ellps=clrk66"))
+stopifnot(isTRUE(all.equal(coordinates(states), coordinates(state.ll))))
+broke_proj <- FALSE
+pv <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]]
+# https://github.com/OSGeo/PROJ/issues/1525
+if (pv >= 600 && pv < 620) broke_proj <- TRUE
+if (!broke_proj) {
 (crds <- matrix(data=c(9.05, 48.52), ncol=2))
 (a <- project(crds, paste("+proj=ob_tran +o_proj=longlat",
  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
@@ -15,13 +27,6 @@ stopifnot(isTRUE(all.equal(a, matrix(c(-5.917698, -1.87195), ncol=2), tolerance=
  "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs"),
  inv=TRUE, use_ob_tran=TRUE, verbose=TRUE))
 stopifnot(isTRUE(all.equal(a1, crds, tolerance=.Machine$double.eps ^ 0.25)))
-states <- data.frame(state.x77, state.center)
-states <- states[states$x > -121,]
-coordinates(states) <- c("x", "y")
-proj4string(states) <- CRS("+proj=longlat +ellps=clrk66")
-state.ll83 <- spTransform(states, CRS("+proj=longlat +ellps=GRS80"))
-state.ll <- spTransform(state.ll83, CRS("+proj=longlat +ellps=clrk66"))
-stopifnot(isTRUE(all.equal(coordinates(states), coordinates(state.ll))))
 spPoint <- SpatialPoints(coords=crds,
  proj4string=CRS("+proj=longlat +ellps=sphere +no_defs"))
 a <- spTransform(spPoint, CRS(paste("+proj=ob_tran +o_proj=longlat",
@@ -31,6 +36,7 @@ stopifnot(isTRUE(all.equal(unname(coordinates(a)), matrix(c(-5.917698, -1.87195)
 a1 <- spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
  use_ob_tran=TRUE)
 stopifnot(isTRUE(all.equal(unname(coordinates(a1)), unname(coordinates(spPoint)), tolerance=.Machine$double.eps ^ 0.25)))
+}
 sp <- SpatialPoints(matrix(c(1, 1), nrow=1), proj4string=CRS("+init=epsg:4326"))
 sp.tr <- spTransform(sp, CRS("+init=epsg:3857"))
 stopifnot(isTRUE(all.equal(unname(coordinates(sp.tr)), matrix(c(111319.4908, 111325.1429), nrow=1))))
