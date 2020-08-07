@@ -112,10 +112,12 @@ get_last_coordOp <- function() {
 }
 
 get_aoi <- function(obj, xy, inv, proj) {
+    if (!new_proj_and_gdal()) return(NULL)
     if (missing(obj)) { # used in project
         bb <- cbind(range(xy[,1], na.rm=TRUE), range(xy[,2], na.rm=TRUE))
         if (inv) {
-            o <- project(bb, proj, inv=inv, use_aoi=FALSE)
+            o <- try(project(bb, proj, inv=inv, use_aoi=FALSE), silent=TRUE)
+            if (inherits(o, "try-error")) return(NULL)
         } else {
             o <- bb
         }
@@ -128,7 +130,9 @@ get_aoi <- function(obj, xy, inv, proj) {
                     tg <- wkt(CRS(tg))
                 }
             }
-            o <- project(t(bbox(obj))[,1:2], tg, inv=TRUE, use_aoi=FALSE)
+            o <- try(project(t(bbox(obj))[,1:2], tg, inv=TRUE, use_aoi=FALSE),
+                silent=TRUE)
+            if (inherits(o, "try-error")) return(NULL)
         } else {
             o <- t(bbox(obj))[,1:2]
         }
@@ -392,7 +396,7 @@ if (!isGeneric("spTransform"))
         }
         
         aoi <- NULL
-        if (use_aoi) {
+        if (use_aoi && new_proj_and_gdal()) {
             aoi <- get_aoi(x)
             if (!is.null(aoi)) {
                 stopifnot(length(aoi) == 4)
@@ -707,7 +711,7 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
         }
         
         aoi <- NULL
-        if (use_aoi) {
+        if (use_aoi && new_proj_and_gdal()) {
             aoi <- get_aoi(x)
             if (!is.null(aoi)) {
                 stopifnot(length(aoi) == 4)
@@ -919,7 +923,7 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
         }
         
         aoi <- NULL
-        if (use_aoi) {
+        if (use_aoi && new_proj_and_gdal()) {
             aoi <- get_aoi(x)
             if (!is.null(aoi)) {
                 stopifnot(length(aoi) == 4)
