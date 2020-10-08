@@ -186,12 +186,22 @@ SEXP disable_proj_network() {
     return(R_NilValue);
 }
 
-/*SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
+SEXP get_source_crs(SEXP source) {
+//    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
+SEXP proj_vis_order(SEXP wkt2) {
+//    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
+
+
+SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
     SEXP epsg, SEXP out_format) {
 
     return(R_NilValue);
 
-}*/
+}
 
 #ifndef PROJ6
 

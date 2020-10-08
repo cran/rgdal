@@ -121,9 +121,18 @@ PROJ 7 (2020) reconfigured the transformation grids, now using the Geodetic TIFF
 
 For these reasons, **sf**  and **sp** are changing from PROJ.4 strings representing coordinate reference systems to WKT2:2019 strings, as described in [this r-spatial blog](https://www.r-spatial.org/r/2020/03/17/wkt.html). Most users who had been relying on file reading to set the coordinate reference systems of objects will not notice much difference, and legacy PROJ.4 strings can still be used to create new, authority-free definitions if need be. 
 
+It will be useful to know that in general `"OGC:CRS84"` should be used instead of `"EPSG:4326"`, because the latter presupposes that Latitude is always ordered before Longitude. `"OGC:CRS84"` is the standard representation used by GeoJSON, with coordinates always ordered Longitude before Latitude. This is also the standard GIS and visualization order:
+
+
+```{r, warning=TRUE, eval=odd_run}
+cat(wkt(CRS(SRS_string="OGC:CRS84")), "\n")
+```
+
+Note that all `"GEOGCRS"` `"BBOX"` CRS bounding boxes are always specified latitude minimum, longitude minimum, latitude maximum, longitude maximum, even though the declared axis order is the opposite.
+
 # Coordinate operations
 
-The introduction of interactive mapping using **mapview** and **tmap** among other packages highlights the need to set the coordinate reference system (CRS) of objects correctly, so that zooming does not reveal embarrassing divergences. Using the location of the Broad Street pump disabled by Dr John Snow to stop a cholera epidemic in Soho, London, in 1854 [@brodyetal:00], we can start to see what steps are being taken. The point location of the pump is given in projected coordinates, defined in the British National Grid. The workflow used by `mapview::mapview()` is to transform first to WGS84 (EPSG:4326) using `sf::st_transform()` if need be, before permitting **leaflet** to project to Web Mercator (EPSG:3857) internally.
+The introduction of interactive mapping using **mapview** and **tmap** among other packages highlights the need to set the coordinate reference system (CRS) of objects correctly, so that zooming does not reveal embarrassing divergences. Using the location of the Broad Street pump disabled by Dr John Snow to stop a cholera epidemic in Soho, London, in 1854 [@brodyetal:00], we can start to see what steps are being taken. The point location of the pump is given in projected coordinates, defined in the British National Grid. The workflow used by `mapview::mapview()` is to transform first to WGS84 (OGC:CRS84) using `sf::st_transform()` if need be, before permitting **leaflet** to project to Web Mercator (EPSG:3857) internally.
 
 ```{r, warning=TRUE, eval=odd_run}
 b_pump <- readOGR(system.file("vectors/b_pump.gpkg", package="rgdal"))
@@ -151,7 +160,7 @@ cov <- dbReadTable(db, "coordinate_operation_view")
 cov[grep("OSGB", cov$name), c(1, 3, 4, 9, 16)]
 ```
 
-The same search can be conducted directly without using **RSQLite** to query the database tables, searching by source and target CRS, and in the near future also by area of interest. If we search using only the degraded PROJ.4 string, we only find a ballpark accuracy coordinate operation, yielding a pipeline with two steps, inverse projection to geographical coordinates in radians, and conversion from radians to degrees. Note that `rgdal::spTransform()` and its wrapper `sp::spTransform()` use PROJ for coordinate operations:
+The same search can be conducted directly without using **RSQLite** to query the database tables, searching by source and target CRS, and in the near future also by area of interest. If we search using only the degraded PROJ.4 string, we only find a ballpark accuracy coordinate operation, yielding a pipeline with two steps, inverse projection to geographical coordinates in radians, and conversion from radians to degrees. Note that `rgdal::spTransform()` and its wrapper `sp::spTransform()` use PROJ for coordinate operations. Here we will use `"EPSG:4326"` briefly for exposition:
 
 ```{r, eval=odd_run}
 list_coordOps(paste0(proj4string(b_pump), " +type=crs"), "EPSG:4326")
@@ -159,11 +168,21 @@ list_coordOps(paste0(proj4string(b_pump), " +type=crs"), "EPSG:4326")
 
 The description component "+ axis order change (2D)" refers to the `EPSG:4326` definition, which specifies Northings/Latitude as the first axis, and Eastings/Longitude as the second axis; in **sp**/**rgdal** workflows, it is assumed that GIS/visualization order with Eastings/Longitude as the first 2D axis and Northings/Latitude as the second axis is preferred. Because the input data are in GIS/visualization order already, the steps to swap axes to standards conformity and then back to GIS/visualization order cancel each other out.
 
+We can see what is happening if we unset enforcing GIS/visualization order, with an `axisswap` coming into play:
+
+```{r, eval=odd_run}
+set_enforce_xy(FALSE)
+list_coordOps(paste0(proj4string(b_pump), " +type=crs"), "EPSG:4326")
+set_enforce_xy(TRUE)
+```
+
+While **rgdal** tries to impose GIS/visualization axis order on the `"EPSG:4326"` specification, one may end up with a WKT2 string with Latitude first, followed by Longitude without wishing to do so. Using `"OGC:CRS84"` is more secure, because it does not require such ad-hoc re-specification.
+
 Setting the internal control option `set_transform_wkt_comment()` to `FALSE`, we use only the degraded PROJ.4 string when transforming. `spTransform()` undertakes the same search, chooses the best instantiable coordinate operation on its first pass, then uses that pipeline on all objects. The pipeline specification of the coordinate operation may be retrieved using `get_last_coordOp()`:
 
 ```{r, eval=odd_run}
 set_transform_wkt_comment(FALSE)
-isballpark <- spTransform(b_pump, CRS(SRS_string="EPSG:4326"))
+isballpark <- spTransform(b_pump, CRS(SRS_string="OGC:CRS84"))
 get_last_coordOp()
 ```
 
@@ -175,9 +194,6 @@ print(coordinates(isballpark), digits=10)
 
 Let us repeat the search using the WKT2 string; here we see that providing a well-specified CRS representation allows us to choose 2m accuracy for the coordinate operation. Further, we can also see that, had we had access to a named grid, we could have achieved 1m accuracy:
 
-```{r, eval=odd_run}
-list_coordOps(WKT, "EPSG:4326")
-```
 
 The Helmert transformation has parameters retrieved from the PROJ SQLite database (code 1314):
 
@@ -193,7 +209,7 @@ Using the WKT2 CRS representation, we can achieve 2m accuracy (or as the table s
 
 ```{r, eval=odd_run}
 set_transform_wkt_comment(TRUE)
-is2m <- spTransform(b_pump, CRS(SRS_string="EPSG:4326"))
+is2m <- spTransform(b_pump, CRS(SRS_string="OGC:CRS84"))
 get_last_coordOp()
 ```
 
@@ -235,6 +251,10 @@ all.equal(a, b)
 c(spDists(coordinates(isballpark), a)*1000)
 ```
 
+```{r, eval=odd_run}
+list_coordOps(WKT, "OGC:CRS84")
+```
+
 
 ### Areas of interest
 
@@ -251,12 +271,12 @@ if (is.projected(b_pump)) {
 Without an area of interest, the coordinate operation look-up found 8 candidate operations, with a given area of interest, only 5 are found with the `strict_containment=` argument taking its default value of `FALSE`, so that the candidates found do not have to contain the area of interest strictly:
 
 ```{r, eval=run && odd_run}
-nrow(list_coordOps(WKT, "EPSG:4326", area_of_interest=aoi))
+nrow(list_coordOps(WKT, "OGC:CRS84", area_of_interest=aoi))
 ```
 In this case, changing this argument to `TRUE` makes no further difference:
 
 ```{r, eval=run && odd_run}
-nrow(list_coordOps(WKT, "EPSG:4326", strict_containment=TRUE, area_of_interest=aoi))
+nrow(list_coordOps(WKT, "OGC:CRS84", strict_containment=TRUE, area_of_interest=aoi))
 ```
 Methods for projection and transformation use the area of interest implicit in the data object, controlled by an argument: `use_aoi`, default `TRUE`, for `+proj=ob_tran, `FALSE`.
 
@@ -301,13 +321,13 @@ When we then search for candidate coordinate operations, we see that the operati
 
 
 ```{r, eval=run && odd_run}
-list_coordOps(WKT, "EPSG:4326", area_of_interest=aoi)
+list_coordOps(WKT, "OGC:CRS84", area_of_interest=aoi)
 ```
 
 On making the transformation, we may see that the coordinate operation takes longer than expected, because on first pass the grid is downloaded from the network:
 
 ```{r, eval=run && odd_run}
-system.time(is1m <- spTransform(b_pump, CRS(SRS_string="EPSG:4326")))
+system.time(is1m <- spTransform(b_pump, CRS(SRS_string="OGC:CRS84")))
 ```
 
 The coordinate operation used now specifies the grid in the pipeline:
@@ -368,6 +388,50 @@ mapshot(x, file="snow.png")
 ```{r}
 knitr::include_graphics(system.file("misc/snow.png", package="rgdal"))
 ```
+
+## Rebuilding CRS objects
+
+Package authors of the almost 150 packages with **sp** objects with outdated `"CRS"` objects stored in `*.rda` or `*RData` files as data sets should update the `"proj4string"` slots of these objects and re-store. The `GGHB.IG` data set in the **CARBayesdata** package (version 2.1) can serve as an example.
+
+```{r, eval=odd_run}
+# library(CARBayesdata)
+library(sp)
+# data(GGHB.IG)
+# orig <- slot(GGHB.IG, "proj4string")
+(load(system.file("misc/GGHB.IG_CRS.rda", package="rgdal")))
+orig
+```
+The original `"CRS"` object contains a `+datum=` key (deprecated in GDAL's `exportToProj4()` from GDAL 3) and a `+towgs84=` key, the handling of which has varied in different releases of PROJ >= 6 and GDAL 3. From **rgdal** 1.5-17 (development version), a PROJ function `proj_get_source_crs` is used by default, but may be avoided by setting the `sp::CRS()`  `get_source_if_boundcrs=` argument to FALSE. The function will return the source CRS of a `BOUNDCRS` object. In some versions of PROJ/GDAL, the inclusion of a `+towgs84=` key is taken as meaning that the user wishes to create an object with the given source CRS, but because a `+towgs84=` key is present, it is assumed that the target is `WGS 84` with the given transformation method. Proj4 strings with `+towgs84=` keys have no authority for the parameters given, and do not harmonise with the use of the EPSG database. 
+
+To run the examples, we need the current development version of **sp** from `"rsbivand/sp"`:
+
+```{r, eval=odd_run, warning=FALSE}
+sp_version_ok <- length(grep("get_source_if_boundcrs", deparse(args(sp::CRS)))) > 0L
+```
+
+Running `sp::CRS()` takes the original Proj4 key-value pairs, and converts them into a WKT2 representation as well as returning an (unused) Proj4 string. This is kept in place for packages still expecting to see/use it, but all **rgdal** functions and methods use the WKT2 representation. Here, we do not try to handle the `BOUNDCRS` special case, something that leads to difficulties with some versions of PROJ later in workflows. The `BOUNDCRS` contains a `SOURCECRS` and a `TARGETCRS` (which also has swapped axes), while really all that was needed was the contents of the `SOURCECRS`:
+
+
+```{r, eval=odd_run && sp_version_ok, warning=FALSE}
+orig1 <- CRS(slot(orig, "projargs"), get_source_if_boundcrs=FALSE)
+cat(wkt(orig1), "\n")
+```
+
+Using the default setting to remove the unintended `BOUNDCRS` representation, we can get what was (probably) intended (when the **sp** version is as was before this work-around was added, the following two chunks yield `BOUNDCRS` for some versions of PROJ/GDAL:
+
+```{r, eval=odd_run, warning=FALSE}
+orig1a <- CRS(slot(orig, "projargs"))
+cat(wkt(orig1a), "\n")
+```
+
+The `sp::rebuild_CRS()` method for `"CRS"` objects (and thus that for `"Spatial"` objects) can be used to do the same as using `sp::CRS()` directly, with special treatment for a number of other objects inheriting from `"Spatial"`:
+
+```{r, eval=odd_run, warning=FALSE}
+orig1b <- rebuild_CRS(orig)
+cat(wkt(orig1b), "\n")
+```
+
+In practice, `sp::rebuild_CRS()` methods may be used, but users should check the output for coherence, and the PROJ function for extracting `SOURCECRS` from `BOUNDCRS` avoided if it has unfortunate consequences.
 
 ### References
 

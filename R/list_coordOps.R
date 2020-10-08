@@ -1,4 +1,4 @@
-list_coordOps <- function(src_crs, tgt_crs, area_of_interest=as.numeric(NA), strict_containment=FALSE, visualization_order=TRUE) {
+list_coordOps <- function(src_crs, tgt_crs, area_of_interest=as.numeric(NA), strict_containment=FALSE, visualization_order=NULL) {
     stopifnot(is.character(src_crs))
     stopifnot(length(src_crs) == 1L)
     stopifnot(is.character(tgt_crs))
@@ -8,8 +8,13 @@ list_coordOps <- function(src_crs, tgt_crs, area_of_interest=as.numeric(NA), str
         (length(area_of_interest) == 4L))
     stopifnot(is.logical(strict_containment))
     stopifnot(length(strict_containment) == 1L)
-    stopifnot(is.logical(visualization_order))
-    stopifnot(length(visualization_order) == 1L)
+    if (!is.null(visualization_order)) {
+        stopifnot(is.logical(visualization_order))
+        stopifnot(length(visualization_order) == 1L)
+        stopifnot(!is.na(visualization_order))
+    } else {
+        visualization_order <- get_enforce_xy()
+    }
     res <- .Call("list_coordinate_ops", src_crs, tgt_crs, area_of_interest, 
         strict_containment, visualization_order, PACKAGE="rgdal")
     if (is.null(res)) stop("function not available without PROJ 6")
@@ -42,6 +47,8 @@ prettify_wkt <- function(inSRID) {
         res <- strwrap(gsub(",", ", ", inSRID), exdent=8,
             width=0.8*getOption("width"))
     if (substring(inSRID, 1, 4) == "EPSG") res <- inSRID
+    if (substring(inSRID, 1, 4) == "ESRI") res <- inSRID
+    if (substring(inSRID, 1, 3) == "OGC") res <- inSRID
     res
 }
 

@@ -28,7 +28,7 @@ Type 'q()' to quit R.
 > coordinates(states) <- c("x", "y")
 > proj4string(states) <- CRS("+proj=longlat +ellps=clrk66")
 Warning message:
-In showSRID(uprojargs, format = "PROJ", multiline = "NO") :
+In showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj = prefer_proj) :
   PROJ/GDAL PROJ string degradation in workflow
  repeated warnings suppressed
  Discarded datum Unknown based on Clarke 1866 ellipsoid in CRS definition
@@ -75,4 +75,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  0.442   0.031   0.468 
+  0.448   0.038   0.483 

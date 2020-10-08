@@ -1,3 +1,94 @@
+2020-10-05 10:12  rsbivand
+
+	* tests/test_enforce_xy.Rout.save: tidy
+
+2020-10-05 09:58  rsbivand
+
+	* tests/srs_rendering.Rout.save: tidy
+
+2020-10-05 09:53  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-09-15 10:04  rsbivand
+
+	* R/ogr_sp.R, man/showWKT.Rd: SRS_string empty string error
+
+2020-09-08 13:48  rsbivand
+
+	* DESCRIPTION, man/showWKT.Rd, src/proj6.cpp: add OGC:CRS84 support
+	  and description
+
+2020-09-08 12:45  rsbivand
+
+	* man/CRS-class.Rd, man/list_coordOps.Rd,
+	  man/spTransform-methods.Rd: add OGC:CRS84 support and description
+
+2020-09-07 08:05  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: add OGC:CRS84
+	  support and description
+
+2020-09-06 17:22  rsbivand
+
+	* R/list_coordOps.R, R/ogr_sp.R, man/showWKT.Rd,
+	  vignettes/CRS_projections_transformations.Rmd: add OGC:CRS84
+	  support and description
+
+2020-09-06 12:11  rsbivand
+
+	* R/ogr_sp.R: check for +type=crs
+
+2020-09-02 18:27  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/Class-CRSx.R, R/ogr_sp.R, man/showWKT.Rd,
+	  vignettes/PROJ6_GDAL3.Rmd: prefer PROJ issues
+
+2020-09-02 17:29  rsbivand
+
+	* R/Class-CRSx.R: run showSRID via PROJ not GDAL if possble
+
+2020-09-02 13:38  rsbivand
+
+	* R/Class-CRSx.R, R/list_coordOps.R, R/ogr_sp.R,
+	  man/list_coordOps.Rd, man/showWKT.Rd, src/init.c,
+	  src/ogr_proj.cpp, src/proj6.cpp, src/projectit.cpp, src/rgdal.h,
+	  tests/srs_rendering.Rout.save, tests/test_enforce_xy.R,
+	  tests/test_enforce_xy.Rout.save, tests/test_proj.Rout.save,
+	  vignettes/CRS_projections_transformations.Rmd: run showSRID via
+	  PROJ not GDAL if possble
+
+2020-09-01 11:34  rsbivand
+
+	* configure, configure.ac: add stdlib.h declaration to configure.ac
+	  where missing
+
+2020-08-17 13:48  rsbivand
+
+	* R/project.R: adapt for PROJ < 6
+
+2020-08-17 10:08  rsbivand
+
+	* NAMESPACE, R/project.R, man/showWKT.Rd, src/init.c,
+	  src/ogr_proj.cpp, src/rgdal.h: use ORSIsProjected()
+
+2020-08-09 19:24  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: add
+	  get_source_from_boundcrs
+
+2020-08-09 18:56  rsbivand
+
+	* DESCRIPTION, R/Class-CRSx.R, configure,
+	  inst/misc/GGHB.IG_CRS.rda, man/CRS-class.Rd, src/init.c,
+	  src/proj6.cpp, src/projectit.cpp, src/rgdal.h,
+	  vignettes/CRS_projections_transformations.Rmd: add
+	  get_source_from_boundcrs
+
+2020-08-05 13:13  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2020-08-04 19:37  rsbivand
 
 	* R/project.R: add try() around project() in get_aoi()

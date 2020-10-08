@@ -119,7 +119,7 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer, SEXP morphFromESRI, SEXP dumpSRS); /
 SEXP p4s_to_wkt(SEXP p4s, SEXP esri);// GDAL
 SEXP wkt_to_p4s(SEXP wkt, SEXP esri);// GDAL
 SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);// GDAL
-//SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);
+SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);
 SEXP ogrAutoIdentifyEPSG(SEXP p4s);// GDAL
 SEXP list_coordinate_ops(SEXP source, SEXP target, SEXP area_of_interest, SEXP strict_containment, SEXP vis_order); // both
 SEXP PROJ4VersionInfo(void); // different
@@ -140,6 +140,9 @@ SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran); //
 SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran); // both
 SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp); // both
 SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi); // both
+SEXP get_source_crs(SEXP source); // both
+SEXP proj_vis_order(SEXP wkt2); // both
+SEXP OSR_is_projected(SEXP inSRID);
 
 #ifdef __cplusplus
 }

@@ -42,6 +42,7 @@ load_stuff <- function() {
   assign("thin_PROJ6_warnings", FALSE, envir=.RGDAL_CACHE)
   assign("PROJ6_warnings_count", 0L, envir=.RGDAL_CACHE)
   assign("enforce_xy", TRUE, envir=.RGDAL_CACHE)
+  assign("prefer_proj", TRUE, envir=.RGDAL_CACHE)
   rgdal_show_exportToProj4_warnings <- options("rgdal_show_exportToProj4_warnings")
   if (!is.null(rgdal_show_exportToProj4_warnings)) {
     if (!(rgdal_show_exportToProj4_warnings %in% c("all", "thin", "none"))) {

@@ -39,6 +39,7 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
     else if (LOGICAL_POINTER(enforce_xy)[0] == 1) vis_order = 1;
     else if (LOGICAL_POINTER(enforce_xy)[0] == 0) vis_order = 0;
     else vis_order = 0;
+//Rprintf("vis_order: %d\n", vis_order);
 //srs.SetFromUserInput("ESRI:102008")
     if (INTEGER_POINTER(in_format)[0] == 1L) {
         installErrorHandler();
@@ -82,10 +83,13 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
         uninstallErrorHandlerAndTriggerError();
     }
 
+//    Rprintf("MappingStrategy in: %d\n",  hSRS->GetAxisMappingStrategy());
     if (hSRS != NULL) {
-        if (vis_order == 1) 
+        if (vis_order == 1) {
             hSRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
+        }
     }
+//    Rprintf("MappingStrategy out: %d\n", hSRS->GetAxisMappingStrategy());
 
 
     PROTECT(ans=NEW_CHARACTER(1)); pc++;
@@ -158,6 +162,26 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
     return(R_NilValue);
 #endif
 
+}
+
+SEXP OSR_is_projected(SEXP inSRID) {
+
+    OGRSpatialReference *hSRS = new OGRSpatialReference;
+    int is_proj;
+    SEXP ans;
+
+    installErrorHandler();
+    if (hSRS->SetFromUserInput((const char *) CHAR(STRING_ELT(inSRID, 0))) != OGRERR_NONE) {
+        delete hSRS;
+        uninstallErrorHandlerAndTriggerError();
+        error("Can't parse user input string");
+    }
+    uninstallErrorHandlerAndTriggerError();
+    is_proj = hSRS->IsProjected();
+    PROTECT(ans = NEW_LOGICAL(1));
+    LOGICAL_POINTER(ans)[0] = is_proj;
+    UNPROTECT(1);
+    return(ans);
 }
 
 

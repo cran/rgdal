@@ -145,6 +145,18 @@ get_aoi <- function(obj, xy, inv, proj) {
 }
 
 
+OSRIsProjected <- function(obj) {
+    stopifnot(inherits(obj, "CRS"))
+    wkt2 <- wkt(obj)
+    if (!is.null(wkt2) && new_proj_and_gdal())
+        return(.Call("OSR_is_projected", wkt2, PACKAGE="rgdal"))
+    p4str <- slot(obj, "projargs")
+    if (is.na(p4str) || !nzchar(p4str)) 
+	return(as.logical(NA))    
+    .Call("OSR_is_projected", p4str, PACKAGE="rgdal")
+}
+
+
 "project" <- function(xy, proj, inv=FALSE, use_ob_tran=FALSE, legacy=TRUE, allowNAs_if_not_legacy=FALSE, coordOp=NULL, verbose=FALSE, use_aoi=TRUE) {
 
 #    if (new_proj_and_gdal()) 

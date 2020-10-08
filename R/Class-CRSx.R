@@ -78,9 +78,11 @@ checkCRSArgs <- function(uprojargs=NA_character_) {
   res
 }
 
-checkCRSArgs_ng <- function(uprojargs=NA_character_, SRS_string=NULL) {
+checkCRSArgs_ng <- function(uprojargs=NA_character_, SRS_string=NULL,
+  get_source_if_boundcrs=TRUE) {
   no_SRS <- is.null(SRS_string)
   no_PROJ <- is.na(uprojargs)
+  prefer_proj <- get_prefer_proj()
   res <- vector(mode="list", length=3L)
   res[[1]] <- FALSE
   res[[2]] <- NA_character_
@@ -92,31 +94,59 @@ checkCRSArgs_ng <- function(uprojargs=NA_character_, SRS_string=NULL) {
   if (!no_PROJ) {
     stopifnot(is.character(uprojargs))
     stopifnot(length(uprojargs) == 1L)
+    if (grepl("\\+init\\=", uprojargs)) prefer_proj <- FALSE
   }
   if (!no_SRS) {
-    uprojargs1 <- try(showSRID(SRS_string, format="PROJ", multiline="NO"),
-        silent=TRUE)
+    uprojargs1 <- try(showSRID(SRS_string, format="PROJ", multiline="NO",
+        prefer_proj=prefer_proj), silent=TRUE)
     if (inherits(uprojargs1, "try-error")) {
       res[[1]] <- FALSE
       res[[2]] <- NA_character_
     } else {
       res[[1]] <- TRUE
-      res[[2]] <- uprojargs1
+      res[[2]] <- gsub(" \\+type\\=crs", "", uprojargs1)
     }
-    wkt2 <- showSRID(SRS_string, format="WKT2", multiline="YES")
-    if (!inherits(wkt2, "try-error")) res[[3]] <- wkt2
+    wkt2 <- try(showSRID(SRS_string, format="WKT2", multiline="YES",
+        prefer_proj=prefer_proj), silent=TRUE)
+    if (!inherits(wkt2, "try-error")) {
+      if (get_enforce_xy()) wkt2 <- try(.Call("proj_vis_order", wkt2,
+        PACKAGE="rgdal"), silent=TRUE)
+      if (!inherits(wkt2, "try-error")) {
+        res[[3]] <- wkt2
+      }
+    }
   } else if (!no_PROJ) {
     uprojargs <- sub("^\\s+", "", uprojargs)
-    uprojargs1 <- showSRID(uprojargs, format="PROJ", multiline="NO")
+    if (prefer_proj && !grepl("\\+type\\=crs", uprojargs))
+      uprojargs <- paste0(uprojargs, " +type=crs") 
+    uprojargs1 <- try(showSRID(uprojargs, format="PROJ", multiline="NO",
+        prefer_proj=prefer_proj), silent=TRUE)
     if (inherits(uprojargs1, "try-error")) {
       res[[1]] <- FALSE
       res[[2]] <- NA_character_
     } else {
       res[[1]] <- TRUE
-      res[[2]] <- uprojargs1
+      res[[2]] <- gsub(" \\+type\\=crs", "", uprojargs1)
     }
-    wkt2 <- showSRID(uprojargs, format="WKT2", multiline="YES")
-    if (!inherits(wkt2, "try-error")) res[[3]] <- wkt2
+    wkt2 <- try(showSRID(uprojargs, format="WKT2", multiline="YES",
+        prefer_proj=prefer_proj), silent=TRUE)
+    if (!inherits(wkt2, "try-error")) {
+      if (get_source_if_boundcrs) {
+        if (length(grep("^BOUNDCRS", wkt2)) > 0L) {
+          wkt2a <- try(.Call("get_source_crs", wkt2, PACKAGE="rgdal"),
+            silent=TRUE)
+          if (!inherits(wkt2a, "try-error")) wkt2 <- wkt2a
+        }
+      }
+      if (get_enforce_xy()) {
+        wkt2a <- try(.Call("proj_vis_order", wkt2, PACKAGE="rgdal"),
+          silent=TRUE)
+          if (!inherits(wkt2a, "try-error")) {
+            wkt2 <- wkt2a
+          }
+      }
+      res[[3]] <- wkt2
+    }
   }
   res
 }

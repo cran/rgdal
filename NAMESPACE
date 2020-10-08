@@ -29,7 +29,7 @@ export(rgdal_extSoftVersion, PROJis6ormore, GDALis3ormore, GDAL_OSR_PROJ,
 export(project, make_EPSG, projInfo, getPROJ4VersionInfo, getPROJ4libPath,
   projNAD)
 export(CRSargs, checkCRSArgs, checkCRSArgs_ng, compare_CRS)
-export(get_P6_datum_hard_fail, set_P6_datum_hard_fail, get_transform_wkt_comment, set_transform_wkt_comment, get_last_coordOp, get_thin_PROJ6_warnings, set_thin_PROJ6_warnings, get_enforce_xy, set_enforce_xy, get_rgdal_show_exportToProj4_warnings, set_rgdal_show_exportToProj4_warnings, get_PROJ6_warnings_count)
+export(get_P6_datum_hard_fail, set_P6_datum_hard_fail, get_transform_wkt_comment, set_transform_wkt_comment, get_last_coordOp, get_thin_PROJ6_warnings, set_thin_PROJ6_warnings, get_enforce_xy, set_enforce_xy, get_prefer_proj, set_prefer_proj, get_rgdal_show_exportToProj4_warnings, set_rgdal_show_exportToProj4_warnings, get_PROJ6_warnings_count)
 export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
 export(getGDALDriverNames, getDriverName, getDriverLongName, gdalDrivers)
 export(getDescription)
@@ -55,7 +55,7 @@ export(get_proj_search_paths, set_proj_search_paths, proj_CDN_user_writable_dir)
 #  spTransform.SpatialLinesDataFrame, spTransform.SpatialPolygons, 
 #  spTransform.SpatialPolygonsDataFrame)
 
-export(OGRSpatialRef, GDALSpatialRef)
+export(OGRSpatialRef, GDALSpatialRef, OSRIsProjected)
 
 export(get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84,
  set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84)

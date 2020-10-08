@@ -200,8 +200,8 @@ SEXP get_proj_search_path(void) {
 
 SEXP get_proj_user_writable_dir() {
 
-    SEXP res;
 #if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
+    SEXP res;
     PROTECT(res = NEW_CHARACTER(1));
     SET_STRING_ELT(res, 0, COPY_TO_USER_STRING(proj_context_get_user_writable_directory(PJ_DEFAULT_CTX, false)));
     UNPROTECT(1);
@@ -233,6 +233,70 @@ SEXP set_proj_paths(SEXP paths) {
     return(res);
 }
 
+SEXP get_source_crs(SEXP source) {
+
+    PJ_CONTEXT *ctx = proj_context_create();
+    PJ *source_crs, *target_crs;
+    SEXP res;
+
+    source_crs = proj_create(ctx, CHAR(STRING_ELT(source, 0)));
+
+    if (source_crs == NULL) {
+        proj_context_destroy(ctx);
+        error("source crs not created");
+    }
+
+    target_crs = proj_get_source_crs(ctx, source_crs);
+
+    if (target_crs == NULL) {
+        proj_context_destroy(ctx);
+        error("target crs not created");
+    }
+
+    PROTECT(res = NEW_CHARACTER(1));
+    SET_STRING_ELT(res, 0,
+        COPY_TO_USER_STRING(proj_as_wkt(ctx, target_crs, PJ_WKT2_2019, NULL)));
+    UNPROTECT(1);
+    proj_destroy(target_crs);
+    proj_destroy(source_crs);
+    proj_context_destroy(ctx);
+
+    return(res);
+
+
+}
+
+SEXP proj_vis_order(SEXP wkt2) {
+
+    PJ_CONTEXT *ctx = proj_context_create();
+    PJ *source_crs, *target_crs;
+    SEXP res;
+
+    source_crs = proj_create(ctx, CHAR(STRING_ELT(wkt2, 0)));
+
+    if (source_crs == NULL) {
+        proj_context_destroy(ctx);
+        error("proj_vis_order: source crs not created");
+    }
+
+    target_crs = proj_normalize_for_visualization(ctx, source_crs);
+
+    if (target_crs == NULL) {
+        proj_context_destroy(ctx);
+        error("proj_vis_order: target crs not created");
+    }
+
+    PROTECT(res = NEW_CHARACTER(1));
+    SET_STRING_ELT(res, 0,
+        COPY_TO_USER_STRING(proj_as_wkt(ctx, target_crs, PJ_WKT2_2019, NULL)));
+    UNPROTECT(1);
+    proj_destroy(target_crs);
+    proj_destroy(source_crs);
+    proj_context_destroy(ctx);
+
+    return(res);
+
+}
 
 // unname(sapply(o[[2]], function(x) gsub(" ", " +", paste0("+", x))))
 
@@ -848,16 +912,15 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, S
     return(res);
 }
 
-/*SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
+SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
     SEXP epsg, SEXP out_format) {
 
     SEXP ans;
-    SEXP Datum, ToWGS84, Ellps;
+    SEXP Datum, Ellps;
     int pc=0;
     int vis_order;
     SEXP enforce_xy = getAttrib(in_format, install("enforce_xy"));
     const char *pszSRS = NULL;
-    char **papszOptions = NULL;
 
     if (enforce_xy == R_NilValue) vis_order = 0;
     else if (LOGICAL_POINTER(enforce_xy)[0] == 1) vis_order = 1;
@@ -866,12 +929,52 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, S
 
     PJ_CONTEXT *ctx = proj_context_create();
     PJ *source_crs;
+    PJ_TYPE type;
 
     if ((source_crs = proj_create(ctx, CHAR(STRING_ELT(inSRID, 0)))) == NULL) {
         const char *errstr = proj_errno_string(proj_context_errno(ctx));
         proj_context_destroy(ctx);
 	error("source crs creation failed: %s", errstr);
     }
+
+    type = proj_get_type(source_crs);
+
+    if (type == PJ_TYPE_BOUND_CRS) {
+        source_crs = proj_get_source_crs(ctx, source_crs);
+
+        if (source_crs == NULL) {
+            proj_context_destroy(ctx);
+            error("crs not converted to source only");
+        }
+    }
+
+    if (vis_order) {
+        source_crs = proj_normalize_for_visualization(ctx, source_crs);
+        if (source_crs == NULL) {
+            proj_context_destroy(ctx);
+            error("crs not converted to visualization order");
+        }
+    }
+
+    PJ* dtm = proj_crs_get_datum(ctx, source_crs);
+    if (dtm != NULL) {
+        PROTECT(Datum = NEW_CHARACTER(1)); pc++;
+        SET_STRING_ELT(Datum, 0, COPY_TO_USER_STRING(proj_get_name(dtm)));
+        proj_destroy(dtm);
+    } else {
+        Datum = R_NilValue;
+    }
+
+    PJ* ellps = proj_get_ellipsoid(ctx, source_crs);
+    if (ellps != NULL) {
+        PROTECT(Ellps = NEW_CHARACTER(1)); pc++;
+        SET_STRING_ELT(Ellps, 0, COPY_TO_USER_STRING(proj_get_name(ellps)));
+        proj_destroy(ellps);
+    } else {
+        Ellps = R_NilValue;
+    }
+
+
 
     PROTECT(ans=NEW_CHARACTER(1)); pc++;
 
@@ -887,7 +990,7 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, S
         }
     } else if (INTEGER_POINTER(out_format)[0] == 2L) {
         
-        if ((pszSRS = proj_as_proj_string(ctx, source_crs, PJ_PROJ_5, NULL)) 
+        if ((pszSRS = proj_as_proj_string(ctx, source_crs, PJ_PROJ_4, NULL)) 
             == NULL) {
             const char *errstr = proj_errno_string(proj_context_errno(ctx));
             warning("export to PROJ failed: %s", errstr);
@@ -898,8 +1001,12 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, S
     } else {
         proj_destroy(source_crs);
         proj_context_destroy(ctx);
+        UNPROTECT(pc);
         error("unknown output format");
     }
+    setAttrib(ans, install("datum"), Datum);
+    setAttrib(ans, install("ellps"), Ellps);
+
 
     proj_destroy(source_crs);
     proj_context_destroy(ctx);
@@ -907,7 +1014,7 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, S
 
     return(ans);
 
-}*/
+}
 
 
 
