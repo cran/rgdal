@@ -1598,14 +1598,16 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## Name:   projargs
 ## Class: character</code></pre>
 <pre class="r"><code>rgdal::rgdal_extSoftVersion()</code></pre>
-<pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp 
-##        &quot;3.1.3&quot;         &quot;TRUE&quot;        &quot;7.1.1&quot;        &quot;1.4-4&quot;</code></pre>
+<pre><code>##                  GDAL        GDAL_with_GEOS                  PROJ 
+## &quot;3.2.0dev-b51dc28ab7&quot;                &quot;TRUE&quot;               &quot;7.2.0&quot; 
+##                    sp 
+##               &quot;1.4-4&quot;</code></pre>
 <pre class="r"><code>##           GDAL GDAL_with_GEOS           PROJ             sp 
 ##        &quot;3.0.2&quot;         &quot;TRUE&quot;        &quot;6.2.1&quot;        &quot;1.3-3&quot;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2           GDAL GDAL_with_GEOS         PROJ.4             sp 
 ## PROJ4/GDAL2        &quot;2.2.3&quot;         &quot;TRUE&quot;        &quot;4.9.3&quot;        &quot;1.3-1&quot;</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.5.17&#39;</code></pre>
+<pre><code>## [1] &#39;1.5.18&#39;</code></pre>
 <pre class="r"><code>## [1] &#39;1.5.1&#39;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2 [1] &#39;1.4.7&#39;</code></pre>
 <p>The changes introduced affect <code>CRS()</code> when <strong>rgdal</strong> is available; if <strong>rgdal</strong> is not available, the <code>&quot;CRS&quot;</code> object just contains a lightly checked PROJ-style string. Because some terms are deprecated or defunct from PROJ6/GDAL3, we need to be careful. GDAL’s <code>exportToProj4()</code> uses the PROJ <code>proj_as_proj_string()</code> function in its new API to return the PROJ string. Terms which are deprecated or defunct may be omitted. In the PROJ6+/GDAL3+ case, <code>CRS()</code> calls <code>rgdal::checkCRSArgs_ng()</code>, a new generation function replacing the legacy <code>rgdal::checkCRSArgs()</code> function.</p>
@@ -1703,7 +1705,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## ORDER[1], ANGLEUNIT[&quot;degree&quot;, 0.0174532925199433, ID[&quot;EPSG&quot;, 9122]]],
 ## AXIS[&quot;latitude&quot;, north, ORDER[2], ANGLEUNIT[&quot;degree&quot;,
 ## 0.0174532925199433, ID[&quot;EPSG&quot;, 9122]]], USAGE[ SCOPE[&quot;unknown&quot;],
-## AREA[&quot;World&quot;], BBOX[-90, -180, 90, 180]]]</code></pre>
+## AREA[&quot;World.&quot;], BBOX[-90, -180, 90, 180]]]</code></pre>
 <pre class="r"><code>## [1] &quot;GEOGCRS[\&quot;WGS 84\&quot;, DATUM[\&quot;World Geodetic System 1984\&quot;, ELLIPSOID[\&quot;WGS 84\&quot;, 
 ## 6378137, 298.257223563, LENGTHUNIT[\&quot;metre\&quot;, 1]], ID[\&quot;EPSG\&quot;, 6326]],
 ## PRIMEM[\&quot;Greenwich\&quot;, 0, ANGLEUNIT[\&quot;degree\&quot;, 0.0174532925199433], ID[\&quot;EPSG\&quot;,
@@ -1774,8 +1776,10 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## northing&quot;, -100000, LENGTHUNIT[&quot;metre&quot;, 1], ID[&quot;EPSG&quot;, 8807]]],
 ## CS[Cartesian, 2], AXIS[&quot;(E)&quot;, east, ORDER[1], LENGTHUNIT[&quot;metre&quot;, 1]],
 ## AXIS[&quot;(N)&quot;, north, ORDER[2], LENGTHUNIT[&quot;metre&quot;, 1]], USAGE[
-## SCOPE[&quot;unknown&quot;], AREA[&quot;UK - Britain and UKCS 49°45&#39;N to 61°N, 9°W to
-## 2°E&quot;], BBOX[49.75, -9, 61.01, 2.01]], ID[&quot;EPSG&quot;, 27700]]</code></pre>
+## SCOPE[&quot;Engineering survey, topographic mapping.&quot;], AREA[&quot;United Kingdom
+## (UK) - offshore to boundary of UKCS within 49°45&#39;N to 61°N and 9°W to
+## 2°E; onshore Great Britain (England, Wales and Scotland). Isle of Man
+## onshore.&quot;], BBOX[49.75, -9, 61.01, 2.01]], ID[&quot;EPSG&quot;, 27700]]</code></pre>
 <pre class="r"><code>## [1] &quot;PROJCRS[\&quot;OSGB 1936 / British National Grid\&quot;, BASEGEOGCRS[\&quot;OSGB 1936\&quot;,
 ## DATUM[\&quot;OSGB 1936\&quot;, ELLIPSOID[\&quot;Airy 1830\&quot;, 6377563.396, 299.3249646,
 ## LENGTHUNIT[\&quot;metre\&quot;, 1]]], PRIMEM[\&quot;Greenwich\&quot;, 0, ANGLEUNIT[\&quot;degree\&quot;,
@@ -1873,7 +1877,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ##                 ID[&quot;EPSG&quot;,9001]]],
 ##     USAGE[
 ##         SCOPE[&quot;unknown&quot;],
-##         AREA[&quot;UK - Britain and UKCS 49°45&#39;N to 61°N, 9°W to 2°E&quot;],
+##         AREA[&quot;United Kingdom (UK) - offshore to boundary of UKCS within 49°45&#39;N to 61°N and 9°W to 2°E; onshore Great Britain (England, Wales and Scotland). Isle of Man onshore.&quot;],
 ##         BBOX[49.75,-9,61.01,2.01]]]</code></pre>
 <pre class="r"><code>## PROJCRS[&quot;OSGB 1936 / British National Grid&quot;,
 ##     BASEGEOGCRS[&quot;OSGB 1936&quot;,
@@ -1981,7 +1985,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## axis order change (2D)&quot;</code></pre>
 <p>If we add back the discarded <code>+datum=</code> tag with a valid value, we give the search process what it needs to find more coordinate operations.</p>
 <pre class="r"><code>list_coordOps(paste0(discarded_datum, &quot; +datum=OSGB36 +type=crs&quot;), &quot;EPSG:4326&quot;)</code></pre>
-<pre><code>## Candidate coordinate operations found:  8 
+<pre><code>## Candidate coordinate operations found:  9 
 ## Strict containment:  FALSE 
 ## Visualization order:  TRUE 
 ## Source: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
@@ -1999,7 +2003,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ##              +s=-20.489 +convention=position_vector +step +inv
 ##              +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step
 ##              +proj=unitconvert +xy_in=rad +xy_out=deg
-## Operation 7 is lacking 1 grid with accuracy 1 m
+## Operation 8 is lacking 1 grid with accuracy 1 m
 ## Missing grid: uk_os_OSTN15_NTv2_OSGBtoETRS.tif 
 ## URL: https://cdn.proj.org/uk_os_OSTN15_NTv2_OSGBtoETRS.tif</code></pre>
 <p>Now we have 7 operations, one the ballpark accuracy operation with unknown accuracy found above, 5 others that can be instantiated, of which the best has 2m accuracy, and an operation that cannot be instantiated because a publically available grid is missing. On download and installation of this grid, 1m accuracy could be achieved.</p>
@@ -2028,7 +2032,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 <pre class="r"><code>wkt_source_datum &lt;- showSRID(&quot;EPSG:27700&quot;, &quot;WKT2&quot;)
 wkt_target_datum &lt;- showSRID(&quot;EPSG:4326&quot;, &quot;WKT2&quot;)
 (x &lt;- list_coordOps(wkt_source_datum, wkt_target_datum))</code></pre>
-<pre><code>## Candidate coordinate operations found:  8 
+<pre><code>## Candidate coordinate operations found:  9 
 ## Strict containment:  FALSE 
 ## Visualization order:  TRUE 
 ## Source: PROJCRS[&quot;OSGB 1936 / British National Grid&quot;, BASEGEOGCRS[&quot;OSGB
@@ -2049,10 +2053,12 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:4326&quot;, &quot;WKT2&quot;)
 ##         -100000, LENGTHUNIT[&quot;metre&quot;, 1], ID[&quot;EPSG&quot;, 8807]]],
 ##         CS[Cartesian, 2], AXIS[&quot;(E)&quot;, east, ORDER[1],
 ##         LENGTHUNIT[&quot;metre&quot;, 1]], AXIS[&quot;(N)&quot;, north, ORDER[2],
-##         LENGTHUNIT[&quot;metre&quot;, 1]], USAGE[ SCOPE[&quot;unknown&quot;],
-##         AREA[&quot;UK - Britain and UKCS 49°45&#39;N to 61°N, 9°W to
-##         2°E&quot;], BBOX[49.75, -9, 61.01, 2.01]], ID[&quot;EPSG&quot;,
-##         27700]]
+##         LENGTHUNIT[&quot;metre&quot;, 1]], USAGE[ SCOPE[&quot;Engineering
+##         survey, topographic mapping.&quot;], AREA[&quot;United Kingdom
+##         (UK) - offshore to boundary of UKCS within 49°45&#39;N to
+##         61°N and 9°W to 2°E; onshore Great Britain (England,
+##         Wales and Scotland). Isle of Man onshore.&quot;],
+##         BBOX[49.75, -9, 61.01, 2.01]], ID[&quot;EPSG&quot;, 27700]]
 ## Target:
 ## GEOGCRS[&quot;WGS 84 (with axis order normalized for
 ##         visualization)&quot;, DATUM[&quot;World Geodetic System 1984&quot;,
@@ -2076,7 +2082,7 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:4326&quot;, &quot;WKT2&quot;)
 ##              +s=-20.489 +convention=position_vector +step +inv
 ##              +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step
 ##              +proj=unitconvert +xy_in=rad +xy_out=deg
-## Operation 7 is lacking 1 grid with accuracy 1 m
+## Operation 8 is lacking 1 grid with accuracy 1 m
 ## Missing grid: uk_os_OSTN15_NTv2_OSGBtoETRS.tif 
 ## URL: https://cdn.proj.org/uk_os_OSTN15_NTv2_OSGBtoETRS.tif</code></pre>
 <pre class="r"><code>## Candidate coordinate operations found:  6 
@@ -2218,9 +2224,10 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 ##         10000000, LENGTHUNIT[&quot;metre&quot;, 1], ID[&quot;EPSG&quot;, 8807]]],
 ##         CS[Cartesian, 2], AXIS[&quot;(E)&quot;, east, ORDER[1],
 ##         LENGTHUNIT[&quot;metre&quot;, 1]], AXIS[&quot;(N)&quot;, north, ORDER[2],
-##         LENGTHUNIT[&quot;metre&quot;, 1]], USAGE[ SCOPE[&quot;unknown&quot;],
-##         AREA[&quot;Brazil - east of 36°W onshore&quot;], BBOX[-10.1, -36,
-##         -4.99, -34.74]], ID[&quot;EPSG&quot;, 22525]]
+##         LENGTHUNIT[&quot;metre&quot;, 1]], USAGE[ SCOPE[&quot;Engineering
+##         survey, topographic mapping.&quot;], AREA[&quot;Brazil - onshore
+##         east of 36°W .&quot;], BBOX[-10.1, -36, -4.99, -34.74]],
+##         ID[&quot;EPSG&quot;, 22525]]
 ## Target:
 ## PROJCRS[&quot;SIRGAS 2000 / UTM zone 25S&quot;, BASEGEOGCRS[&quot;SIRGAS
 ##         2000&quot;, DATUM[&quot;Sistema de Referencia Geocentrico para
@@ -2241,8 +2248,10 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 ##         10000000, LENGTHUNIT[&quot;metre&quot;, 1], ID[&quot;EPSG&quot;, 8807]]],
 ##         CS[Cartesian, 2], AXIS[&quot;(E)&quot;, east, ORDER[1],
 ##         LENGTHUNIT[&quot;metre&quot;, 1]], AXIS[&quot;(N)&quot;, north, ORDER[2],
-##         LENGTHUNIT[&quot;metre&quot;, 1]], USAGE[ SCOPE[&quot;unknown&quot;],
-##         AREA[&quot;Brazil - 36°W to 30°W&quot;], BBOX[-23.8, -36, 4.19,
+##         LENGTHUNIT[&quot;metre&quot;, 1]], USAGE[ SCOPE[&quot;Engineering
+##         survey, topographic mapping.&quot;], AREA[&quot;Brazil - between
+##         36°W and 30°W, northern and southern hemispheres,
+##         onshore and offshore.&quot;], BBOX[-23.8, -36, 4.19,
 ##         -29.99]], ID[&quot;EPSG&quot;, 31985]]
 ## Best instantiable operation has accuracy: 5 m
 ## Description: Inverse of UTM zone 25S + Corrego Alegre 1970-72 to SIRGAS 2000
@@ -2403,7 +2412,7 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 ## dumpSRS, : Discarded datum OSGB_1936 in CRS definition: +proj=tmerc +lat_0=49
 ## +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpDdItc7/Rinst1897c398887c9/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/Rtmpz7R9zg/Rinsta9e6e34998d8d/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -2471,7 +2480,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 ## dumpSRS, : Discarded datum OSGB_1936 in CRS definition: +proj=tmerc +lat_0=49
 ## +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpDdItc7/Rinst1897c398887c9/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/Rtmpz7R9zg/Rinsta9e6e34998d8d/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -2490,7 +2499,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <p>In <strong>rgdal</strong> 1.5-2, the coordinate operation lookup is done once for the first matrix of coordinates, and passed then on to subsequent transformations:</p>
 <pre class="r"><code>system.time(scot_LL2 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.059   0.004   0.069</code></pre>
+##   0.069   0.000   0.130</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.095   0.000   0.096</code></pre>
 <p>Timings for <strong>rgdal</strong> 1.5-1, when look-up was repeated for each matrix of coordinates:</p>
@@ -2518,7 +2527,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <pre class="r"><code>system.time(scot_LL3 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;),
                                     coordOp=get_last_coordOp()))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.057   0.001   0.064</code></pre>
+##   0.063   0.000   0.086</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.070</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL3), scale=1)</code></pre>
@@ -2531,7 +2540,7 @@ x &lt;- list_coordOps(wkt_source_datum, wkt_target_datum)
 system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;),
                                     coordOp=best_instantiable_coordOp(x)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.056   0.002   0.064</code></pre>
+##   0.063   0.001   0.107</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.069</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL4), scale=1)</code></pre>
@@ -2543,10 +2552,12 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
 <p>Luigi Ranghetti and Lorenzo Busetto provided <a href="http://rpubs.com/ranghetti/sptransform-issue">input</a> with regard to axis swapping in <strong>rgdal</strong>. The task is to provide round-trip coordinate identity for four CRS. Here, we use just <strong>sp</strong>/<strong>rgdal</strong> to create the input objects:</p>
 <pre class="r"><code>library(rgdal)</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.5.17&#39;</code></pre>
+<pre><code>## [1] &#39;1.5.18&#39;</code></pre>
 <pre class="r"><code>rgdal_extSoftVersion()</code></pre>
-<pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp 
-##        &quot;3.1.3&quot;         &quot;TRUE&quot;        &quot;7.1.1&quot;        &quot;1.4-4&quot;</code></pre>
+<pre><code>##                  GDAL        GDAL_with_GEOS                  PROJ 
+## &quot;3.2.0dev-b51dc28ab7&quot;                &quot;TRUE&quot;               &quot;7.2.0&quot; 
+##                    sp 
+##               &quot;1.4-4&quot;</code></pre>
 <pre class="r"><code>pt0_lonlat &lt;- SpatialPoints(matrix(c(10,46), nrow=1), proj4string= CRS(&quot;+init=epsg:4326&quot;))
 pt0_laea89 &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3035&quot;))</code></pre>
 <pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =

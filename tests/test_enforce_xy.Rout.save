@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2020-10-04 r79292) -- "Unsuffered Consequences"
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -16,10 +16,29 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > suppressPackageStartupMessages(library(rgdal))
-> get_enforce_xy()
-[1] TRUE
-> x0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
-> cat(x0, "\n")
+> if (new_proj_and_gdal()) {
++ get_enforce_xy()
++ x0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
++ cat(x0, "\n")
++ set_enforce_xy(FALSE)
++ x1 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
++ cat(x1, "\n")
++ set_enforce_xy(TRUE)
++ x2 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
++ cat(x2, "\n")
++ get_enforce_xy()
++ y0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
++ cat(y0, "\n")
++ showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
++ set_enforce_xy(FALSE)
++ y1 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
++ cat(y1, "\n")
++ showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
++ set_enforce_xy(TRUE)
++ y2 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
++ cat(y2, "\n")
++ showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
++ }
 GEOGCRS["WGS 84 (with axis order normalized for visualization)",
     DATUM["World Geodetic System 1984",
         ELLIPSOID["WGS 84",6378137,298.257223563,
@@ -37,9 +56,6 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ORDER[2],
             ANGLEUNIT["degree",0.0174532925199433,
                 ID["EPSG",9122]]]] 
-> set_enforce_xy(FALSE)
-> x1 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
-> cat(x1, "\n")
 GEOGCRS["WGS 84",
     DATUM["World Geodetic System 1984",
         ELLIPSOID["WGS 84",6378137,298.257223563,
@@ -58,9 +74,6 @@ GEOGCRS["WGS 84",
         AREA["World"],
         BBOX[-90,-180,90,180]],
     ID["EPSG",4326]] 
-> set_enforce_xy(TRUE)
-> x2 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
-> cat(x2, "\n")
 GEOGCRS["WGS 84 (with axis order normalized for visualization)",
     DATUM["World Geodetic System 1984",
         ELLIPSOID["WGS 84",6378137,298.257223563,
@@ -78,10 +91,6 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ORDER[2],
             ANGLEUNIT["degree",0.0174532925199433,
                 ID["EPSG",9122]]]] 
-> get_enforce_xy()
-[1] TRUE
-> y0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
-> cat(y0, "\n")
 GEOGCRS["WGS 84 (with axis order normalized for visualization)",
     DATUM["World Geodetic System 1984",
         ELLIPSOID["WGS 84",6378137,298.257223563,
@@ -99,11 +108,6 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ORDER[2],
             ANGLEUNIT["degree",0.0174532925199433,
                 ID["EPSG",9122]]]] 
-> showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
-[1] "+proj=longlat +datum=WGS84 +no_defs +type=crs"
-> set_enforce_xy(FALSE)
-> y1 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
-> cat(y1, "\n")
 GEOGCRS["WGS 84",
     DATUM["World Geodetic System 1984",
         ELLIPSOID["WGS 84",6378137,298.257223563,
@@ -122,11 +126,6 @@ GEOGCRS["WGS 84",
         AREA["World"],
         BBOX[-90,-180,90,180]],
     ID["EPSG",4326]] 
-> showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
-[1] "+proj=longlat +datum=WGS84 +no_defs +type=crs"
-> set_enforce_xy(TRUE)
-> y2 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
-> cat(y2, "\n")
 GEOGCRS["WGS 84 (with axis order normalized for visualization)",
     DATUM["World Geodetic System 1984",
         ELLIPSOID["WGS 84",6378137,298.257223563,
@@ -144,10 +143,9 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ORDER[2],
             ANGLEUNIT["degree",0.0174532925199433,
                 ID["EPSG",9122]]]] 
-> showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
 [1] "+proj=longlat +datum=WGS84 +no_defs +type=crs"
 > 
 > 
 > proc.time()
    user  system elapsed 
-  0.336   0.033   0.401 
+  0.385   0.045   0.536 

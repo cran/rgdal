@@ -1,4 +1,5 @@
 suppressPackageStartupMessages(library(rgdal))
+if (new_proj_and_gdal()) {
 get_enforce_xy()
 x0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
 cat(x0, "\n")
@@ -20,4 +21,5 @@ set_enforce_xy(TRUE)
 y2 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
 cat(y2, "\n")
 showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
+}
 

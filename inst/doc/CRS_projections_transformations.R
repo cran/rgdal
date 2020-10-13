@@ -21,7 +21,7 @@ knitr::include_graphics(system.file("misc/meuse.png", package="rgdal"))
 
 ## ---- echo=FALSE--------------------------------------------------------------
 odd_run <- FALSE
-if (PROJis6ormore() && GDALis3ormore()) odd_run <- TRUE
+if (new_proj_and_gdal()) odd_run <- TRUE
 
 ## ---- eval=odd_run------------------------------------------------------------
 ellps <- projInfo("ellps")
@@ -50,7 +50,7 @@ db <- dbConnect(SQLite(), dbname=file.path(shpr[length(shpr)], "proj.db"))
 dbListTables(db)
 
 ## ---- eval=run && odd_run-----------------------------------------------------
-dbReadTable(db, "metadata")
+(metadata <- dbReadTable(db, "metadata"))
 
 ## ---- warning=TRUE, eval=odd_run----------------------------------------------
 cat(wkt(CRS(SRS_string="OGC:CRS84")), "\n")
@@ -71,7 +71,7 @@ cat(WKT, "\n")
 
 ## ---- eval=run && odd_run-----------------------------------------------------
 cov <- dbReadTable(db, "coordinate_operation_view")
-cov[grep("OSGB", cov$name), c(1, 3, 4, 9, 16)]
+cov[grep("OSGB", cov$name), c("table_name", "code", "name", "method_name", "accuracy")]
 
 ## ---- eval=odd_run------------------------------------------------------------
 list_coordOps(paste0(proj4string(b_pump), " +type=crs"), "EPSG:4326")
@@ -91,7 +91,7 @@ print(coordinates(isballpark), digits=10)
 
 ## ---- eval=run && odd_run-----------------------------------------------------
 helm <- dbReadTable(db, "helmert_transformation_table")
-helm[helm$code == "1314",c(1:3, 15:17, 20:22, 25)]
+helm[helm$code == "1314", c("auth_name", "code", "name", "tx", "ty", "tz", "rx", "ry", "rz", "scale_difference")]
 dbDisconnect(db)
 
 ## ---- eval=odd_run------------------------------------------------------------

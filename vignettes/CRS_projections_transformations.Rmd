@@ -57,7 +57,7 @@ The **mapproj** package provided coordinate reference system and projection supp
 
 ```{r, echo=FALSE}
 odd_run <- FALSE
-if (PROJis6ormore() && GDALis3ormore()) odd_run <- TRUE
+if (new_proj_and_gdal()) odd_run <- TRUE
 ```
 
 
@@ -111,7 +111,7 @@ dbListTables(db)
 ```
 
 ```{r, eval=run && odd_run}
-dbReadTable(db, "metadata")
+(metadata <- dbReadTable(db, "metadata"))
 ```
 
 
@@ -157,7 +157,7 @@ PROJ.4 assumed that the from/source and to/target coordinate reference system de
 
 ```{r, eval=run && odd_run}
 cov <- dbReadTable(db, "coordinate_operation_view")
-cov[grep("OSGB", cov$name), c(1, 3, 4, 9, 16)]
+cov[grep("OSGB", cov$name), c("table_name", "code", "name", "method_name", "accuracy")]
 ```
 
 The same search can be conducted directly without using **RSQLite** to query the database tables, searching by source and target CRS, and in the near future also by area of interest. If we search using only the degraded PROJ.4 string, we only find a ballpark accuracy coordinate operation, yielding a pipeline with two steps, inverse projection to geographical coordinates in radians, and conversion from radians to degrees. Note that `rgdal::spTransform()` and its wrapper `sp::spTransform()` use PROJ for coordinate operations. Here we will use `"EPSG:4326"` briefly for exposition:
@@ -200,7 +200,7 @@ The Helmert transformation has parameters retrieved from the PROJ SQLite databas
 
 ```{r, eval=run && odd_run}
 helm <- dbReadTable(db, "helmert_transformation_table")
-helm[helm$code == "1314",c(1:3, 15:17, 20:22, 25)]
+helm[helm$code == "1314", c("auth_name", "code", "name", "tx", "ty", "tz", "rx", "ry", "rz", "scale_difference")]
 dbDisconnect(db)
 ```
 
