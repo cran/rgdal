@@ -606,11 +606,20 @@ getRasterData <- function(dataset,
 
         raster <- getRasterBand(dataset, band[i])
 
-        x[,,i] <- .Call('RGDAL_GetRasterData', raster,
+        y <- .Call('RGDAL_GetRasterData', raster,
                       as.integer(c(offset, region.dim)),
                       as.integer(output.dim),
                       as.integer(interleave),
                       PACKAGE="rgdal")
+        
+        if (length(band) == 1) {
+          # avoid surprisingly expensive slice assignment for
+          # common case of a single band
+          attributes(y) <- attributes(x)
+          x <- y
+        } else {
+          x[,,i] <- y
+        }
   
     }
     if (!as.is) {

@@ -249,7 +249,7 @@ OSRIsProjected <- function(obj) {
                     }
                 }
                 coordOp <- .Call("project_ng_coordOp", proj,
-                    as.logical(inv), aoi, PACKAGE="rgdal")
+                    as.logical(inv), aoi, as.logical(use_ob_tran), PACKAGE="rgdal")
             }
             if (verbose) cat(strwrap(coordOp), sep="\n")
             res <- .Call("project_ng",
@@ -257,8 +257,6 @@ OSRIsProjected <- function(obj) {
                 as.double(xy[,1]),
                 as.double(xy[,2]),
                 NULL,
-                as.logical(inv),
-                as.logical(use_ob_tran),
                 coordOp,
                 PACKAGE="rgdal")
         } else {
@@ -442,12 +440,11 @@ if (!isGeneric("spTransform"))
                     else use_ob_tran1 <- TRUE
                     if (is.null(coordOp)) {
                         out_coordOp <- .Call("project_ng_coordOp", proj,
-                            as.logical(inv), NULL, #as.logical(use_ob_tran1),
+                            as.logical(inv), NULL, as.logical(use_ob_tran1),
                             PACKAGE="rgdal")
                     }
                     res <- .Call("project_ng", as.integer(n), 
                         as.double(crds[,1]), as.double(crds[,2]), NULL,
-                        as.logical(inv), as.logical(use_ob_tran1),
                         out_coordOp, PACKAGE="rgdal")
                 }
             } else {
@@ -484,13 +481,12 @@ if (!isGeneric("spTransform"))
                     else use_ob_tran1 <- TRUE
                     if (is.null(coordOp)) {
                         out_coordOp <- .Call("project_ng_coordOp", proj,
-                            as.logical(inv), NULL, #as.logical(use_ob_tran1),
+                            as.logical(inv), NULL, as.logical(use_ob_tran1),
                             PACKAGE="rgdal")
                     }
                     res <- .Call("project_ng", as.integer(n), 
                         as.double(crds[,1]), as.double(crds[,2]),
-                        as.double(crds[,3]), as.logical(inv), 
-                        as.logical(use_ob_tran1), out_coordOp, PACKAGE="rgdal")
+                        as.double(crds[,3]), out_coordOp, PACKAGE="rgdal")
                 }
             } else {
 	    res <- .Call("transform", from_args, to_args, n,
@@ -577,12 +573,11 @@ setMethod("spTransform", signature("SpatialGridDataFrame", "CRS"),
                 else use_ob_tran1 <- TRUE
                 if (is.null(coordOp)) {
                     coordOp <- .Call("project_ng_coordOp", proj,
-                        as.logical(inv), NULL, #as.logical(use_ob_tran1),
+                        as.logical(inv), NULL, as.logical(use_ob_tran1),
                         PACKAGE="rgdal")
                 }
                 res <- .Call("project_ng", as.integer(n), 
                     as.double(crds[,1]), as.double(crds[,2]), NULL,
-                    as.logical(inv), as.logical(use_ob_tran1),
                     coordOp, PACKAGE="rgdal")
                 out_coordOp <- coordOp
             }
@@ -790,12 +785,11 @@ setMethod("spTransform", signature("SpatialLinesDataFrame", "CRS"), spTransform.
                 else use_ob_tran1 <- TRUE
                 if (is.null(coordOp)) {
                     coordOp <- .Call("project_ng_coordOp", proj,
-                        as.logical(inv), NULL, #as.logical(use_ob_tran1),
+                        as.logical(inv), NULL, as.logical(use_ob_tran1),
                         PACKAGE="rgdal")
                 }
                 res <- .Call("project_ng", as.integer(n), 
                     as.double(crds[,1]), as.double(crds[,2]), NULL,
-                    as.logical(inv), as.logical(use_ob_tran1),
                     coordOp, PACKAGE="rgdal")
                 out_coordOp <- coordOp
             }

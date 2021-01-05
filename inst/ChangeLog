@@ -1,3 +1,43 @@
+2020-12-29 18:56  rsbivand
+
+	* [r1089] src/projectit.cpp, tests/srs_rendering.Rout.save,
+	  tests/test_proj.Rout.save: ob_tran handling for 7.2.1
+
+2020-12-29 15:25  rsbivand
+
+	* [r1088] R/project.R, src/init.c, src/proj6.cpp, src/rgdal.h:
+	  adapt ob_tran for PROJ > 7.2.0
+
+2020-12-29 15:13  rsbivand
+
+	* [r1087] src/proj6.cpp: test with PROJ 7.2.0
+
+2020-12-29 14:58  rsbivand
+
+	* [r1086] DESCRIPTION, R/project.R, src/init.c, src/proj6.cpp,
+	  src/rgdal.h: adapt ob_tran for PROJ > 7.2.0
+
+2020-12-28 08:47  rsbivand
+
+	* [r1085] ChangeLog, inst/ChangeLog: tidy
+
+2020-11-14 15:43  rsbivand
+
+	* [r1084] ChangeLog, configure, inst/ChangeLog: tidy
+
+2020-11-14 15:40  rsbivand
+
+	* [r1083] .Rbuildignore, DESCRIPTION, R/gdal.R,
+	  src/gdal-bindings.cpp, src/proj6.cpp: Dan Baston: raster speedups
+
+2020-10-13 09:21  rsbivand
+
+	* [r1082] man/make_EPSG.Rd: tidy
+
+2020-10-13 08:08  rsbivand
+
+	* [r1081] ChangeLog, NEWS.md, inst/ChangeLog: tidy
+
 2020-10-10 08:36  rsbivand
 
 	* [r1080] vignettes/CRS_projections_transformations.Rmd: adapt to

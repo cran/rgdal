@@ -1,5 +1,5 @@
 
-R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -62,7 +62,7 @@ In showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj = prefer_p
 proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step inv
 proj=ob_tran o_proj=longlat o_lon_p=-162 o_lat_p=39.25 lon_0=180
 ellps=sphere step proj=unitconvert xy_in=rad xy_out=deg
-proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step inv
+proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step
 proj=ob_tran o_proj=longlat o_lon_p=-162 o_lat_p=39.25 lon_0=180
 ellps=sphere step proj=unitconvert xy_in=rad xy_out=deg
 Warning messages:
@@ -75,4 +75,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  0.448   0.038   0.483 
+  0.538   0.044   0.585 

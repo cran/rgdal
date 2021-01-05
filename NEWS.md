@@ -1,4 +1,10 @@
-# Version 1.5-18 (development, rev. 1071-)
+# Version 1.5-19 (development, rev. 1083-1092)
+
+* Dan Baston: raster speedups 
+
+* PROJ 7.2.1 includes a bug-fix for `+proj=ob_tran` cases that required changes in detection and handling of target/source CRS reversal, https://lists.osgeo.org/pipermail/proj/2020-December/009999.html
+
+# Version 1.5-18 (2020-10-13, rev. 1071-1082)
 
 * condition `tests/test_enforce_xy.R` on PROJ >= 6 and GDAL >= 3 (email BDR, I forgot to re-check with PROJ-5.2.0/GDAL-2.2.4).
 

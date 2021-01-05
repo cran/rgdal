@@ -1,5 +1,5 @@
 
-R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -70,8 +70,8 @@ GEOGCRS["WGS 84",
             ORDER[2],
             ANGLEUNIT["degree",0.0174532925199433]],
     USAGE[
-        SCOPE["unknown"],
-        AREA["World"],
+        SCOPE["Horizontal component of 3D system."],
+        AREA["World."],
         BBOX[-90,-180,90,180]],
     ID["EPSG",4326]] 
 GEOGCRS["WGS 84 (with axis order normalized for visualization)",
@@ -122,8 +122,8 @@ GEOGCRS["WGS 84",
             ORDER[2],
             ANGLEUNIT["degree",0.0174532925199433]],
     USAGE[
-        SCOPE["unknown"],
-        AREA["World"],
+        SCOPE["Horizontal component of 3D system."],
+        AREA["World."],
         BBOX[-90,-180,90,180]],
     ID["EPSG",4326]] 
 GEOGCRS["WGS 84 (with axis order normalized for visualization)",
@@ -148,4 +148,4 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
 > 
 > proc.time()
    user  system elapsed 
-  0.385   0.045   0.536 
+  0.404   0.035   0.515 

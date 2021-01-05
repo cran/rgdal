@@ -1,4 +1,4 @@
-/* Copyright (c) 2019 Roger Bivand */
+/* Copyright (c) 2019-20 Roger Bivand */
 
 
 #include <R.h>
@@ -495,7 +495,7 @@ SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2) {
 	error("source crs creation failed: %s", errstr);
     }
 	
-//Rprintf("source crs: %s\n", proj_pj_info(source_crs).description); not filled for WKT
+//Rprintf("source crs: %s\n", proj_as_proj_string(PJ_DEFAULT_CTX, source_crs, PJ_PROJ_5, NULL)); not filled for WKT
 //Rprintf("target crs input:  %s\n", CHAR(STRING_ELT(toargs, 0)));
     if ((target_crs = proj_create(PJ_DEFAULT_CTX, CHAR(STRING_ELT(toargs, 0)))) == NULL) {
         proj_destroy(source_crs);
@@ -503,7 +503,7 @@ SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2) {
         //proj_context_destroy(ctx);
         error("target crs creation failed: %s", errstr);
     }
-//Rprintf("target crs: %s\n", proj_pj_info(target_crs).description); not filled for WKT
+//Rprintf("target crs: %s\n", proj_as_proj_string(PJ_DEFAULT_CTX, target_crs, PJ_PROJ_5, NULL)); not filled for WKT
 #if PROJ_VERSION_MAJOR == 6  && PROJ_VERSION_MINOR < 3
     ires_strict = proj_is_equivalent_to(source_crs, target_crs,
         PJ_COMP_STRICT);
@@ -587,7 +587,7 @@ SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, S
 	    error("source crs creation failed: %s", errstr);
         }
 	
-//Rprintf("source crs: %s\n", proj_pj_info(source_crs).description); 
+//Rprintf("source crs: %s\n", proj_as_proj_string(PJ_DEFAULT_CTX, source_crs, PJ_PROJ_5, NULL)); 
 //Rprintf("target crs input:  %s\n", CHAR(STRING_ELT(toargs, 0)));
 	if ((target_crs = proj_create(PJ_DEFAULT_CTX, CHAR(STRING_ELT(toargs, 0)))) == NULL) {
             proj_area_destroy(area_of_interest);
@@ -596,7 +596,7 @@ SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, S
             //proj_context_destroy(ctx);
 	    error("target crs creation failed: %s", errstr);
         }
-//Rprintf("target crs: %s\n", proj_pj_info(target_crs).description); 
+//Rprintf("target crs: %s\n", proj_as_proj_string(PJ_DEFAULT_CTX, target_crs, PJ_PROJ_5, NULL)); 
 #if PROJ_VERSION_MAJOR == 6  && PROJ_VERSION_MINOR < 2
         if ((pj_transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
             CHAR(STRING_ELT(fromargs, 0)),
@@ -764,14 +764,14 @@ SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, S
     return(res);
 }
 
-SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi//, SEXP ob_tran
+SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi, SEXP ob_tran
 ) {
 
     //PJ_CONTEXT *ctx = proj_context_create();
     PJ *source_crs, *target_crs;
     PJ* pj_transform = NULL;
     PJ_AREA *area_of_interest = 0;
-    int //use_ob_tran = LOGICAL_POINTER(ob_tran)[0], 
+    int use_ob_tran = LOGICAL_POINTER(ob_tran)[0], 
         use_inv, use_aoi=1;
 
     proj_log_func(PJ_DEFAULT_CTX, NULL, silent_logger);
@@ -796,14 +796,23 @@ SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi//, SEXP ob_tran
 	error("target crs creation failed: %s", errstr);
     }
 	
-//Rprintf("target crs: %s\n", proj_pj_info(target_crs).definition); 
-    if ((source_crs = proj_crs_get_geodetic_crs(PJ_DEFAULT_CTX, target_crs)) == 0) {
-        const char *errstr = proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX));
-        proj_destroy(target_crs);
-        //proj_context_destroy(ctx);
-        error("source crs creation failed: %s", errstr);
+//Rprintf("target crs: %s\n", proj_as_proj_string(PJ_DEFAULT_CTX, target_crs, PJ_PROJ_5, NULL)); 
+    if (proj_get_type(target_crs) == PJ_TYPE_GEOGRAPHIC_2D_CRS && use_ob_tran) {
+        if ((source_crs = proj_get_source_crs(PJ_DEFAULT_CTX, target_crs)) == 0) {
+            const char *errstr = proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX));
+            proj_destroy(target_crs);
+            //proj_context_destroy(ctx);
+            error("source crs creation failed: %s", errstr);
+        }
+    } else {
+        if ((source_crs = proj_crs_get_geodetic_crs(PJ_DEFAULT_CTX, target_crs)) == 0) {
+            const char *errstr = proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX));
+            proj_destroy(target_crs);
+            //proj_context_destroy(ctx);
+            error("source crs creation failed: %s", errstr);
+        }
     }
-//Rprintf("source crs: %s\n", proj_pj_info(source_crs).definition); 
+//Rprintf("source crs: %s\n", proj_as_proj_string(PJ_DEFAULT_CTX, source_crs, PJ_PROJ_5, NULL)); 
 
     if (use_aoi) {
         area_of_interest = proj_area_create();
@@ -811,7 +820,7 @@ SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi//, SEXP ob_tran
             NUMERIC_POINTER(aoi)[1], NUMERIC_POINTER(aoi)[2],
             NUMERIC_POINTER(aoi)[3]);
     }
-
+//Rprintf("use_inv: %d\n", use_inv);
 #if PROJ_VERSION_MAJOR == 6  && PROJ_VERSION_MINOR < 2
     if (use_inv) pj_transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX, 
         proj_as_wkt(PJ_DEFAULT_CTX, target_crs, PJ_WKT2_2018, NULL),
@@ -854,9 +863,8 @@ SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi//, SEXP ob_tran
     return(res);
 }
 
-SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp) {
-    int i, nwarn=0, is_ob_tran=LOGICAL_POINTER(ob_tran)[0], 
-        nn=INTEGER_POINTER(n)[0], use_inv=LOGICAL_POINTER(inv)[0];
+SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp) {
+    int i, nwarn=0, nn=INTEGER_POINTER(n)[0];
     SEXP res;
     //PJ_CONTEXT *ctx = proj_context_create();
     PJ* pj_transform = NULL;
@@ -891,8 +899,7 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, S
             NUMERIC_POINTER(VECTOR_ELT(res, 1))[i]=iylat;
         } else {
             a = proj_coord(ixlon, iylat, iz, 0);
-            if (!use_inv && is_ob_tran) b = proj_trans(pj_transform, PJ_INV, a);
-            else b = proj_trans(pj_transform, PJ_FWD, a);
+            b = proj_trans(pj_transform, PJ_FWD, a);
             if (b.uv.u == HUGE_VAL || ISNAN(b.uv.u) || b.uv.v == HUGE_VAL || 
                 ISNAN(b.uv.v)) {
                 nwarn++;
@@ -955,7 +962,7 @@ SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
             error("crs not converted to visualization order");
         }
     }
-
+// FIXME PROJ 8.0 datum ensemble vulnerability
     PJ* dtm = proj_crs_get_datum(ctx, source_crs);
     if (dtm != NULL) {
         PROTECT(Datum = NEW_CHARACTER(1)); pc++;

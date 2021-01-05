@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the 'Geospatial' Data Abstraction Library
-Version: 1.5-18
-Date: 2020-10-08
+Version: 1.5-19
+Date: 2020-12-29
 Depends: R (>= 3.5.0), methods, sp (>= 1.1-0)
 Imports: grDevices, graphics, stats, utils
 LinkingTo: sp
@@ -15,6 +15,7 @@ Authors@R: c(
 	person("Edzer", "Pebesma", role = "ctb"),
 	person("Michael", "Sumner", role = "ctb"),
 	person("Robert", "Hijmans", role = "ctb"),
+        person("Daniel", "Baston", role = "ctb"),
 	person("Even", "Rouault", role = c("cph", "ctb")),
 	person("Frank", "Warmerdam", role = c("cph", "ctb")),
 	person("Jeroen", "Ooms", role = "ctb"),
@@ -29,17 +30,18 @@ SystemRequirements: PROJ (>= 4.8.0, https://proj.org/download.html) and
         argument '--with-proj_api="proj_api.h"'.
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
-Packaged: 2020-10-13 09:23:14 UTC; rsb
+Packaged: 2021-01-04 15:15:35 UTC; rsb
 Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Tim Keitt [aut],
   Barry Rowlingson [aut, ctb],
   Edzer Pebesma [ctb],
   Michael Sumner [ctb],
   Robert Hijmans [ctb],
+  Daniel Baston [ctb],
   Even Rouault [cph, ctb],
   Frank Warmerdam [cph, ctb],
   Jeroen Ooms [ctb],
   Colin Rundel [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2020-10-13 13:00:02 UTC
+Date/Publication: 2021-01-05 05:10:08 UTC

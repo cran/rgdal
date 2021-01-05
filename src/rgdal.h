@@ -138,8 +138,8 @@ SEXP RGDAL_projInfo(SEXP type); // both
 SEXP R_GDAL_OSR_PROJ();// GDAL
 SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran); // both
 SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran); // both
-SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp); // both
-SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi); // both
+SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp); // both
+SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi, SEXP ob_tran); // both
 SEXP get_source_crs(SEXP source); // both
 SEXP proj_vis_order(SEXP wkt2); // both
 SEXP OSR_is_projected(SEXP inSRID);
