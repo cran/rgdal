@@ -1,6 +1,6 @@
 
-R version 3.6.1 (2019-07-05) -- "Action of the Toes"
-Copyright (C) 2019 The R Foundation for Statistical Computing
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -76,6 +76,7 @@ Type 'q()' to quit R.
 + cat(" coords", isTRUE(all.equal(lapply(slot(MPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 + cat(" holes", isTRUE(all.equal(lapply(slot(MPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
 + load(system.file("etc/obj_without_comments.RData", package="rgdal"))
++ if (requireNamespace("rgeos", quietly=TRUE)) {
 + tf <- paste0(tfbase, driver, "aP", sep=".")
 + writeOGR(SpatialPolygonsDataFrame(aP, data=df9), tf, "GeoJSON",
 +  driver=driver, verbose=TRUE)
@@ -85,6 +86,8 @@ Type 'q()' to quit R.
 + unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 + cat(" coords", isTRUE(all.equal(lapply(slot(aP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 + cat(" holes", isTRUE(all.equal(lapply(slot(aP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
++ }
++ if (requireNamespace("rgeos", quietly=TRUE)) {
 + tf <- paste0(tfbase, driver, "aPh", sep=".")
 + writeOGR(SpatialPolygonsDataFrame(aPh, data=df9), tf, "GeoJSON",
 +  driver=driver, verbose=TRUE)
@@ -94,6 +97,8 @@ Type 'q()' to quit R.
 + unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 + cat(" coords", isTRUE(all.equal(lapply(slot(aPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 + cat(" holes", isTRUE(all.equal(lapply(slot(aPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
++ }
++ if (requireNamespace("rgeos", quietly=TRUE)) {
 + tf <- paste0(tfbase, driver, "aMP", sep=".")
 + writeOGR(SpatialPolygonsDataFrame(aMP, data=df3), tf, "GeoJSON",
 +  driver=driver, verbose=TRUE)
@@ -112,6 +117,8 @@ Type 'q()' to quit R.
 + unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 + cat(" coords", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 + cat(" holes", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
++ }
++ if (requireNamespace("rgeos", quietly=TRUE)) {
 + tf <- paste0(tfbase, driver, "Ps1", sep=".")
 + writeOGR(SpatialPolygonsDataFrame(Ps1, data=df1), tf, "GeoJSON",
 +  driver=driver, verbose=TRUE)
@@ -121,6 +128,8 @@ Type 'q()' to quit R.
 + unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 + cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 + cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
++ }
++ if (requireNamespace("rgeos", quietly=TRUE)) {
 + tf <- paste0(tfbase, driver, "Ps1_nc", sep=".")
 + writeOGR(SpatialPolygonsDataFrame(Ps1_nc, data=df1), tf, "GeoJSON",
 +  driver=driver, verbose=TRUE)
@@ -130,6 +139,7 @@ Type 'q()' to quit R.
 + unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 + cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 + cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
++ }
 + }
 Object initially classed as: wkbPolygon
 SFS comments in Polygons objects
@@ -169,27 +179,26 @@ MPh with driver: GeoJSON
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Writing 9 wkbPolygon objects
 aP with driver: GeoJSON 
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
-Object reclassed as: wkbMultiPolygon
-Writing 9 wkbMultiPolygon objects
+SFS comments in Polygons objects
+Writing 9 wkbPolygon objects
 aPh with driver: GeoJSON 
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Object reclassed as: wkbMultiPolygon
 Writing 3 wkbMultiPolygon objects
 aMP with driver: GeoJSON 
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Object reclassed as: wkbMultiPolygon
 Writing 3 wkbMultiPolygon objects
 aMPh with driver: GeoJSON 
@@ -203,7 +212,7 @@ Ps1 with driver: GeoJSON
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Object reclassed as: wkbMultiPolygon
 Writing 1 wkbMultiPolygon objects
 Ps1_nc with driver: GeoJSON 
@@ -247,27 +256,26 @@ MPh with driver: ESRI Shapefile
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Writing 9 wkbPolygon objects
 aP with driver: ESRI Shapefile 
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
-Object reclassed as: wkbMultiPolygon
-Writing 9 wkbMultiPolygon objects
+SFS comments in Polygons objects
+Writing 9 wkbPolygon objects
 aPh with driver: ESRI Shapefile 
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Object reclassed as: wkbMultiPolygon
 Writing 3 wkbMultiPolygon objects
 aMP with driver: ESRI Shapefile 
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Object reclassed as: wkbMultiPolygon
 Writing 3 wkbMultiPolygon objects
 aMPh with driver: ESRI Shapefile 
@@ -281,7 +289,7 @@ Ps1 with driver: ESRI Shapefile
  coords TRUE 
  holes TRUE 
 Object initially classed as: wkbPolygon
-No SFS comments in Polygons objects
+SFS comments in Polygons objects
 Object reclassed as: wkbMultiPolygon
 Writing 1 wkbMultiPolygon objects
 Ps1_nc with driver: ESRI Shapefile 
@@ -290,4 +298,4 @@ Ps1_nc with driver: ESRI Shapefile
 > 
 > proc.time()
    user  system elapsed 
-  3.314   0.040   3.368 
+  3.996   0.062   4.383 

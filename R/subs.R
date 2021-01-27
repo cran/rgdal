@@ -53,7 +53,7 @@ sub.GDROD = function(x, i, j, ... , drop = FALSE) {
         if (attr(gt, "CE_Failure")) warning("GeoTransform values not available")
 #	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
-	if (nchar(p4s) == 0) p4s <- as.character(NA)
+	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
         if (new_proj_and_gdal()) wkt2 <- comment(p4s)
         oCRS <- CRS(c(p4s))
         if (new_proj_and_gdal()) comment(oCRS) <- wkt2

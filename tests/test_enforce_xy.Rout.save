@@ -1,0 +1,151 @@
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> suppressPackageStartupMessages(library(rgdal))
+> if (new_proj_and_gdal()) {
++ get_enforce_xy()
++ x0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
++ cat(x0, "\n")
++ set_enforce_xy(FALSE)
++ x1 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
++ cat(x1, "\n")
++ set_enforce_xy(TRUE)
++ x2 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
++ cat(x2, "\n")
++ get_enforce_xy()
++ y0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
++ cat(y0, "\n")
++ showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
++ set_enforce_xy(FALSE)
++ y1 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
++ cat(y1, "\n")
++ showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
++ set_enforce_xy(TRUE)
++ y2 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE, prefer_proj=TRUE)
++ cat(y2, "\n")
++ showSRID("EPSG:4326", format="PROJ", EPSG_to_init=FALSE, prefer_proj=TRUE)
++ }
+GEOGCRS["WGS 84 (with axis order normalized for visualization)",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]],
+        ID["EPSG",6326]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433],
+        ID["EPSG",8901]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]]] 
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    USAGE[
+        SCOPE["Horizontal component of 3D system."],
+        AREA["World."],
+        BBOX[-90,-180,90,180]],
+    ID["EPSG",4326]] 
+GEOGCRS["WGS 84 (with axis order normalized for visualization)",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]],
+        ID["EPSG",6326]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433],
+        ID["EPSG",8901]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]]] 
+GEOGCRS["WGS 84 (with axis order normalized for visualization)",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]],
+        ID["EPSG",6326]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433],
+        ID["EPSG",8901]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]]] 
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    USAGE[
+        SCOPE["Horizontal component of 3D system."],
+        AREA["World."],
+        BBOX[-90,-180,90,180]],
+    ID["EPSG",4326]] 
+GEOGCRS["WGS 84 (with axis order normalized for visualization)",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]],
+        ID["EPSG",6326]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433],
+        ID["EPSG",8901]],
+    CS[ellipsoidal,2],
+        AXIS["geodetic longitude (Lon)",east,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]],
+        AXIS["geodetic latitude (Lat)",north,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433,
+                ID["EPSG",9122]]]] 
+[1] "+proj=longlat +datum=WGS84 +no_defs +type=crs"
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  0.404   0.035   0.515 

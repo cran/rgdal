@@ -135,10 +135,16 @@ SEXP get_proj_search_path(void) {
     return(R_NilValue);
 }
 
-SEXP set_proj_search_path(SEXP path) {
+SEXP set_proj_paths(SEXP path) {
     Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
+
+SEXP get_proj_user_writable_dir() {
+    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
+
 
 SEXP list_coordinate_ops(SEXP source, SEXP target, SEXP area_of_interest, SEXP strict_containment, SEXP viz_order) {
     Rprintf("Not available for deprecated API");
@@ -150,17 +156,17 @@ SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2) {
     return(R_NilValue);
 }
 
-SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z) {
+SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z, SEXP aoi) {
     Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
-SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp) {
+SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp) {
     Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
 
-SEXP project_ng_coordOp(SEXP proj, SEXP inv) {
+SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi, SEXP ob_tran) {
     Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }
@@ -170,13 +176,32 @@ SEXP proj_network_enabled() {
     return(R_NilValue);
 }
 
+SEXP enable_proj_network() {
+//    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
 
-/*SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
+SEXP disable_proj_network() {
+//    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
+
+SEXP get_source_crs(SEXP source) {
+//    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
+SEXP proj_vis_order(SEXP wkt2) {
+//    Rprintf("Not available for deprecated API");
+    return(R_NilValue);
+}
+
+
+SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
     SEXP epsg, SEXP out_format) {
 
     return(R_NilValue);
 
-}*/
+}
 
 #ifndef PROJ6
 

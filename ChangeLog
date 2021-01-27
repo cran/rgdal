@@ -1,3 +1,391 @@
+2021-01-26 08:53  rsbivand
+
+	* DESCRIPTION, NEWS.md, man/spTransform-methods.Rd: tidy
+
+2021-01-26 08:31  rsbivand
+
+	* src/OGR_write.cpp: tidy
+
+2021-01-25 18:03  rsbivand
+
+	* ChangeLog, NEWS.md, inst/ChangeLog, src/OGR_write.cpp,
+	  src/gdal-bindings.cpp, src/ogr_proj.cpp, src/proj6.cpp: adapt to
+	  older PROJ
+
+2021-01-24 17:32  rsbivand
+
+	* configure: remaining valgrind leaks
+
+2021-01-24 17:31  rsbivand
+
+	* DESCRIPTION, R/gdal.R, R/ogr_write.R, R/sgdf_gdal.R, R/sp_gdal.R,
+	  R/subs.R, src/OGR_write.cpp, src/gdal-bindings.cpp,
+	  tests/srs_rendering.Rout.save, tests/test_proj.Rout.save,
+	  tests/tripup.R, tests/tripup.Rout.save: remaining valgrind leaks
+
+2021-01-22 13:39  rsbivand
+
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  src/proj6.cpp: ogr_proj.cpp remaining leaks fix
+
+2021-01-21 09:25  rsbivand
+
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, src/OGR_write.cpp,
+	  src/gdal-bindings.cpp, src/ogr_proj.cpp, src/proj6.cpp: proj6.cpp
+	  remaining leaks fix
+
+2021-01-20 12:05  rsbivand
+
+	* src/proj6.cpp: proj6.cpp remaining leaks fix
+
+2021-01-20 09:47  rsbivand
+
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  src/proj6.cpp: proj6.cpp l. 946 leak fix
+
+2021-01-15 10:03  rsbivand
+
+	* src/gdal-bindings.cpp: tidy
+
+2021-01-14 20:54  rsbivand
+
+	* DESCRIPTION, man/writeOGR.Rd, src/ogr_proj.cpp, src/proj6.cpp:
+	  tidy
+
+2020-12-29 19:24  rsbivand
+
+	* NEWS.md, tests/test_enforce_xy.Rout.save: tidy
+
+2020-12-29 19:10  rsbivand
+
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
+
+2020-12-29 19:08  rsbivand
+
+	* ChangeLog, NEWS.md: ob_tran handling for 7.2.1
+
+2020-12-29 18:56  rsbivand
+
+	* src/projectit.cpp, tests/srs_rendering.Rout.save,
+	  tests/test_proj.Rout.save: ob_tran handling for 7.2.1
+
+2020-12-29 15:25  rsbivand
+
+	* R/project.R, src/init.c, src/proj6.cpp, src/rgdal.h: adapt
+	  ob_tran for PROJ > 7.2.0
+
+2020-12-29 15:13  rsbivand
+
+	* src/proj6.cpp: test with PROJ 7.2.0
+
+2020-12-29 14:58  rsbivand
+
+	* DESCRIPTION, R/project.R, src/init.c, src/proj6.cpp, src/rgdal.h:
+	  adapt ob_tran for PROJ > 7.2.0
+
+2020-12-28 08:47  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-11-14 15:43  rsbivand
+
+	* ChangeLog, configure, inst/ChangeLog: tidy
+
+2020-11-14 15:40  rsbivand
+
+	* .Rbuildignore, DESCRIPTION, R/gdal.R, src/gdal-bindings.cpp,
+	  src/proj6.cpp: Dan Baston: raster speedups
+
+2020-10-13 09:21  rsbivand
+
+	* man/make_EPSG.Rd: tidy
+
+2020-10-13 08:08  rsbivand
+
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
+
+2020-10-10 08:36  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: adapt to EPSG v10
+
+2020-10-09 19:05  rsbivand
+
+	* NEWS.md, vignettes/CRS_projections_transformations.Rmd: adapt to
+	  EPSG v10
+
+2020-10-09 15:12  rsbivand
+
+	* DESCRIPTION, R/make_EPSG.R, man/make_EPSG.Rd,
+	  vignettes/CRS_projections_transformations.Rmd: adapt to EPSG v10
+
+2020-10-09 11:04  rsbivand
+
+	* NEWS.md: add NEWS.md
+
+2020-10-09 10:51  rsbivand
+
+	* ChangeLog, NEWS.md, inst/ChangeLog: add NEWS.md
+
+2020-10-08 13:10  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-10-08 13:09  rsbivand
+
+	* tests/test_enforce_xy.Rout.save: tidy
+
+2020-10-08 12:46  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-10-08 12:45  rsbivand
+
+	* DESCRIPTION, configure, tests/test_enforce_xy.R: condition
+	  test_enforce_xy.R on PROJ/GDAL versions
+
+2020-10-05 10:13  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-10-05 10:12  rsbivand
+
+	* tests/test_enforce_xy.Rout.save: tidy
+
+2020-10-05 09:58  rsbivand
+
+	* tests/srs_rendering.Rout.save: tidy
+
+2020-10-05 09:53  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-09-15 10:04  rsbivand
+
+	* R/ogr_sp.R, man/showWKT.Rd: SRS_string empty string error
+
+2020-09-08 13:48  rsbivand
+
+	* DESCRIPTION, man/showWKT.Rd, src/proj6.cpp: add OGC:CRS84 support
+	  and description
+
+2020-09-08 12:45  rsbivand
+
+	* man/CRS-class.Rd, man/list_coordOps.Rd,
+	  man/spTransform-methods.Rd: add OGC:CRS84 support and description
+
+2020-09-07 08:05  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: add OGC:CRS84
+	  support and description
+
+2020-09-06 17:22  rsbivand
+
+	* R/list_coordOps.R, R/ogr_sp.R, man/showWKT.Rd,
+	  vignettes/CRS_projections_transformations.Rmd: add OGC:CRS84
+	  support and description
+
+2020-09-06 12:11  rsbivand
+
+	* R/ogr_sp.R: check for +type=crs
+
+2020-09-02 18:27  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/Class-CRSx.R, R/ogr_sp.R, man/showWKT.Rd,
+	  vignettes/PROJ6_GDAL3.Rmd: prefer PROJ issues
+
+2020-09-02 17:29  rsbivand
+
+	* R/Class-CRSx.R: run showSRID via PROJ not GDAL if possble
+
+2020-09-02 13:38  rsbivand
+
+	* R/Class-CRSx.R, R/list_coordOps.R, R/ogr_sp.R,
+	  man/list_coordOps.Rd, man/showWKT.Rd, src/init.c,
+	  src/ogr_proj.cpp, src/proj6.cpp, src/projectit.cpp, src/rgdal.h,
+	  tests/srs_rendering.Rout.save, tests/test_enforce_xy.R,
+	  tests/test_enforce_xy.Rout.save, tests/test_proj.Rout.save,
+	  vignettes/CRS_projections_transformations.Rmd: run showSRID via
+	  PROJ not GDAL if possble
+
+2020-09-01 11:34  rsbivand
+
+	* configure, configure.ac: add stdlib.h declaration to configure.ac
+	  where missing
+
+2020-08-17 13:48  rsbivand
+
+	* R/project.R: adapt for PROJ < 6
+
+2020-08-17 10:08  rsbivand
+
+	* NAMESPACE, R/project.R, man/showWKT.Rd, src/init.c,
+	  src/ogr_proj.cpp, src/rgdal.h: use ORSIsProjected()
+
+2020-08-09 19:24  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd: add
+	  get_source_from_boundcrs
+
+2020-08-09 18:56  rsbivand
+
+	* DESCRIPTION, R/Class-CRSx.R, configure,
+	  inst/misc/GGHB.IG_CRS.rda, man/CRS-class.Rd, src/init.c,
+	  src/proj6.cpp, src/projectit.cpp, src/rgdal.h,
+	  vignettes/CRS_projections_transformations.Rmd: add
+	  get_source_from_boundcrs
+
+2020-08-05 13:13  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-08-04 19:37  rsbivand
+
+	* R/project.R: add try() around project() in get_aoi()
+
+2020-08-04 08:55  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-08-04 08:54  rsbivand
+
+	* DESCRIPTION, R/project.R, configure, src/projectit.cpp: repeat
+	  checks and fix for 5.2.0/2.2.4
+
+2020-08-03 15:54  rsbivand
+
+	* configure: tidy
+
+2020-08-03 15:32  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-08-03 15:31  rsbivand
+
+	* man/CRS-class.Rd, man/SpatialGDAL-class.Rd, man/project.Rd: fix
+	  stale(ish) links
+
+2020-08-03 09:04  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-08-03 09:03  rsbivand
+
+	* DESCRIPTION, man/GDALDriver-class.Rd,
+	  man/GDALMajorObject-class.Rd, man/GDALRasterBand-class.Rd,
+	  man/GDALReadOnlyDataset-class.Rd, man/RGB2PCT.Rd,
+	  man/SGDF2PCT.Rd, man/displayDataset.Rd, man/make_EPSG.Rd,
+	  man/readGDAL.Rd, man/readOGR.Rd, man/writeOGR.Rd: fix stale(ish)
+	  links
+
+2020-08-03 06:46  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2020-08-03 06:45  rsbivand
+
+	* ChangeLog, R/project.R: rebuild plotKML CRS to drop +init
+
+2020-08-03 06:30  rsbivand
+
+	* R/project.R: check returned aoi for NULL
+
+2020-08-02 18:19  rsbivand
+
+	* inst/ChangeLog: tidy
+
+2020-08-02 18:18  rsbivand
+
+	* ChangeLog: tidy
+
+2020-08-02 18:17  rsbivand
+
+	* DESCRIPTION, inst/misc, inst/misc/meuse.png, inst/misc/snow.png,
+	  vignettes/CRS_projections_transformations.Rmd: make mapview use
+	  static to fix CRAN issue
+
+2020-07-13 08:43  rsbivand
+
+	* R/ogr_sp.R, man/make_EPSG.Rd, man/showWKT.Rd, src/ogr_proj.cpp:
+	  admit ESRI:# strings in showSRID()
+
+2020-07-06 18:21  rsbivand
+
+	* man/spTransform-methods.Rd: freshen spTransform man page
+
+2020-07-06 15:01  rsbivand
+
+	* configure: tidy
+
+2020-07-06 13:33  rsbivand
+
+	* DESCRIPTION, R/project.R, R/wrappers.R, data/nor2k.rda,
+	  man/project.Rd, src/init.c, src/proj6.cpp, src/projectit.cpp,
+	  src/rgdal.h, vignettes/CRS_projections_transformations.Rmd: add
+	  area of interest to coordOp search
+
+2020-07-05 13:29  rsbivand
+
+	* ChangeLog, inst/ChangeLog: and proj_create_crs_to_crs_from_pj
+	  only from 620, and context sensitivity in finding coord ops
+
+2020-07-05 13:26  rsbivand
+
+	* man/project.Rd, man/spTransform-methods.Rd, src/proj6.cpp,
+	  tests/test_proj.R, tests/test_proj.Rout.save,
+	  vignettes/CRS_projections_transformations.Rmd: test for PROJ 600,
+	  610 and 611 and block ob_tran tests if true
+
+2020-07-02 19:09  rsbivand
+
+	* src/ogr_proj.cpp: OSRGetPROJVersion from 3.0.1 needed protection
+
+2020-07-02 12:31  rsbivand
+
+	* man/is_proj_CDN_enabled.Rd: CDN tidy
+
+2020-07-02 12:19  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/project.R, src/proj6.cpp,
+	  tests/srs_rendering.Rout.save,
+	  vignettes/CRS_projections_transformations.Rmd,
+	  vignettes/PROJ.bib: CDN tidy
+
+2020-07-02 08:21  rsbivand
+
+	* R/AAA.R, src/init.c, src/proj6.cpp, src/projectit.cpp,
+	  src/rgdal.h: trying to control PROJs user-writable dir
+
+2020-07-01 14:26  rsbivand
+
+	* NAMESPACE, R/AAA.R, R/project.R, src/init.c, src/proj6.cpp,
+	  src/proj_network7.cpp, src/projectit.cpp, src/rgdal.h,
+	  vignettes/CRS_projections_transformations.Rmd: possibly broken
+	  proj search/network support
+
+2020-06-29 13:04  rsbivand
+
+	* configure, configure.ac: drop printing of loadflags
+
+2020-06-29 11:44  rsbivand
+
+	* configure, configure.ac: add CXXFLAGS to resolve Fedora configure
+	  issue, Iñaki Úcar
+
+2020-06-28 12:39  rsbivand
+
+	* configure, configure.ac: add --disable-loadflags to configure
+	  args
+
+2020-06-25 19:18  rsbivand
+
+	* DESCRIPTION, configure,
+	  vignettes/CRS_projections_transformations.Rmd,
+	  vignettes/PROJ6_GDAL3.Rmd: convert vignettes to rmarkdown
+
+2020-06-25 17:41  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2020-06-25 17:40  rsbivand
 
 	* DESCRIPTION, configure, man/llgrid.Rd, man/readGDAL.Rd,

@@ -59,6 +59,7 @@ cat(" comment", isTRUE(all.equal(sapply(slot(rP, "polygons"), comment), sapply(s
 cat(" coords", isTRUE(all.equal(lapply(slot(MPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(MPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
 load(system.file("etc/obj_without_comments.RData", package="rgdal"))
+if (requireNamespace("rgeos", quietly=TRUE)) {
 tf <- paste0(tfbase, driver, "aP", sep=".")
 writeOGR(SpatialPolygonsDataFrame(aP, data=df9), tf, "GeoJSON",
  driver=driver, verbose=TRUE)
@@ -68,6 +69,8 @@ cat("aP with driver:", driver, "\n")
 unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 cat(" coords", isTRUE(all.equal(lapply(slot(aP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(aP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+}
+if (requireNamespace("rgeos", quietly=TRUE)) {
 tf <- paste0(tfbase, driver, "aPh", sep=".")
 writeOGR(SpatialPolygonsDataFrame(aPh, data=df9), tf, "GeoJSON",
  driver=driver, verbose=TRUE)
@@ -77,6 +80,8 @@ cat("aPh with driver:", driver, "\n")
 unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 cat(" coords", isTRUE(all.equal(lapply(slot(aPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(aPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+}
+if (requireNamespace("rgeos", quietly=TRUE)) {
 tf <- paste0(tfbase, driver, "aMP", sep=".")
 writeOGR(SpatialPolygonsDataFrame(aMP, data=df3), tf, "GeoJSON",
  driver=driver, verbose=TRUE)
@@ -95,6 +100,8 @@ cat("aMPh with driver:", driver, "\n")
 unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 cat(" coords", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(aMPh, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+}
+if (requireNamespace("rgeos", quietly=TRUE)) {
 tf <- paste0(tfbase, driver, "Ps1", sep=".")
 writeOGR(SpatialPolygonsDataFrame(Ps1, data=df1), tf, "GeoJSON",
  driver=driver, verbose=TRUE)
@@ -104,6 +111,8 @@ cat("Ps1 with driver:", driver, "\n")
 unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+}
+if (requireNamespace("rgeos", quietly=TRUE)) {
 tf <- paste0(tfbase, driver, "Ps1_nc", sep=".")
 writeOGR(SpatialPolygonsDataFrame(Ps1_nc, data=df1), tf, "GeoJSON",
  driver=driver, verbose=TRUE)
@@ -113,4 +122,5 @@ cat("Ps1_nc with driver:", driver, "\n")
 unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 cat(" coords", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(Ps1, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+}
 }

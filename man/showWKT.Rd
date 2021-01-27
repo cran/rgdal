@@ -7,9 +7,12 @@
 \alias{set_P6_datum_hard_fail}
 \alias{get_thin_PROJ6_warnings}
 \alias{set_thin_PROJ6_warnings}
+\alias{get_prefer_proj}
+\alias{set_prefer_proj}
 \alias{get_rgdal_show_exportToProj4_warnings}
 \alias{set_rgdal_show_exportToProj4_warnings}
 \alias{get_PROJ6_warnings_count}
+\alias{OSRIsProjected}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Show Well-Known Text spatial reference system metadata}
 \description{
@@ -20,14 +23,18 @@ In modern workflows with PROJ >= 6 and GDAL >= 3, use only \code{showSRID()}
 showWKT(p4s, file = NULL, morphToESRI = FALSE, enforce_xy = NULL)
 showP4(wkt, morphFromESRI=FALSE, enforce_xy = NULL)
 showEPSG(p4s, enforce_xy = NULL)
-showSRID(inSRID, format="WKT2", multiline="NO", enforce_xy = NULL, EPSG_to_init=TRUE)
+showSRID(inSRID, format="WKT2", multiline="NO", enforce_xy = NULL, EPSG_to_init=TRUE,
+ prefer_proj=NULL)
 get_P6_datum_hard_fail()
 set_P6_datum_hard_fail(value)
 get_thin_PROJ6_warnings()
 set_thin_PROJ6_warnings(value)
+get_prefer_proj()
+set_prefer_proj(value)
 get_rgdal_show_exportToProj4_warnings()
 set_rgdal_show_exportToProj4_warnings(value)
 get_PROJ6_warnings_count()
+OSRIsProjected(obj)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,10 +44,12 @@ get_PROJ6_warnings_count()
   \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
   \item{wkt}{A valid WKT character string representing a spatial reference system}
   \item{morphFromESRI}{default TRUE, morph the WKT string from the representation used by ESRI}
-  \item{inSRID}{Input coordinate reference string (PROJ >= 6, GDAL <= 3)}
+  \item{inSRID}{Input coordinate reference string}
+  \item{obj}{valid CRS object}
   \item{format}{Output format, default WKT2}
   \item{multiline}{Multiline output, either \code{"NO"} or \code{"YES"}}
   \item{EPSG_to_init}{default TRUE, workaround for PROJ 6.3.0 frailty leading to the dropping of +ellps= and +units=; DATUM seems to disappear in the internal definition}
+  \item{prefer_proj}{default NULL, if TRUE, use PROJ compiled code directly, rather than FALSE using PROJ via GDAL SRS; if NULL, uses value shown by \code{get_prefer_proj()} set on startup to TRUE.}
 %  \item{prefer_proj}{default FALSE, if TRUE, use the PROJ library directly rather than through GDAL}
   \item{value}{a logical value. For \code{set_P6_datum_hard_fail()}: by default, a deprecated/ignored input DATUM key/value pair on reading a file with PROJ6 will give a warning (default FALSE); if TRUE, an error is triggered, which may be trapped using \code{try}. For \code{set_thin_PROJ6_warnings()} default FALSE, can be set to TRUE to report only once and count the number of non-issues warnings, retrieved by \code{get_PROJ6_warnings_count()}. For \code{set_rgdal_show_exportToProj4_warnings()}, default in \pkg{rgdal} version 1.5.* TRUE, from 1.6 FALSE. The \code{options("rgdal_show_exportToProj4_warnings"="x")} may be used before loading \pkg{rgdal} to set the internal logical variables; if the option is set to \code{"all"}, all warnings reporting CRS degradation stemming from the GDAL OSR function \code{exportToProj4()} even if trivial are reported; if set to \code{"thin"}, all warnings are detected but thinned so that one report is given per function call; if set to "none", the degradations are detected but not reported.
 }
@@ -90,6 +99,22 @@ showSRID(paste0(prj, " +towgs84=370.936,-108.938,435.682"), "WKT2")
 if (run) {
 showSRID(paste0(prj, " +nadgrids=OSTN15_NTv2_OSGBtoETRS.gsb"), "WKT2")
 }
+if (run) {
+showSRID("ESRI:102761", "WKT2")
+}
+if (run) {
+showSRID("OGC:CRS84", "WKT2")
+}
+if (run) {
+showSRID("urn:ogc:def:crs:OGC:1.3:CRS84", "WKT2")
+}
+if (run) {
+try(showSRID("", "WKT2"))
+}
+
+OSRIsProjected(CRS("+proj=longlat"))
+OSRIsProjected(CRS("+proj=geocent"))
+OSRIsProjected(CRS("+proj=geocent +units=km"))
 }
 \keyword{spatial}
 

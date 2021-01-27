@@ -448,7 +448,7 @@ getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enf
     res <- .Call('RGDAL_GetProjectionRef', dataset, enforce_xy, PACKAGE="rgdal")
   }
   no_ellps <- FALSE
-  if (!(nchar(res) == 0L) && new_proj_and_gdal()) {
+  if (!(is.na(res)) && new_proj_and_gdal()) {
     no_towgs84 <- all(nchar(attr(res, "towgs84")) == 0)
     if ((length(grep("towgs84", c(res))) == 0L) && !no_towgs84)
       warning("TOWGS84 discarded")
@@ -458,7 +458,7 @@ getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enf
     no_ellps <- no_ellps && length(grep("datum", c(res))) == 0L
     if (no_ellps) {
       msg <- paste0("Discarded ellps ", attr(res, "ellps"),
-            " in CRS definition: ", c(res))
+            " in Proj4 definition: ", c(res))
       if (get_rgdal_show_exportToProj4_warnings()) {
        if (!get_thin_PROJ6_warnings()) {
         warning(msg)
@@ -474,11 +474,11 @@ getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enf
          }
     }
 # warning("Discarded ellps ", attr(res, "ellps"),
-#            " in CRS definition: ", c(res))
+#            " in Proj4 definition: ", c(res))
     if ((!is.null(attr(res, "datum"))) && (nchar(attr(res, "datum")) > 0L)
       && (length(grep("datum", c(res))) == 0L)) {
       msg <- paste0("Discarded datum ", attr(res, "datum"),
-          " in CRS definition: ", c(res))
+          " in Proj4 definition: ", c(res))
       if (!no_towgs84 && (length(grep("towgs84", c(res))) > 0L))
         msg <- paste0(msg, ",\n but +towgs84= values preserved")
       if (get_P6_datum_hard_fail()) stop(msg)
@@ -606,11 +606,20 @@ getRasterData <- function(dataset,
 
         raster <- getRasterBand(dataset, band[i])
 
-        x[,,i] <- .Call('RGDAL_GetRasterData', raster,
+        y <- .Call('RGDAL_GetRasterData', raster,
                       as.integer(c(offset, region.dim)),
                       as.integer(output.dim),
                       as.integer(interleave),
                       PACKAGE="rgdal")
+        
+        if (length(band) == 1) {
+          # avoid surprisingly expensive slice assignment for
+          # common case of a single band
+          attributes(y) <- attributes(x)
+          x <- y
+        } else {
+          x[,,i] <- y
+        }
   
     }
     if (!as.is) {

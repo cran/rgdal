@@ -215,19 +215,15 @@ SEXP OGR_write(SEXP inp)
 
     SEXP p4s = GET_SLOT(obj, install("proj4string"));
     SEXP comment = getAttrib(p4s, install("comment"));
-    char **ppszInput = NULL;
 
     if (!isNull(comment)) {
 //        Rprintf("CRS comment: %s\n", CHAR(STRING_ELT(comment, 0)));
-        ppszInput = CSLAddString(ppszInput, CHAR(STRING_ELT(comment, 0)));//FIXME VG
-
-
         installErrorHandler();
 #if GDAL_VERSION_MAJOR == 1 || ( GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR <= 2 ) // thanks to Even Roualt https://github.com/OSGeo/gdal/issues/681
 //#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-        if (poSRS->importFromWkt(ppszInput) != OGRERR_NONE) {
+        if (poSRS->importFromWkt((char **) CHAR(STRING_ELT(comment, 0))) != OGRERR_NONE) {
 #else
-        if (poSRS->importFromWkt((const char **) ppszInput) != OGRERR_NONE) {
+        if (poSRS->importFromWkt((const char *) CHAR(STRING_ELT(comment, 0))) != OGRERR_NONE) {
 #endif
 #ifdef GDALV2
                 GDALClose( poDS );
@@ -791,8 +787,7 @@ SEXP OGR_write(SEXP inp)
             uninstallErrorHandlerAndTriggerError();
             error("number of objects mismatch");
         }
-        SEXP Lns;
-        int Lns_l;
+
         if (verbose) Rprintf("Writing %d wkbMultiPolygon objects\n", nobs);
         installErrorHandler();
 #ifdef GDALV2
@@ -801,66 +796,16 @@ SEXP OGR_write(SEXP inp)
 #endif
 
 	for (i=0; i<nobs; i++) {
-            OGRFeature *poFeature;
-            poFeature = new OGRFeature( poLayer->GetLayerDefn() );
+            OGRFeature *poFeature =  new OGRFeature( poLayer->GetLayerDefn() );
             PROTECT(comms = SP_PREFIX(comment2comm)(VECTOR_ELT(pls, i)));
             if (comms == R_NilValue) {
-
-// RSB 081009
-                Lns = GET_SLOT(VECTOR_ELT(pls, i), install("Polygons"));
-                Lns_l = (int) length(Lns);
-                OGRGeometry* poRet = NULL;
-// use of organizePolygons 151030
-                OGRPolygon** papoPolygons = new OGRPolygon*[ Lns_l ];
-                for (k=0; k<Lns_l; k++) {
-                    papoPolygons[k] = new OGRPolygon();
-                    SEXP crds, dim;
-                    crds = GET_SLOT(VECTOR_ELT(GET_SLOT(VECTOR_ELT(pls, i),
-                        install("Polygons")), k), install("coords"));
-                    dim = getAttrib(crds, install("dim"));
-                    int ncrds = INTEGER_POINTER(dim)[0];
-
-                    OGRLinearRing *OGRlr = new OGRLinearRing;
-
-                    for (j=0; j<ncrds; j++) 
-                        OGRlr->setPoint( j, NUMERIC_POINTER(crds)[j],
-                                    NUMERIC_POINTER(crds)[j+ncrds] );
-
-                    papoPolygons[k]->addRingDirectly(OGRlr);
-
-                } // k
-                int isValidGeometry;
-                poRet = OGRGeometryFactory::organizePolygons(
-                    (OGRGeometry**)papoPolygons, Lns_l, &isValidGeometry );
-                if (!isValidGeometry) {
-                    warning("OGR_write: uncommented multiring Polygons object %d conversion to SFS invalid", i+R_OFFSET);
-                }
-
-                delete[] papoPolygons;
-
-                if( poFeature->SetGeometry( poRet ) != OGRERR_NONE ) {
-#ifdef GDALV2
-                    GDALClose( poDS );
-#else
-                    OGRDataSource::DestroyDataSource( poDS );
-#endif
-                    delete poSRS;
-                    uninstallErrorHandlerAndTriggerError();
-                    error( "Failed to set geometry" );
-                } 
-
-
-	    // EJP:
-	        poFeature->SetGeometryDirectly(
-		    OGRGeometryFactory::forceToMultiPolygon(
-		    poFeature->StealGeometry() ) );
-
+                error("Polygons object without ordering comment");
             } else {
                 int nExtRings = length(comms);
-                OGRMultiPolygon *poRet = new OGRMultiPolygon();//FIXME VG
+                OGRMultiPolygon poRet = OGRMultiPolygon();
                 SEXP PLSi = GET_SLOT(VECTOR_ELT(pls, i), install("Polygons"));
                 for (int iER=0; iER<nExtRings; iER++) {
-                    OGRPolygon *OGRply = new OGRPolygon();//FIXME VG
+                    OGRPolygon OGRply = OGRPolygon();
                     int nthisiER = length(VECTOR_ELT(comms, iER));
 
                     for (k=0; k<nthisiER; k++) {
@@ -875,12 +820,12 @@ SEXP OGR_write(SEXP inp)
                         for (j=0; j<ncrds; j++) 
                            OGRlr.setPoint( j, NUMERIC_POINTER(crds)[j],
                                    NUMERIC_POINTER(crds)[j+ncrds] );
-                        OGRply->addRing( &OGRlr ); 
+                        OGRply.addRing( &OGRlr ); 
                     }
-                    poRet->addGeometry(OGRply);//FIXME VG
-                    OGRply->empty();
+                    poRet.addGeometry(&OGRply);
+                    OGRply.empty();
                 }
-                if( poFeature->SetGeometry( poRet ) != OGRERR_NONE ) {
+                if( poFeature->SetGeometry( &poRet ) != OGRERR_NONE ) {
 #ifdef GDALV2
                     GDALClose( poDS );
 #else

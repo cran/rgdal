@@ -293,7 +293,7 @@ OGRSpatialRef <- function(dsn, layer, morphFromESRI=NULL, dumpSRS=FALSE,
     no_ellps <- no_ellps && length(grep("datum", c(res))) == 0L
     if (no_ellps) {
       msg <- paste0("Discarded ellps ", attr(res, "ellps"),
-            " in CRS definition: ", c(res))
+            " in Proj4 definition: ", c(res))
       if (get_rgdal_show_exportToProj4_warnings()) {
        if (!get_thin_PROJ6_warnings()) {
         warning(msg)
@@ -311,7 +311,7 @@ OGRSpatialRef <- function(dsn, layer, morphFromESRI=NULL, dumpSRS=FALSE,
     if ((!is.null(attr(res, "datum"))) && (nchar(attr(res, "datum")) > 0L)
       && (length(grep("datum", c(res))) == 0L)) {
       msg <- paste0("Discarded datum ", attr(res, "datum"),
-          " in CRS definition: ", c(res))
+          " in Proj4 definition: ", c(res))
       if (!no_towgs84 && (length(grep("towgs84", c(res))) > 0L))
         msg <- paste0(msg, ",\n but +towgs84= values preserved")
       if (get_P6_datum_hard_fail()) stop(msg)

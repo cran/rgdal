@@ -4,11 +4,15 @@ author: "Roger Bivand"
 output:
   html_document:
     toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
 bibliography: PROJ.bib
 link-citations: yes
 vignette: >
   %\VignetteIndexEntry{Migration to PROJ6/GDAL3}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -396,7 +400,7 @@ cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
 `rgdal::showSRID()` is quite versatile, so we can display a multiline WKT string as well:
 
 ```{r, eval=run}
-if (packageVersion("rgdal") >= "1.5.1") cat(rgdal::showSRID("+init=epsg:27700", format="WKT2_2018", multiline="YES"), "\n")
+if (packageVersion("rgdal") >= "1.5.1") cat(rgdal::showSRID("+init=epsg:27700", format="WKT2_2018", multiline="YES", prefer_proj=FALSE), "\n")
 ```
 
 ```{r}

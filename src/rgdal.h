@@ -119,24 +119,30 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer, SEXP morphFromESRI, SEXP dumpSRS); /
 SEXP p4s_to_wkt(SEXP p4s, SEXP esri);// GDAL
 SEXP wkt_to_p4s(SEXP wkt, SEXP esri);// GDAL
 SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);// GDAL
-//SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);
+SEXP P6_SRID_proj(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format, SEXP epsg, SEXP out_format);
 SEXP ogrAutoIdentifyEPSG(SEXP p4s);// GDAL
 SEXP list_coordinate_ops(SEXP source, SEXP target, SEXP area_of_interest, SEXP strict_containment, SEXP vis_order); // both
 SEXP PROJ4VersionInfo(void); // different
 SEXP PROJ4NADsInstalled(void); // both, different at R level ??
 SEXP PROJ4_proj_def_dat_Installed(void); // both, different at R level ??
 SEXP get_proj_search_path(void); // both
-SEXP set_proj_search_path(SEXP path); // both
+SEXP set_proj_paths(SEXP path); // both
+SEXP get_proj_user_writable_dir(); // both
 SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z); // both
-SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z); // both
+SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z, SEXP aoi); // both
 SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2);
 SEXP proj_network_enabled(); // both
+SEXP enable_proj_network(); // both
+SEXP disable_proj_network(); // both
 SEXP RGDAL_projInfo(SEXP type); // both
 SEXP R_GDAL_OSR_PROJ();// GDAL
 SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran); // both
 SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran); // both
-SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP inv, SEXP ob_tran, SEXP coordOp); // both
-SEXP project_ng_coordOp(SEXP proj, SEXP inv); // both
+SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp); // both
+SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi, SEXP ob_tran); // both
+SEXP get_source_crs(SEXP source); // both
+SEXP proj_vis_order(SEXP wkt2); // both
+SEXP OSR_is_projected(SEXP inSRID);
 
 #ifdef __cplusplus
 }

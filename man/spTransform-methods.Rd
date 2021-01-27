@@ -64,11 +64,13 @@ get_last_coordOp()
   \item{value}{A non-NA logical value}
 }
 
-\description{The \code{spTransform} methods provide transformation between datum(s) and conversion between projections (also known as projection and/or re-projection), from one unambiguously specified coordinate reference system to another, using PROJ.4 projection arguments. For simple projection, when no +datum tags are used, datum projection does not occur. When datum transformation is required, the +datum tag should be present with a valid value both in the CRS of the object to be transformed, and in the target CRS. In general +datum= is to be prefered to +ellps=, because the datum always fixes the ellipsoid, but the ellipsoid never fixes the datum. 
+\description{The \code{spTransform} methods provide transformation between datum(s) and conversion between projections (also known as projection and/or re-projection), from one unambiguously specified coordinate reference system (CRS) to another, prior to version 1.5 using Proj4 projection arguments. From version 1.5, Well-Known Text 2 (WKT2 2019) strings are used. For simple projection, when no Proj4 +datum tags are used, datum projection does not occur. When datum transformation is required, the datum should be defined with a valid value both in the CRS of the object to be transformed, and in the target CRS. In general datum is to be prefered to ellipsoid, because the datum always fixes the ellipsoid, but the ellipsoid never fixes the datum. 
 
-In addition, the +towgs84 tag should be used where needed to make sure that datum transformation does take place. Parameters for +towgs84 will be taken from the bundled EPSG database if they are known unequivocally, but may be entered manually from known authorities. Not providing the appropriate +datum and +towgs84 tags may lead to coordinates being out by hundreds of metres. Unfortunately, there is no easy way to provide this information: the user has to know the correct metadata for the data being used, even if this can be hard to discover.}
+In addition, before version 1.5 the +towgs84 tag should have been used where needed to make sure that datum transformation would take place. Parameters for +towgs84 were taken from the legacy bundled EPSG file if they are known unequivocally, but could be entered manually from known authorities. Not providing the appropriate +datum and +towgs84 tags led to coordinates being out by hundreds of metres. Unfortunately, there is no easy way to provide this information: the user has to know the correct metadata for the data being used, even if this can be hard to discover.
 
-\note{The projection arguments must be entered exactly as in the PROJ.4 documentation, in particular there cannot be any white space in +<arg>=<value> strings, and successive such strings can only be separated by blanks.
+From version 1.5, \code{spTransform} uses the modern PROJ coordinate operation framework for transformations. This avoids pivoting through WGS84 if possible, and uses WKT2 (2019) strings for source and target CRS often constructed from the bundled EPSG SQLite database. The database is searched for feasible candidate coordinate operations, and the most accurate available is chosen. More details are available in a vignette: \code{vignette("CRS_projections_transformations")}.}
+
+\note{The projection arguments had to be entered exactly as in the PROJ.4 documentation, in particular there cannot be any white space in +<arg>=<value> strings, and successive such strings can only be separated by blanks.
 Note that warnings about different projections may be issued when the PROJ.4 library extends projection arguments; examine the warning to see if the differences are real.
 
 Also note that re-projection and/or datum transformation will usually not work for regular grids. The term used for similar operations for regular grids is warping, which involved resampling to a regular grid in the target coordinate reference system.
@@ -148,24 +150,40 @@ plot(grd_BNG, add=TRUE, lty=2)
 text(coordinates(grdtxt_BNG),
    labels=parse(text=as.character(grdtxt_BNG$labels)))
 par(opar)
+broke_proj <- FALSE
+# https://github.com/OSGeo/PROJ/issues/1525
+pv <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]]
+if (pv >= 600 && pv < 620) broke_proj <- TRUE
+if (!broke_proj) { 
 crds <- matrix(data=c(9.05, 48.52), ncol=2)
 spPoint <- SpatialPoints(coords=crds,
  proj4string=CRS("+proj=longlat +ellps=sphere +no_defs"))
-a <- spTransform(spPoint, CRS(paste("+proj=ob_tran +o_proj=longlat",
- "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")),
- use_ob_tran=TRUE)
+ob_tran_def <- paste("+proj=ob_tran +o_proj=longlat",
+ "+o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")
+tg <- CRS(ob_tran_def)
+# proj4string not propagated in GDAL 3.0.0
+a <- spTransform(spPoint, tg, use_ob_tran=TRUE)
 a
+}
 #should be (-5.917698, -1.87195)
+if (!broke_proj) {
 spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
  use_ob_tran=TRUE)
+}
+if (!broke_proj) {
 try(spTransform(a, CRS(paste("+proj=tmerc +lat_0=0 +lon_0=9 +k=1",
 "+x_0=3500000 +y_0=0 +ellps=bessel +units=m +no_defs")),
  use_ob_tran=TRUE))
+}
+if (!broke_proj) {
 spTransform(spPoint, CRS(paste("+proj=tmerc +lat_0=0 +lon_0=9 +k=1",
 "+x_0=3500000 +y_0=0 +ellps=bessel +units=m +no_defs")))
+}
+if (!broke_proj) {
 spTransform(spTransform(a, CRS("+proj=longlat +ellps=sphere +no_defs"),
  use_ob_tran=TRUE), CRS(paste("+proj=tmerc +lat_0=0 +lon_0=9 +k=1",
 "+x_0=3500000 +y_0=0 +ellps=bessel +units=m +no_defs")))
+}
 crds1 <- matrix(data=c(7, 51, 8, 52, 9, 52, 10, 51, 7, 51), ncol=2,
 byrow=TRUE, dimnames=list(NULL, c("lon", "lat")));
 crds2 <- matrix(data=c(8, 48, 9, 49, 11, 49, 9, 48, 8, 48), ncol=2,
@@ -176,22 +194,29 @@ spLines <- SpatialLines(list(Lines(list(Line(crds1), Line(crds2),
 Line(crds3)), ID="a")));
 slot(spLines, "proj4string") <- CRS("+proj=longlat +ellps=sphere +no_defs");
 bbox(spLines);
-spLines_tr <- spTransform(spLines, CRS(paste0("+proj=ob_tran +o_proj=longlat",
-" +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")),
-use_ob_tran=TRUE);
+if (!broke_proj) {
+spLines_tr <- spTransform(spLines, tg, use_ob_tran=TRUE);
 bbox(spLines_tr)
+}
+if (!broke_proj) {
 bbox(spTransform(spLines_tr, CRS("+proj=longlat +ellps=sphere"),
  use_ob_tran=TRUE))
+}
+if (!broke_proj) {
 spPolygons <- SpatialPolygons(list(Polygons(list(Polygon(crds1),
 Polygon(crds2), Polygon(crds3)), ID="a")));
 slot(spPolygons, "proj4string") <- CRS("+proj=longlat +ellps=sphere +no_defs");
 bbox(spPolygons);
-spPolygons_tr <- spTransform(spPolygons, CRS(paste0("+proj=ob_tran",
-" +o_proj=longlat +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180 +ellps=sphere +no_defs")),
-use_ob_tran=TRUE);
+}
+if (!broke_proj) {
+spPolygons_tr <- spTransform(spPolygons, tg, use_ob_tran=TRUE);
 bbox(spPolygons_tr)
+}
+if (!broke_proj) {
 bbox(spTransform(spPolygons_tr, CRS("+proj=longlat +ellps=sphere"),
  use_ob_tran=TRUE))
+}
+\dontrun{
 #added after posting by Martin Ivanov
 data(nor2k)
 summary(nor2k)
@@ -214,9 +239,12 @@ suppressWarnings(proj4string(locs.step1.cf) <- CRS(paste("+proj=lcc",
 locs.step2.cfb <- spTransform(locs.step1.cf, CRS("+init=epsg:26743"))
 coordinates(locs.step2.cfb) - ref
 all.equal(unname(coordinates(locs.step2.cfb)), ref)
+}
+run <- new_proj_and_gdal()
+if (run) {
 # Test for UTM == TMERC (<= 4.9.2) or UTM == ETMERC (> 4.9.2)
 nhh <- SpatialPointsDataFrame(matrix(c(5.304234, 60.422311), ncol=2),
- proj4string=CRS("+init=epsg:4326"), data=data.frame(office="RSB"))
+ proj4string=CRS(SRS_string="OGC:CRS84"), data=data.frame(office="RSB"))
 nhh_utm_32N_P4 <- spTransform(nhh, CRS("+init=epsg:3044"))
 nhh_tmerc_P4 <- spTransform(nhh, CRS(paste("+proj=tmerc +k=0.9996",
  "+lon_0=9 +x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")))
@@ -229,7 +257,7 @@ all.equal(coordinates(nhh_utm_32N_P4), coordinates(nhh_etmerc_P4),
  tolerance=1e-9, scale=1)
 # UTM == ETMERC: PROJ4 > 4.9.2
 unis <- SpatialPointsDataFrame(matrix(c(15.653453, 78.222504), ncol=2),
- proj4string=CRS("+init=epsg:4326"), data=data.frame(office="UNIS"))
+ proj4string=CRS(SRS_string="OGC:CRS84"), data=data.frame(office="UNIS"))
 unis_utm_33N_P4 <- spTransform(unis, CRS("+init=epsg:3045"))
 unis_tmerc_P4 <- spTransform(unis, CRS(paste("+proj=tmerc +k=0.9996 +lon_0=15",
  "+x_0=500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")))
@@ -241,7 +269,7 @@ all.equal(coordinates(unis_utm_33N_P4), coordinates(unis_tmerc_P4),
 all.equal(coordinates(unis_utm_33N_P4), coordinates(unis_etmerc_P4),
  tolerance=1e-9, scale=1)
 # UTM == ETMERC: PROJ4 > 4.9.2
-
+}
 }
 
 \keyword{methods}

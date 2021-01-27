@@ -28,15 +28,17 @@ Objects can be created by calls of the form \code{CRS("projargs")}, where "proja
 
 \usage{
 checkCRSArgs(uprojargs)
-checkCRSArgs_ng(uprojargs=NA_character_, SRS_string=NULL)
+checkCRSArgs_ng(uprojargs=NA_character_, SRS_string=NULL,
+  get_source_if_boundcrs=TRUE)
 compare_CRS(CRS1, CRS2)
 }
 \arguments{
   \item{uprojargs}{character string PROJ.4 projection arguments}
-  \item{SRS_string}{default NULL, experimental in connection with adaptation to GDAL>=3/PROJ>=6; a valid WKT string or SRS definition such as \code{"EPSG:4326"}}
+  \item{SRS_string}{default NULL, experimental in connection with adaptation to GDAL>=3/PROJ>=6; a valid WKT string or SRS definition such as \code{"OGC:CRS84"}}
+  \item{get_source_if_boundcrs}{The presence of the \code{+towgs84=} key in a Proj4 string \code{projargs=} argument value may promote the output WKT2 CRS to BOUNDCRS for PROJ >= 6 and GDAL >= 3, which is a coordinate operation from the input datum to WGS84. This is often unfortunate, so a PROJ function is called through \pkg{rgdal} to retrieve the underlying source definition.}
   \item{CRS1, CRS2}{objects of class \code{"CRS"}}
 }
-\references{\url{http://proj.org/}}
+\references{\url{https://proj.org/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
 \note{
@@ -65,9 +67,9 @@ data(meuse)
 coordinates(meuse) <- c("x", "y")
 proj4string(meuse) <- CRS("+init=epsg:28992")
 CRSargs(CRS(proj4string(meuse)))
-run <- attr(getPROJ4VersionInfo(), "short") >= 630 && GDALis3ormore()
+run <- new_proj_and_gdal()
 if (run) {
-c1 <- CRS("+init=epsg:4326")
+c1 <- CRS(SRS_string="OGC:CRS84")
 c2 <- CRS("+proj=longlat")
 compare_CRS(c1, c2)
 }

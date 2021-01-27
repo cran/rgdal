@@ -13,7 +13,7 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
         }
 #	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
-	if (nchar(p4s) == 0) p4s <- as.character(NA)
+	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
 	gt <- .Call('RGDAL_GetGeoTransform', x, PACKAGE="rgdal")
         if (attr(gt, "CE_Failure") && !silent)
             warning("GeoTransform values not available")
@@ -223,7 +223,7 @@ asGDALROD_SGDF <- function(from) {
 	output.dim <- d[1:2]
 #	p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
 	p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL)
-	if (nchar(p4s) == 0) p4s <- as.character(NA)
+	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
         if (new_proj_and_gdal()) wkt2 <- comment(p4s)
         oCRS <- CRS(c(p4s))
         if (new_proj_and_gdal()) comment(oCRS) <- wkt2
@@ -280,7 +280,7 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
                 enforce_xy <- get_enforce_xy()
             }
 	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
-	if (nchar(p4s) == 0) p4s <- as.character(NA)
+	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
         if (new_proj_and_gdal()) wkt2 <- comment(p4s)
         oCRS <- CRS(c(p4s))
         if (new_proj_and_gdal()) comment(oCRS) <- wkt2
@@ -354,7 +354,7 @@ readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., 
                 enforce_xy <- get_enforce_xy()
             }
 	    p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
-	if (nchar(p4s) == 0) p4s <- as.character(NA)
+	if (!is.na(p4s) && nchar(p4s) == 0) p4s <- as.character(NA)
         if (new_proj_and_gdal()) wkt2 <- comment(p4s)
         oCRS <- CRS(c(p4s))
         if (new_proj_and_gdal()) comment(oCRS) <- wkt2

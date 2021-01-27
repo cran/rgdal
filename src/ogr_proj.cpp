@@ -39,6 +39,7 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
     else if (LOGICAL_POINTER(enforce_xy)[0] == 1) vis_order = 1;
     else if (LOGICAL_POINTER(enforce_xy)[0] == 0) vis_order = 0;
     else vis_order = 0;
+//Rprintf("vis_order: %d\n", vis_order);
 //srs.SetFromUserInput("ESRI:102008")
     if (INTEGER_POINTER(in_format)[0] == 1L) {
         installErrorHandler();
@@ -72,12 +73,23 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
 	    error("Can't parse EPSG-style code");
         }
         uninstallErrorHandlerAndTriggerError();
+    } else if (INTEGER_POINTER(in_format)[0] == 5L) {
+        installErrorHandler();
+        if (hSRS->SetFromUserInput((const char *) CHAR(STRING_ELT(inSRID, 0))) != OGRERR_NONE) {
+            delete hSRS;
+            uninstallErrorHandlerAndTriggerError();
+	    error("Can't parse user input string");
+        }
+        uninstallErrorHandlerAndTriggerError();
     }
 
+//    Rprintf("MappingStrategy in: %d\n",  hSRS->GetAxisMappingStrategy());
     if (hSRS != NULL) {
-        if (vis_order == 1) 
+        if (vis_order == 1) {
             hSRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
+        }
     }
+//    Rprintf("MappingStrategy out: %d\n", hSRS->GetAxisMappingStrategy());
 
 
     PROTECT(ans=NEW_CHARACTER(1)); pc++;
@@ -152,10 +164,31 @@ SEXP P6_SRID_show(SEXP inSRID, SEXP format, SEXP multiline, SEXP in_format,
 
 }
 
+SEXP OSR_is_projected(SEXP inSRID) {
+
+    OGRSpatialReference *hSRS = new OGRSpatialReference;
+    int is_proj;
+    SEXP ans;
+
+    installErrorHandler();
+    if (hSRS->SetFromUserInput((const char *) CHAR(STRING_ELT(inSRID, 0))) != OGRERR_NONE) {
+        delete hSRS;
+        uninstallErrorHandlerAndTriggerError();
+        error("Can't parse user input string");
+    }
+    uninstallErrorHandlerAndTriggerError();
+    is_proj = hSRS->IsProjected();
+    PROTECT(ans = NEW_LOGICAL(1));
+    LOGICAL_POINTER(ans)[0] = is_proj;
+    delete hSRS;
+    UNPROTECT(1);
+    return(ans);
+}
+
 
 SEXP R_GDAL_OSR_PROJ() {
 
-#if GDAL_VERSION_MAJOR >= 3
+#if ((GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR == 0 && GDAL_VERSION_REV >= 1) || (GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR > 0) || (GDAL_VERSION_MAJOR > 3))
         SEXP OSRProjVersion;
         int pnMajor, pnMinor, pnPatch, pc=0;
 
@@ -213,12 +246,13 @@ SEXP p4s_to_wkt(SEXP p4s, SEXP esri) {
 #if GDAL_VERSION_MAJOR < 3
     if (LOGICAL_POINTER(esri)[0] == 1) hSRS->morphToESRI();
 #endif
-    hSRS->exportToWkt(&pszSRS_WKT);//FIXME VG
+    hSRS->exportToWkt(&pszSRS_WKT);
     uninstallErrorHandlerAndTriggerError();
 
     PROTECT(ans=NEW_CHARACTER(1));
     SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszSRS_WKT));
     delete hSRS;
+    CPLFree(pszSRS_WKT);
 
     UNPROTECT(1);
 
@@ -229,9 +263,7 @@ SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
 
     OGRSpatialReference *hSRS = new OGRSpatialReference;
     char *pszSRS_P4 = NULL;
-    char **ppszInput = NULL;
     SEXP ans;
-    ppszInput = CSLAddString(ppszInput, CHAR(STRING_ELT(wkt, 0)));//FIXME VG
 
 #if GDAL_VERSION_MAJOR >= 3
     int vis_order;
@@ -245,16 +277,24 @@ SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
 
     installErrorHandler();
 #if GDAL_VERSION_MAJOR == 1 || ( GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR <= 2 ) // thanks to Even Roualt https://github.com/OSGeo/gdal/issues/681
-//#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+    char **ppszInput = NULL;
+    ppszInput = CSLAddString(ppszInput, CHAR(STRING_ELT(wkt, 0)));
     if (hSRS->importFromWkt(ppszInput) != OGRERR_NONE) 
+    {
+        delete hSRS;
+        CPLFree(ppszInput);
+        uninstallErrorHandlerAndTriggerError();
+	error("Can't parse WKT-style parameter string");
+    }
+    CPLFree(ppszInput);
 #else
-    if (hSRS->importFromWkt((const char **) ppszInput) != OGRERR_NONE) 
-#endif 
+    if (hSRS->importFromWkt((const char *) CHAR(STRING_ELT(wkt, 0))) != OGRERR_NONE) 
     {
         delete hSRS;
         uninstallErrorHandlerAndTriggerError();
 	error("Can't parse WKT-style parameter string");
     }
+#endif 
     uninstallErrorHandlerAndTriggerError();
 
 #if GDAL_VERSION_MAJOR >= 3
@@ -269,10 +309,10 @@ SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
 #if GDAL_VERSION_MAJOR < 3
     if (LOGICAL_POINTER(esri)[0] == 1) hSRS->morphFromESRI();
 #endif
-//    if (LOGICAL_POINTER(esri)[0] == 1) hSRS.morphFromESRI();
-    hSRS->exportToProj4(&pszSRS_P4);//FIXME VG
+    hSRS->exportToProj4(&pszSRS_P4);
     uninstallErrorHandlerAndTriggerError();
     delete hSRS;
+    CPLFree(pszSRS_P4);
 
     PROTECT(ans=NEW_CHARACTER(1));
     SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszSRS_P4));
@@ -344,7 +384,8 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer, SEXP morphFromESRI, SEXP dumpSRS) {
 #endif
     OGRLayer *poLayer;
 
-    OGRSpatialReference *hSRS = new OGRSpatialReference;
+// leak fixed
+    OGRSpatialReference *hSRS; // = new OGRSpatialReference;
     char *pszProj4 = NULL;
     SEXP ans, Datum, ToWGS84, Ellps;
     int i, pc=0;
@@ -408,12 +449,10 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer, SEXP morphFromESRI, SEXP dumpSRS) {
 #if GDAL_VERSION_MAJOR >= 3
         SEXP WKT2_2018;
         char *wkt2=NULL;
-        char **papszOptions = NULL;
         PROTECT(WKT2_2018 = NEW_CHARACTER(1)); pc++;
 
         installErrorHandler();
-        papszOptions = CSLAddString(papszOptions, "FORMAT=WKT2_2018");
-        papszOptions = CSLAddString(papszOptions, "MULTILINE=YES");
+        const char* papszOptions[] = { "FORMAT=WKT2_2018", "MULTILINE=YES", nullptr };
         uninstallErrorHandlerAndTriggerError();
 
         installErrorHandler();
@@ -421,7 +460,7 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer, SEXP morphFromESRI, SEXP dumpSRS) {
             SET_STRING_ELT(WKT2_2018, 0, NA_STRING);
         }
         SET_STRING_ELT(WKT2_2018, 0, COPY_TO_USER_STRING(wkt2));
-        CSLDestroy(papszOptions);
+        CPLFree( wkt2 ); // added
         uninstallErrorHandlerAndTriggerError();
         setAttrib(ans, install("WKT2_2018"), WKT2_2018);
 #endif
@@ -433,7 +472,6 @@ SEXP ogrP4S(SEXP ogrsourcename, SEXP Layer, SEXP morphFromESRI, SEXP dumpSRS) {
 #if GDAL_VERSION_MAJOR < 3
         if (LOGICAL_POINTER(morphFromESRI)[0]) hSRS->morphFromESRI();
 #endif
-//	if (LOGICAL_POINTER(morphFromESRI)[0]) hSRS->morphFromESRI();
         if (hSRS->exportToProj4(&pszProj4) != OGRERR_NONE) {
             SET_STRING_ELT(ans, 0, NA_STRING);
             CPLFree(pszProj4);

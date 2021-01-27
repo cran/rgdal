@@ -58,7 +58,7 @@ get_cached_set_GDAL_DATA()
 \arguments{
   \item{driver}{An object inheriting from class 'GDALDriver'}
   \item{str}{A string, may be one of \code{"--version"}, \code{"VERSION_NUM"}, \code{"RELEASE_DATE"}, \code{"RELEASE_NAME"}}
-  \item{ConfigOption}{CPL configure option documented in \url{http://trac.osgeo.org/gdal/wiki/ConfigOptions} and elsewhere in GDAL source code}
+  \item{ConfigOption}{CPL configure option documented in \url{https://trac.osgeo.org/gdal/wiki/ConfigOptions} and elsewhere in GDAL source code}
   \item{value}{a string value to set a CPL option; NULL is used to unset the CPL option}
 }
 

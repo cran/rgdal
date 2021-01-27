@@ -30,6 +30,16 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
         obj <- as(obj, "SpatialPointsDataFrame")
         if (verbose) warning("coercing gridded object to points")
     }
+    if (inherits(obj, "SpatialPolygonsDataFrame")) {
+        if (any(sapply(lapply(slot(obj, "polygons"), function(x) comment(x)),
+            is.null))) {
+            if (requireNamespace("rgeos", quietly=TRUE)) {
+                obj <- rgeos::createSPComment(obj)
+            } else {
+                stop("Spatial Polygons objects should have valid ordering comments\nuse rgeos::createSPComment()")
+            }
+        }
+    }
     if (!"data" %in% names(getSlots(class(obj))))
         stop("obj must be a SpatialPointsDataFrame, SpatialLinesDataFrame or\n    SpatialPolygonsDataFrame") 
     dfcls <- sapply(slot(obj, "data"), function(x) class(x)[1])

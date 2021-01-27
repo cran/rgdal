@@ -236,7 +236,7 @@ cat(strwrap(gsub(",", ", ", (comment(crs)))), sep="\n")
 ## ORDER[2], LENGTHUNIT[\"metre\", 1, ID[\"EPSG\", 9001]]]]"
 
 ## ---- eval=run----------------------------------------------------------------
-if (packageVersion("rgdal") >= "1.5.1") cat(rgdal::showSRID("+init=epsg:27700", format="WKT2_2018", multiline="YES"), "\n")
+if (packageVersion("rgdal") >= "1.5.1") cat(rgdal::showSRID("+init=epsg:27700", format="WKT2_2018", multiline="YES", prefer_proj=FALSE), "\n")
 
 ## -----------------------------------------------------------------------------
 ## PROJCRS["OSGB 1936 / British National Grid",

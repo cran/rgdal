@@ -76,7 +76,7 @@ ogrListLayers(dsn)
 \value{
   A Spatial object is returned suiting the vector data source, either a SpatialPointsDataFrame (using an AttributeList for its data slot directly), a SpatialLinesDataFrame, or a SpatialPolygonsDataFrame.
 }
-\references{\url{https://gdal.org/drivers/vector/index.html}, \url{https://examples.oreilly.com/webmapping/}}
+\references{\url{https://gdal.org/drivers/vector/index.html}, \url{https://resources.oreilly.com/examples/9780596008659}}
 \author{Roger Bivand}
 
 \note{The bases for this implementation are taken from functions in Barry Rowlingson's draft Rmap package, and from Radim Blazek's v.in.ogr program in GRASS.
@@ -95,7 +95,7 @@ From 0.7-24, attempts are begun to provide users with arguments to control readi
 
 While there is no certainty, newer drivers such as KML, GML, SQLite and Geopackage (GPKG) may encode string fields as UTF-8. Users are advised to explore this on a case to case basis using \code{\link[base]{Encoding}} on string fields of input objects.
 
-Because of the representation of DateTime data in OGR, decimal seconds in input data are rounded to integer seconds, see: \url{http://trac.osgeo.org/gdal/ticket/2680}.
+Because of the representation of DateTime data in OGR, decimal seconds in input data are rounded to integer seconds, see: \url{https://trac.osgeo.org/gdal/ticket/2680}.
 
 Because some drivers support reading string, integer and real list fields, support has been introduced into \code{ogrInfo} from version 0.9-1 to report their presence and the maximum counts of list items. This may lead to the introduction of the \code{-splitlistfields} facility from the command line utility \code{ogrinfo}. In addition, \code{ogrInfo} reports that there are no features when counting FIDs in a while loop over features in \code{ogrFIDs} never enters the loop, despite the layer feature count reporting at least one feature.
 }

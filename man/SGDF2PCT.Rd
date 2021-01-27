@@ -25,7 +25,7 @@ The value returned is a list:
   \item{idx}{a vector of colour indices in the same spatial order as the input object}
   \item{ct}{a vector of RGB colours}
 }
-\references{\url{http://www.gdal.org/}}
+\references{\url{https://gdal.org/}}
 \author{Roger Bivand}
 
 \examples{

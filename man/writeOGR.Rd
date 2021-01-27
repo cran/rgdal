@@ -29,7 +29,7 @@ writeOGR(obj, dsn, layer, driver, dataset_options = NULL,
   \item{dumpSRS}{dump SRS to stdout from inside GDAL to debug conversion - developer use only}
 }
 \details{
-  Working out which combination of dsn, layer, and driver (and option) values give the desired output takes time and care, and is constrained by the ability of drivers to write output; many are read-only. Use of the references given is highly advisable, with searches in the archives of other software using GDAL/OGR. Note that for the \dQuote{ESRI Shapefile} driver and GDAL >= 1.9, the \code{layer_options} value of \sQuote{ENCODING=\dQuote{LDID/CP1252}} or other values found on \url{http://www.autopark.ru/ASBProgrammerGuide/DBFSTRUC.HTM} to set the encoding byte of the output DBF file (link refered to in ogr/ogrsf_frmts/shape/ogrshapelayer.cpp. The effect of setting the LDID may vary depending on whether GDAL is built with iconv or not, and on the setting of the CPL Option \dQuote{SHAPE_ENCODING}.
+  Working out which combination of dsn, layer, and driver (and option) values give the desired output takes time and care, and is constrained by the ability of drivers to write output; many are read-only. Use of the references given is highly advisable, with searches in the archives of other software using GDAL/OGR. Note that for the \dQuote{ESRI Shapefile} driver and GDAL >= 1.9, the \code{layer_options} value of \sQuote{ENCODING=\dQuote{LDID/CP1252}} or other values found on \url{http://www.autopark.ru/ASBProgrammerGuide/dbfstruc.htm} to set the encoding byte of the output DBF file (link refered to in ogr/ogrsf_frmts/shape/ogrshapelayer.cpp. The effect of setting the LDID may vary depending on whether GDAL is built with iconv or not, and on the setting of the CPL Option \dQuote{SHAPE_ENCODING}.
 
 While there is no certainty, newer drivers such as KML, GML, SQLite and Geopackage (GPKG) may encode string fields as UTF-8. Users are advised to explore this on a case to case basis using \code{\link[base]{Encoding}} on string fields of objects to be output, converting where necessary with \code{\link[base]{iconv}} or assigning the appropriate value with \code{\link[base]{Encoding}}.
 
@@ -49,7 +49,7 @@ The \code{overwrite_layer} and \code{delete_dsn} arguments are provided only for
 \section{\code{writeOGR} Polygon bug in 1.1-1}{
 In fixing a bug in the correct handling of SFS polygon geometries in version 1.1-1, a further bug was introduced affecting cases of wkbPolygon (not wkbMultiPolygon) output where SFS hole status in the output object was (correctly) defined in the comment to Polygons objects. The error only occurred when all the Polygons objects had one exterior ring, and zero or more interior rings. The error led to the coordinates of the rings cumulating, because the rings were not emptied before assigning the next ring. Version 1.1-2 corrects the error; thanks to  JamesWorrall for a complete bug report \url{https://stat.ethz.ch/pipermail/r-sig-geo/2015-December/023796.html}.
 }
-\references{\url{https://gdal.org/drivers/vector/index.html}, \url{https://examples.oreilly.com/webmapping/}}
+\references{\url{https://gdal.org/drivers/vector/index.html}, \url{https://resources.oreilly.com/examples/9780596008659}}
 \author{Roger Bivand}
 
 \seealso{\code{\link{readOGR}}}

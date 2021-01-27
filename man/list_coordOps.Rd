@@ -7,7 +7,7 @@
 \description{List PROJ 6 coordinate operations for a pair of source/target coordinate reference systems}
 \usage{
 list_coordOps(src_crs, tgt_crs, area_of_interest = as.numeric(NA), 
- strict_containment = FALSE, visualization_order = TRUE)
+ strict_containment = FALSE, visualization_order = NULL)
 best_instantiable_coordOp(x)
 \method{print}{coordOps}(x, ...)
 }
@@ -17,7 +17,7 @@ best_instantiable_coordOp(x)
   \item{tgt_crs}{Target coordinate reference system string}
   \item{area_of_interest}{Numeric vector; either \code{NA}, or the xmin, ymin, xmax, ymax of the bounding box of the area of interest. This may be used to restrict the search for coordinate operations}
   \item{strict_containment}{default FALSE, permit partial matching of the area of interest; if TRUE strictly contain the area of interest. The area of interest is either as given, or as implied by the source/target coordinate reference systems (FIXME)}
-  \item{visualization_order}{default TRUE, always choose \code{x} or longitude for the first axis; if FALSE, follow the axis orders given by the coordinate reference systems when constructing the coordinate operation}
+  \item{visualization_order}{default NULL, taking the value of \code{get_enforce_xy()}; if TRUE always choose \code{x} or longitude for the first axis; if FALSE, follow the axis orders given by the coordinate reference systems when constructing the coordinate operation}
   \item{x}{an object of class \code{"coordOps"}}
   \item{...}{arguments possibly passed through, unused}
 }
@@ -44,24 +44,24 @@ Fragile: work in progress
 run <- new_proj_and_gdal()
 if (run) {
   discarded_datum <- showSRID("EPSG:27700", "PROJ")
-  (x <- list_coordOps(paste0(discarded_datum, " +type=crs"), "EPSG:4326"))
+  (x <- list_coordOps(paste0(discarded_datum, " +type=crs"), "OGC:CRS84"))
 }
 if (run) {
   best_instantiable_coordOp(x)
 }
 if (run) {
   restored_datum <- showSRID("EPSG:27700", "PROJ")
-  list_coordOps(paste0(restored_datum, " +datum=OSGB36 +type=crs"), "EPSG:4326")
+  list_coordOps(paste0(restored_datum, " +datum=OSGB36 +type=crs"), "OGC:CRS84")
 }
 if (run) {
   wkt_datum <- showSRID("EPSG:27700", "WKT2")
-  (x <- list_coordOps(wkt_datum, "EPSG:4326"))
+  (x <- list_coordOps(wkt_datum, "OGC:CRS84"))
 }
 if (run) {
   best_instantiable_coordOp(x)
 }
 if (run) {
-  list_coordOps("EPSG:27700", "EPSG:4326")
+  list_coordOps("EPSG:27700", "OGC:CRS84")
 }
 if (run) {
 }

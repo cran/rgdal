@@ -22,15 +22,15 @@ make_EPSG(file)
   \item{prj_method}{extra character column from PROJ 6 showing the projection method}
   ...
 }
-\references{The correct link is: http://www.epsg.org/ but it fails for many users because it is HTTP, and is treated as insecure.}
+\references{(unlinked because of certificate issues: https://epsg.org/home.html.}
 
 \author{Roger Bivand}
-\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{http://www.asprs.org/a/resources/grids/}, see also \code{\link{GridsDatums}}.}
+\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{https://www.asprs.org/a/resources/grids/}, see also \code{\link{GridsDatums}}.}
 \examples{
 EPSG <- try(make_EPSG())
 # from PROJ 6.0.0, EPSG data is no longer stored in a flat file
 if (!inherits(EPSG, "try-error")) attr(EPSG, "metadata") 
-# PROJ.4 5.0.0 and later include EPSG version
+# PROJ.4 version 5 and later include the EPSG version as an attribute
 if (!inherits(EPSG, "try-error")) EPSG[grep("Oslo", EPSG$note), 1:2]
 if (!inherits(EPSG, "try-error")) EPSG[1925:1927, 3]
 if (!inherits(EPSG, "try-error")) EPSG[grep("Poland", EPSG$note), 1:2]
