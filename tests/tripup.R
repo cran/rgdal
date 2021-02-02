@@ -91,6 +91,8 @@ cat("aMP with driver:", driver, "\n")
 unlink(paste(tf, "*", sep=""), recursive=driver == "ESRI Shapefile")
 cat(" coords", isTRUE(all.equal(lapply(slot(aMP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "coords")), check.attributes=FALSE)), "\n")
 cat(" holes", isTRUE(all.equal(lapply(slot(aMP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), lapply(slot(rP, "polygons"), function(x) lapply(slot(x, "Polygons"), slot, "hole")), check.attributes=FALSE)), "\n")
+}
+if (requireNamespace("rgeos", quietly=TRUE)) {
 tf <- paste0(tfbase, driver, "aMPh", sep=".")
 writeOGR(SpatialPolygonsDataFrame(aMPh, data=df3), tf, "GeoJSON",
  driver=driver, verbose=TRUE)

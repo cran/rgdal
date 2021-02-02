@@ -312,10 +312,10 @@ SEXP wkt_to_p4s(SEXP wkt, SEXP esri) {
     hSRS->exportToProj4(&pszSRS_P4);
     uninstallErrorHandlerAndTriggerError();
     delete hSRS;
-    CPLFree(pszSRS_P4);
 
     PROTECT(ans=NEW_CHARACTER(1));
     SET_STRING_ELT(ans, 0, COPY_TO_USER_STRING(pszSRS_P4));
+    CPLFree(pszSRS_P4);
 
     UNPROTECT(1);
 

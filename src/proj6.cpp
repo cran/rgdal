@@ -903,18 +903,18 @@ SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi, SEXP ob_tran
 SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp) {
     int i, nwarn=0, nn=INTEGER_POINTER(n)[0];
     SEXP res;
-//    PJ_CONTEXT *ctx = proj_context_create();
+    //PJ_CONTEXT *ctx = proj_context_create();
+    PJ* pj_transform = NULL;
     PJ_COORD a, b;
     double ixlon, iylat, iz=0.0;
 
     proj_log_func(PJ_DEFAULT_CTX, NULL, silent_logger);
 
-// valgrind 210120 treated by creating pj_transform repeatedly in the loop
-/*    if ((pj_transform = proj_create(ctx, CHAR(STRING_ELT(coordOp, 0)))) == 0) {
-        const char *errstr = proj_errno_string(proj_context_errno(ctx));
-        proj_context_destroy(ctx);
+    if ((pj_transform = proj_create(PJ_DEFAULT_CTX, CHAR(STRING_ELT(coordOp, 0)))) == 0) {
+        const char *errstr = proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX));
+        //proj_context_destroy(ctx);
         error("coordinate operation creation failed: %s", errstr);
-    } */
+    }
 //Rprintf("%s\n", proj_pj_info(pj_transform).definition);
     
     if (zz  != R_NilValue) {
@@ -936,14 +936,7 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp) {
             NUMERIC_POINTER(VECTOR_ELT(res, 1))[i]=iylat;
         } else {
             a = proj_coord(ixlon, iylat, iz, 0);
-            PJ* pj_transform = proj_create(PJ_DEFAULT_CTX, CHAR(STRING_ELT(coordOp, 0)));
-            if (pj_transform == 0) {
-                const char *errstr = proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX));
-//                proj_context_destroy(ctx);
-                error("coordinate operation creation failed: %s", errstr);
-            }
             b = proj_trans(pj_transform, PJ_FWD, a);
-            proj_destroy(pj_transform);
             if (b.uv.u == HUGE_VAL || ISNAN(b.uv.u) || b.uv.v == HUGE_VAL || 
                 ISNAN(b.uv.v)) {
                 nwarn++;
@@ -956,7 +949,8 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp) {
     }
     if (nwarn > 0) warning("%d projected point(s) not finite", nwarn);
 
-//    proj_context_destroy(ctx);
+    proj_destroy(pj_transform);
+    //proj_context_destroy(ctx);
 
     UNPROTECT(1);
     return(res);
@@ -1096,12 +1090,12 @@ PROJcopyEPSG(SEXP tf) {
     INTEGER_POINTER(ans)[0] = 0;
     int i, crs_cnt;
     PROJ_CRS_INFO **proj_crs_info;
-    //PJ_CONTEXT *ctx = proj_context_create();
+    PJ_CONTEXT *ctx = proj_context_create();
     FILE *fptf;
 
 	
     crs_cnt = 0;
-    proj_crs_info = proj_get_crs_info_list_from_database(PJ_DEFAULT_CTX, "EPSG", NULL,
+    proj_crs_info = proj_get_crs_info_list_from_database(ctx, "EPSG", NULL,
         &crs_cnt);
     if (crs_cnt < 1) {
         UNPROTECT(1);
@@ -1116,25 +1110,26 @@ PROJcopyEPSG(SEXP tf) {
 
 //    PJ *pj = NULL;
 // blocks error messages in this context
-    proj_log_func(PJ_DEFAULT_CTX, NULL, proj_logger);
+    proj_log_func(ctx, NULL, proj_logger);
     for (i = 0; i < crs_cnt; i++) {
         const char *proj_definition;
 
-        PJ* pj = proj_create_from_database(PJ_DEFAULT_CTX,
+        PJ* pj = proj_create_from_database(ctx,
             proj_crs_info[i]->auth_name, proj_crs_info[i]->code,
             PJ_CATEGORY_CRS, 0, NULL);
-        proj_definition = proj_as_proj_string(PJ_DEFAULT_CTX, pj,
+        proj_definition = proj_as_proj_string(ctx, pj, // valgrind
             PJ_PROJ_5, NULL);
-        proj_destroy(pj);
+//        proj_destroy(pj); // valgrind
 
-        fprintf(fptf, "%s,\"%s\",\"%s\",\"%s\"\n", proj_crs_info[i]->code,
+        fprintf(fptf, "%s,\"%s\",\"%s\",\"%s\"\n", proj_crs_info[i]->code, //ASAN
   	    proj_crs_info[i]->name, proj_definition, 
             proj_crs_info[i]->projection_method_name);
+        proj_destroy(pj);
     }
 
     fclose(fptf);
     proj_crs_info_list_destroy(proj_crs_info);
-    //proj_context_destroy(ctx);
+    proj_context_destroy(ctx);
     INTEGER_POINTER(ans)[0] = crs_cnt;
     UNPROTECT(1);
 

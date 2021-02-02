@@ -18,7 +18,7 @@ make_EPSG <- function(file) {
                         dbname=file.path(shpr[length(shpr)], "proj.db"))
                     md <- DBI::dbReadTable(db, "metadata")
                     DBI::dbDisconnect(db)
-                    metadata <- md[1, 2]
+                    metadata <- md[md$key == "EPSG.VERSION", "value"]
                 }
                 attr(EPSG, "metadata") <- metadata
                 return(EPSG)

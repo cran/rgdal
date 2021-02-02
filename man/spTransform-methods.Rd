@@ -216,7 +216,6 @@ if (!broke_proj) {
 bbox(spTransform(spPolygons_tr, CRS("+proj=longlat +ellps=sphere"),
  use_ob_tran=TRUE))
 }
-\dontrun{
 #added after posting by Martin Ivanov
 data(nor2k)
 summary(nor2k)
@@ -239,7 +238,6 @@ suppressWarnings(proj4string(locs.step1.cf) <- CRS(paste("+proj=lcc",
 locs.step2.cfb <- spTransform(locs.step1.cf, CRS("+init=epsg:26743"))
 coordinates(locs.step2.cfb) - ref
 all.equal(unname(coordinates(locs.step2.cfb)), ref)
-}
 run <- new_proj_and_gdal()
 if (run) {
 # Test for UTM == TMERC (<= 4.9.2) or UTM == ETMERC (> 4.9.2)

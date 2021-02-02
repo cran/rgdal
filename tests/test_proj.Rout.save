@@ -59,12 +59,12 @@ In showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj = prefer_p
 +  use_ob_tran=TRUE)
 + stopifnot(isTRUE(all.equal(unname(coordinates(a1)), unname(coordinates(spPoint)), tolerance=.Machine$double.eps ^ 0.25)))
 + }
-proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step inv
-proj=ob_tran o_proj=longlat o_lon_p=-162 o_lat_p=39.25 lon_0=180
-ellps=sphere step proj=unitconvert xy_in=rad xy_out=deg
-proj=pipeline step proj=unitconvert xy_in=deg xy_out=rad step
-proj=ob_tran o_proj=longlat o_lon_p=-162 o_lat_p=39.25 lon_0=180
-ellps=sphere step proj=unitconvert xy_in=rad xy_out=deg
++proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step
++inv +proj=ob_tran +o_proj=longlat +o_lon_p=-162 +o_lat_p=39.25
++lon_0=180 +ellps=sphere +step +proj=unitconvert +xy_in=rad +xy_out=deg
++proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step
++proj=ob_tran +o_proj=longlat +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180
++ellps=sphere +step +proj=unitconvert +xy_in=rad +xy_out=deg
 Warning messages:
 1: In proj4string(x) : CRS object has comment, which is lost in output
 2: In proj4string(x) : CRS object has comment, which is lost in output
@@ -75,4 +75,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  0.489   0.040   0.526 
+  0.479   0.035   0.554 

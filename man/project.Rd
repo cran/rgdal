@@ -87,9 +87,11 @@ all.equal(unis_utm_33N_P4, unis_tmerc_P4, tolerance=1e-9, scale=1)
 # UTM == TMERC: PROJ4 <=4.9.2
 all.equal(unis_utm_33N_P4, unis_etmerc_P4, tolerance=1e-9, scale=1)
 # UTM == ETMERC: PROJ4 > 4.9.2
+#pv <- attr(getPROJ4VersionInfo(), "short")
+#if (pv < 500) {  
+# valgrind leakages in some cases for PROJ >= 5; many non-projection proj values added
 # available projections and their inverses if provided
 # For >=4.9.3 returns non-finite points rather than needing crash protection
-getPROJ4VersionInfo()
 projs <- as.character(projInfo()$name)
 res <- logical(length(projs))
 names(res) <- projs
@@ -99,16 +101,21 @@ owarn <- options("warn")$warn
 options(warn=2L)
 for (i in seq(along=res)) {
   iprs <- paste("+proj=", projs[i], sep="")
-  xy <- try(project(cbind(0, 0), iprs, legacy=TRUE), silent=TRUE)
+  xy <- try(project(cbind(0, 0), iprs, legacy=TRUE, use_aoi=FALSE), silent=TRUE)
   if (inherits(xy, "try-error")) {
     res[i] <- NA
     msgs[i] <- paste("fwd:", strsplit(xy, "\n")[[1]][2])
+  } else if(any(abs(xy) > 1e+08)) {
+    res[i] <- NA
+    msgs[i] <- paste("fwd: huge value")
   } else {
-    out <- try(project(xy, iprs, inv=TRUE, legacy=TRUE), silent=TRUE)
+    out <- try(project(xy, iprs, inv=TRUE, legacy=TRUE, use_aoi=FALSE), silent=TRUE)
     if (inherits(out, "try-error")) {
       res[i] <- NA
       msgs[i] <- paste("inv:", strsplit(out, "\n")[[1]][2])
-    } else res[i] <- isTRUE(all.equal(cbind(0,0), out))
+    } else {
+      res[i] <- isTRUE(all.equal(cbind(0,0), out))
+    }
   }
 }
 options(warn=owarn)
@@ -122,6 +129,7 @@ df[is.na(df$res),]
 df[!is.na(df$res) & !df$res,]
 # inverse equal to input
 row.names(df[!is.na(df$res) & df$res,])
+#}
 # oce data representation with NAs
 ll <- structure(c(12.1823368669203, 11.9149630062421, 12.3186076188739, 
 12.6207597184845, 12.9955172054652, 12.6316117692658, 12.4680041846297, 

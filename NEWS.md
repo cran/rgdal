@@ -1,4 +1,10 @@
-# Version 1.5-21 (development, rev 1093-1103)
+# Version 1.5-22 (development, rev. 1106-1119)
+
+* Attempt to remove further valgrind leak in proj6.cpp: PROJcopyEPSG() and in ogr_proj.cpp, both wrongly placed object destructors.
+
+* Modified roundtripping all declared projections in ?project examples  because some listed projections for PROJ >= 5 provoke valgrind leakages by returning very large out-of-scope values for input coordinates (0, 0); inversion of these is not attempted; some listed projections are not projections.
+
+# Version 1.5-21 (2021-01-27, rev. 1093-1105)
 
 * Suggest **rgeos** to write pre-SFS multipolygon objects to avoid unpleasant workaround.
 
