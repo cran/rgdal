@@ -1,3 +1,13 @@
+2021-02-02 20:37  rsbivand
+
+	* [r1120] DESCRIPTION, NEWS.md, configure, src/proj6.cpp,
+	  src/projectit.cpp: correct erroneous PROJ < 6 function
+	  declaration not tested for in 1.5-22
+
+2021-02-02 09:48  rsbivand
+
+	* [r1119] ChangeLog, NEWS.md, inst/ChangeLog: tidy
+
 2021-02-02 09:47  rsbivand
 
 	* [r1118] NEWS.md, R/project.R, man/project.Rd: revert condition on

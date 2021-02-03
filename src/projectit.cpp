@@ -166,8 +166,7 @@ SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp) {
     return(R_NilValue);
 }
 
-SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi, SEXP ob_tran, 
-    SEXP n, SEXP xlon, SEXP ylat, SEXP zz) {
+SEXP project_ng_coordOp(SEXP proj, SEXP inv, SEXP aoi, SEXP ob_tran) {
     Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }

@@ -1,4 +1,8 @@
-# Version 1.5-22 (development, rev. 1106-1119)
+# Version 1.5-23 (development, rev. 1120-1121)
+
+* Further fallout after removing valgrind issues.
+
+# Version 1.5-22 (2021-02-02, rev. 1106-1119)
 
 * Attempt to remove further valgrind leak in proj6.cpp: PROJcopyEPSG() and in ogr_proj.cpp, both wrongly placed object destructors.
 
