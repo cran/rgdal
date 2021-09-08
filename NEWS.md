@@ -1,4 +1,18 @@
-# Version 1.5-23 (development, rev. 1120-1121)
+# Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
+
+# Version 1.5-25 (development, rev. 1122-1140)
+
+* Add environment variable access to --with-data-copy by PROJ_GDAL_DATA_COPY (https://github.com/r-spatial/sf/issues/1605)
+
+* Adaptations for PROJ 8.
+
+* Handle mixed 2D/3D in readOGR(): (https://github.com/r-spatial/sf/issues/1683)
+
+* Add tweak for UCRT builds.
+
+* Thin examples for spTransform().
+
+# Version 1.5-23 (2021-02-03, rev. 1120-1121)
 
 * Further fallout after removing valgrind issues.
 

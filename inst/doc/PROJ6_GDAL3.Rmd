@@ -18,7 +18,7 @@ vignette: >
 
 # Status 22 April 2020
 
-[R spatial follows GDAL and PROJ development](https://www.r-spatial.org/r/2020/03/17/wkt.html) describes the main points of the status now. **sp** uses WKT2 CRS with PROJ6+/GDAL3+. **sp** and **rgdal** read, write, and project and transform objects using PROJ strings before PROJ6/GDAL3 and when **raster** calls `rgdal::rawTransform()` with PROJ6+/GDAL3+. **sp** and **rgdal** read, write, and project and transform objects using WKT2_2019 strings from PROJ6/GDAL3. The mechanism used is described in the R-spatial blog. 
+[R spatial follows GDAL and PROJ development](https://r-spatial.org/r/2020/03/17/wkt.html) describes the main points of the status now. **sp** uses WKT2 CRS with PROJ6+/GDAL3+. **sp** and **rgdal** read, write, and project and transform objects using PROJ strings before PROJ6/GDAL3 and when **raster** calls `rgdal::rawTransform()` with PROJ6+/GDAL3+. **sp** and **rgdal** read, write, and project and transform objects using WKT2_2019 strings from PROJ6/GDAL3. The mechanism used is described in the R-spatial blog. 
 
 This rolling RFC (not many comments) depicts the state of play from October 2019 to April 2020, involving a lot of reverse dependency testing of almost 1000 CRAN packages. When the development versions of **sp** (>= 1.4-2) and **rgdal** (>= 1.5-8) are submitted to CRAN, a fair number of reverse dependencies will be broken (as with recent **sf** releases). Some maintainers sensibly find that fixing the PROJ6/GDAL3 transition is sufficiently invasive to make it sensible to re-base to **sf** from **sp**. Others are regretably unresponsive so far, many find it hard to check on PROJ6+/GDAL3.
 

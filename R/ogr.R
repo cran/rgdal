@@ -9,7 +9,7 @@
 #
 ogrInfo <- function(dsn, layer, encoding=NULL,
   use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
-  morphFromESRI=NULL, dumpSRS=FALSE, enforce_xy=NULL) {
+  morphFromESRI=NULL, dumpSRS=FALSE, enforce_xy=NULL, D3_if_2D3D_points=FALSE) {
   if (missing(dsn)) stop("missing dsn")
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
@@ -105,9 +105,17 @@ ogrInfo <- function(dsn, layer, encoding=NULL,
 
       u_eType <- unique(sort(eType))
       u_with_z <- unique(sort(with_z))
-      if (length(u_with_z) != 1L) stop(
-        paste("Multiple # dimensions:", 
-          paste((u_with_z + 2), collapse=":")))
+      attr(u_with_z, "elevated") <- FALSE
+      if (length(u_with_z) != 1L) {
+        if (D3_if_2D3D_points) {
+          warning("Accepting mixed 2D and 3D as 3D")
+          u_with_z <- 1L
+          attr(u_with_z, "elevated") <- TRUE
+        } else {
+          stop(paste("Multiple # dimensions:", paste((u_with_z + 2),
+          collapse=":")))
+        }
+      }
       if (u_with_z < 0 || u_with_z > 1) stop(
         paste("Invalid # dimensions:", (u_with_z + 2)))
 

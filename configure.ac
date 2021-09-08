@@ -38,7 +38,7 @@ AC_ARG_ENABLE([loadflags],
 
 #echo "loadflags: $loadflags"
 
-if test [ "${loadflags}" == "no" ] ; then
+if test "${loadflags}" = "no" ; then
     LDFLAGS=""
     AC_MSG_NOTICE(value of R CMD config LDFLAGS not used for configure)
 fi
@@ -829,10 +829,15 @@ rm -f proj_conf_test3.c proj_conf_test3
 # Optional local copy of GDAL datadir and PROJ_LIB
 
 data_copy=no
-AC_ARG_WITH([data-copy],
-    AC_HELP_STRING([--with-data-copy=yes/no],
+if test "${PROJ_GDAL_DATA_COPY}" ; then
+    data_copy=yes
+    AC_MSG_NOTICE(["PROJ_GDAL_DATA_COPY used."])
+else
+    AC_ARG_WITH([data-copy],
+        AC_HELP_STRING([--with-data-copy=yes/no],
                [local copy of data directories in package, default no]),
                [data_copy=$withval])
+fi
 if test "${data_copy}" = "yes" ; then
 AC_MSG_NOTICE([Copy data for:])
   proj_lib0="${PROJ_LIB}"
@@ -848,7 +853,7 @@ AC_MSG_NOTICE([Copy data for:])
   if test -n "${proj_lib}" ; then
     if test -d "${proj_lib}" ; then
       cp -r "${proj_lib}" "${R_PACKAGE_DIR}"
-      AC_MSG_NOTICE([  PROJ.4: ${proj_lib}])
+      AC_MSG_NOTICE([  PROJ: ${proj_lib}])
     else
       AC_MSG_ERROR([PROJ.4 data files not found; set environment variable PROJ_LIB=DIR or --with-proj-data=DIR.])
     fi

@@ -88,6 +88,7 @@ Note that from PROJ.4 4.9.3, the definition of UTM is changed from TMERC to ETME
 
 \examples{
 set_thin_PROJ6_warnings(TRUE)
+# state
 data(state)
 states <- data.frame(state.x77, state.center)
 states <- states[states$x > -121,]
@@ -101,6 +102,8 @@ summary(state.merc)
 state.merc <- spTransform(states,
  CRS=CRS("+proj=merc +ellps=GRS80 +units=us-mi"))
 summary(state.merc)
+# NAD
+\dontrun{
 if (PROJis6ormore() || (!PROJis6ormore() && projNAD())) {
 states <- data.frame(state.x77, state.center)
 states <- states[states$x > -121,]
@@ -118,6 +121,7 @@ print(all.equal(coordinates(SFpoint_NAD83), coordinates(SFpoint_NAD27)))
 print(coordinates(SFpoint_NAD27), digits=12)
 print(coordinates(SFpoint_NAD83), digits=12)
 }
+}
 data(meuse)
 coordinates(meuse) <- c("x", "y")
 proj4string(meuse) <- CRS("+init=epsg:28992")
@@ -126,6 +130,8 @@ summary(meuse)
 meuse.utm <- spTransform(meuse, CRS("+proj=utm +zone=32 +datum=WGS84"))
 summary(meuse.utm)
 cbind(coordinates(meuse), coordinates(meuse.utm))
+\dontrun{
+# Kiritimati
 kiritimati_primary_roads <- readOGR(system.file("vectors",
  package = "rgdal")[1], "kiritimati_primary_roads")
 kiritimati_primary_roads_ll <- spTransform(kiritimati_primary_roads,
@@ -134,7 +140,7 @@ opar <- par(mfrow=c(1,2))
 plot(kiritimati_primary_roads, axes=TRUE)
 plot(kiritimati_primary_roads_ll, axes=TRUE, las=1)
 par(opar)
-opar <- par(mfrow=c(1,2))
+# scot_BNG
 scot_BNG <- readOGR(system.file("vectors", package = "rgdal")[1],
    "scot_BNG")
 scot_LL <- spTransform(scot_BNG, CRS("+proj=longlat +datum=WGS84"))
@@ -145,11 +151,14 @@ summary(grd_LL)
 target <- CRS(proj4string(scot_BNG))
 grd_BNG <- spTransform(grd_LL, target)
 grdtxt_BNG <- spTransform(grdtxt_LL, target)
+opar <- par(mfrow=c(1,2))
 plot(scot_BNG, axes=TRUE, las=1)
 plot(grd_BNG, add=TRUE, lty=2)
 text(coordinates(grdtxt_BNG),
    labels=parse(text=as.character(grdtxt_BNG$labels)))
 par(opar)
+}
+# broke_proj
 broke_proj <- FALSE
 # https://github.com/OSGeo/PROJ/issues/1525
 pv <- .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]]
@@ -216,13 +225,14 @@ if (!broke_proj) {
 bbox(spTransform(spPolygons_tr, CRS("+proj=longlat +ellps=sphere"),
  use_ob_tran=TRUE))
 }
-#added after posting by Martin Ivanov
+# added after posting by Martin Ivanov
+\dontrun{
 data(nor2k)
 summary(nor2k)
 nor2kNGO <- spTransform(nor2k, CRS("+init=epsg:4273"))
 summary(nor2kNGO)
 all.equal(coordinates(nor2k)[,3], coordinates(nor2kNGO)[,3])
-#added after posting by Don MacQueen 
+# added after posting by Don MacQueen 
 crds <- cbind(c(-121.524764291826, -121.523480804667), c(37.6600366036405, 37.6543604613483))
 ref <- cbind(c(1703671.30566227, 1704020.20113366), c(424014.398045834, 421943.708664294))
 crs.step1.cf <- CRS(paste("+proj=lcc +lat_1=38.43333333333333",
@@ -238,6 +248,9 @@ suppressWarnings(proj4string(locs.step1.cf) <- CRS(paste("+proj=lcc",
 locs.step2.cfb <- spTransform(locs.step1.cf, CRS("+init=epsg:26743"))
 coordinates(locs.step2.cfb) - ref
 all.equal(unname(coordinates(locs.step2.cfb)), ref)
+}
+\dontrun{
+# new_proj_and_gdal()
 run <- new_proj_and_gdal()
 if (run) {
 # Test for UTM == TMERC (<= 4.9.2) or UTM == ETMERC (> 4.9.2)
@@ -267,6 +280,7 @@ all.equal(coordinates(unis_utm_33N_P4), coordinates(unis_tmerc_P4),
 all.equal(coordinates(unis_utm_33N_P4), coordinates(unis_etmerc_P4),
  tolerance=1e-9, scale=1)
 # UTM == ETMERC: PROJ4 > 4.9.2
+}
 }
 }
 

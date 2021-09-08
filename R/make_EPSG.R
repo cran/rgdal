@@ -1,3 +1,19 @@
+EPSG_version <- function() {
+    metadata <- NULL
+    if (PROJis6ormore()) {
+        if (requireNamespace("DBI", quietly=TRUE) && 
+            requireNamespace("RSQLite", quietly=TRUE)) {
+            shpr <- get_proj_search_paths()
+            db <- DBI::dbConnect(RSQLite::SQLite(),
+                dbname=file.path(shpr[length(shpr)], "proj.db"))
+            md <- DBI::dbReadTable(db, "metadata")
+            DBI::dbDisconnect(db)
+            metadata <- md[md$key == "EPSG.VERSION", "value"]
+        }
+    }
+    metadata
+}
+
 make_EPSG <- function(file) {
         if (.Call("PROJ4VersionInfo", PACKAGE = "rgdal")[[2]] >= 600L &&
             !missing(file)) {
@@ -11,16 +27,7 @@ make_EPSG <- function(file) {
             if (PROJis6ormore()) {
                 if (n <= 0) stop("PROJ 6 database empty")
                 EPSG <- read.csv(tf, header=TRUE, stringsAsFactors=FALSE)
-                if (requireNamespace("DBI", quietly=TRUE) && 
-                    requireNamespace("RSQLite", quietly=TRUE)) {
-                    shpr <- get_proj_search_paths()
-                    db <- DBI::dbConnect(RSQLite::SQLite(),
-                        dbname=file.path(shpr[length(shpr)], "proj.db"))
-                    md <- DBI::dbReadTable(db, "metadata")
-                    DBI::dbDisconnect(db)
-                    metadata <- md[md$key == "EPSG.VERSION", "value"]
-                }
-                attr(EPSG, "metadata") <- metadata
+                attr(EPSG, "metadata") <- EPSG_version()
                 return(EPSG)
             }
             if (n > 0) file <- tf

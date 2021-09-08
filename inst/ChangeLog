@@ -1,284 +1,359 @@
+2021-09-02 11:53  rsbivand
+
+	* DESCRIPTION, R/ogr_sp.R: add ENG to WKT first characters in
+	  showSRID
+
+2021-08-30 17:21  rsbivand
+
+	* DESCRIPTION: tidy
+
+2021-08-30 17:20  rsbivand
+
+	* R/AAA.R: tidy
+
+2021-07-23 15:48  rsbivand
+
+	* DESCRIPTION, src/Makevars.ucrt, src/Makevars.win: add UCRT tweak
+
+2021-06-23 12:23  rsbivand
+
+	* vignettes/CRS_projections_transformations.Rmd,
+	  vignettes/PROJ6_GDAL3.Rmd: correct vignettes
+
+2021-06-01 14:37  rsbivand
+
+	* configure: tidy
+
+2021-06-01 14:36  rsbivand
+
+	* DESCRIPTION, R/AAA.R, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: mixed
+	  2/3D point input, sf #1683
+
+2021-02-23 12:55  rsbivand
+
+	* R/AAA.R, R/make_EPSG.R: show EPSG version
+
+2021-02-22 11:15  rsbivand
+
+	* R/ogr_sp.R: DATUM|ENSEMBLE for PROJ 8.0.0 test
+
+2021-02-18 08:38  rsbivand
+
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
+
+2021-02-17 19:07  rsbivand
+
+	* configure, configure.ac: use test -n
+
+2021-02-17 16:56  rsbivand
+
+	* configure, configure.ac: use test -n
+
+2021-02-17 16:50  rsbivand
+
+	* configure, configure.ac: use test -n
+
+2021-02-17 16:45  rsbivand
+
+	* configure, configure.ac: use test -n
+
+2021-02-17 13:26  rsbivand
+
+	* configure, configure.ac: try PROJ_GDAL_DATA_COPY
+
+2021-02-17 13:25  rsbivand
+
+	* configure: try PROJ_GDAL_DATA_COPY
+
+2021-02-17 13:25  rsbivand
+
+	* DESCRIPTION, configure.ac,
+	  vignettes/CRS_projections_transformations.Rmd: try
+	  PROJ_GDAL_DATA_COPY
+
+2021-02-02 20:38  rsbivand
+
+	* ChangeLog, inst/ChangeLog: tidy
+
 2021-02-02 20:37  rsbivand
 
-	* [r1120] DESCRIPTION, NEWS.md, configure, src/proj6.cpp,
+	* DESCRIPTION, NEWS.md, configure, src/proj6.cpp,
 	  src/projectit.cpp: correct erroneous PROJ < 6 function
 	  declaration not tested for in 1.5-22
 
 2021-02-02 09:48  rsbivand
 
-	* [r1119] ChangeLog, NEWS.md, inst/ChangeLog: tidy
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
 
 2021-02-02 09:47  rsbivand
 
-	* [r1118] NEWS.md, R/project.R, man/project.Rd: revert condition on
+	* NEWS.md, R/project.R, man/project.Rd: revert condition on
 	  stress-testing of project but protect against bad values and
 	  empty CO strings
 
 2021-02-01 19:34  rsbivand
 
-	* [r1117] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2021-02-01 19:32  rsbivand
 
-	* [r1116] NEWS.md, man/project.Rd: convert stress-testing of
-	  project to PROJ < 5
+	* NEWS.md, man/project.Rd: convert stress-testing of project to
+	  PROJ < 5
 
 2021-02-01 15:08  rsbivand
 
-	* [r1115] ChangeLog, NEWS.md, inst/ChangeLog: tidy
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
 
 2021-02-01 15:06  rsbivand
 
-	* [r1114] NEWS.md, man/project.Rd, src/proj6.cpp: convert
-	  stress-testing of project to dontrun
+	* NEWS.md, man/project.Rd, src/proj6.cpp: convert stress-testing of
+	  project to dontrun
 
 2021-01-31 14:29  rsbivand
 
-	* [r1113] ChangeLog, NEWS.md, inst/ChangeLog: tidy
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
 
 2021-01-31 14:25  rsbivand
 
-	* [r1112] src/ogr_proj.cpp, src/proj6.cpp: ogr_proj.cpp leak
+	* src/ogr_proj.cpp, src/proj6.cpp: ogr_proj.cpp leak
 
 2021-01-30 14:05  rsbivand
 
-	* [r1111] NEWS.md, tests/test_proj.Rout.save,
-	  tests/tripup.Rout.save: tidy
+	* NEWS.md, tests/test_proj.Rout.save, tests/tripup.Rout.save: tidy
 
 2021-01-30 12:57  rsbivand
 
-	* [r1110] NEWS.md: tidy
+	* NEWS.md: tidy
 
 2021-01-30 12:57  rsbivand
 
-	* [r1109] NEWS.md: tidy
+	* NEWS.md: tidy
 
 2021-01-30 12:56  rsbivand
 
-	* [r1108] ChangeLog, configure, inst/ChangeLog: tidy
+	* ChangeLog, configure, inst/ChangeLog: tidy
 
 2021-01-30 12:54  rsbivand
 
-	* [r1107] DESCRIPTION, NEWS.md, R/make_EPSG.R, R/project.R,
+	* DESCRIPTION, NEWS.md, R/make_EPSG.R, R/project.R,
 	  src/Makevars.win, src/proj6.cpp, src/projectit.cpp: remove
 	  PROJcopyEPSG valgrind issue
 
 2021-01-27 15:39  rsbivand
 
-	* [r1106] DESCRIPTION, NEWS.md, man/spTransform-methods.Rd,
-	  src/proj6.cpp, tests/tripup.R: revert project_ng(), admit leak
+	* DESCRIPTION, NEWS.md, man/spTransform-methods.Rd, src/proj6.cpp,
+	  tests/tripup.R: revert project_ng(), admit leak
 
 2021-01-26 08:57  rsbivand
 
-	* [r1105] configure: tidy
+	* configure: tidy
 
 2021-01-26 08:54  rsbivand
 
-	* [r1104] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2021-01-26 08:53  rsbivand
 
-	* [r1103] DESCRIPTION, NEWS.md, man/spTransform-methods.Rd: tidy
+	* DESCRIPTION, NEWS.md, man/spTransform-methods.Rd: tidy
 
 2021-01-26 08:31  rsbivand
 
-	* [r1102] src/OGR_write.cpp: tidy
+	* src/OGR_write.cpp: tidy
 
 2021-01-25 18:03  rsbivand
 
-	* [r1101] ChangeLog, NEWS.md, inst/ChangeLog, src/OGR_write.cpp,
+	* ChangeLog, NEWS.md, inst/ChangeLog, src/OGR_write.cpp,
 	  src/gdal-bindings.cpp, src/ogr_proj.cpp, src/proj6.cpp: adapt to
 	  older PROJ
 
 2021-01-24 17:32  rsbivand
 
-	* [r1100] configure: remaining valgrind leaks
+	* configure: remaining valgrind leaks
 
 2021-01-24 17:31  rsbivand
 
-	* [r1099] DESCRIPTION, R/gdal.R, R/ogr_write.R, R/sgdf_gdal.R,
-	  R/sp_gdal.R, R/subs.R, src/OGR_write.cpp, src/gdal-bindings.cpp,
+	* DESCRIPTION, R/gdal.R, R/ogr_write.R, R/sgdf_gdal.R, R/sp_gdal.R,
+	  R/subs.R, src/OGR_write.cpp, src/gdal-bindings.cpp,
 	  tests/srs_rendering.Rout.save, tests/test_proj.Rout.save,
 	  tests/tripup.R, tests/tripup.Rout.save: remaining valgrind leaks
 
 2021-01-22 13:39  rsbivand
 
-	* [r1098] src/OGR_write.cpp, src/gdal-bindings.cpp,
-	  src/ogr_proj.cpp, src/proj6.cpp: ogr_proj.cpp remaining leaks fix
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  src/proj6.cpp: ogr_proj.cpp remaining leaks fix
 
 2021-01-21 09:25  rsbivand
 
-	* [r1097] R/gdal.R, R/ogr.R, R/ogr_sp.R, src/OGR_write.cpp,
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, src/OGR_write.cpp,
 	  src/gdal-bindings.cpp, src/ogr_proj.cpp, src/proj6.cpp: proj6.cpp
 	  remaining leaks fix
 
 2021-01-20 12:05  rsbivand
 
-	* [r1096] src/proj6.cpp: proj6.cpp remaining leaks fix
+	* src/proj6.cpp: proj6.cpp remaining leaks fix
 
 2021-01-20 09:47  rsbivand
 
-	* [r1095] src/OGR_write.cpp, src/gdal-bindings.cpp,
-	  src/ogr_proj.cpp, src/proj6.cpp: proj6.cpp l. 946 leak fix
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  src/proj6.cpp: proj6.cpp l. 946 leak fix
 
 2021-01-15 10:03  rsbivand
 
-	* [r1094] src/gdal-bindings.cpp: tidy
+	* src/gdal-bindings.cpp: tidy
 
 2021-01-14 20:54  rsbivand
 
-	* [r1093] DESCRIPTION, man/writeOGR.Rd, src/ogr_proj.cpp,
-	  src/proj6.cpp: tidy
+	* DESCRIPTION, man/writeOGR.Rd, src/ogr_proj.cpp, src/proj6.cpp:
+	  tidy
 
 2020-12-29 19:24  rsbivand
 
-	* [r1092] NEWS.md, tests/test_enforce_xy.Rout.save: tidy
+	* NEWS.md, tests/test_enforce_xy.Rout.save: tidy
 
 2020-12-29 19:10  rsbivand
 
-	* [r1091] ChangeLog, NEWS.md, inst/ChangeLog: tidy
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
 
 2020-12-29 19:08  rsbivand
 
-	* [r1090] ChangeLog, NEWS.md: ob_tran handling for 7.2.1
+	* ChangeLog, NEWS.md: ob_tran handling for 7.2.1
 
 2020-12-29 18:56  rsbivand
 
-	* [r1089] src/projectit.cpp, tests/srs_rendering.Rout.save,
+	* src/projectit.cpp, tests/srs_rendering.Rout.save,
 	  tests/test_proj.Rout.save: ob_tran handling for 7.2.1
 
 2020-12-29 15:25  rsbivand
 
-	* [r1088] R/project.R, src/init.c, src/proj6.cpp, src/rgdal.h:
-	  adapt ob_tran for PROJ > 7.2.0
+	* R/project.R, src/init.c, src/proj6.cpp, src/rgdal.h: adapt
+	  ob_tran for PROJ > 7.2.0
 
 2020-12-29 15:13  rsbivand
 
-	* [r1087] src/proj6.cpp: test with PROJ 7.2.0
+	* src/proj6.cpp: test with PROJ 7.2.0
 
 2020-12-29 14:58  rsbivand
 
-	* [r1086] DESCRIPTION, R/project.R, src/init.c, src/proj6.cpp,
-	  src/rgdal.h: adapt ob_tran for PROJ > 7.2.0
+	* DESCRIPTION, R/project.R, src/init.c, src/proj6.cpp, src/rgdal.h:
+	  adapt ob_tran for PROJ > 7.2.0
 
 2020-12-28 08:47  rsbivand
 
-	* [r1085] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-11-14 15:43  rsbivand
 
-	* [r1084] ChangeLog, configure, inst/ChangeLog: tidy
+	* ChangeLog, configure, inst/ChangeLog: tidy
 
 2020-11-14 15:40  rsbivand
 
-	* [r1083] .Rbuildignore, DESCRIPTION, R/gdal.R,
-	  src/gdal-bindings.cpp, src/proj6.cpp: Dan Baston: raster speedups
+	* .Rbuildignore, DESCRIPTION, R/gdal.R, src/gdal-bindings.cpp,
+	  src/proj6.cpp: Dan Baston: raster speedups
 
 2020-10-13 09:21  rsbivand
 
-	* [r1082] man/make_EPSG.Rd: tidy
+	* man/make_EPSG.Rd: tidy
 
 2020-10-13 08:08  rsbivand
 
-	* [r1081] ChangeLog, NEWS.md, inst/ChangeLog: tidy
+	* ChangeLog, NEWS.md, inst/ChangeLog: tidy
 
 2020-10-10 08:36  rsbivand
 
-	* [r1080] vignettes/CRS_projections_transformations.Rmd: adapt to
-	  EPSG v10
+	* vignettes/CRS_projections_transformations.Rmd: adapt to EPSG v10
 
 2020-10-09 19:05  rsbivand
 
-	* [r1079] NEWS.md, vignettes/CRS_projections_transformations.Rmd:
-	  adapt to EPSG v10
+	* NEWS.md, vignettes/CRS_projections_transformations.Rmd: adapt to
+	  EPSG v10
 
 2020-10-09 15:12  rsbivand
 
-	* [r1078] DESCRIPTION, R/make_EPSG.R, man/make_EPSG.Rd,
+	* DESCRIPTION, R/make_EPSG.R, man/make_EPSG.Rd,
 	  vignettes/CRS_projections_transformations.Rmd: adapt to EPSG v10
 
 2020-10-09 11:04  rsbivand
 
-	* [r1076] NEWS.md: add NEWS.md
+	* NEWS.md: add NEWS.md
 
 2020-10-09 10:51  rsbivand
 
-	* [r1075] ChangeLog, NEWS.md, inst/ChangeLog: add NEWS.md
+	* ChangeLog, NEWS.md, inst/ChangeLog: add NEWS.md
 
 2020-10-08 13:10  rsbivand
 
-	* [r1074] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-10-08 13:09  rsbivand
 
-	* [r1073] tests/test_enforce_xy.Rout.save: tidy
+	* tests/test_enforce_xy.Rout.save: tidy
 
 2020-10-08 12:46  rsbivand
 
-	* [r1072] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-10-08 12:45  rsbivand
 
-	* [r1071] DESCRIPTION, configure, tests/test_enforce_xy.R:
-	  condition test_enforce_xy.R on PROJ/GDAL versions
+	* DESCRIPTION, configure, tests/test_enforce_xy.R: condition
+	  test_enforce_xy.R on PROJ/GDAL versions
 
 2020-10-05 10:13  rsbivand
 
-	* [r1070] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-10-05 10:12  rsbivand
 
-	* [r1069] tests/test_enforce_xy.Rout.save: tidy
+	* tests/test_enforce_xy.Rout.save: tidy
 
 2020-10-05 09:58  rsbivand
 
-	* [r1068] tests/srs_rendering.Rout.save: tidy
+	* tests/srs_rendering.Rout.save: tidy
 
 2020-10-05 09:53  rsbivand
 
-	* [r1067] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-09-15 10:04  rsbivand
 
-	* [r1066] R/ogr_sp.R, man/showWKT.Rd: SRS_string empty string error
+	* R/ogr_sp.R, man/showWKT.Rd: SRS_string empty string error
 
 2020-09-08 13:48  rsbivand
 
-	* [r1065] DESCRIPTION, man/showWKT.Rd, src/proj6.cpp: add OGC:CRS84
-	  support and description
+	* DESCRIPTION, man/showWKT.Rd, src/proj6.cpp: add OGC:CRS84 support
+	  and description
 
 2020-09-08 12:45  rsbivand
 
-	* [r1064] man/CRS-class.Rd, man/list_coordOps.Rd,
+	* man/CRS-class.Rd, man/list_coordOps.Rd,
 	  man/spTransform-methods.Rd: add OGC:CRS84 support and description
 
 2020-09-07 08:05  rsbivand
 
-	* [r1063] vignettes/CRS_projections_transformations.Rmd: add
-	  OGC:CRS84 support and description
+	* vignettes/CRS_projections_transformations.Rmd: add OGC:CRS84
+	  support and description
 
 2020-09-06 17:22  rsbivand
 
-	* [r1062] R/list_coordOps.R, R/ogr_sp.R, man/showWKT.Rd,
+	* R/list_coordOps.R, R/ogr_sp.R, man/showWKT.Rd,
 	  vignettes/CRS_projections_transformations.Rmd: add OGC:CRS84
 	  support and description
 
 2020-09-06 12:11  rsbivand
 
-	* [r1061] R/ogr_sp.R: check for +type=crs
+	* R/ogr_sp.R: check for +type=crs
 
 2020-09-02 18:27  rsbivand
 
-	* [r1060] NAMESPACE, R/AAA.R, R/Class-CRSx.R, R/ogr_sp.R,
-	  man/showWKT.Rd, vignettes/PROJ6_GDAL3.Rmd: prefer PROJ issues
+	* NAMESPACE, R/AAA.R, R/Class-CRSx.R, R/ogr_sp.R, man/showWKT.Rd,
+	  vignettes/PROJ6_GDAL3.Rmd: prefer PROJ issues
 
 2020-09-02 17:29  rsbivand
 
-	* [r1059] R/Class-CRSx.R: run showSRID via PROJ not GDAL if possble
+	* R/Class-CRSx.R: run showSRID via PROJ not GDAL if possble
 
 2020-09-02 13:38  rsbivand
 
-	* [r1058] R/Class-CRSx.R, R/list_coordOps.R, R/ogr_sp.R,
+	* R/Class-CRSx.R, R/list_coordOps.R, R/ogr_sp.R,
 	  man/list_coordOps.Rd, man/showWKT.Rd, src/init.c,
 	  src/ogr_proj.cpp, src/proj6.cpp, src/projectit.cpp, src/rgdal.h,
 	  tests/srs_rendering.Rout.save, tests/test_enforce_xy.R,
@@ -288,26 +363,26 @@
 
 2020-09-01 11:34  rsbivand
 
-	* [r1057] configure, configure.ac: add stdlib.h declaration to
-	  configure.ac where missing
+	* configure, configure.ac: add stdlib.h declaration to configure.ac
+	  where missing
 
 2020-08-17 13:48  rsbivand
 
-	* [r1056] R/project.R: adapt for PROJ < 6
+	* R/project.R: adapt for PROJ < 6
 
 2020-08-17 10:08  rsbivand
 
-	* [r1055] NAMESPACE, R/project.R, man/showWKT.Rd, src/init.c,
+	* NAMESPACE, R/project.R, man/showWKT.Rd, src/init.c,
 	  src/ogr_proj.cpp, src/rgdal.h: use ORSIsProjected()
 
 2020-08-09 19:24  rsbivand
 
-	* [r1053] vignettes/CRS_projections_transformations.Rmd: add
+	* vignettes/CRS_projections_transformations.Rmd: add
 	  get_source_from_boundcrs
 
 2020-08-09 18:56  rsbivand
 
-	* [r1051] DESCRIPTION, R/Class-CRSx.R, configure,
+	* DESCRIPTION, R/Class-CRSx.R, configure,
 	  inst/misc/GGHB.IG_CRS.rda, man/CRS-class.Rd, src/init.c,
 	  src/proj6.cpp, src/projectit.cpp, src/rgdal.h,
 	  vignettes/CRS_projections_transformations.Rmd: add
@@ -315,41 +390,41 @@
 
 2020-08-05 13:13  rsbivand
 
-	* [r1050] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-08-04 19:37  rsbivand
 
-	* [r1049] R/project.R: add try() around project() in get_aoi()
+	* R/project.R: add try() around project() in get_aoi()
 
 2020-08-04 08:55  rsbivand
 
-	* [r1048] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-08-04 08:54  rsbivand
 
-	* [r1047] DESCRIPTION, R/project.R, configure, src/projectit.cpp:
-	  repeat checks and fix for 5.2.0/2.2.4
+	* DESCRIPTION, R/project.R, configure, src/projectit.cpp: repeat
+	  checks and fix for 5.2.0/2.2.4
 
 2020-08-03 15:54  rsbivand
 
-	* [r1046] configure: tidy
+	* configure: tidy
 
 2020-08-03 15:32  rsbivand
 
-	* [r1045] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-08-03 15:31  rsbivand
 
-	* [r1044] man/CRS-class.Rd, man/SpatialGDAL-class.Rd,
-	  man/project.Rd: fix stale(ish) links
+	* man/CRS-class.Rd, man/SpatialGDAL-class.Rd, man/project.Rd: fix
+	  stale(ish) links
 
 2020-08-03 09:04  rsbivand
 
-	* [r1043] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-08-03 09:03  rsbivand
 
-	* [r1042] DESCRIPTION, man/GDALDriver-class.Rd,
+	* DESCRIPTION, man/GDALDriver-class.Rd,
 	  man/GDALMajorObject-class.Rd, man/GDALRasterBand-class.Rd,
 	  man/GDALReadOnlyDataset-class.Rd, man/RGB2PCT.Rd,
 	  man/SGDF2PCT.Rd, man/displayDataset.Rd, man/make_EPSG.Rd,
@@ -358,346 +433,340 @@
 
 2020-08-03 06:46  rsbivand
 
-	* [r1041] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-08-03 06:45  rsbivand
 
-	* [r1040] ChangeLog, R/project.R: rebuild plotKML CRS to drop +init
+	* ChangeLog, R/project.R: rebuild plotKML CRS to drop +init
 
 2020-08-03 06:30  rsbivand
 
-	* [r1039] R/project.R: check returned aoi for NULL
+	* R/project.R: check returned aoi for NULL
 
 2020-08-02 18:19  rsbivand
 
-	* [r1038] inst/ChangeLog: tidy
+	* inst/ChangeLog: tidy
 
 2020-08-02 18:18  rsbivand
 
-	* [r1037] ChangeLog: tidy
+	* ChangeLog: tidy
 
 2020-08-02 18:17  rsbivand
 
-	* [r1036] DESCRIPTION, inst/misc, inst/misc/meuse.png,
-	  inst/misc/snow.png,
+	* DESCRIPTION, inst/misc, inst/misc/meuse.png, inst/misc/snow.png,
 	  vignettes/CRS_projections_transformations.Rmd: make mapview use
 	  static to fix CRAN issue
 
 2020-07-13 08:43  rsbivand
 
-	* [r1035] R/ogr_sp.R, man/make_EPSG.Rd, man/showWKT.Rd,
-	  src/ogr_proj.cpp: admit ESRI:# strings in showSRID()
+	* R/ogr_sp.R, man/make_EPSG.Rd, man/showWKT.Rd, src/ogr_proj.cpp:
+	  admit ESRI:# strings in showSRID()
 
 2020-07-06 18:21  rsbivand
 
-	* [r1034] man/spTransform-methods.Rd: freshen spTransform man page
+	* man/spTransform-methods.Rd: freshen spTransform man page
 
 2020-07-06 15:01  rsbivand
 
-	* [r1033] configure: tidy
+	* configure: tidy
 
 2020-07-06 13:33  rsbivand
 
-	* [r1032] DESCRIPTION, R/project.R, R/wrappers.R, data/nor2k.rda,
+	* DESCRIPTION, R/project.R, R/wrappers.R, data/nor2k.rda,
 	  man/project.Rd, src/init.c, src/proj6.cpp, src/projectit.cpp,
 	  src/rgdal.h, vignettes/CRS_projections_transformations.Rmd: add
 	  area of interest to coordOp search
 
 2020-07-05 13:29  rsbivand
 
-	* [r1031] ChangeLog, inst/ChangeLog: and
-	  proj_create_crs_to_crs_from_pj only from 620, and context
-	  sensitivity in finding coord ops
+	* ChangeLog, inst/ChangeLog: and proj_create_crs_to_crs_from_pj
+	  only from 620, and context sensitivity in finding coord ops
 
 2020-07-05 13:26  rsbivand
 
-	* [r1030] man/project.Rd, man/spTransform-methods.Rd,
-	  src/proj6.cpp, tests/test_proj.R, tests/test_proj.Rout.save,
+	* man/project.Rd, man/spTransform-methods.Rd, src/proj6.cpp,
+	  tests/test_proj.R, tests/test_proj.Rout.save,
 	  vignettes/CRS_projections_transformations.Rmd: test for PROJ 600,
 	  610 and 611 and block ob_tran tests if true
 
 2020-07-02 19:09  rsbivand
 
-	* [r1029] src/ogr_proj.cpp: OSRGetPROJVersion from 3.0.1 needed
-	  protection
+	* src/ogr_proj.cpp: OSRGetPROJVersion from 3.0.1 needed protection
 
 2020-07-02 12:31  rsbivand
 
-	* [r1028] man/is_proj_CDN_enabled.Rd: CDN tidy
+	* man/is_proj_CDN_enabled.Rd: CDN tidy
 
 2020-07-02 12:19  rsbivand
 
-	* [r1025] NAMESPACE, R/AAA.R, R/project.R, src/proj6.cpp,
+	* NAMESPACE, R/AAA.R, R/project.R, src/proj6.cpp,
 	  tests/srs_rendering.Rout.save,
 	  vignettes/CRS_projections_transformations.Rmd,
 	  vignettes/PROJ.bib: CDN tidy
 
 2020-07-02 08:21  rsbivand
 
-	* [r1024] R/AAA.R, src/init.c, src/proj6.cpp, src/projectit.cpp,
+	* R/AAA.R, src/init.c, src/proj6.cpp, src/projectit.cpp,
 	  src/rgdal.h: trying to control PROJs user-writable dir
 
 2020-07-01 14:26  rsbivand
 
-	* [r1023] NAMESPACE, R/AAA.R, R/project.R, src/init.c,
-	  src/proj6.cpp, src/proj_network7.cpp, src/projectit.cpp,
-	  src/rgdal.h, vignettes/CRS_projections_transformations.Rmd:
-	  possibly broken proj search/network support
+	* NAMESPACE, R/AAA.R, R/project.R, src/init.c, src/proj6.cpp,
+	  src/proj_network7.cpp, src/projectit.cpp, src/rgdal.h,
+	  vignettes/CRS_projections_transformations.Rmd: possibly broken
+	  proj search/network support
 
 2020-06-29 13:04  rsbivand
 
-	* [r1022] configure, configure.ac: drop printing of loadflags
+	* configure, configure.ac: drop printing of loadflags
 
 2020-06-29 11:44  rsbivand
 
-	* [r1021] configure, configure.ac: add CXXFLAGS to resolve Fedora
-	  configure issue, Iñaki Úcar
+	* configure, configure.ac: add CXXFLAGS to resolve Fedora configure
+	  issue, Iñaki Úcar
 
 2020-06-28 12:39  rsbivand
 
-	* [r1020] configure, configure.ac: add --disable-loadflags to
-	  configure args
+	* configure, configure.ac: add --disable-loadflags to configure
+	  args
 
 2020-06-25 19:18  rsbivand
 
-	* [r1019] DESCRIPTION, configure,
+	* DESCRIPTION, configure,
 	  vignettes/CRS_projections_transformations.Rmd,
 	  vignettes/PROJ6_GDAL3.Rmd: convert vignettes to rmarkdown
 
 2020-06-25 17:41  rsbivand
 
-	* [r1018] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-06-25 17:40  rsbivand
 
-	* [r1017] DESCRIPTION, configure, man/llgrid.Rd, man/readGDAL.Rd,
+	* DESCRIPTION, configure, man/llgrid.Rd, man/readGDAL.Rd,
 	  vignettes/CRS_projections_transformations.Rmd: remove submission
 	  warnings
 
 2020-06-25 12:44  rsbivand
 
-	* [r1016] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-06-25 12:43  rsbivand
 
-	* [r1015] src/proj6.cpp: logic correction
+	* src/proj6.cpp: logic correction
 
 2020-06-25 09:26  rsbivand
 
-	* [r1014] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-06-25 09:23  rsbivand
 
-	* [r1013] man/projInfo.Rd, src/proj6.cpp,
-	  tests/test_proj.Rout.save: condition projInfo-units on PROJ >=7.1
+	* man/projInfo.Rd, src/proj6.cpp, tests/test_proj.Rout.save:
+	  condition projInfo-units on PROJ >=7.1
 
 2020-06-23 15:45  rsbivand
 
-	* [r1012] R/gdal.R, R/ogr.R, R/ogr_sp.R, R/wrappers.R: add warning
-	  muting option to rawTransform
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, R/wrappers.R: add warning muting
+	  option to rawTransform
 
 2020-06-18 07:40  rsbivand
 
-	* [r1011] R/ogr_sp.R: add BOUNDEDCRS to showSRID() list
+	* R/ogr_sp.R: add BOUNDEDCRS to showSRID() list
 
 2020-06-14 19:22  rsbivand
 
-	* [r1010] configure, configure.ac: patch from Bennet Fauber
+	* configure, configure.ac: patch from Bennet Fauber
 	  https://stat.ethz.ch/pipermail/r-sig-geo/2020-June/028227.html
 
 2020-06-13 15:32  rsbivand
 
-	* [r1009] R/gdal.R, R/ogr.R, R/ogr_sp.R: correct thinned count of
-	  CRS warnings
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R: correct thinned count of CRS
+	  warnings
 
 2020-06-12 18:38  rsbivand
 
-	* [r1008] DESCRIPTION, R/AAA.R, R/project.R, src/init.c,
-	  src/proj6.cpp, src/proj_info6.cpp, src/proj_network7.cpp,
-	  src/projectit.cpp, src/rgdal.h,
-	  vignettes/CRS_projections_transformations.Rmd: first attempt to
-	  regain control of PROJ_LIB
+	* DESCRIPTION, R/AAA.R, R/project.R, src/init.c, src/proj6.cpp,
+	  src/proj_info6.cpp, src/proj_network7.cpp, src/projectit.cpp,
+	  src/rgdal.h, vignettes/CRS_projections_transformations.Rmd: first
+	  attempt to regain control of PROJ_LIB
 
 2020-06-11 12:05  rsbivand
 
-	* [r1007] DESCRIPTION, configure, configure.ac: add AC_LANG(C++)
-	  line 487 configure.ac for static build for PROJ 6
+	* DESCRIPTION, configure, configure.ac: add AC_LANG(C++) line 487
+	  configure.ac for static build for PROJ 6
 
 2020-06-09 10:04  rsbivand
 
-	* [r1006] configure: tidy
+	* configure: tidy
 
 2020-06-09 10:03  rsbivand
 
-	* [r1005] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-06-09 10:01  rsbivand
 
-	* [r1003] DESCRIPTION, man/make_EPSG.Rd: remove direct link to
+	* DESCRIPTION, man/make_EPSG.Rd: remove direct link to
 	  http://www.epsg.org
 
 2020-06-08 14:47  rsbivand
 
-	* [r1002] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-06-08 14:47  rsbivand
 
-	* [r1001] R/AAA.R, vignettes/CRS_projections_transformations.Rmd:
-	  tidy
+	* R/AAA.R, vignettes/CRS_projections_transformations.Rmd: tidy
 
 2020-06-05 10:15  rsbivand
 
-	* [r1000] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-06-05 10:13  rsbivand
 
-	* [r999] DESCRIPTION, R/ogr_sp.R, configure, configure.ac,
-	  man/readOGR.Rd, src/OGR_write.cpp, src/inverser.c,
+	* DESCRIPTION, R/ogr_sp.R, configure, configure.ac, man/readOGR.Rd,
+	  src/OGR_write.cpp, src/inverser.c,
 	  vignettes/CRS_projections_transformations.Rmd: checking multiple
 	  exSoft versions
 
 2020-06-02 13:26  rsbivand
 
-	* [r998] configure, configure.ac: addressing configure issues
+	* configure, configure.ac: addressing configure issues
 
 2020-06-02 07:47  rsbivand
 
-	* [r997] configure, configure.ac: addressing configure issues
+	* configure, configure.ac: addressing configure issues
 
 2020-06-02 06:50  rsbivand
 
-	* [r996] configure, configure.ac: addressing configure issues
+	* configure, configure.ac: addressing configure issues
 
 2020-05-31 15:31  rsbivand
 
-	* [r995] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-05-31 15:30  rsbivand
 
-	* [r994] configure, configure.ac: addressing configure issues
+	* configure, configure.ac: addressing configure issues
 
 2020-05-29 17:00  rsbivand
 
-	* [r993] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-05-29 16:59  rsbivand
 
-	* [r992] configure, configure.ac, man/CRS-class.Rd, src/inverser.c,
+	* configure, configure.ac, man/CRS-class.Rd, src/inverser.c,
 	  src/proj6.cpp, src/proj_info6.cpp, src/projectit.cpp,
 	  vignettes/CRS_projections_transformations.Rmd: expose configure
 	  arg --with-proj_api=proj_api.h for broken homebrew
 
 2020-05-29 14:13  rsbivand
 
-	* [r991] DESCRIPTION,
-	  vignettes/CRS_projections_transformations.Rmd: fix PROJ < 6 &
-	  GDAL < 3 vignette issues
+	* DESCRIPTION, vignettes/CRS_projections_transformations.Rmd: fix
+	  PROJ < 6 & GDAL < 3 vignette issues
 
 2020-05-22 08:07  rsbivand
 
-	* [r990] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-05-22 08:03  rsbivand
 
-	* [r989] R/AAA.R: add options access to mute exportToProj4
-	  degradation warnings
+	* R/AAA.R: add options access to mute exportToProj4 degradation
+	  warnings
 
 2020-05-21 15:18  rsbivand
 
-	* [r988] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-05-21 15:18  rsbivand
 
-	* [r987] R/ogr.R: add options access to mute exportToProj4
-	  degradation warnings
+	* R/ogr.R: add options access to mute exportToProj4 degradation
+	  warnings
 
 2020-05-21 14:49  rsbivand
 
-	* [r986] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-05-21 14:48  rsbivand
 
-	* [r985] NAMESPACE, R/AAA.R, R/gdal.R, R/ogr.R, R/ogr_sp.R,
+	* NAMESPACE, R/AAA.R, R/gdal.R, R/ogr.R, R/ogr_sp.R,
 	  man/showWKT.Rd: add options access to mute exportToProj4
 	  degradation warnings
 
 2020-05-18 13:12  rsbivand
 
-	* [r984] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-05-18 13:10  rsbivand
 
-	* [r983] vignettes/CRS_projections_transformations.Rmd: tidy
+	* vignettes/CRS_projections_transformations.Rmd: tidy
 
 2020-05-18 12:46  rsbivand
 
-	* [r982] NAMESPACE, vignettes/CRS_projections_transformations.Rmd:
-	  try to get new vignette to build on old PROJ
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
 
 2020-05-18 08:46  rsbivand
 
-	* [r981] NAMESPACE, vignettes/CRS_projections_transformations.Rmd:
-	  try to get new vignette to build on old PROJ
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
 
 2020-05-18 08:16  rsbivand
 
-	* [r980] NAMESPACE: try to get new vignette to build on old PROJ
+	* NAMESPACE: try to get new vignette to build on old PROJ
 
 2020-05-18 08:07  rsbivand
 
-	* [r979] NAMESPACE, vignettes/CRS_projections_transformations.Rmd:
-	  try to get new vignette to build on old PROJ
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
 
 2020-05-18 08:03  rsbivand
 
-	* [r978] NAMESPACE, vignettes/CRS_projections_transformations.Rmd:
-	  try to get new vignette to build on old PROJ
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
 
 2020-05-16 18:02  rsbivand
 
-	* [r977] NAMESPACE, vignettes/CRS_projections_transformations.Rmd:
-	  try to get new vignette to build on old PROJ
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
 
 2020-05-16 17:36  rsbivand
 
-	* [r976] NAMESPACE, vignettes/CRS_projections_transformations.Rmd:
-	  try to get new vignette to build on old PROJ
+	* NAMESPACE, vignettes/CRS_projections_transformations.Rmd: try to
+	  get new vignette to build on old PROJ
 
 2020-05-16 14:04  rsbivand
 
-	* [r975] NAMESPACE: try to get new vignette to build on old PROJ
+	* NAMESPACE: try to get new vignette to build on old PROJ
 
 2020-05-16 13:57  rsbivand
 
-	* [r974] inst/vectors/b_pump.gpkg: try to get new vignette to build
-	  on old PROJ
+	* inst/vectors/b_pump.gpkg: try to get new vignette to build on old
+	  PROJ
 
 2020-05-16 13:37  rsbivand
 
-	* [r973] NAMESPACE: try to get new vignette to build on old PROJ
+	* NAMESPACE: try to get new vignette to build on old PROJ
 
 2020-05-16 13:36  rsbivand
 
-	* [r972] vignettes/CRS_projections_transformations.Rmd: try to get
-	  new vignette to build on old PROJ
+	* vignettes/CRS_projections_transformations.Rmd: try to get new
+	  vignette to build on old PROJ
 
 2020-05-16 13:24  rsbivand
 
-	* [r971] DESCRIPTION, NAMESPACE: try to get new vignette to build
-	  on old PROJ
+	* DESCRIPTION, NAMESPACE: try to get new vignette to build on old
+	  PROJ
 
 2020-05-16 13:20  rsbivand
 
-	* [r970] vignettes/CRS_projections_transformations.Rmd: try to get
-	  new vignette to build on old PROJ
+	* vignettes/CRS_projections_transformations.Rmd: try to get new
+	  vignette to build on old PROJ
 
 2020-05-16 12:28  rsbivand
 
-	* [r969] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-05-16 12:11  rsbivand
 
-	* [r967] ChangeLog, DESCRIPTION, R/list_coordOps.R, configure,
+	* ChangeLog, DESCRIPTION, R/list_coordOps.R, configure,
 	  data/GridsDatums.rda, inst/ChangeLog, man/GridsDatums.Rd,
 	  src/rgdal.h, tests/srs_rendering.Rout.save,
 	  vignettes/CRS_projections_transformations.Rmd,
@@ -705,274 +774,269 @@
 
 2020-05-01 13:26  rsbivand
 
-	* [r966] man/wrappers.Rd: tidy
+	* man/wrappers.Rd: tidy
 
 2020-05-01 02:23  rhijmans
 
-	* [r965] R/wrappers.R: wkt argument to "rawTransform" and fixes to
+	* R/wrappers.R: wkt argument to "rawTransform" and fixes to
 	  .gd_SetProjectWkt
 
 2020-05-01 02:20  rhijmans
 
-	* [r964] tools/winlibs.R: fixed path that checks if winlibs are
-	  present
+	* tools/winlibs.R: fixed path that checks if winlibs are present
 
 2020-04-30 03:47  rhijmans
 
-	* [r963] R/wrappers.R: added .gd_SetProjectWkt wrapper for
+	* R/wrappers.R: added .gd_SetProjectWkt wrapper for
 	  RGDAL_SetProject_WKT2
 
 2020-04-29 09:23  rsbivand
 
-	* [r962] src/gdal-bindings.cpp: LENGTH -> XLENGTH
+	* src/gdal-bindings.cpp: LENGTH -> XLENGTH
 
 2020-04-28 17:24  rsbivand
 
-	* [r961] src/gdal-bindings.cpp: first try to use long vectors for
-	  reading
+	* src/gdal-bindings.cpp: first try to use long vectors for reading
 
 2020-04-27 13:37  rsbivand
 
-	* [r960] R/AAA.R, R/project.R, src/init.c, src/proj_info6.cpp,
+	* R/AAA.R, R/project.R, src/init.c, src/proj_info6.cpp,
 	  src/projectit.cpp, src/rgdal.h: clear Windows GCC warnings
 
 2020-04-27 10:56  rsbivand
 
-	* [r959] src/Makevars.win, src/gdal-bindings.cpp, tools/winlibs.R:
-	  move Windows binary to GDAL3
+	* src/Makevars.win, src/gdal-bindings.cpp, tools/winlibs.R: move
+	  Windows binary to GDAL3
 
 2020-04-22 12:35  rsbivand
 
-	* [r958] vignettes/PROJ6_GDAL3.Rmd: tidy
+	* vignettes/PROJ6_GDAL3.Rmd: tidy
 
 2020-04-22 08:54  rsbivand
 
-	* [r955] src/ogr_proj.cpp: tidy
+	* src/ogr_proj.cpp: tidy
 
 2020-04-21 19:14  rsbivand
 
-	* [r954] DESCRIPTION, R/Class-CRSx.R, R/wrappers.R: adapting
+	* DESCRIPTION, R/Class-CRSx.R, R/wrappers.R: adapting
 	  rawTransform() - first attempt
 
 2020-04-19 15:04  rsbivand
 
-	* [r953] DESCRIPTION, R/AAA.R, R/Class-CRSx.R, R/project.R,
-	  configure, configure.ac, man/project.Rd,
-	  man/spTransform-methods.Rd, src/init.c, src/inverser.c,
-	  src/proj_info6.cpp, src/proj_network7.cpp, src/projectit.cpp,
-	  src/rgdal.h, tests/srs_rendering.Rout.save,
-	  tests/test_proj.Rout.save, vignettes/PROJ6_GDAL3.Rmd: moving to
-	  submit
+	* DESCRIPTION, R/AAA.R, R/Class-CRSx.R, R/project.R, configure,
+	  configure.ac, man/project.Rd, man/spTransform-methods.Rd,
+	  src/init.c, src/inverser.c, src/proj_info6.cpp,
+	  src/proj_network7.cpp, src/projectit.cpp, src/rgdal.h,
+	  tests/srs_rendering.Rout.save, tests/test_proj.Rout.save,
+	  vignettes/PROJ6_GDAL3.Rmd: moving to submit
 
 2020-04-07 13:21  rsbivand
 
-	* [r952] R/project.R: removing unneeded sp warning from use of
+	* R/project.R: removing unneeded sp warning from use of
 	  proj4string()
 
 2020-04-02 12:56  rsbivand
 
-	* [r951] R/Class-CRSx.R, R/ogr_sp.R: simplify bad SRID string error
+	* R/Class-CRSx.R, R/ogr_sp.R: simplify bad SRID string error
 	  messages
 
 2020-03-28 11:15  rsbivand
 
-	* [r950] configure: tidy
+	* configure: tidy
 
 2020-03-28 11:14  rsbivand
 
-	* [r949] ChangeLog, R/AAA.R, inst/ChangeLog: tidy
+	* ChangeLog, R/AAA.R, inst/ChangeLog: tidy
 
 2020-03-18 14:46  rsbivand
 
-	* [r948] src/proj_info6.cpp: resolve many
-	  proj_normalize_for_visualization messages for multiple geometries
+	* src/proj_info6.cpp: resolve many proj_normalize_for_visualization
+	  messages for multiple geometries
 
 2020-03-05 14:36  rsbivand
 
-	* [r947] R/ogr_sp.R: LAS WKT attempts
+	* R/ogr_sp.R: LAS WKT attempts
 
 2020-03-05 12:22  rsbivand
 
-	* [r946] R/ogr_sp.R: add CO for COMP WKT
+	* R/ogr_sp.R: add CO for COMP WKT
 
 2020-03-04 12:28  rsbivand
 
-	* [r945] R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp: address PROJ
-	  4.9.3 crash when passed modern WKT
+	* R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp: address PROJ 4.9.3
+	  crash when passed modern WKT
 
 2020-02-24 12:06  rsbivand
 
-	* [r944] DESCRIPTION, R/AAA.R, R/project.R, src/proj_network7.cpp:
-	  PROJ7 CDN status report
+	* DESCRIPTION, R/AAA.R, R/project.R, src/proj_network7.cpp: PROJ7
+	  CDN status report
 
 2020-02-23 19:03  rsbivand
 
-	* [r943] src/proj_network7.cpp: start network code for 7
+	* src/proj_network7.cpp: start network code for 7
 
 2020-02-23 19:01  rsbivand
 
-	* [r942] src/init.c, src/proj_network7.cpp, src/projectit.cpp,
+	* src/init.c, src/proj_network7.cpp, src/projectit.cpp,
 	  src/rgdal.h: start network code for 7
 
 2020-02-23 18:05  rsbivand
 
-	* [r941] src/projectit.cpp: remove duplicate dummy function
+	* src/projectit.cpp: remove duplicate dummy function
 
 2020-02-23 17:34  rsbivand
 
-	* [r940] src/proj_info6.cpp, src/projectit.cpp: complete SRS
-	  compare
+	* src/proj_info6.cpp, src/projectit.cpp: complete SRS compare
 
 2020-02-23 16:12  edzer
 
-	* [r939] src/proj_info6.cpp: compile for 6.0.0 < PROJ < 6.3.0
+	* src/proj_info6.cpp: compile for 6.0.0 < PROJ < 6.3.0
 
 2020-02-16 19:47  rsbivand
 
-	* [r938] NAMESPACE, R/AAA.R, R/gdal.R, man/GDALDriver-class.Rd:
-	  handles https://github.com/r-spatial/discuss/issues/31
+	* NAMESPACE, R/AAA.R, R/gdal.R, man/GDALDriver-class.Rd: handles
+	  https://github.com/r-spatial/discuss/issues/31
 
 2020-02-11 09:38  rsbivand
 
-	* [r937] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2020-02-11 09:37  rsbivand
 
-	* [r936] src/gdal-bindings.cpp, src/ogr_proj.cpp: all multiline
-	  WKT2 from file
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: all multiline WKT2 from
+	  file
 
 2020-02-11 07:52  rsbivand
 
-	* [r935] ChangeLog, configure, inst/ChangeLog: tidy
+	* ChangeLog, configure, inst/ChangeLog: tidy
 
 2020-02-10 20:48  rsbivand
 
-	* [r934] src/gdal-bindings.cpp, src/ogr_proj.cpp: fix PROJ < 6
-	  unused vis_order
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: fix PROJ < 6 unused
+	  vis_order
 
 2020-02-10 19:58  rsbivand
 
-	* [r933] R/Class-CRSx.R, R/project.R, man/CRS-class.Rd,
+	* R/Class-CRSx.R, R/project.R, man/CRS-class.Rd,
 	  src/proj_info6.cpp: fix comparing CRS issues
 
 2020-02-10 19:30  rsbivand
 
-	* [r932] man/CRS-class.Rd, src/proj_info6.cpp, src/projectit.cpp:
-	  fix comparing CRS issues
+	* man/CRS-class.Rd, src/proj_info6.cpp, src/projectit.cpp: fix
+	  comparing CRS issues
 
 2020-02-10 14:25  rsbivand
 
-	* [r931] DESCRIPTION, NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd,
+	* DESCRIPTION, NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd,
 	  src/init.c, src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h:
 	  add PROJ-based CRS comparison
 
 2020-02-05 12:16  rsbivand
 
-	* [r930] DESCRIPTION, R/Class-CRSx.R: multiline WKT2 in CRS
+	* DESCRIPTION, R/Class-CRSx.R: multiline WKT2 in CRS
 
 2020-01-29 13:22  rsbivand
 
-	* [r928] vignettes/PROJ6_GDAL3.Rmd: fix edge case in vignette
+	* vignettes/PROJ6_GDAL3.Rmd: fix edge case in vignette
 
 2020-01-29 11:40  rsbivand
 
-	* [r927] configure, configure.ac: add configure check for sqlite3
+	* configure, configure.ac: add configure check for sqlite3
 
 2020-01-29 10:55  rsbivand
 
-	* [r926] DESCRIPTION, configure, configure.ac: add configure check
-	  for sqlite3
+	* DESCRIPTION, configure, configure.ac: add configure check for
+	  sqlite3
 
 2020-01-08 10:23  rsbivand
 
-	* [r925] R/ogr_sp.R, man/showWKT.Rd, src/init.c,
-	  src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h: tried but
-	  backed out of PROJ showSRID()
+	* R/ogr_sp.R, man/showWKT.Rd, src/init.c, src/proj_info6.cpp,
+	  src/projectit.cpp, src/rgdal.h: tried but backed out of PROJ
+	  showSRID()
 
 2020-01-07 14:24  rsbivand
 
-	* [r924] R/ogr_sp.R, man/showWKT.Rd, src/init.c, src/ogr_proj.cpp,
+	* R/ogr_sp.R, man/showWKT.Rd, src/init.c, src/ogr_proj.cpp,
 	  src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h: start on
 	  using PROJ for string conversion
 
 2020-01-07 13:17  rsbivand
 
-	* [r923] man/project.Rd, man/spTransform-methods.Rd,
+	* man/project.Rd, man/spTransform-methods.Rd,
 	  vignettes/PROJ6_GDAL3.Rmd: add project() to vignette
 
 2020-01-06 21:49  rsbivand
 
-	* [r922] src/projectit.cpp: project() adapted for PROJ >= 6
+	* src/projectit.cpp: project() adapted for PROJ >= 6
 
 2020-01-06 20:16  rsbivand
 
-	* [r921] R/project.R, man/project.Rd, src/init.c,
-	  src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h,
-	  tests/test_proj.R: project() adapted for PROJ >= 6
+	* R/project.R, man/project.Rd, src/init.c, src/proj_info6.cpp,
+	  src/projectit.cpp, src/rgdal.h, tests/test_proj.R: project()
+	  adapted for PROJ >= 6
 
 2020-01-04 15:58  rsbivand
 
-	* [r920] R/gdal.R, R/ogr.R, R/ogr_sp.R: PROJ 6.3.0 fragility
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R: PROJ 6.3.0 fragility
 
 2020-01-02 16:42  rsbivand
 
-	* [r919] src/ogr_proj.cpp: PROJ 6.3.0 fragility
+	* src/ogr_proj.cpp: PROJ 6.3.0 fragility
 
 2020-01-02 15:16  rsbivand
 
-	* [r918] man/CRS-class.Rd, man/llgrid.Rd: PROJ 6.3.0 fragility
+	* man/CRS-class.Rd, man/llgrid.Rd: PROJ 6.3.0 fragility
 
 2020-01-02 14:59  rsbivand
 
-	* [r917] R/gdal.R, R/ogr.R, R/ogr_sp.R, src/OGR_write.cpp,
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, src/OGR_write.cpp,
 	  src/gdal-bindings.cpp, src/ogr_proj.cpp: PROJ 6.3.0 fragility
 
 2020-01-01 17:31  rsbivand
 
-	* [r916] src/OGR_write.cpp: PROJ 6.3.0 fragility
+	* src/OGR_write.cpp: PROJ 6.3.0 fragility
 
 2020-01-01 17:04  rsbivand
 
-	* [r915] R/ogr.R, man/spTransform-methods.Rd,
-	  vignettes/PROJ6_GDAL3.Rmd: PROJ 6.3.0 fragility
+	* R/ogr.R, man/spTransform-methods.Rd, vignettes/PROJ6_GDAL3.Rmd:
+	  PROJ 6.3.0 fragility
 
 2020-01-01 14:16  rsbivand
 
-	* [r914] R/ogr_sp.R, man/spTransform-methods.Rd,
+	* R/ogr_sp.R, man/spTransform-methods.Rd,
 	  vignettes/PROJ6_GDAL3.Rmd: PROJ 6.3.0 fragility
 
 2020-01-01 13:26  rsbivand
 
-	* [r913] R/ogr_sp.R: PROJ 6.3.0 fragility
+	* R/ogr_sp.R: PROJ 6.3.0 fragility
 
 2020-01-01 13:07  rsbivand
 
-	* [r912] R/ogr.R, R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp:
-	  PROJ 6.3.0 fragility
+	* R/ogr.R, R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp: PROJ 6.3.0
+	  fragility
 
 2020-01-01 11:52  rsbivand
 
-	* [r911] R/ogr.R, R/ogr_sp.R, src/ogr_proj.cpp: PROJ 6.3.0
-	  fragility
+	* R/ogr.R, R/ogr_sp.R, src/ogr_proj.cpp: PROJ 6.3.0 fragility
 
 2020-01-01 11:21  rsbivand
 
-	* [r910] DESCRIPTION: PROJ 6.3.0 fragility
+	* DESCRIPTION: PROJ 6.3.0 fragility
 
 2020-01-01 11:13  rsbivand
 
-	* [r909] man/spTransform-methods.Rd, src/init.c, src/ogr_proj.cpp,
+	* man/spTransform-methods.Rd, src/init.c, src/ogr_proj.cpp,
 	  src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h,
 	  vignettes/PROJ6_GDAL3.Rmd: PROJ 6.3.0 fragility
 
 2019-12-26 17:53  rsbivand
 
-	* [r907] vignettes/PROJ6_GDAL3.Rmd: extend use of enforce_xy
+	* vignettes/PROJ6_GDAL3.Rmd: extend use of enforce_xy
 	  argument/global setting to AxisPolicy settings
 
 2019-12-26 17:45  rsbivand
 
-	* [r906] R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sp_gdal.R,
+	* R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sp_gdal.R,
 	  man/GDALRasterBand-class.Rd, man/readGDAL.Rd, man/readOGR.Rd,
 	  man/showWKT.Rd, src/gdal-bindings.cpp, src/init.c,
 	  src/ogr_proj.cpp, src/rgdal.h: extend use of enforce_xy
@@ -980,1209 +1044,1184 @@
 
 2019-12-25 17:59  rsbivand
 
-	* [r904] vignettes/PROJ6_GDAL3.Rmd: attempt to apply visualization
-	  order in spTransform
+	* vignettes/PROJ6_GDAL3.Rmd: attempt to apply visualization order
+	  in spTransform
 
 2019-12-25 17:40  rsbivand
 
-	* [r903] NAMESPACE, R/AAA.R, R/ogr_sp.R, R/project.R,
+	* NAMESPACE, R/AAA.R, R/ogr_sp.R, R/project.R,
 	  man/spTransform-methods.Rd, src/ogr_proj.cpp, src/proj_info6.cpp,
 	  vignettes/PROJ6_GDAL3.Rmd: attempt to apply visualization order
 	  in spTransform
 
 2019-12-21 08:42  rsbivand
 
-	* [r902] NAMESPACE, R/AAA.R, R/ogr_sp.R, man/readGDAL.Rd,
-	  man/readOGR.Rd, man/showWKT.Rd, man/spTransform-methods.Rd,
-	  man/writeOGR.Rd, src/OGR_write.cpp, src/gdal-bindings.cpp,
-	  src/ogr_proj.cpp, tests/test_proj.R, vignettes/PROJ6_GDAL3.Rmd:
-	  first attempt to impose GDAL OAMS_TRADITIONAL_GIS_ORDER
+	* NAMESPACE, R/AAA.R, R/ogr_sp.R, man/readGDAL.Rd, man/readOGR.Rd,
+	  man/showWKT.Rd, man/spTransform-methods.Rd, man/writeOGR.Rd,
+	  src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  tests/test_proj.R, vignettes/PROJ6_GDAL3.Rmd: first attempt to
+	  impose GDAL OAMS_TRADITIONAL_GIS_ORDER
 
 2019-12-17 13:32  rsbivand
 
-	* [r901] R/ogr_sp.R: tidy
+	* R/ogr_sp.R: tidy
 
 2019-12-17 13:28  rsbivand
 
-	* [r900] configure: tidy
+	* configure: tidy
 
 2019-12-17 13:27  rsbivand
 
-	* [r899] R/ogr_sp.R, man/make_EPSG.Rd, man/project.Rd,
-	  man/readOGR.Rd: tidy
+	* R/ogr_sp.R, man/make_EPSG.Rd, man/project.Rd, man/readOGR.Rd:
+	  tidy
 
 2019-11-20 20:35  rsbivand
 
-	* [r898] R/ogr_sp.R, R/project.R: drop +init= in PROJ fallback
+	* R/ogr_sp.R, R/project.R: drop +init= in PROJ fallback
 
 2019-11-16 20:24  rsbivand
 
-	* [r896] DESCRIPTION, R/project.R, vignettes/PROJ6_GDAL3.Rmd:
-	  lookup coordinate operation per spTransform call
+	* DESCRIPTION, R/project.R, vignettes/PROJ6_GDAL3.Rmd: lookup
+	  coordinate operation per spTransform call
 
 2019-11-15 19:43  rsbivand
 
-	* [r894] NAMESPACE, R/AAA.R, R/gdal.R, R/project.R, configure,
+	* NAMESPACE, R/AAA.R, R/gdal.R, R/project.R, configure,
 	  configure.ac, man/spTransform-methods.Rd, src/gdal-bindings.cpp,
 	  src/init.c, src/proj_info6.cpp, src/projectit.cpp, src/rgdal.h,
 	  vignettes/PROJ6_GDAL3.Rmd: adding transform_ng() using PROJ6
 
 2019-11-14 13:30  rsbivand
 
-	* [r892] NAMESPACE, R/list_coordOps.R, man/list_coordOps.Rd,
+	* NAMESPACE, R/list_coordOps.R, man/list_coordOps.Rd,
 	  vignettes/PROJ6_GDAL3.Rmd: add coordOps to vignette
 
 2019-11-13 20:01  rsbivand
 
-	* [r891] NAMESPACE, R/list_coordOps.R, man/list_coordOps.Rd,
+	* NAMESPACE, R/list_coordOps.R, man/list_coordOps.Rd,
 	  src/proj_info6.cpp: print method for coordOps objects
 
 2019-11-13 09:26  rsbivand
 
-	* [r889] vignettes/PROJ6_GDAL3.Rmd: line breaks in WKT vignette
-	  strings
+	* vignettes/PROJ6_GDAL3.Rmd: line breaks in WKT vignette strings
 
 2019-11-12 17:43  rsbivand
 
-	* [r888] vignettes/PROJ6_GDAL3.Rmd: vignette progress
+	* vignettes/PROJ6_GDAL3.Rmd: vignette progress
 
 2019-11-12 16:54  rsbivand
 
-	* [r887] vignettes/PROJ6_GDAL3.Rmd: tidy
+	* vignettes/PROJ6_GDAL3.Rmd: tidy
 
 2019-11-12 14:16  rsbivand
 
-	* [r886] vignettes/PROJ.bib, vignettes/PROJ6_GDAL3.Rmd: start
-	  adding vignette
+	* vignettes/PROJ.bib, vignettes/PROJ6_GDAL3.Rmd: start adding
+	  vignette
 
 2019-11-12 14:16  rsbivand
 
-	* [r885] DESCRIPTION, R/ogr_sp.R: start adding vignette
+	* DESCRIPTION, R/ogr_sp.R: start adding vignette
 
 2019-11-12 09:46  rsbivand
 
-	* [r884] R/Class-CRSx.R: protect against leading space in PROJ
-	  string
+	* R/Class-CRSx.R: protect against leading space in PROJ string
 
 2019-11-11 16:04  rsbivand
 
-	* [r883] NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd: trying to
-	  handle sp::CRS() adaptation
+	* NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd: trying to handle
+	  sp::CRS() adaptation
 
 2019-11-08 13:24  rsbivand
 
-	* [r882] configure, configure.ac: tidy
+	* configure, configure.ac: tidy
 
 2019-11-08 09:28  rsbivand
 
-	* [r881] DESCRIPTION: vector write WKT2-based if CRS comment
-	  present
+	* DESCRIPTION: vector write WKT2-based if CRS comment present
 
 2019-11-08 09:27  rsbivand
 
-	* [r880] DESCRIPTION: vector write WKT2-based if CRS comment
-	  present
+	* DESCRIPTION: vector write WKT2-based if CRS comment present
 
 2019-11-07 15:10  rsbivand
 
-	* [r879] R/Class-CRSx.R: tidy
+	* R/Class-CRSx.R: tidy
 
 2019-11-06 18:41  rsbivand
 
-	* [r878] src/gdal-bindings.cpp, src/ogr_proj.cpp: vector write
-	  WKT2-based if CRS comment present
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: vector write WKT2-based
+	  if CRS comment present
 
 2019-11-06 14:54  rsbivand
 
-	* [r877] src/gdal-bindings.cpp: vector write WKT2-based if CRS
-	  comment present
+	* src/gdal-bindings.cpp: vector write WKT2-based if CRS comment
+	  present
 
 2019-11-06 14:41  rsbivand
 
-	* [r876] src/gdal-bindings.cpp, src/ogr_proj.cpp: vector write
-	  WKT2-based if CRS comment present
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp: vector write WKT2-based
+	  if CRS comment present
 
 2019-11-06 14:20  rsbivand
 
-	* [r875] src/OGR_write.cpp, src/gdal-bindings.cpp,
-	  src/ogr_proj.cpp: vector write WKT2-based if CRS comment present
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp:
+	  vector write WKT2-based if CRS comment present
 
 2019-11-06 11:14  rsbivand
 
-	* [r874] src/ogr_proj.cpp: vector write WKT2-based if CRS comment
-	  present
+	* src/ogr_proj.cpp: vector write WKT2-based if CRS comment present
 
 2019-11-06 09:40  rsbivand
 
-	* [r873] src/OGR_write.cpp: vector write WKT2-based if CRS comment
-	  present
+	* src/OGR_write.cpp: vector write WKT2-based if CRS comment present
 
 2019-11-05 19:08  rsbivand
 
-	* [r872] man/list_coordOps.Rd, src/OGR_write.cpp: vector write
-	  WKT2-based if CRS comment present
+	* man/list_coordOps.Rd, src/OGR_write.cpp: vector write WKT2-based
+	  if CRS comment present
 
 2019-11-03 18:52  rsbivand
 
-	* [r871] R/sp_gdal.R, R/wrappers.R, man/readGDAL.Rd,
+	* R/sp_gdal.R, R/wrappers.R, man/readGDAL.Rd,
 	  src/gdal-bindings.cpp, src/init.c, src/rgdal.h: write raster
 	  files with WKT2 comments
 
 2019-11-02 19:51  rsbivand
 
-	* [r870] R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R, R/subs.R,
-	  man/readGDAL.Rd, tests/srs_rendering.R,
-	  tests/srs_rendering.Rout.save: retrieving WKT2 strings from
-	  raster files to use as comments
+	* R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R, R/subs.R, man/readGDAL.Rd,
+	  tests/srs_rendering.R, tests/srs_rendering.Rout.save: retrieving
+	  WKT2 strings from raster files to use as comments
 
 2019-11-01 21:36  rsbivand
 
-	* [r869] man/readOGR.Rd: retrieving WKT2 strings from files to use
-	  as comments
+	* man/readOGR.Rd: retrieving WKT2 strings from files to use as
+	  comments
 
 2019-11-01 21:20  rsbivand
 
-	* [r868] R/ogr.R, R/ogr_sp.R, src/gdal-bindings.cpp,
-	  src/ogr_proj.cpp: retrieving WKT2 strings from files to use as
-	  comments
+	* R/ogr.R, R/ogr_sp.R, src/gdal-bindings.cpp, src/ogr_proj.cpp:
+	  retrieving WKT2 strings from files to use as comments
 
 2019-11-01 14:30  rsbivand
 
-	* [r867] R/ogr_sp.R, man/showWKT.Rd: approaching roundtrip CRS
-	  testing
+	* R/ogr_sp.R, man/showWKT.Rd: approaching roundtrip CRS testing
 
 2019-11-01 14:10  rsbivand
 
-	* [r866] R/ogr.R, R/ogr_sp.R: approaching roundtrip CRS testing
+	* R/ogr.R, R/ogr_sp.R: approaching roundtrip CRS testing
 
 2019-11-01 13:28  rsbivand
 
-	* [r865] R/ogr.R, R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp:
+	* R/ogr.R, R/ogr_sp.R, man/showWKT.Rd, src/ogr_proj.cpp:
 	  approaching roundtrip CRS testing
 
 2019-10-31 19:46  rsbivand
 
-	* [r864] R/gdal.R, tests/srs_rendering.R,
-	  tests/srs_rendering.Rout.save: add tests for discarded datum
-	  values on raster read
+	* R/gdal.R, tests/srs_rendering.R, tests/srs_rendering.Rout.save:
+	  add tests for discarded datum values on raster read
 
 2019-10-31 18:05  rsbivand
 
-	* [r863] src/gdal-bindings.cpp: starting raster datum discarding
-	  detection
+	* src/gdal-bindings.cpp: starting raster datum discarding detection
 
 2019-10-31 12:53  rsbivand
 
-	* [r862] src/ogr_proj.cpp, src/proj_info6.cpp: code tidying
+	* src/ogr_proj.cpp, src/proj_info6.cpp: code tidying
 
 2019-10-31 12:22  rsbivand
 
-	* [r861] R/gdal.R, R/project.R, src/gdal-bindings.cpp, src/init.c,
+	* R/gdal.R, R/project.R, src/gdal-bindings.cpp, src/init.c,
 	  src/proj_info6.cpp, src/rgdal.h: code tidying
 
 2019-10-31 11:27  rsbivand
 
-	* [r860] R/ogr.R: add towgs84 presence to datum warning
+	* R/ogr.R: add towgs84 presence to datum warning
 
 2019-10-31 10:08  rsbivand
 
-	* [r859] NAMESPACE, R/ogr.R, R/ogr_sp.R, R/project.R,
-	  man/projInfo.Rd, man/readOGR.Rd, src/init.c, src/ogr_proj.cpp,
-	  src/proj_info6.cpp, src/rgdal.h: code tidying
+	* NAMESPACE, R/ogr.R, R/ogr_sp.R, R/project.R, man/projInfo.Rd,
+	  man/readOGR.Rd, src/init.c, src/ogr_proj.cpp, src/proj_info6.cpp,
+	  src/rgdal.h: code tidying
 
 2019-10-30 19:50  rsbivand
 
-	* [r858] R/ogr_sp.R: add tests for discarded datum values on read
+	* R/ogr_sp.R: add tests for discarded datum values on read
 
 2019-10-30 19:43  rsbivand
 
-	* [r857] NAMESPACE, R/AAA.R, R/ogr.R, R/ogr_sp.R, R/project.R,
+	* NAMESPACE, R/AAA.R, R/ogr.R, R/ogr_sp.R, R/project.R,
 	  man/showWKT.Rd, src/ogr_proj.cpp: add tests for discarded datum
 	  values on read
 
 2019-10-30 13:49  rsbivand
 
-	* [r856] src/ogr_proj.cpp: tidy
+	* src/ogr_proj.cpp: tidy
 
 2019-10-30 12:58  rsbivand
 
-	* [r855] man/list_coordOps.Rd, src/ogr_proj.cpp: tidy
+	* man/list_coordOps.Rd, src/ogr_proj.cpp: tidy
 
 2019-10-30 12:40  rsbivand
 
-	* [r854] src/ogr_proj.cpp: tidy
+	* src/ogr_proj.cpp: tidy
 
 2019-10-30 12:06  rsbivand
 
-	* [r853] src/ogr_proj.cpp: tidy
+	* src/ogr_proj.cpp: tidy
 
 2019-10-30 11:54  rsbivand
 
-	* [r852] src/ogr_proj.cpp: tidy
+	* src/ogr_proj.cpp: tidy
 
 2019-10-29 19:58  rsbivand
 
-	* [r851] src/ogr_proj.cpp, src/proj_info6.cpp: collect datum status
-	  from SRS
+	* src/ogr_proj.cpp, src/proj_info6.cpp: collect datum status from
+	  SRS
 
 2019-10-29 14:31  rsbivand
 
-	* [r850] src/ogr_proj.cpp: adding extra output when dumpSRS to
-	  detect datum on input
+	* src/ogr_proj.cpp: adding extra output when dumpSRS to detect
+	  datum on input
 
 2019-10-29 12:22  rsbivand
 
-	* [r849] R/ogr.R, R/ogr_sp.R, R/ogr_write.R, man/readOGR.Rd,
+	* R/ogr.R, R/ogr_sp.R, R/ogr_write.R, man/readOGR.Rd,
 	  man/writeOGR.Rd, src/OGR_write.cpp, src/init.c, src/ogr_proj.cpp,
 	  src/rgdal.h: add dumpSRS arguments to show SRS inside GDAL for
 	  vector
 
 2019-10-29 10:29  rsbivand
 
-	* [r848] R/list_coordOps.R, man/list_coordOps.Rd: adding PROJ 6
-	  list coord. operations
+	* R/list_coordOps.R, man/list_coordOps.Rd: adding PROJ 6 list
+	  coord. operations
 
 2019-10-29 10:20  rsbivand
 
-	* [r847] configure: tidy
+	* configure: tidy
 
 2019-10-29 10:19  rsbivand
 
-	* [r846] DESCRIPTION, NAMESPACE, R/AAA.R, R/ogr.R, R/ogr_sp.R,
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/ogr.R, R/ogr_sp.R,
 	  man/projInfo.Rd, man/readOGR.Rd, man/showWKT.Rd, src/init.c,
 	  src/ogr_proj.cpp, src/proj_info6.cpp, src/projectit.cpp,
 	  src/rgdal.h: adding PROJ 6 list coord. operations
 
 2019-10-28 10:05  rsbivand
 
-	* [r845] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-10-28 10:04  rsbivand
 
-	* [r844] configure: tidy
+	* configure: tidy
 
 2019-10-25 17:12  rsbivand
 
-	* [r843] DESCRIPTION, configure, configure.ac: fix configure issue
-	  to copy through pkg-config proj --libs
+	* DESCRIPTION, configure, configure.ac: fix configure issue to copy
+	  through pkg-config proj --libs
 
 2019-10-01 12:00  rsbivand
 
-	* [r841] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-10-01 11:58  rsbivand
 
-	* [r840] DESCRIPTION, configure, configure.ac: fix configure.ac for
-	  R 4.0.0
+	* DESCRIPTION, configure, configure.ac: fix configure.ac for R
+	  4.0.0
 
 2019-09-03 08:09  rsbivand
 
-	* [r839] configure, configure.ac: remove R CMD config CPP
+	* configure, configure.ac: remove R CMD config CPP
 
 2019-08-18 12:11  rsbivand
 
-	* [r838] R/ogr_write.R, man/writeOGR.Rd, src/OGR_write.cpp,
+	* R/ogr_write.R, man/writeOGR.Rd, src/OGR_write.cpp,
 	  tests/tripup.R, tests/tripup.Rout.save: checking shapefile issue
 	  with GDAL #1788
 
 2019-08-16 19:28  rsbivand
 
-	* [r837] DESCRIPTION, inst/etc/obj_with_comments.RData,
+	* DESCRIPTION, inst/etc/obj_with_comments.RData,
 	  inst/etc/test_dfs.RData, tests/tripup.R: ESRI Shapefile driver
 	  writing MULTIPOLYGON as POLYGON
 
 2019-06-30 16:31  rsbivand
 
-	* [r836] src/inverser.c: do something in src/inverter.c to block
-	  warning
+	* src/inverser.c: do something in src/inverter.c to block warning
 
 2019-06-07 08:04  rsbivand
 
-	* [r835] DESCRIPTION, LICENSE.note, inst/README, man/project.Rd,
+	* DESCRIPTION, LICENSE.note, inst/README, man/project.Rd,
 	  man/spTransform-methods.Rd: proj4.org links -> proj.org
 
 2019-06-06 16:48  edzer
 
-	* [r834] configure, configure.ac: run silent on OSX/static against
+	* configure, configure.ac: run silent on OSX/static against
 	  GDAL3.0.0, PROJ6.1.0
 
 2019-05-28 11:01  rsbivand
 
-	* [r833] man/showWKT.Rd: tidy
+	* man/showWKT.Rd: tidy
 
 2019-05-28 10:53  rsbivand
 
-	* [r832] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-05-03 07:42  rsbivand
 
-	* [r831] DESCRIPTION, configure, configure.ac: block versions
-	  2.6-2.9
+	* DESCRIPTION, configure, configure.ac: block versions 2.6-2.9
 
 2019-04-03 07:49  edzer
 
-	* [r829] configure, configure.ac: make pcs.csv check compulsory
-	  only for GDAL < 2.5.0
+	* configure, configure.ac: make pcs.csv check compulsory only for
+	  GDAL < 2.5.0
 
 2019-03-13 13:56  rsbivand
 
-	* [r828] configure, configure.ac: add configure argument
-	  --with-proj_api
+	* configure, configure.ac: add configure argument --with-proj_api
 
 2019-03-13 10:24  rsbivand
 
-	* [r827] inst/pictures/SOURCES: tidy
+	* inst/pictures/SOURCES: tidy
 
 2019-03-13 10:16  rsbivand
 
-	* [r826] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-13 10:15  rsbivand
 
-	* [r825] inst/pictures/MR5905167_372.nc, man/readGDAL.Rd,
+	* inst/pictures/MR5905167_372.nc, man/readGDAL.Rd,
 	  tests/srs_rendering.R, tests/srs_rendering.Rout.save: adding
 	  netCDF test file
 
 2019-03-13 08:57  rsbivand
 
-	* [r824] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-13 08:57  rsbivand
 
-	* [r823] R/gdal.R, man/GDALReadOnlyDataset-class.Rd: test for file
-	  exists before normalizePath when reading rasters
+	* R/gdal.R, man/GDALReadOnlyDataset-class.Rd: test for file exists
+	  before normalizePath when reading rasters
 
 2019-03-12 12:27  rsbivand
 
-	* [r822] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-12 12:26  rsbivand
 
-	* [r821] R/project.R, man/project.Rd: fix NA handling for i386
-	  project()
+	* R/project.R, man/project.Rd: fix NA handling for i386 project()
 
 2019-03-12 11:08  rsbivand
 
-	* [r820] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-12 11:04  rsbivand
 
-	* [r819] src/inverser.c: re-order inversetest header order
+	* src/inverser.c: re-order inversetest header order
 
 2019-03-12 10:21  rsbivand
 
-	* [r818] configure: tidy
+	* configure: tidy
 
 2019-03-12 10:20  rsbivand
 
-	* [r817] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2019-03-12 10:16  rsbivand
 
-	* [r816] configure, configure.ac: fix configure.ac tests
+	* configure, configure.ac: fix configure.ac tests
 
 2019-03-11 13:49  rsbivand
 
-	* [r815] configure: tidy
+	* configure: tidy
 
 2019-03-11 09:20  rsbivand
 
-	* [r814] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-11 09:19  rsbivand
 
-	* [r813] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2019-03-08 19:10  rsbivand
 
-	* [r812] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-08 19:09  rsbivand
 
-	* [r811] man/make_EPSG.Rd, src/proj_info6.cpp: fix EPSG messages
-	  where no proj_string
+	* man/make_EPSG.Rd, src/proj_info6.cpp: fix EPSG messages where no
+	  proj_string
 
 2019-03-08 12:42  rsbivand
 
-	* [r810] src/proj_info6.cpp: add contexts to EPSG listing
+	* src/proj_info6.cpp: add contexts to EPSG listing
 
 2019-03-08 12:33  rsbivand
 
-	* [r809] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-08 12:32  rsbivand
 
-	* [r808] src/proj_info6.cpp: add contexts to EPSG listing
+	* src/proj_info6.cpp: add contexts to EPSG listing
 
 2019-03-08 11:39  rsbivand
 
-	* [r807] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-03-08 11:38  rsbivand
 
-	* [r806] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2019-03-08 09:51  rsbivand
 
-	* [r805] src/proj_info6.cpp: Use Markus Metz g.proj PROJ6 listings
+	* src/proj_info6.cpp: Use Markus Metz g.proj PROJ6 listings
 
 2019-03-08 09:35  rsbivand
 
-	* [r804] DESCRIPTION, NAMESPACE, R/make_EPSG.R, man/make_EPSG.Rd,
+	* DESCRIPTION, NAMESPACE, R/make_EPSG.R, man/make_EPSG.Rd,
 	  src/proj_info6.cpp, src/projectit.cpp: Use Markus Metz g.proj
 	  PROJ6 listings
 
 2019-03-06 13:39  rsbivand
 
-	* [r803] src/proj_info6.cpp: proj6 back-check to 5
+	* src/proj_info6.cpp: proj6 back-check to 5
 
 2019-03-06 13:04  rsbivand
 
-	* [r801] R/AAA.R: fix startup message
+	* R/AAA.R: fix startup message
 
 2019-03-06 12:28  rsbivand
 
-	* [r800] src/proj_info6.cpp: Proj6 workarounds
+	* src/proj_info6.cpp: Proj6 workarounds
 
 2019-03-06 09:56  rsbivand
 
-	* [r799] ChangeLog, inst/ChangeLog: passes check with PROJ 6.0.0
+	* ChangeLog, inst/ChangeLog: passes check with PROJ 6.0.0
 
 2019-03-06 09:55  rsbivand
 
-	* [r798] configure, configure.ac: passes check with PROJ 6.0.0
+	* configure, configure.ac: passes check with PROJ 6.0.0
 
 2019-03-06 09:50  rsbivand
 
-	* [r797] DESCRIPTION, R/AAA.R, R/Class-CRSx.R, R/make_EPSG.R,
-	  R/project.R, R/wrappers.R, configure, configure.ac,
-	  man/make_EPSG.Rd, src/Makevars.win, src/inverser.c,
-	  src/proj_info6.cpp, src/projectit.cpp: passes check with PROJ
-	  6.0.0
+	* DESCRIPTION, R/AAA.R, R/Class-CRSx.R, R/make_EPSG.R, R/project.R,
+	  R/wrappers.R, configure, configure.ac, man/make_EPSG.Rd,
+	  src/Makevars.win, src/inverser.c, src/proj_info6.cpp,
+	  src/projectit.cpp: passes check with PROJ 6.0.0
 
 2019-03-04 14:25  rsbivand
 
-	* [r796] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2019-03-04 14:19  rsbivand
 
-	* [r795] DESCRIPTION, src/gdal-bindings.cpp: try rchk fix
+	* DESCRIPTION, src/gdal-bindings.cpp: try rchk fix
 
 2019-02-20 11:24  rsbivand
 
-	* [r794] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-02-20 11:23  rsbivand
 
-	* [r793] R/AAA.R: place has_proj_def.dat earlier
+	* R/AAA.R: place has_proj_def.dat earlier
 
 2019-02-20 09:13  rsbivand
 
-	* [r792] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-02-20 09:12  rsbivand
 
-	* [r791] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2019-02-20 09:06  rsbivand
 
-	* [r790] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-02-20 09:04  rsbivand
 
-	* [r789] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2019-02-20 08:42  rsbivand
 
-	* [r788] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2019-02-20 08:39  rsbivand
 
-	* [r787] man/CRS-class.Rd: link to proj update
+	* man/CRS-class.Rd: link to proj update
 
 2019-02-19 18:14  rsbivand
 
-	* [r785] man/RGB2PCT.Rd, man/displayDataset.Rd, man/readGDAL.Rd:
-	  pkgdown progress
+	* man/RGB2PCT.Rd, man/displayDataset.Rd, man/readGDAL.Rd: pkgdown
+	  progress
 
 2019-02-19 14:45  rsbivand
 
-	* [r784] NAMESPACE, R/AAA.R, R/Class-CRSx.R, R/ogr.R,
-	  R/ogr_write.R, R/project.R, src/RGDAL.def, src/init.c,
-	  src/ogrsource.cpp, src/projectit.cpp, src/rgdal.h: correcting
-	  registration of compiled functions
+	* NAMESPACE, R/AAA.R, R/Class-CRSx.R, R/ogr.R, R/ogr_write.R,
+	  R/project.R, src/RGDAL.def, src/init.c, src/ogrsource.cpp,
+	  src/projectit.cpp, src/rgdal.h: correcting registration of
+	  compiled functions
 
 2019-02-19 13:20  rsbivand
 
-	* [r783] R/AAA.R, man/project.Rd: project message issue
+	* R/AAA.R, man/project.Rd: project message issue
 
 2019-02-19 12:40  rsbivand
 
-	* [r782] .Rbuildignore, DESCRIPTION, R/AAA.R, R/Class-CRSx.R,
+	* .Rbuildignore, DESCRIPTION, R/AAA.R, R/Class-CRSx.R,
 	  R/wrappers.R, _pkgdown.yml: starting pkgdown
 
 2019-02-19 12:05  rsbivand
 
-	* [r781] DESCRIPTION, R/project.R, configure, man/project.Rd: use
-	  of NA in coords in oce triggered issue in project/transform for
-	  i386
+	* DESCRIPTION, R/project.R, configure, man/project.Rd: use of NA in
+	  coords in oce triggered issue in project/transform for i386
 
 2019-02-18 15:10  rsbivand
 
-	* [r780] DESCRIPTION, R/project.R: project message issue
+	* DESCRIPTION, R/project.R: project message issue
 
 2018-12-29 19:40  rsbivand
 
-	* [r779] data/GridsDatums.rda: tidy
+	* data/GridsDatums.rda: tidy
 
 2018-12-29 19:26  rsbivand
 
-	* [r778] DESCRIPTION, configure, configure.ac: add check for
-	  gdal-config --datadir sanity
+	* DESCRIPTION, configure, configure.ac: add check for gdal-config
+	  --datadir sanity
 
 2018-12-21 13:32  rsbivand
 
-	* [r777] ChangeLog, inst/ChangeLog: update Grids & Datums
+	* ChangeLog, inst/ChangeLog: update Grids & Datums
 
 2018-12-21 13:28  rsbivand
 
-	* [r776] man/GridsDatums.Rd: update Grids & Datums
+	* man/GridsDatums.Rd: update Grids & Datums
 
 2018-12-21 12:33  rsbivand
 
-	* [r775] data/GridsDatums.rda, man/GridsDatums.Rd: update Grids &
-	  Datums
+	* data/GridsDatums.rda, man/GridsDatums.Rd: update Grids & Datums
 
 2018-12-21 12:01  rsbivand
 
-	* [r774] DESCRIPTION, configure, configure.ac: guard against
-	  fictional versions of GDAL
+	* DESCRIPTION, configure, configure.ac: guard against fictional
+	  versions of GDAL
 
 2018-09-28 08:26  rsbivand
 
-	* [r773] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-09-28 08:26  rsbivand
 
-	* [r772] man/make_EPSG.Rd: update Grids&Datums URL
+	* man/make_EPSG.Rd: update Grids&Datums URL
 
 2018-09-28 08:22  rsbivand
 
-	* [r771] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-09-28 08:21  rsbivand
 
-	* [r770] man/GridsDatums.Rd: update Grids&Datums URL
+	* man/GridsDatums.Rd: update Grids&Datums URL
 
 2018-09-28 08:14  rsbivand
 
-	* [r769] ChangeLog, configure, inst/ChangeLog: tidy
+	* ChangeLog, configure, inst/ChangeLog: tidy
 
 2018-09-26 16:07  rsbivand
 
-	* [r768] DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd: permit readOGR to
+	* DESCRIPTION, R/ogr_sp.R, man/readOGR.Rd: permit readOGR to
 	  process no geometry input
 
 2018-09-10 18:17  rsbivand
 
-	* [r767] DESCRIPTION, configure, configure.ac: CXX11 and CXX11STD
+	* DESCRIPTION, configure, configure.ac: CXX11 and CXX11STD
 	  configures
 
 2018-08-01 10:57  rsbivand
 
-	* [r766] configure, configure.ac: tidy
+	* configure, configure.ac: tidy
 
 2018-08-01 10:56  rsbivand
 
-	* [r765] configure, configure.ac: tidy
+	* configure, configure.ac: tidy
 
 2018-08-01 10:45  rsbivand
 
-	* [r764] man/spTransform-methods.Rd: tidy
+	* man/spTransform-methods.Rd: tidy
 
 2018-08-01 09:52  rsbivand
 
-	* [r763] ChangeLog, inst/ChangeLog: issue with g++ instead of
-	  clang++ in configure
+	* ChangeLog, inst/ChangeLog: issue with g++ instead of clang++ in
+	  configure
 
 2018-08-01 09:47  rsbivand
 
-	* [r762] configure, configure.ac: issue with g++ instead of clang++
-	  in configure
+	* configure, configure.ac: issue with g++ instead of clang++ in
+	  configure
 
 2018-07-31 16:28  rsbivand
 
-	* [r761] DESCRIPTION, configure, configure.ac,
-	  src/gdal-bindings.cpp: issue with g++ instead of clang++ in
-	  configure
+	* DESCRIPTION, configure, configure.ac, src/gdal-bindings.cpp:
+	  issue with g++ instead of clang++ in configure
 
 2018-06-21 07:34  rsbivand
 
-	* [r760] DESCRIPTION: add Colin to DESCRIPTION
+	* DESCRIPTION: add Colin to DESCRIPTION
 
 2018-06-19 16:55  rsbivand
 
-	* [r759] ChangeLog, inst/ChangeLog, inst/README: tidy
+	* ChangeLog, inst/ChangeLog, inst/README: tidy
 
 2018-06-16 21:37  rsbivand
 
-	* [r758] .Rbuildignore, configure, configure.ac, inst/m4,
+	* .Rbuildignore, configure, configure.ac, inst/m4,
 	  inst/m4/ax_cxx_compile_stdcxx.m4, m4: add Colin Rundel's diff
 
 2018-06-13 17:56  rsbivand
 
-	* [r757] src/ogr_proj.cpp: #ifdef issue blocking out 1.11.4 from
-	  2.3.0 adaptation
+	* src/ogr_proj.cpp: #ifdef issue blocking out 1.11.4 from 2.3.0
+	  adaptation
 
 2018-06-13 14:36  rsbivand
 
-	* [r756] DESCRIPTION, configure, src/gdal-bindings.cpp: #ifdef
-	  issue blocking out 1.11.4 from 2.3.0 adaptation
+	* DESCRIPTION, configure, src/gdal-bindings.cpp: #ifdef issue
+	  blocking out 1.11.4 from 2.3.0 adaptation
 
 2018-06-08 06:50  rsbivand
 
-	* [r755] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-06-08 06:44  rsbivand
 
-	* [r754] DESCRIPTION, configure, src/gdal-bindings.cpp: extra rchk
+	* DESCRIPTION, configure, src/gdal-bindings.cpp: extra rchk
 	  PROTECTs
 
 2018-06-01 17:54  rsbivand
 
-	* [r753] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-06-01 17:53  rsbivand
 
-	* [r752] LICENSE.note: add BSD text to LICENSE.note
+	* LICENSE.note: add BSD text to LICENSE.note
 
 2018-06-01 13:30  rsbivand
 
-	* [r751] src/gdal-bindings.cpp: rchk issues
+	* src/gdal-bindings.cpp: rchk issues
 
 2018-06-01 13:27  rsbivand
 
-	* [r750] src/gdal-bindings.cpp: rchk issues
+	* src/gdal-bindings.cpp: rchk issues
 
 2018-06-01 13:22  rsbivand
 
-	* [r749] src/ogrsource.cpp: rchk issues
+	* src/ogrsource.cpp: rchk issues
 
 2018-06-01 12:16  rsbivand
 
-	* [r748] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-06-01 12:14  rsbivand
 
-	* [r747] DESCRIPTION, LICENSE.note: add LICENSE.note
+	* DESCRIPTION, LICENSE.note: add LICENSE.note
 
 2018-06-01 08:02  rsbivand
 
-	* [r746] configure, configure.ac: tidy
+	* configure, configure.ac: tidy
 
 2018-05-31 18:33  rsbivand
 
-	* [r745] tests/srs_rendering.Rout.save: tidy
+	* tests/srs_rendering.Rout.save: tidy
 
 2018-05-31 18:28  rsbivand
 
-	* [r744] tests/srs_rendering.R: tidy
+	* tests/srs_rendering.R: tidy
 
 2018-05-31 18:07  rsbivand
 
-	* [r743] tests/srs_rendering.Rout.save: tidy
+	* tests/srs_rendering.Rout.save: tidy
 
 2018-05-31 18:04  rsbivand
 
-	* [r742] tests/srs_rendering.R: tidy
+	* tests/srs_rendering.R: tidy
 
 2018-05-31 18:02  rsbivand
 
-	* [r741] tests/srs_rendering.Rout.save: tidy
+	* tests/srs_rendering.Rout.save: tidy
 
 2018-05-31 17:56  rsbivand
 
-	* [r740] tests/srs_rendering.R: tidy
+	* tests/srs_rendering.R: tidy
 
 2018-05-31 12:11  rsbivand
 
-	* [r739] .Rbuildignore, tests/srs_rendering.R,
+	* .Rbuildignore, tests/srs_rendering.R,
 	  tests/srs_rendering.Rout.save: tests for SRS GDAL version
 
 2018-05-31 08:11  rsbivand
 
-	* [r738] configure, configure.ac, m4, m4/ax_cxx_compile_stdcxx.m4:
-	  add CXX11 check
+	* configure, configure.ac, m4, m4/ax_cxx_compile_stdcxx.m4: add
+	  CXX11 check
 
 2018-05-30 12:11  rsbivand
 
-	* [r737] configure, configure.ac: configure.ac fix
+	* configure, configure.ac: configure.ac fix
 
 2018-05-30 08:03  rsbivand
 
-	* [r736] src/gdal-bindings.cpp: importFromWkt bug: removed & for
-	  const char*
+	* src/gdal-bindings.cpp: importFromWkt bug: removed & for const
+	  char*
 
 2018-05-29 18:24  rsbivand
 
-	* [r735] src/ogr_proj.cpp: tidy
+	* src/ogr_proj.cpp: tidy
 
 2018-05-29 18:13  rsbivand
 
-	* [r734] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2018-05-29 16:53  rsbivand
 
-	* [r733] src/OGR_write.cpp, src/gdal-bindings.cpp,
-	  src/ogr_proj.cpp, src/projectit.cpp: add valgrind fixme tags
+	* src/OGR_write.cpp, src/gdal-bindings.cpp, src/ogr_proj.cpp,
+	  src/projectit.cpp: add valgrind fixme tags
 
 2018-05-29 12:22  rsbivand
 
-	* [r732] src/gdal-bindings.cpp: 2.3.0 const
+	* src/gdal-bindings.cpp: 2.3.0 const
 
 2018-05-29 11:51  rsbivand
 
-	* [r731] src/gdal-bindings.cpp, src/ogr_proj.cpp,
-	  src/projectit.cpp: valgrind and GDAL 2.3.0 const
+	* src/gdal-bindings.cpp, src/ogr_proj.cpp, src/projectit.cpp:
+	  valgrind and GDAL 2.3.0 const
 
 2018-05-23 19:34  rsbivand
 
-	* [r730] configure, configure.ac: fix configure test
+	* configure, configure.ac: fix configure test
 
 2018-05-07 12:56  rsbivand
 
-	* [r729] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-05-07 12:55  rsbivand
 
-	* [r728] tests/tests.Rout.save: tidy
+	* tests/tests.Rout.save: tidy
 
 2018-05-07 12:51  rsbivand
 
-	* [r727] DESCRIPTION, configure, configure.ac, inst/include,
+	* DESCRIPTION, configure, configure.ac, inst/include,
 	  inst/include/projects.h: updating ext-dep limits
 
 2018-04-30 13:29  rsbivand
 
-	* [r726] DESCRIPTION, configure, configure.ac: add enable
-	  deprecated
+	* DESCRIPTION, configure, configure.ac: add enable deprecated
 
 2018-04-06 07:09  rsbivand
 
-	* [r725] ChangeLog, inst/ChangeLog: add geojson string test
+	* ChangeLog, inst/ChangeLog: add geojson string test
 
 2018-04-06 07:08  rsbivand
 
-	* [r724] tests/tests.R, tests/tests.Rout.save: add geojson string
-	  test
+	* tests/tests.R, tests/tests.Rout.save: add geojson string test
 
 2018-04-05 11:21  rsbivand
 
-	* [r723] DESCRIPTION: check before normalizePath() in OGR access
+	* DESCRIPTION: check before normalizePath() in OGR access
 
 2018-04-05 11:19  rsbivand
 
-	* [r722] DESCRIPTION, R/ogr.R, R/ogr_sp.R: check before
-	  normalizePath() in OGR access
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R: check before normalizePath() in
+	  OGR access
 
 2018-04-02 14:26  rsbivand
 
-	* [r721] DESCRIPTION, configure, configure.ac: add config check for
+	* DESCRIPTION, configure, configure.ac: add config check for
 	  projects.h
 
 2018-03-17 17:29  rsbivand
 
-	* [r720] src/projectit.cpp: BDRs checkCRSArgs fix avoiding
-	  unnecessary string operations
+	* src/projectit.cpp: BDRs checkCRSArgs fix avoiding unnecessary
+	  string operations
 
 2018-03-17 17:10  rsbivand
 
-	* [r719] DESCRIPTION, src/projectit.cpp: allocate string in
-	  checkCRSArgs dynamically
+	* DESCRIPTION, src/projectit.cpp: allocate string in checkCRSArgs
+	  dynamically
 
 2018-03-13 14:50  rsbivand
 
-	* [r718] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-03-13 14:09  rsbivand
 
-	* [r717] R/Class-CRSx.R: WebMerc on 4.9.3
+	* R/Class-CRSx.R: WebMerc on 4.9.3
 
 2018-03-13 13:07  rsbivand
 
-	* [r716] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-03-13 13:06  rsbivand
 
-	* [r715] configure: work-around for proj 5.0.0 Web Mercator bug
+	* configure: work-around for proj 5.0.0 Web Mercator bug
 
 2018-03-13 13:05  rsbivand
 
-	* [r714] R/Class-CRSx.R, tests/test_proj.R,
-	  tests/test_proj.Rout.save: work-around for proj 5.0.0 Web
-	  Mercator bug
+	* R/Class-CRSx.R, tests/test_proj.R, tests/test_proj.Rout.save:
+	  work-around for proj 5.0.0 Web Mercator bug
 
 2018-02-26 13:33  rsbivand
 
-	* [r713] DESCRIPTION, src/projectit.cpp: fix projInfo("units") for
-	  5.0.0
+	* DESCRIPTION, src/projectit.cpp: fix projInfo("units") for 5.0.0
 
 2018-02-15 11:29  rsbivand
 
-	* [r712] ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
+	* ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
 
 2018-02-15 11:28  rsbivand
 
-	* [r711] R/ogr_sp.R: add enc2utf8 to OGR readers
+	* R/ogr_sp.R: add enc2utf8 to OGR readers
 
 2018-02-15 10:01  rsbivand
 
-	* [r710] ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
+	* ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
 
 2018-02-15 10:01  rsbivand
 
-	* [r709] R/ogr.R: add enc2utf8 to OGR readers
+	* R/ogr.R: add enc2utf8 to OGR readers
 
 2018-02-15 09:01  rsbivand
 
-	* [r708] ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
+	* ChangeLog, inst/ChangeLog: add enc2utf8 to OGR readers
 
 2018-02-15 09:00  rsbivand
 
-	* [r707] R/ogr.R, R/ogr_sp.R: add enc2utf8 to OGR readers
+	* R/ogr.R, R/ogr_sp.R: add enc2utf8 to OGR readers
 
 2018-02-14 10:47  rsbivand
 
-	* [r706] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2018-02-14 10:47  rsbivand
 
-	* [r705] ChangeLog, R/ogr.R, R/ogr_sp.R, R/ogr_write.R,
-	  inst/ChangeLog: add normalizePath() to OGR
+	* ChangeLog, R/ogr.R, R/ogr_sp.R, R/ogr_write.R, inst/ChangeLog:
+	  add normalizePath() to OGR
 
 2018-02-10 15:54  rsbivand
 
-	* [r704] ChangeLog, inst/ChangeLog: add new Windows drivers
+	* ChangeLog, inst/ChangeLog: add new Windows drivers
 
 2018-02-10 15:53  rsbivand
 
-	* [r703] DESCRIPTION, configure, src/Makevars.win, tools/winlibs.R:
-	  add new Windows drivers
+	* DESCRIPTION, configure, src/Makevars.win, tools/winlibs.R: add
+	  new Windows drivers
 
 2018-01-30 12:38  rsbivand
 
-	* [r702] DESCRIPTION, R/make_EPSG.R, man/make_EPSG.Rd: condition on
-	  proj version for make_EPSG
+	* DESCRIPTION, R/make_EPSG.R, man/make_EPSG.Rd: condition on proj
+	  version for make_EPSG
 
 2017-11-21 17:37  rsbivand
 
-	* [r701] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-11-21 17:26  rsbivand
 
-	* [r700] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2017-11-21 12:58  rsbivand
 
-	* [r699] DESCRIPTION, R/ogr_write.R, src/OGR_write.cpp: reverse
-	  field number bugfix for all drivers but ESRI Shapefile
+	* DESCRIPTION, R/ogr_write.R, src/OGR_write.cpp: reverse field
+	  number bugfix for all drivers but ESRI Shapefile
 
 2017-11-20 09:49  rsbivand
 
-	* [r698] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-11-20 09:48  rsbivand
 
-	* [r697] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2017-11-05 15:32  rsbivand
 
-	* [r696] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-11-05 15:30  rsbivand
 
-	* [r695] R/ogr_write.R, src/OGR_write.cpp: adding warning that
-	  field names changed
+	* R/ogr_write.R, src/OGR_write.cpp: adding warning that field names
+	  changed
 
 2017-11-04 15:09  rsbivand
 
-	* [r694] configure: tidy
+	* configure: tidy
 
 2017-11-04 15:08  rsbivand
 
-	* [r693] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-11-04 15:07  rsbivand
 
-	* [r692] DESCRIPTION, src/OGR_write.cpp: fix shapefile writing bug
-	  for field names only differing in case/CASE
+	* DESCRIPTION, src/OGR_write.cpp: fix shapefile writing bug for
+	  field names only differing in case/CASE
 
 2017-10-27 11:12  rsbivand
 
-	* [r691] ChangeLog, DESCRIPTION, configure, inst/ChangeLog: tidy
+	* ChangeLog, DESCRIPTION, configure, inst/ChangeLog: tidy
 
 2017-10-23 18:58  rsbivand
 
-	* [r690] R/AAA.R: add extSoftVersion
+	* R/AAA.R: add extSoftVersion
 
 2017-10-20 08:27  rsbivand
 
-	* [r689] DESCRIPTION, NAMESPACE, R/AAA.R, man/GDALDriver-class.Rd,
+	* DESCRIPTION, NAMESPACE, R/AAA.R, man/GDALDriver-class.Rd,
 	  src/OGR_write.cpp: add >=2 vector transaction speedup
 
 2017-10-10 09:05  rsbivand
 
-	* [r688] man/GDALDriver-class.Rd: check GDAL GEOS status
+	* man/GDALDriver-class.Rd: check GDAL GEOS status
 
 2017-10-09 18:59  rsbivand
 
-	* [r687] DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R,
-	  src/gdal-bindings.cpp, src/init.c, src/rgdal.h: add check for
-	  GEOS in GDAL build
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, src/gdal-bindings.cpp,
+	  src/init.c, src/rgdal.h: add check for GEOS in GDAL build
 
 2017-10-07 12:32  rsbivand
 
-	* [r686] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-10-07 12:31  rsbivand
 
-	* [r685] src/ogrsource.cpp: fix omitted Integer64List counts in
-	  ogrInfo C level
+	* src/ogrsource.cpp: fix omitted Integer64List counts in ogrInfo C
+	  level
 
 2017-10-07 12:20  rsbivand
 
-	* [r684] ChangeLog, configure, inst/ChangeLog: fix omitted
-	  Integer64List counts in ogrInfo C level
+	* ChangeLog, configure, inst/ChangeLog: fix omitted Integer64List
+	  counts in ogrInfo C level
 
 2017-10-07 10:25  rsbivand
 
-	* [r683] DESCRIPTION, src/ogrsource.cpp: fix omitted Integer64List
-	  counts in ogrInfo C level
+	* DESCRIPTION, src/ogrsource.cpp: fix omitted Integer64List counts
+	  in ogrInfo C level
 
 2017-10-05 12:40  edzer
 
-	* [r682] src/Makevars.in: add c++11 flag
+	* src/Makevars.in: add c++11 flag
 
 2017-09-25 08:56  rsbivand
 
-	* [r681] configure, configure.ac: updating for stricter autoconf
+	* configure, configure.ac: updating for stricter autoconf
 
 2017-09-24 17:49  rsbivand
 
-	* [r680] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-09-24 17:47  rsbivand
 
-	* [r679] DESCRIPTION, configure, configure.ac: drop header checking
+	* DESCRIPTION, configure, configure.ac: drop header checking
 
 2017-09-24 14:14  rsbivand
 
-	* [r678] configure, configure.ac: drop header checking
+	* configure, configure.ac: drop header checking
 
 2017-09-18 13:43  rsbivand
 
-	* [r677] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2017-09-18 12:46  rsbivand
 
-	* [r676] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-09-18 12:44  rsbivand
 
-	* [r675] DESCRIPTION, configure: tidy
+	* DESCRIPTION, configure: tidy
 
 2017-09-15 11:43  rsbivand
 
-	* [r674] configure.win: remove configure.win
+	* configure.win: remove configure.win
 
 2017-09-13 15:32  rsbivand
 
-	* [r673] configure: tidy
+	* configure: tidy
 
 2017-09-13 15:32  rsbivand
 
-	* [r672] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-09-13 15:31  rsbivand
 
-	* [r671] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2017-09-13 15:30  rsbivand
 
-	* [r670] ChangeLog: tidy
+	* ChangeLog: tidy
 
 2017-09-13 15:29  rsbivand
 
-	* [r669] tools, tools/winlibs.R: add tools/winlibs.R
+	* tools, tools/winlibs.R: add tools/winlibs.R
 
 2017-09-13 15:27  rsbivand
 
-	* [r668] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-09-13 15:26  rsbivand
 
-	* [r667] DESCRIPTION, src/Makevars.win, src/projectit.cpp: tidy
+	* DESCRIPTION, src/Makevars.win, src/projectit.cpp: tidy
 
 2017-09-13 13:18  rsbivand
 
-	* [r666] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-09-13 13:17  rsbivand
 
-	* [r665] configure, configure.ac: stop proj checks false positive
+	* configure, configure.ac: stop proj checks false positive
 
 2017-06-28 13:04  rsbivand
 
-	* [r664] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-06-28 13:01  rsbivand
 
-	* [r663] DESCRIPTION, R/project.R, man/project.Rd,
+	* DESCRIPTION, R/project.R, man/project.Rd,
 	  man/spTransform-methods.Rd, src/inverser.c, src/projectit.cpp:
 	  condition on inversetest; block ob_tran with not longlat
 
 2017-05-11 08:50  rsbivand
 
-	* [r662] DESCRIPTION, R/ogr_write.R: added patch to writeOGR from
-	  M. Sumner
+	* DESCRIPTION, R/ogr_write.R: added patch to writeOGR from M.
+	  Sumner
 
 2017-04-24 12:39  rsbivand
 
-	* [r661] tests/tests.Rout.save: tests to 3.4
+	* tests/tests.Rout.save: tests to 3.4
 
 2017-04-21 14:29  rsbivand
 
-	* [r660] src/OGR_write.cpp, src/ogrsource.cpp: trying to keep GDAL
-	  1 in play
+	* src/OGR_write.cpp, src/ogrsource.cpp: trying to keep GDAL 1 in
+	  play
 
 2017-04-21 08:52  rsbivand
 
-	* [r659] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-04-21 08:50  rsbivand
 
-	* [r658] DESCRIPTION, src/OGR_write.cpp, src/ogrsource.cpp: GDAL
-	  RFC 67 for 2.2.0
+	* DESCRIPTION, src/OGR_write.cpp, src/ogrsource.cpp: GDAL RFC 67
+	  for 2.2.0
 
 2017-04-16 16:00  rsbivand
 
-	* [r657] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2017-04-16 15:58  rsbivand
 
-	* [r656] configure: tidy
+	* configure: tidy
 
 2017-04-16 15:57  rsbivand
 
-	* [r655] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2017-04-15 12:50  edzer
 
-	* [r654] man/writeOGR.Rd, tests/tripup.R, tests/tripup.Rout.save:
+	* man/writeOGR.Rd, tests/tripup.R, tests/tripup.Rout.save:
 	  compatibility with gdal pre 2.2
 
 2017-04-15 12:18  edzer
 
-	* [r653] man/writeOGR.Rd, tests/tripup.R, tests/tripup.Rout.save:
-	  rename most OGRGeoJSON to GeoJSON, required by gdal 2.2beta
+	* man/writeOGR.Rd, tests/tripup.R, tests/tripup.Rout.save: rename
+	  most OGRGeoJSON to GeoJSON, required by gdal 2.2beta
 
 2017-04-14 21:38  edzer
 
-	* [r652] src/ogr_proj.cpp: address gdal 2.2 compile errors
+	* src/ogr_proj.cpp: address gdal 2.2 compile errors
 
 2017-04-05 11:50  rsbivand
 
-	* [r651] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2017-04-05 11:38  rsbivand
 
-	* [r650] DESCRIPTION, configure, man/spTransform-methods.Rd,
+	* DESCRIPTION, configure, man/spTransform-methods.Rd,
 	  src/Makevars.win, src/OGR_write.cpp, src/gdal-bindings.cpp,
 	  src/ogrsource.cpp: change to R >= 3.4.0
 
 2016-12-15 11:38  rsbivand
 
-	* [r649] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-12-15 11:37  rsbivand
 
-	* [r648] configure: tidy
+	* configure: tidy
 
 2016-12-15 11:36  rsbivand
 
-	* [r647] DESCRIPTION, man/readOGR.Rd, man/writeOGR.Rd,
-	  src/ogrsource.cpp, tests/tests.Rout.save: dot in tempdir; warn
-	  int64 bounds
+	* DESCRIPTION, man/readOGR.Rd, man/writeOGR.Rd, src/ogrsource.cpp,
+	  tests/tests.Rout.save: dot in tempdir; warn int64 bounds
 
 2016-12-15 11:26  rsbivand
 
-	* [r646] src/ogrsource.cpp: check int64 as real bounds
+	* src/ogrsource.cpp: check int64 as real bounds
 
 2016-11-25 16:43  rsbivand
 
-	* [r645] man/readOGR.Rd: use type.convert() in readOGR() example
+	* man/readOGR.Rd: use type.convert() in readOGR() example
 
 2016-11-14 13:49  rsbivand
 
-	* [r644] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-11-14 13:48  rsbivand
 
-	* [r643] configure: tidy
+	* configure: tidy
 
 2016-11-13 19:18  rsbivand
 
-	* [r642] DESCRIPTION, R/ogr_sp.R: typo readOGR
+	* DESCRIPTION, R/ogr_sp.R: typo readOGR
 
 2016-11-10 17:56  rsbivand
 
-	* [r641] DESCRIPTION, tests/tests.R, tests/tests.Rout.save: suit
-	  fuller try() error messages
+	* DESCRIPTION, tests/tests.R, tests/tests.Rout.save: suit fuller
+	  try() error messages
 
 2016-11-03 13:12  rsbivand
 
-	* [r640] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-11-03 13:11  rsbivand
 
-	* [r639] man/readGDAL.Rd: tidy
+	* man/readGDAL.Rd: tidy
 
 2016-11-03 12:24  rsbivand
 
-	* [r638] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-11-03 12:23  rsbivand
 
-	* [r637] R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: handle missing layer
+	* R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: handle missing layer
 	  argument
 
 2016-11-02 17:03  rsbivand
 
-	* [r636] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-11-02 17:02  rsbivand
 
-	* [r635] R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R,
+	* R/gdal.R, R/sgdf_gdal.R, R/sp_gdal.R,
 	  man/GDALReadOnlyDataset-class.Rd, man/SpatialGDAL-class.Rd,
 	  man/readGDAL.Rd, src/gdal-bindings.cpp, src/init.c, src/rgdal.h:
 	  adding allowed drivers to GDAL.open
 
 2016-11-02 10:02  rsbivand
 
-	* [r634] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-11-02 10:01  rsbivand
 
-	* [r633] src/gdal-bindings.cpp: GDALOpenEx for rasters; no.loss for
-	  vector Integer64
+	* src/gdal-bindings.cpp: GDALOpenEx for rasters; no.loss for vector
+	  Integer64
 
 2016-11-02 09:31  rsbivand
 
-	* [r632] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-11-02 09:30  rsbivand
 
-	* [r631] DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sgdf_gdal.R,
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_sp.R, R/sgdf_gdal.R,
 	  R/sp_gdal.R, configure, configure.ac, inst/vectors/SOURCES,
 	  man/GDALReadOnlyDataset-class.Rd, man/SpatialGDAL-class.Rd,
 	  man/readGDAL.Rd, man/readOGR.Rd, src/gdal-bindings.cpp,
@@ -2192,978 +2231,949 @@
 
 2016-10-21 08:03  rsbivand
 
-	* [r630] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-10-21 08:01  rsbivand
 
-	* [r629] configure: move inverse proj tests to example
+	* configure: move inverse proj tests to example
 
 2016-10-21 08:00  rsbivand
 
-	* [r628] DESCRIPTION, man/project.Rd, tests/test_proj.R,
+	* DESCRIPTION, man/project.Rd, tests/test_proj.R,
 	  tests/test_proj.Rout.save: move inverse proj tests to example
 
 2016-10-19 11:59  rsbivand
 
-	* [r627] ChangeLog, inst/ChangeLog: Memory issues Bill Dunlap
-	  161019
+	* ChangeLog, inst/ChangeLog: Memory issues Bill Dunlap 161019
 
 2016-10-19 11:57  rsbivand
 
-	* [r626] ChangeLog, DESCRIPTION, configure, inst/ChangeLog,
+	* ChangeLog, DESCRIPTION, configure, inst/ChangeLog,
 	  tests/test_proj.Rout.save: Memory issues Bill Dunlap 161019
 
 2016-10-19 11:56  rsbivand
 
-	* [r625] src/ogr_geom.cpp, src/ogr_polygons.c, src/ogr_proj.cpp:
-	  Memory issues Bill Dunlap 161019
+	* src/ogr_geom.cpp, src/ogr_polygons.c, src/ogr_proj.cpp: Memory
+	  issues Bill Dunlap 161019
 
 2016-09-25 10:15  edzer
 
-	* [r624] src/projectit.cpp: fix memory leak
+	* src/projectit.cpp: fix memory leak
 
 2016-05-20 10:30  rsbivand
 
-	* [r623] DESCRIPTION: supplement ctb
+	* DESCRIPTION: supplement ctb
 
 2016-05-11 17:50  rsbivand
 
-	* [r622] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-05-11 17:49  rsbivand
 
-	* [r621] src/inverser.c, src/inverser.cpp: inverser as C not C++
+	* src/inverser.c, src/inverser.cpp: inverser as C not C++
 
 2016-05-11 17:02  rsbivand
 
-	* [r620] ChangeLog, configure, inst/ChangeLog: tidy
+	* ChangeLog, configure, inst/ChangeLog: tidy
 
 2016-05-11 16:59  rsbivand
 
-	* [r619] DESCRIPTION, R/project.R, man/project.Rd,
-	  src/inverser.cpp, src/projectit.cpp, tests/test_proj.R,
-	  tests/test_proj.Rout.save: pj_inv issues; add tests
+	* DESCRIPTION, R/project.R, man/project.Rd, src/inverser.cpp,
+	  src/projectit.cpp, tests/test_proj.R, tests/test_proj.Rout.save:
+	  pj_inv issues; add tests
 
 2016-05-06 09:21  rsbivand
 
-	* [r618] ChangeLog, configure, inst/ChangeLog: tidy
+	* ChangeLog, configure, inst/ChangeLog: tidy
 
 2016-05-06 09:19  rsbivand
 
-	* [r617] DESCRIPTION, R/gdal.R, src/gdal-bindings.cpp: gdalDrivers
-	  for GPKG
+	* DESCRIPTION, R/gdal.R, src/gdal-bindings.cpp: gdalDrivers for
+	  GPKG
 
 2016-04-04 12:02  rsbivand
 
-	* [r616] inst/ChangeLog: tidy
+	* inst/ChangeLog: tidy
 
 2016-04-04 12:01  rsbivand
 
-	* [r615] ChangeLog: tidy
+	* ChangeLog: tidy
 
 2016-04-04 11:59  rsbivand
 
-	* [r614] ChangeLog: updates for i386 project issue in win-4.9.3
+	* ChangeLog: updates for i386 project issue in win-4.9.3
 
 2016-04-04 11:56  rsbivand
 
-	* [r613] DESCRIPTION, R/project.R, configure, src/init.c,
+	* DESCRIPTION, R/project.R, configure, src/init.c,
 	  src/projectit.cpp, src/rgdal.h: tidy
 
 2016-03-26 11:13  rsbivand
 
-	* [r612] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-03-26 11:12  rsbivand
 
-	* [r611] inst/pictures/Rlogo.jpg, inst/pictures/logo.jpg: smaller
-	  logo
+	* inst/pictures/Rlogo.jpg, inst/pictures/logo.jpg: smaller logo
 
 2016-03-24 11:31  rsbivand
 
-	* [r610] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-03-24 10:55  rsbivand
 
-	* [r609] src/ogrsource.cpp: C++98 ll issue
+	* src/ogrsource.cpp: C++98 ll issue
 
 2016-03-23 19:47  rsbivand
 
-	* [r608] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2016-03-23 19:45  rsbivand
 
-	* [r607] configure: tidy
+	* configure: tidy
 
 2016-03-23 19:44  rsbivand
 
-	* [r606] DESCRIPTION, NAMESPACE, man/readOGR.Rd, man/writeOGR.Rd:
-	  encoding
+	* DESCRIPTION, NAMESPACE, man/readOGR.Rd, man/writeOGR.Rd: encoding
 
 2016-03-23 10:59  rsbivand
 
-	* [r605] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2016-02-18 05:01  rsbivand
 
-	* [r604] inst/pictures/Rlogo.jpg, inst/pictures/logo.jpg: update
-	  logo
+	* inst/pictures/Rlogo.jpg, inst/pictures/logo.jpg: update logo
 
 2016-02-15 07:47  rsbivand
 
-	* [r603] src/Makevars.in, src/Makevars.win: remove CXX11 from
-	  Makevars*
+	* src/Makevars.in, src/Makevars.win: remove CXX11 from Makevars*
 
 2016-01-31 13:40  rsbivand
 
-	* [r602] DESCRIPTION, NAMESPACE, R/ogr.R, R/ogr_sp.R,
-	  R/ogr_write.R, man/readOGR.Rd, man/writeOGR.Rd: start adding
-	  encoding to trunk
+	* DESCRIPTION, NAMESPACE, R/ogr.R, R/ogr_sp.R, R/ogr_write.R,
+	  man/readOGR.Rd, man/writeOGR.Rd: start adding encoding to trunk
 
 2016-01-14 13:46  rsbivand
 
-	* [r598] DESCRIPTION, R/ogr_sp.R, R/ogr_write.R: revert Encoding
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R: revert Encoding
 
 2016-01-13 16:31  rsbivand
 
-	* [r597] DESCRIPTION, R/ogr_sp.R, R/ogr_write.R: attempt to handle
-	  SQLite UTF-8 encoding
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R: attempt to handle SQLite
+	  UTF-8 encoding
 
 2016-01-05 11:18  rsbivand
 
-	* [r596] DESCRIPTION, NAMESPACE, R/ogr_sp.R, man/showWKT.Rd,
-	  src/init.c, src/ogr_proj.cpp, src/rgdal.h: add showP4
+	* DESCRIPTION, NAMESPACE, R/ogr_sp.R, man/showWKT.Rd, src/init.c,
+	  src/ogr_proj.cpp, src/rgdal.h: add showP4
 
 2015-12-21 14:09  rsbivand
 
-	* [r595] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-12-18 17:41  rsbivand
 
-	* [r594] src/OGR_write.cpp, tests/tripup.Rout.save: adding verbose
-	  reports
+	* src/OGR_write.cpp, tests/tripup.Rout.save: adding verbose reports
 
 2015-12-18 17:22  rsbivand
 
-	* [r593] src/OGR_write.cpp, tests/tripup.R, tests/tripup.Rout.save:
-	  adding verbose reports
+	* src/OGR_write.cpp, tests/tripup.R, tests/tripup.Rout.save: adding
+	  verbose reports
 
 2015-12-18 14:14  rsbivand
 
-	* [r592] R/ogr_write.R, src/OGR_write.cpp: adding verbose tracking
-	  to writeOGR
+	* R/ogr_write.R, src/OGR_write.cpp: adding verbose tracking to
+	  writeOGR
 
 2015-12-17 18:11  rsbivand
 
-	* [r591] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-12-17 14:32  rsbivand
 
-	* [r590] ChangeLog, configure, inst/ChangeLog,
+	* ChangeLog, configure, inst/ChangeLog,
 	  inst/etc/obj_with_comments.RData, tests/tripup.R,
 	  tests/tripup.Rout.save: tripup for Polygons bug
 
 2015-12-17 13:12  rsbivand
 
-	* [r589] DESCRIPTION, src/Makevars.in, src/Makevars.win,
+	* DESCRIPTION, src/Makevars.in, src/Makevars.win,
 	  src/projectit.cpp: tidy
 
 2015-12-16 20:41  rsbivand
 
-	* [r588] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-12-16 17:12  rsbivand
 
-	* [r587] man/writeOGR.Rd: SFS Polygon bugfix
+	* man/writeOGR.Rd: SFS Polygon bugfix
 
 2015-12-16 17:08  rsbivand
 
-	* [r586] man/writeOGR.Rd, src/OGR_write.cpp: SFS Polygon bugfix
+	* man/writeOGR.Rd, src/OGR_write.cpp: SFS Polygon bugfix
 
 2015-12-03 11:23  rsbivand
 
-	* [r585] src/Makevars.win: updated Makevars.win
+	* src/Makevars.win: updated Makevars.win
 
 2015-11-27 09:40  rsbivand
 
-	* [r584] data/GridsDatums.rda, man/GridsDatums.Rd: final G&D column
+	* data/GridsDatums.rda, man/GridsDatums.Rd: final G&D column
 
 2015-11-12 14:25  rsbivand
 
-	* [r583] src/ogrsource.cpp: clang++ EQUAL issue
+	* src/ogrsource.cpp: clang++ EQUAL issue
 
 2015-11-12 11:10  rsbivand
 
-	* [r582] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-11-12 11:09  rsbivand
 
-	* [r581] src/ogrsource.cpp: tidy
+	* src/ogrsource.cpp: tidy
 
 2015-11-12 11:02  rsbivand
 
-	* [r580] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-11-12 10:55  rsbivand
 
-	* [r579] inst/ChangeLog: tidy
+	* inst/ChangeLog: tidy
 
 2015-11-12 10:54  rsbivand
 
-	* [r578] ChangeLog: tidy
+	* ChangeLog: tidy
 
 2015-11-12 10:53  rsbivand
 
-	* [r577] configure, src/ogrsource.cpp: tidy
+	* configure, src/ogrsource.cpp: tidy
 
 2015-11-11 14:04  rsbivand
 
-	* [r576] src/ogrsource.cpp: clang++ EQUAL issue
+	* src/ogrsource.cpp: clang++ EQUAL issue
 
 2015-11-11 12:00  rsbivand
 
-	* [r575] R/ogr_write.R, man/writeOGR.Rd, src/ogrsource.cpp: fix
-	  clang++ embedded macro issue
+	* R/ogr_write.R, man/writeOGR.Rd, src/ogrsource.cpp: fix clang++
+	  embedded macro issue
 
 2015-11-09 17:46  rsbivand
 
-	* [r574] DESCRIPTION, man/project.Rd, man/spTransform-methods.Rd:
-	  add test for PROJ > 4.9.2 UTM, TMERC transition to ETMERC
-	  inconsistency
+	* DESCRIPTION, man/project.Rd, man/spTransform-methods.Rd: add test
+	  for PROJ > 4.9.2 UTM, TMERC transition to ETMERC inconsistency
 
 2015-11-08 19:49  rsbivand
 
-	* [r573] man/project.Rd, man/spTransform-methods.Rd: add test for
-	  PROJ > 4.9.2 UTM, TMERC transition to ETMERC inconsistency
+	* man/project.Rd, man/spTransform-methods.Rd: add test for PROJ >
+	  4.9.2 UTM, TMERC transition to ETMERC inconsistency
 
 2015-11-01 17:34  rsbivand
 
-	* [r572] ChangeLog, configure, inst/ChangeLog: tidy
+	* ChangeLog, configure, inst/ChangeLog: tidy
 
 2015-11-01 07:15  rsbivand
 
-	* [r571] src/OGR_write.cpp, src/ogrdrivers.cpp, src/ogrsource.cpp:
-	  tidy
+	* src/OGR_write.cpp, src/ogrdrivers.cpp, src/ogrsource.cpp: tidy
 
 2015-10-30 19:27  rsbivand
 
-	* [r570] man/readOGR.Rd, man/showWKT.Rd, man/writeOGR.Rd: tidy
+	* man/readOGR.Rd, man/showWKT.Rd, man/writeOGR.Rd: tidy
 
 2015-10-30 19:03  rsbivand
 
-	* [r569] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2015-10-30 19:00  rsbivand
 
-	* [r568] src/OGR_write.cpp, tests/tripup.R, tests/tripup.Rout.save:
-	  tidy
+	* src/OGR_write.cpp, tests/tripup.R, tests/tripup.Rout.save: tidy
 
 2015-10-30 15:54  rsbivand
 
-	* [r567] inst/etc/obj_with_comments.RData,
+	* inst/etc/obj_with_comments.RData,
 	  inst/etc/obj_without_comments.RData, inst/etc/test_dfs.RData,
 	  tests/tripup.R, tests/tripup.Rout.save: cut at fix for round trip
 
 2015-10-30 15:52  rsbivand
 
-	* [r566] DESCRIPTION, configure, src/OGR_write.cpp: cut at fix for
-	  round trip
+	* DESCRIPTION, configure, src/OGR_write.cpp: cut at fix for round
+	  trip
 
 2015-10-26 22:25  rsbivand
 
-	* [r565] src/OGR_write.cpp: work on SFS write bugs
+	* src/OGR_write.cpp: work on SFS write bugs
 
 2015-10-26 21:30  rsbivand
 
-	* [r564] DESCRIPTION, man/writeOGR.Rd, src/OGR_write.cpp: work on
-	  SFS write bugs
+	* DESCRIPTION, man/writeOGR.Rd, src/OGR_write.cpp: work on SFS
+	  write bugs
 
 2015-10-23 13:10  rsbivand
 
-	* [r563] DESCRIPTION, src/OGR_write.cpp: SFS MultiPolygon bug
+	* DESCRIPTION, src/OGR_write.cpp: SFS MultiPolygon bug
 
 2015-09-14 19:31  rsbivand
 
-	* [r562] R/make_EPSG.R: fix to make_EPSG
+	* R/make_EPSG.R: fix to make_EPSG
 
 2015-09-14 19:27  rsbivand
 
-	* [r561] DESCRIPTION, R/make_EPSG.R: fix to make_EPSG
+	* DESCRIPTION, R/make_EPSG.R: fix to make_EPSG
 
 2015-09-05 14:30  rsbivand
 
-	* [r560] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-09-05 12:29  rsbivand
 
-	* [r559] DESCRIPTION, R/AAA.R, R/Class-CRSx.R, man/CRS-class.Rd:
-	  further workarounds PROJ release bug
+	* DESCRIPTION, R/AAA.R, R/Class-CRSx.R, man/CRS-class.Rd: further
+	  workarounds PROJ release bug
 
 2015-09-04 14:37  rsbivand
 
-	* [r558] R/Class-CRSx.R: add init to exceptions in 4.9.1 bugfix
+	* R/Class-CRSx.R: add init to exceptions in 4.9.1 bugfix
 
 2015-08-31 12:56  rsbivand
 
-	* [r557] DESCRIPTION, R/Class-CRSx.R, R/wrappers.R: modularise PROJ
-	  4.9.1 check
+	* DESCRIPTION, R/Class-CRSx.R, R/wrappers.R: modularise PROJ 4.9.1
+	  check
 
 2015-08-21 20:27  rsbivand
 
-	* [r556] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-08-21 20:12  rsbivand
 
-	* [r555] DESCRIPTION, man/writeOGR.Rd, src/OGR_write.cpp: bug fix
-	  SQLite driver v2
+	* DESCRIPTION, man/writeOGR.Rd, src/OGR_write.cpp: bug fix SQLite
+	  driver v2
 
 2015-08-21 18:46  rsbivand
 
-	* [r554] src/OGR_write.cpp, src/gdal-bindings.cpp: bug fixes v2
+	* src/OGR_write.cpp, src/gdal-bindings.cpp: bug fixes v2
 
 2015-08-18 06:34  rsbivand
 
-	* [r553] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-08-18 06:32  rsbivand
 
-	* [r552] configure: identify EPSG; list Grids & Datums
+	* configure: identify EPSG; list Grids & Datums
 
 2015-08-17 23:05  rsbivand
 
-	* [r551] NAMESPACE, R/ogr_sp.R, data/GridsDatums.rda,
-	  man/showWKT.Rd: identify EPSG; list Grids & Datums
+	* NAMESPACE, R/ogr_sp.R, data/GridsDatums.rda, man/showWKT.Rd:
+	  identify EPSG; list Grids & Datums
 
 2015-08-16 23:45  rsbivand
 
-	* [r550] DESCRIPTION, data/GridsDatums.rda, man/GridsDatums.Rd,
+	* DESCRIPTION, data/GridsDatums.rda, man/GridsDatums.Rd,
 	  src/init.c, src/ogr_proj.cpp, src/rgdal.h: identify EPSG; list
 	  Grids & Datums
 
 2015-06-28 20:11  rsbivand
 
-	* [r549] DESCRIPTION, NAMESPACE: CRAN
+	* DESCRIPTION, NAMESPACE: CRAN
 	  _R_CHECK_CODE_USAGE_WITH_ONLY_BASE_ATTACHED_=true NAMESPACE tidy
 
 2015-06-23 09:07  rsbivand
 
-	* [r548] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-06-23 09:05  rsbivand
 
-	* [r547] configure: tidy
+	* configure: tidy
 
 2015-06-23 07:55  rsbivand
 
-	* [r546] R/AAA.R: add utils:: to packageVersion()
+	* R/AAA.R: add utils:: to packageVersion()
 
 2015-06-22 17:44  rsbivand
 
-	* [r545] R/ogr_sp.R: warn if readOGR p4s= given and data have CRS
-	  read
+	* R/ogr_sp.R: warn if readOGR p4s= given and data have CRS read
 
 2015-06-22 16:34  rsbivand
 
-	* [r544] DESCRIPTION, R/ogr.R, src/ogr_geom.cpp, src/ogrsource.cpp:
-	  count features for -1 count
+	* DESCRIPTION, R/ogr.R, src/ogr_geom.cpp, src/ogrsource.cpp: count
+	  features for -1 count
 
 2015-06-13 07:11  rsbivand
 
-	* [r543] man/GDALMajorObject-class.Rd,
-	  man/GDALReadOnlyDataset-class.Rd: drop dead keittlab URLs
+	* man/GDALMajorObject-class.Rd, man/GDALReadOnlyDataset-class.Rd:
+	  drop dead keittlab URLs
 
 2015-06-12 21:08  rsbivand
 
-	* [r542] R/ogr.R, inst/vectors/test64.csv,
-	  inst/vectors/test64.csvt, inst/vectors/test64.vrt,
-	  man/readOGR.Rd, man/writeOGR.Rd, src/ogrsource.cpp: test for
-	  Integer64
+	* R/ogr.R, inst/vectors/test64.csv, inst/vectors/test64.csvt,
+	  inst/vectors/test64.vrt, man/readOGR.Rd, man/writeOGR.Rd,
+	  src/ogrsource.cpp: test for Integer64
 
 2015-06-11 15:14  rsbivand
 
-	* [r541] DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd,
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd,
 	  src/OGR_write.cpp, src/ogr_geom.cpp, src/ogrsource.cpp: guarding
 	  for Integer64 fields, banning Integer64 overflow for number of
 	  features
 
 2015-06-02 09:59  rsbivand
 
-	* [r537] R/gdal.R: fixing overwrite vector (kludge) and driver
-	  listings
+	* R/gdal.R: fixing overwrite vector (kludge) and driver listings
 
 2015-06-02 09:42  rsbivand
 
-	* [r536] DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_write.R,
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_write.R,
 	  src/gdal-bindings.cpp, src/ogrsource.cpp: fixing overwrite vector
 	  (kludge) and driver listings
 
 2015-05-31 17:06  rsbivand
 
-	* [r535] src/ogrsource.cpp: first pass at accommodating GDAL 2
+	* src/ogrsource.cpp: first pass at accommodating GDAL 2
 
 2015-05-31 17:02  rsbivand
 
-	* [r534] R/ogr_sp.R, src/ogrsource.cpp: first pass at accommodating
-	  GDAL 2
+	* R/ogr_sp.R, src/ogrsource.cpp: first pass at accommodating GDAL 2
 
 2015-05-31 16:36  rsbivand
 
-	* [r533] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-05-31 16:34  rsbivand
 
-	* [r532] DESCRIPTION, R/ogr_sp.R, configure, configure.ac,
+	* DESCRIPTION, R/ogr_sp.R, configure, configure.ac,
 	  man/writeOGR.Rd, src/OGR_write.cpp, src/ogr_proj.cpp,
 	  src/ogrdrivers.cpp, src/ogrsource.cpp, src/rgdal.h: first pass at
 	  accommodating GDAL 2
 
 2015-05-21 09:11  rsbivand
 
-	* [r531] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-05-21 09:09  rsbivand
 
-	* [r530] R/AAA.R, R/Class-CRSx.R: work-around for missing
-	  proj_def.dat
+	* R/AAA.R, R/Class-CRSx.R: work-around for missing proj_def.dat
 
 2015-05-21 09:02  rsbivand
 
-	* [r529] DESCRIPTION, R/AAA.R, R/Class-CRSx.R, man/CRS-class.Rd,
+	* DESCRIPTION, R/AAA.R, R/Class-CRSx.R, man/CRS-class.Rd,
 	  src/init.c, src/projectit.cpp, src/rgdal.h: work-around for
 	  missing proj_def.dat
 
 2015-04-23 19:40  rsbivand
 
-	* [r528] src/ogrsource.cpp: tidy
+	* src/ogrsource.cpp: tidy
 
 2015-04-09 13:59  rsbivand
 
-	* [r527] DESCRIPTION, R/AAA.R, R/gdal.R, src/init.c,
-	  src/ogr_polygons.c, src/rgdal.h: add linking to version
+	* DESCRIPTION, R/AAA.R, R/gdal.R, src/init.c, src/ogr_polygons.c,
+	  src/rgdal.h: add linking to version
 
 2015-03-15 13:20  rsbivand
 
-	* [r526] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2015-03-15 12:04  rsbivand
 
-	* [r525] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2015-03-10 08:31  rsbivand
 
-	* [r524] inst/README: OSX install note
+	* inst/README: OSX install note
 
 2015-03-08 19:20  rsbivand
 
-	* [r523] man/project.Rd, man/spTransform-methods.Rd,
-	  tests/test_proj.R, tests/test_proj.Rout.save: add +ellps= for
-	  PROJ 4.9.1
+	* man/project.Rd, man/spTransform-methods.Rd, tests/test_proj.R,
+	  tests/test_proj.Rout.save: add +ellps= for PROJ 4.9.1
 
 2015-03-08 16:38  rsbivand
 
-	* [r522] configure, configure.ac: adding messages to configure
+	* configure, configure.ac: adding messages to configure
 
 2015-02-03 19:20  rsbivand
 
-	* [r521] NAMESPACE, man/make_EPSG.Rd: tidy
+	* NAMESPACE, man/make_EPSG.Rd: tidy
 
 2015-01-24 19:09  rsbivand
 
-	* [r520] R/ogr.R, R/ogr_sp.R, inst/vectors/PacoursIKA2.DAT,
+	* R/ogr.R, R/ogr_sp.R, inst/vectors/PacoursIKA2.DAT,
 	  inst/vectors/PacoursIKA2.ID, inst/vectors/PacoursIKA2.MAP,
 	  inst/vectors/PacoursIKA2.TAB, inst/vectors/SOURCES,
 	  man/readOGR.Rd: trying selection of geometry type
 
 2015-01-20 20:46  rsbivand
 
-	* [r519] DESCRIPTION, R/ogr.R: table multiple eTypes
+	* DESCRIPTION, R/ogr.R: table multiple eTypes
 
 2014-09-17 17:05  rsbivand
 
-	* [r518] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2014-09-17 16:48  rsbivand
 
-	* [r517] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2014-09-17 16:42  rsbivand
 
-	* [r516] man/spTransform-methods.Rd: null nadgrids
+	* man/spTransform-methods.Rd: null nadgrids
 
 2014-08-22 07:37  rsbivand
 
-	* [r515] R/ogr.R, src/ogrsource.cpp: trap NULL layer
+	* R/ogr.R, src/ogrsource.cpp: trap NULL layer
 
 2014-08-18 18:09  rsbivand
 
-	* [r514] tests/tests.Rout.save: tidy
+	* tests/tests.Rout.save: tidy
 
 2014-08-18 16:53  rsbivand
 
-	* [r513] R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: add swapAxisOrder to
-	  ogrInfo and readOGR
+	* R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: add swapAxisOrder to ogrInfo
+	  and readOGR
 
 2014-08-18 08:07  rsbivand
 
-	* [r512] inst/LICENSE.TXT: adding GDAL LICENSE.TXT
+	* inst/LICENSE.TXT: adding GDAL LICENSE.TXT
 
 2014-08-17 17:50  rsbivand
 
-	* [r511] src/ogrsource.cpp: implement reading List fields
+	* src/ogrsource.cpp: implement reading List fields
 
 2014-08-17 16:44  rsbivand
 
-	* [r510] R/ogr_sp.R, configure, src/OGR_write.cpp,
-	  src/ogrsource.cpp: implement reading List fields
+	* R/ogr_sp.R, configure, src/OGR_write.cpp, src/ogrsource.cpp:
+	  implement reading List fields
 
 2014-08-14 12:11  rsbivand
 
-	* [r509] R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: trapping no feature
-	  layers
+	* R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: trapping no feature layers
 
 2014-08-13 12:41  rsbivand
 
-	* [r508] R/Class-CRSx.R, R/project.R, configure, src/projectit.cpp:
+	* R/Class-CRSx.R, R/project.R, configure, src/projectit.cpp:
 	  no_uoff bug in pj_get_def work-around
 
 2014-08-12 12:25  rsbivand
 
-	* [r507] DESCRIPTION, R/ogr.R, src/ogrsource.cpp: info on list
-	  fields
+	* DESCRIPTION, R/ogr.R, src/ogrsource.cpp: info on list fields
 
 2014-06-07 13:54  rsbivand
 
-	* [r506] DESCRIPTION: add test GDAL < 2
+	* DESCRIPTION: add test GDAL < 2
 
 2014-06-07 13:53  rsbivand
 
-	* [r505] DESCRIPTION, configure, configure.ac: add test GDAL < 2
+	* DESCRIPTION, configure, configure.ac: add test GDAL < 2
 
 2014-04-02 15:36  rsbivand
 
-	* [r504] R/ogr.R: geometry type in ogrInfo error message
+	* R/ogr.R: geometry type in ogrInfo error message
 
 2014-03-25 14:06  rsbivand
 
-	* [r503] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2014-03-08 15:52  rsbivand
 
-	* [r502] DESCRIPTION, R/Class-CRSx.R, src/init.c,
-	  src/projectit.cpp, src/rgdal.h: removing PROJ workaround for
-	  +init
+	* DESCRIPTION, R/Class-CRSx.R, src/init.c, src/projectit.cpp,
+	  src/rgdal.h: removing PROJ workaround for +init
 
 2014-02-08 14:42  rsbivand
 
-	* [r501] DESCRIPTION, src/projectit.cpp: proj init bug
+	* DESCRIPTION, src/projectit.cpp: proj init bug
 
 2014-02-08 11:40  rsbivand
 
-	* [r500] DESCRIPTION, src/projectit.cpp: proj init bug
+	* DESCRIPTION, src/projectit.cpp: proj init bug
 
 2014-02-07 08:22  rsbivand
 
-	* [r499] DESCRIPTION, R/Class-CRSx.R, man/CRS-class.Rd, src/init.c,
+	* DESCRIPTION, R/Class-CRSx.R, man/CRS-class.Rd, src/init.c,
 	  src/projectit.cpp, src/rgdal.h: temporary fix for PROJ 490 init
 	  bug
 
 2014-02-05 21:47  rsbivand
 
-	* [r498] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2014-02-05 19:54  rsbivand
 
-	* [r497] DESCRIPTION, configure, configure.ac, src/projectit.cpp:
-	  prepare for PROJ 4.9.0
+	* DESCRIPTION, configure, configure.ac, src/projectit.cpp: prepare
+	  for PROJ 4.9.0
 
 2013-12-02 12:05  rsbivand
 
-	* [r496] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-12-02 12:04  rsbivand
 
-	* [r495] DESCRIPTION, src/gdal-bindings.cpp: ASAN GDAL.close
-	  transient ref after free
+	* DESCRIPTION, src/gdal-bindings.cpp: ASAN GDAL.close transient ref
+	  after free
 
 2013-11-23 14:42  rsbivand
 
-	* [r494] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-11-23 14:41  rsbivand
 
-	* [r493] DESCRIPTION, src/Makevars.win, src/projectit.cpp: Windows
-	  binary build tidy
+	* DESCRIPTION, src/Makevars.win, src/projectit.cpp: Windows binary
+	  build tidy
 
 2013-11-19 09:52  rsbivand
 
-	* [r492] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-11-19 09:51  rsbivand
 
-	* [r491] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2013-11-19 08:52  rsbivand
 
-	* [r490] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-11-18 17:45  rhijmans
 
-	* [r489] man/wrappers.Rd:
+	* man/wrappers.Rd:
 
 2013-11-18 09:36  rsbivand
 
-	* [r488] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-11-18 09:32  rsbivand
 
-	* [r487] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2013-11-15 20:06  rhijmans
 
-	* [r486] NAMESPACE, R/wrappers.R, man/wrappers.Rd: exporting
-	  wrapper functions in NAMESPACE
+	* NAMESPACE, R/wrappers.R, man/wrappers.Rd: exporting wrapper
+	  functions in NAMESPACE
 	  added man file for wrapper functions
 
 2013-11-05 19:36  rsbivand
 
-	* [r485] R/gdal.R, src/gdal-bindings.cpp: possibly adequate fix to
+	* R/gdal.R, src/gdal-bindings.cpp: possibly adequate fix to
 	  GDAL.close
 
 2013-11-05 13:51  rsbivand
 
-	* [r484] R/gdal.R, src/init.c, src/rgdal.h: more attempts on
-	  Windows GDAL.close
+	* R/gdal.R, src/init.c, src/rgdal.h: more attempts on Windows
+	  GDAL.close
 
 2013-11-04 21:04  rsbivand
 
-	* [r483] DESCRIPTION, R/gdal.R, src/init.c, src/rgdal.h: possibly
+	* DESCRIPTION, R/gdal.R, src/init.c, src/rgdal.h: possibly
 	  dangerous fix to GDAL.close
 
 2013-11-02 00:36  rhijmans
 
-	* [r482] R/gdal.R, R/wrappers.R: export of wrapper functions
-	  (wrappers.R)
+	* R/gdal.R, R/wrappers.R: export of wrapper functions (wrappers.R)
 
 2013-09-01 17:40  rsbivand
 
-	* [r481] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-09-01 17:37  rsbivand
 
-	* [r480] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2013-08-30 14:38  rsbivand
 
-	* [r479] configure, configure.ac: PROJ_LIB pass through in
-	  configure
+	* configure, configure.ac: PROJ_LIB pass through in configure
 
 2013-06-22 14:02  rsbivand
 
-	* [r478] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-06-22 13:59  rsbivand
 
-	* [r477] DESCRIPTION, man/readOGR.Rd, man/writeOGR.Rd: tidy
+	* DESCRIPTION, man/readOGR.Rd, man/writeOGR.Rd: tidy
 
 2013-05-23 19:29  edzer
 
-	* [r476] man/spTransform-methods.Rd: out-commented spTransform(ANY)
+	* man/spTransform-methods.Rd: out-commented spTransform(ANY)
 	  method, as it is not defined anyway (sp now does this)
 
 2013-05-23 14:18  rsbivand
 
-	* [r475] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-05-23 14:17  rsbivand
 
-	* [r474] man/readGDAL.Rd: fixs FIDs typo
+	* man/readGDAL.Rd: fixs FIDs typo
 
 2013-05-23 14:08  rsbivand
 
-	* [r473] DESCRIPTION, R/ogr_write.R: fixs FIDs typo
+	* DESCRIPTION, R/ogr_write.R: fixs FIDs typo
 
 2013-05-07 07:54  rsbivand
 
-	* [r472] R/ogr_sp.R: provide polygon geometry error output with
-	  useC=FALSE
+	* R/ogr_sp.R: provide polygon geometry error output with useC=FALSE
 
 2013-05-05 08:02  rsbivand
 
-	* [r471] configure, configure.ac: add Unversioned directory to svn
-	  version
+	* configure, configure.ac: add Unversioned directory to svn version
 
 2013-05-02 11:00  rsbivand
 
-	* [r470] ChangeLog, inst/ChangeLog: Add FIDs to OGR write
+	* ChangeLog, inst/ChangeLog: Add FIDs to OGR write
 
 2013-05-02 10:59  rsbivand
 
-	* [r469] DESCRIPTION: Add FIDs to OGR write
+	* DESCRIPTION: Add FIDs to OGR write
 
 2013-05-02 10:58  rsbivand
 
-	* [r468] R/ogr_write.R, src/OGR_write.cpp: Add FIDs to OGR write
+	* R/ogr_write.R, src/OGR_write.cpp: Add FIDs to OGR write
 
 2013-05-02 09:49  rsbivand
 
-	* [r467] R/ogr_write.R, src/OGR_write.cpp: Add FIDs to OGR write
+	* R/ogr_write.R, src/OGR_write.cpp: Add FIDs to OGR write
 
 2013-04-26 09:36  rsbivand
 
-	* [r466] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-04-26 09:35  rsbivand
 
-	* [r465] DESCRIPTION, configure, configure.ac: Kirill Müller's
-	  reversion to GDAL 1.6.3
+	* DESCRIPTION, configure, configure.ac: Kirill Müller's reversion
+	  to GDAL 1.6.3
 
 2013-04-22 19:48  edzer
 
-	* [r464] DESCRIPTION: version bump.
+	* DESCRIPTION: version bump.
 
 2013-04-22 11:21  rsbivand
 
-	* [r463] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-04-22 11:20  rsbivand
 
-	* [r462] R/gdal.R, src/gdal-bindings.cpp, src/init.c, src/rgdal.h,
+	* R/gdal.R, src/gdal-bindings.cpp, src/init.c, src/rgdal.h,
 	  tests/tests.Rout.save: spgrass6 work-around
 
 2013-04-22 09:02  rsbivand
 
-	* [r461] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-04-22 09:02  rsbivand
 
-	* [r460] DESCRIPTION, NAMESPACE, configure: removing
+	* DESCRIPTION, NAMESPACE, configure: removing
 	  exportMethods(spTransform)
 
 2013-04-20 17:40  rsbivand
 
-	* [r459] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-04-20 17:39  rsbivand
 
-	* [r458] tests/tests.Rout.save: tidy
+	* tests/tests.Rout.save: tidy
 
 2013-04-20 17:31  rsbivand
 
-	* [r457] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-04-20 17:28  rsbivand
 
-	* [r456] R/gdal.R, configure, src/gdal-bindings.cpp,
-	  src/projectit.cpp: fixing valgrind issues
+	* R/gdal.R, configure, src/gdal-bindings.cpp, src/projectit.cpp:
+	  fixing valgrind issues
 
 2013-04-19 15:51  edzer
 
-	* [r455] DESCRIPTION: version update
+	* DESCRIPTION: version update
 
 2013-04-19 13:17  edzer
 
-	* [r454] NAMESPACE: removes all S3 exports of spTransform.
+	* NAMESPACE: removes all S3 exports of spTransform.
 
 2013-04-15 18:27  edzer
 
-	* [r453] DESCRIPTION: changed date, to trigger r-forge rebuild
+	* DESCRIPTION: changed date, to trigger r-forge rebuild
 
 2013-03-29 12:00  rsbivand
 
-	* [r452] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-03-29 11:58  rsbivand
 
-	* [r451] DESCRIPTION, configure, configure.ac,
-	  src/gdal-bindings.cpp, src/ogr_geom.cpp, src/ogrsource.cpp,
-	  src/projectit.cpp, src/rgdal.h: removing clang warnings
+	* DESCRIPTION, configure, configure.ac, src/gdal-bindings.cpp,
+	  src/ogr_geom.cpp, src/ogrsource.cpp, src/projectit.cpp,
+	  src/rgdal.h: removing clang warnings
 
 2013-02-07 09:46  rsbivand
 
-	* [r450] DESCRIPTION: name reversal
+	* DESCRIPTION: name reversal
 
 2013-02-06 16:49  rsbivand
 
-	* [r449] ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
+	* ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
 
 2013-02-05 19:01  rhijmans
 
-	* [r448] man/readGDAL.Rd:
+	* man/readGDAL.Rd:
 
 2013-02-05 18:58  rhijmans
 
-	* [r447] inst/pictures/scaleoffset.dat,
-	  inst/pictures/scaleoffset.vrt, man/readGDAL.Rd:
+	* inst/pictures/scaleoffset.dat, inst/pictures/scaleoffset.vrt,
+	  man/readGDAL.Rd:
 
 2013-02-05 18:24  rhijmans
 
-	* [r446] R/sp_gdal.R:
+	* R/sp_gdal.R:
 
 2013-02-05 18:04  rsbivand
 
-	* [r445] R/sp_gdal.R: add returnScaleOffset to GDALinfo
+	* R/sp_gdal.R: add returnScaleOffset to GDALinfo
 
 2013-02-05 17:57  rsbivand
 
-	* [r444] R/sp_gdal.R, man/readGDAL.Rd: add returnScaleOffset to
-	  GDALinfo
+	* R/sp_gdal.R, man/readGDAL.Rd: add returnScaleOffset to GDALinfo
 
 2013-02-05 00:54  rhijmans
 
-	* [r443] R/sp_gdal.R: added "returnScaleOffset" to GDALinfo.
-	  Currently always TRUE, but should become an argument
+	* R/sp_gdal.R: added "returnScaleOffset" to GDALinfo. Currently
+	  always TRUE, but should become an argument
 
 2013-02-04 19:50  rsbivand
 
-	* [r442] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-02-04 19:49  rsbivand
 
-	* [r441] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2013-02-04 19:45  rsbivand
 
-	* [r440] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-02-04 19:45  rsbivand
 
-	* [r439] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-02-04 19:44  rsbivand
 
-	* [r438] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2013-01-29 20:52  edzer
 
-	* [r437] DESCRIPTION: updated Date field, to trigger rebuild on
-	  r-forge.
+	* DESCRIPTION: updated Date field, to trigger rebuild on r-forge.
 
 2013-01-28 12:12  rsbivand
 
-	* [r436] R/ogr.R: add extent to ogrInfo
+	* R/ogr.R: add extent to ogrInfo
 
 2013-01-28 12:04  rsbivand
 
-	* [r435] src/ogrsource.cpp: add extent to ogrInfo
+	* src/ogrsource.cpp: add extent to ogrInfo
 
 2013-01-28 11:51  rsbivand
 
-	* [r434] R/ogr.R, src/ogrsource.cpp: add extent to ogrInfo
+	* R/ogr.R, src/ogrsource.cpp: add extent to ogrInfo
 
 2013-01-27 16:29  rsbivand
 
-	* [r433] DESCRIPTION, R/gdal.R, man/GDALRasterBand-class.Rd,
+	* DESCRIPTION, R/gdal.R, man/GDALRasterBand-class.Rd,
 	  man/readGDAL.Rd: tidy
 
 2013-01-18 14:43  edzer
 
-	* [r432] configure: PACKAGE_VERSION now matches package version
+	* configure: PACKAGE_VERSION now matches package version
 
 2013-01-18 12:04  rsbivand
 
-	* [r431] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-01-18 12:03  rsbivand
 
-	* [r430] DESCRIPTION, R/ogr.R, man/readOGR.Rd: fix file dsn bug
+	* DESCRIPTION, R/ogr.R, man/readOGR.Rd: fix file dsn bug
 	  ogrInfo/ESRI Shapefile
 
 2013-01-15 07:25  rsbivand
 
-	* [r429] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-01-15 07:21  rsbivand
 
-	* [r428] R/AAA.R: move startup messages to .onAttach
+	* R/AAA.R: move startup messages to .onAttach
 
 2013-01-15 07:08  rsbivand
 
-	* [r427] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2013-01-07 18:53  rsbivand
 
-	* [r426] inst/pictures/test_envi_class.envi,
+	* inst/pictures/test_envi_class.envi,
 	  inst/pictures/test_envi_class.hdr: add JG ENVI example
 
 2013-01-07 18:46  rsbivand
 
-	* [r425] R/gdal.R, R/subs.R: major changes in getRasterData to
-	  ensure correct return of factors, FALSE by default
+	* R/gdal.R, R/subs.R: major changes in getRasterData to ensure
+	  correct return of factors, FALSE by default
 
 2013-01-07 16:22  rsbivand
 
-	* [r424] R/gdal.R, R/sp_gdal.R, R/subs.R,
-	  man/GDALRasterBand-class.Rd, man/readGDAL.Rd: major changes in
-	  getRasterData to ensure correct return of factors, FALSE by
-	  default
+	* R/gdal.R, R/sp_gdal.R, R/subs.R, man/GDALRasterBand-class.Rd,
+	  man/readGDAL.Rd: major changes in getRasterData to ensure correct
+	  return of factors, FALSE by default
 
 2013-01-06 11:06  rsbivand
 
-	* [r423] DESCRIPTION, R/AAA.R, R/gdal.R, R/sp_gdal.R,
+	* DESCRIPTION, R/AAA.R, R/gdal.R, R/sp_gdal.R,
 	  man/GDALRasterBand-class.Rd, man/readGDAL.Rd: adding ENVI color
 	  table example
 
 2013-01-03 11:09  rsbivand
 
-	* [r422] R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp,
-	  src/init.c, src/rgdal.h: add color table and cat. names to
-	  writeGDAL
+	* R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp, src/init.c,
+	  src/rgdal.h: add color table and cat. names to writeGDAL
 
 2013-01-02 15:40  rsbivand
 
-	* [r421] DESCRIPTION, R/project.R, man/projInfo.Rd,
-	  src/projectit.cpp: added proj units listing
+	* DESCRIPTION, R/project.R, man/projInfo.Rd, src/projectit.cpp:
+	  added proj units listing
 
 2013-01-02 15:01  rsbivand
 
-	* [r420] R/gdal.R: adding 3D point transform
+	* R/gdal.R: adding 3D point transform
 
 2013-01-02 14:54  rsbivand
 
-	* [r419] R/project.R, data, data/nor2k.rda, man/nor2k.Rd,
+	* R/project.R, data, data/nor2k.rda, man/nor2k.Rd,
 	  man/spTransform-methods.Rd, src/init.c, src/projectit.cpp,
 	  src/rgdal.h: adding 3D point transform
 
 2013-01-01 17:56  rsbivand
 
-	* [r418] configure, configure.ac: configure test for svnversion
+	* configure, configure.ac: configure test for svnversion
 
 2012-12-26 15:09  edzer
 
-	* [r417] DESCRIPTION: version bump
+	* DESCRIPTION: version bump
 
 2012-12-21 20:55  rsbivand
 
-	* [r416] R/AAA.R: tidy
+	* R/AAA.R: tidy
 
 2012-12-21 19:36  rsbivand
 
-	* [r415] ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
+	* ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
 
 2012-12-21 19:24  rsbivand
 
-	* [r414] DESCRIPTION, R/ogr_sp.R: subset gComment by !isNULL in
-	  readOGR()
+	* DESCRIPTION, R/ogr_sp.R: subset gComment by !isNULL in readOGR()
 
 2012-12-19 13:12  rsbivand
 
-	* [r413] DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_sp.R,
+	* DESCRIPTION, R/gdal.R, R/ogr.R, R/ogr_sp.R,
 	  man/GDALDriver-class.Rd, src/gdal-bindings.cpp,
 	  vignettes/OGR_shape_encoding.Rnw: first cut at encoding vignette
 
 2012-12-18 10:03  rsbivand
 
-	* [r412] man/GDALDataset-class.Rd: adding normalizePath in GDAL
-	  interface
+	* man/GDALDataset-class.Rd: adding normalizePath in GDAL interface
 
 2012-12-18 09:51  rsbivand
 
-	* [r411] DESCRIPTION, R/gdal.R, configure, configure.ac: adding
+	* DESCRIPTION, R/gdal.R, configure, configure.ac: adding
 	  normalizePath in GDAL interface
 
 2012-12-17 10:26  rsbivand
 
-	* [r410] inst/etc, inst/etc/point.cpg, inst/etc/point.dbf,
+	* inst/etc, inst/etc/point.cpg, inst/etc/point.dbf,
 	  inst/etc/point.prj, inst/etc/point.shp, inst/etc/point.shx,
 	  inst/etc/point_LinuxGDAL.RData, inst/etc/point_WinCRAN.RData,
 	  vignettes, vignettes/OGR_shape_encoding.Rnw: starting encoding
@@ -3171,686 +3181,671 @@
 
 2012-12-14 10:02  rsbivand
 
-	* [r409] inst/README: added OSX note to README
+	* inst/README: added OSX note to README
 
 2012-12-13 11:50  rsbivand
 
-	* [r408] DESCRIPTION, NAMESPACE, R/ogr_sp.R, R/ogr_write.R,
+	* DESCRIPTION, NAMESPACE, R/ogr_sp.R, R/ogr_write.R,
 	  man/readOGR.Rd, man/writeOGR.Rd: detecting GDAL iconv;
 	  CPLConfigOption access
 
 2012-12-12 20:54  rsbivand
 
-	* [r407] R/ogr.R, R/ogr_sp.R, man/GDALDriver-class.Rd: detecting
-	  GDAL iconv; CPLConfigOption access
+	* R/ogr.R, R/ogr_sp.R, man/GDALDriver-class.Rd: detecting GDAL
+	  iconv; CPLConfigOption access
 
 2012-12-12 20:33  rsbivand
 
-	* [r406] DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R,
-	  src/gdal-bindings.cpp, src/init.c, src/rgdal.h: detecting GDAL
-	  iconv; CPLConfigOption access
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, src/gdal-bindings.cpp,
+	  src/init.c, src/rgdal.h: detecting GDAL iconv; CPLConfigOption
+	  access
 
 2012-12-12 13:49  rsbivand
 
-	* [r405] R/ogr_sp.R: permitting use of old shapelib DBF code to
-	  avoid encoding issues for shapefiles
+	* R/ogr_sp.R: permitting use of old shapelib DBF code to avoid
+	  encoding issues for shapefiles
 
 2012-12-11 20:36  rsbivand
 
-	* [r404] R/ogr_sp.R, R/ogr_write.R: permitting use of old shapelib
-	  DBF code to avoid encoding issues for shapefiles
+	* R/ogr_sp.R, R/ogr_write.R: permitting use of old shapelib DBF
+	  code to avoid encoding issues for shapefiles
 
 2012-12-11 20:30  rsbivand
 
-	* [r403] DESCRIPTION, NAMESPACE, R/ogr.R, R/ogr_sp.R,
-	  R/ogr_write.R, man/readOGR.Rd, man/writeOGR.Rd,
-	  tests/tests.Rout.save: permitting use of old shapelib DBF code to
-	  avoid encoding issues for shapefiles
+	* DESCRIPTION, NAMESPACE, R/ogr.R, R/ogr_sp.R, R/ogr_write.R,
+	  man/readOGR.Rd, man/writeOGR.Rd, tests/tests.Rout.save:
+	  permitting use of old shapelib DBF code to avoid encoding issues
+	  for shapefiles
 
 2012-12-08 19:31  rsbivand
 
-	* [r402] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-12-08 19:30  rsbivand
 
-	* [r401] DESCRIPTION, R/Class-CRSx.R, R/project.R,
-	  src/projectit.cpp: remove leading space returned by pj_get_def
+	* DESCRIPTION, R/Class-CRSx.R, R/project.R, src/projectit.cpp:
+	  remove leading space returned by pj_get_def
 
 2012-12-08 17:23  rsbivand
 
-	* [r400] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-12-08 17:19  rsbivand
 
-	* [r399] configure, configure.ac: version in configure
+	* configure, configure.ac: version in configure
 
 2012-12-08 17:02  rsbivand
 
-	* [r398] R/AAA.R, configure, configure.ac, inst/README: versions in
+	* R/AAA.R, configure, configure.ac, inst/README: versions in
 	  configure
 
 2012-12-04 10:17  rsbivand
 
-	* [r397] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-12-04 10:16  rsbivand
 
-	* [r396] R/ogr_write.R, src/init.c, src/ogrsource.cpp, src/rgdal.h:
-	  add ogrCheckExists C++ function
+	* R/ogr_write.R, src/init.c, src/ogrsource.cpp, src/rgdal.h: add
+	  ogrCheckExists C++ function
 
 2012-12-04 08:46  rsbivand
 
-	* [r395] R/ogr_write.R: destroy DSN object on open failure in
-	  ogrInfo
+	* R/ogr_write.R: destroy DSN object on open failure in ogrInfo
 
 2012-12-04 08:31  rsbivand
 
-	* [r394] src/OGR_write.cpp: destroy DSN object on open failure in
-	  ogrInfo
+	* src/OGR_write.cpp: destroy DSN object on open failure in ogrInfo
 
 2012-12-04 08:17  rsbivand
 
-	* [r393] DESCRIPTION, src/ogrsource.cpp: destroy DSN object on open
+	* DESCRIPTION, src/ogrsource.cpp: destroy DSN object on open
 	  failure in ogrInfo
 
 2012-12-03 20:07  rsbivand
 
-	* [r392] src/Makevars.win: add -liconv to Makevars.win
+	* src/Makevars.win: add -liconv to Makevars.win
 
 2012-12-03 18:43  rsbivand
 
-	* [r391] DESCRIPTION, R/AAA.R: rgeos not rgdal SVN
+	* DESCRIPTION, R/AAA.R: rgeos not rgdal SVN
 
 2012-11-30 19:30  rsbivand
 
-	* [r390] ChangeLog, inst/ChangeLog: bug in readOGR when layer has
-	  no fields
+	* ChangeLog, inst/ChangeLog: bug in readOGR when layer has no
+	  fields
 
 2012-11-30 16:51  rsbivand
 
-	* [r389] DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: bug in
-	  readOGR when layer has no fields
+	* DESCRIPTION, R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: bug in readOGR
+	  when layer has no fields
 
 2012-11-29 17:40  rsbivand
 
-	* [r388] tests/tests.Rout.save: tidy
+	* tests/tests.Rout.save: tidy
 
 2012-11-29 09:46  rsbivand
 
-	* [r387] R/AAA.R, configure, configure.ac, tests/tests.Rout.save:
-	  add SVN revision start message
+	* R/AAA.R, configure, configure.ac, tests/tests.Rout.save: add SVN
+	  revision start message
 
 2012-11-26 21:50  rsbivand
 
-	* [r386] R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: shapefile DBF
-	  encoding etc issues
+	* R/ogr.R, R/ogr_sp.R, man/readOGR.Rd: shapefile DBF encoding etc
+	  issues
 
 2012-11-24 21:07  rsbivand
 
-	* [r385] DESCRIPTION, R/ogr_sp.R, R/ogr_write.R, configure.ac,
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R, configure.ac,
 	  man/readOGR.Rd: shapefile DBF encoding etc issues
 
 2012-11-07 15:46  rsbivand
 
-	* [r384] src/OGR_write.cpp: tidy
+	* src/OGR_write.cpp: tidy
 
 2012-11-07 12:05  rsbivand
 
-	* [r383] R/ogr_write.R, man/writeOGR.Rd, src/OGR_write.cpp: added
+	* R/ogr_write.R, man/writeOGR.Rd, src/OGR_write.cpp: added
 	  morphToESRI argument to writeOGR to permit user control
 
 2012-11-05 08:40  rsbivand
 
-	* [r382] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-11-05 08:38  rsbivand
 
-	* [r381] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-11-03 13:45  rsbivand
 
-	* [r380] DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/sgdf_gdal.R,
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/sgdf_gdal.R,
 	  R/sp_gdal.R, R/subs.R, man/GDALRasterBand-class.Rd,
 	  man/readGDAL.Rd: work-around for GDAL 1.8.0+ datum dropping
 
 2012-10-31 18:10  rsbivand
 
-	* [r379] NAMESPACE: tidy
+	* NAMESPACE: tidy
 
 2012-10-31 17:59  rsbivand
 
-	* [r378] DESCRIPTION, NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd,
+	* DESCRIPTION, NAMESPACE, R/Class-CRSx.R, man/CRS-class.Rd,
 	  man/projInfo.Rd: reverting checkCRSargs
 
 2012-10-31 17:53  edzer
 
-	* [r377] inst/ChangeLog: cl
+	* inst/ChangeLog: cl
 
 2012-10-31 17:52  edzer
 
-	* [r376] ChangeLog, DESCRIPTION, NAMESPACE, R/Class-CRSx.R,
+	* ChangeLog, DESCRIPTION, NAMESPACE, R/Class-CRSx.R,
 	  man/CRS-class.Rd: NAMESPACE, Class-CRSx.R, CRS-class: export
 	  RGDAL_CRSArgs;
 	  DESCRIPTION: version bump, removed lazyLoad;
 
 2012-10-19 19:36  rsbivand
 
-	* [r375] ChangeLog, inst/ChangeLog: comment/hole matching
+	* ChangeLog, inst/ChangeLog: comment/hole matching
 
 2012-10-19 19:36  rsbivand
 
-	* [r374] R/ogr_sp.R, man/writeOGR.Rd, src/init.c,
-	  src/local_stubs.c, src/ogr_geom.cpp, src/ogr_polygons.c,
-	  src/rgdal.h: comment/hole matching
+	* R/ogr_sp.R, man/writeOGR.Rd, src/init.c, src/local_stubs.c,
+	  src/ogr_geom.cpp, src/ogr_polygons.c, src/rgdal.h: comment/hole
+	  matching
 
 2012-10-18 18:59  rsbivand
 
-	* [r373] R/ogr_sp.R, src/ogr_geom.cpp: mismatch holes/comment
+	* R/ogr_sp.R, src/ogr_geom.cpp: mismatch holes/comment
 
 2012-10-03 13:53  edzer
 
-	* [r372] NAMESPACE, R/project.R, man/projInfo.Rd: removed the
-	  checkCRSArgs R object again.
+	* NAMESPACE, R/project.R, man/projInfo.Rd: removed the checkCRSArgs
+	  R object again.
 
 2012-10-02 06:32  rsbivand
 
-	* [r371] DESCRIPTION, R/sp_gdal.R: adding R interfaces for RJH
+	* DESCRIPTION, R/sp_gdal.R: adding R interfaces for RJH
 
 2012-10-01 11:08  rsbivand
 
-	* [r370] DESCRIPTION, R/gdal.R, R/sp_gdal.R, man/readGDAL.Rd:
-	  adding R interfaces for RJH
+	* DESCRIPTION, R/gdal.R, R/sp_gdal.R, man/readGDAL.Rd: adding R
+	  interfaces for RJH
 
 2012-09-30 19:07  edzer
 
-	* [r369] DESCRIPTION: version update.
+	* DESCRIPTION: version update.
 
 2012-09-30 19:01  edzer
 
-	* [r368] DESCRIPTION, NAMESPACE, R/project.R, man/projInfo.Rd:
-	  added checkCRSArgs R function, to avoid .Call in sp
+	* DESCRIPTION, NAMESPACE, R/project.R, man/projInfo.Rd: added
+	  checkCRSArgs R function, to avoid .Call in sp
 
 2012-09-25 09:11  rsbivand
 
-	* [r367] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-09-21 18:38  rsbivand
 
-	* [r366] DESCRIPTION, R/sp_gdal.R: added back GDAL.close() in
-	  writeGDAL
+	* DESCRIPTION, R/sp_gdal.R: added back GDAL.close() in writeGDAL
 
 2012-08-30 08:26  rsbivand
 
-	* [r365] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-08-30 08:24  rsbivand
 
-	* [r364] man/project.Rd, man/spTransform-methods.Rd,
-	  tests/test_proj.R, tests/test_proj.Rout.save: add projection
-	  tests
+	* man/project.Rd, man/spTransform-methods.Rd, tests/test_proj.R,
+	  tests/test_proj.Rout.save: add projection tests
 
 2012-08-30 06:53  rsbivand
 
-	* [r363] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-08-30 06:51  rsbivand
 
-	* [r362] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2012-08-29 19:14  rsbivand
 
-	* [r361] src/init.c, src/projectit.cpp: fix init.c bug for
-	  project_inv
+	* src/init.c, src/projectit.cpp: fix init.c bug for project_inv
 
 2012-08-23 17:37  rsbivand
 
-	* [r360] DESCRIPTION, R/project.R, man/spTransform-methods.Rd: more
+	* DESCRIPTION, R/project.R, man/spTransform-methods.Rd: more
 	  ob_tran fixes
 
 2012-08-20 19:29  rsbivand
 
-	* [r359] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-08-20 19:24  rsbivand
 
-	* [r358] R/gdal.R, R/make_EPSG.R, src/gdal-bindings.cpp,
-	  src/init.c, src/rgdal.h: adding R_registerRoutines
+	* R/gdal.R, R/make_EPSG.R, src/gdal-bindings.cpp, src/init.c,
+	  src/rgdal.h: adding R_registerRoutines
 
 2012-08-20 15:59  rsbivand
 
-	* [r357] DESCRIPTION, R/project.R, man/project.Rd,
+	* DESCRIPTION, R/project.R, man/project.Rd,
 	  man/spTransform-methods.Rd, src/projectit.cpp: ob_tran to/from
 	  corrections
 
 2012-08-19 18:24  rsbivand
 
-	* [r356] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-08-19 18:21  rsbivand
 
-	* [r355] R/AAA.R: tidy message
+	* R/AAA.R: tidy message
 
 2012-08-16 11:28  rsbivand
 
-	* [r354] src/gdal-bindings.cpp: remove ~ delete
+	* src/gdal-bindings.cpp: remove ~ delete
 
 2012-08-16 10:05  rsbivand
 
-	* [r353] DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/project.R,
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/project.R,
 	  man/GDALDriver-class.Rd, src/gdal-bindings.cpp: correct
 	  use_ob_tran
 
 2012-08-15 18:56  rsbivand
 
-	* [r352] DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/project.R,
+	* DESCRIPTION, NAMESPACE, R/AAA.R, R/gdal.R, R/project.R,
 	  man/GDALDriver-class.Rd, man/project.Rd,
 	  man/spTransform-methods.Rd, src/gdal-bindings.cpp,
 	  src/projectit.cpp: support for ob_tran reversal
 
 2012-08-15 08:44  edzer
 
-	* [r351] man/GDALReadOnlyDataset-methods.Rd,
-	  man/SpatialGDAL-class.Rd, man/readGDAL.Rd: updated name and email
-	  addresses
+	* man/GDALReadOnlyDataset-methods.Rd, man/SpatialGDAL-class.Rd,
+	  man/readGDAL.Rd: updated name and email addresses
 
 2012-07-05 17:06  rsbivand
 
-	* [r350] DESCRIPTION, configure, configure.ac: configure messages
+	* DESCRIPTION, configure, configure.ac: configure messages
 
 2012-06-25 07:53  rsbivand
 
-	* [r349] R/ogr_write.R: accept POSIXlt as list for writeOGR
+	* R/ogr_write.R: accept POSIXlt as list for writeOGR
 
 2012-06-23 14:25  rsbivand
 
-	* [r348] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-06-23 14:24  rsbivand
 
-	* [r347] DESCRIPTION, inst/README: remove extras from OSX
-	  installation description
+	* DESCRIPTION, inst/README: remove extras from OSX installation
+	  description
 
 2012-06-14 16:18  rsbivand
 
-	* [r346] DESCRIPTION, R/sp_gdal.R: lower left origin
+	* DESCRIPTION, R/sp_gdal.R: lower left origin
 
 2012-05-03 11:53  rsbivand
 
-	* [r345] R/project.R: carry over comment in spTransform
+	* R/project.R: carry over comment in spTransform
 
 2012-05-03 09:35  rsbivand
 
-	* [r344] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-05-03 09:34  rsbivand
 
-	* [r343] DESCRIPTION, configure, configure.ac: switch share/gdal
-	  test to pcs.csv
+	* DESCRIPTION, configure, configure.ac: switch share/gdal test to
+	  pcs.csv
 
 2012-04-26 16:54  rsbivand
 
-	* [r342] configure, configure.ac: more configure updates
+	* configure, configure.ac: more configure updates
 
 2012-04-24 11:25  rsbivand
 
-	* [r341] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-04-24 11:25  rsbivand
 
-	* [r340] configure, configure.ac: tidying configure
+	* configure, configure.ac: tidying configure
 
 2012-04-23 16:20  rsbivand
 
-	* [r339] configure: more configure updates
+	* configure: more configure updates
 
 2012-04-23 16:19  rsbivand
 
-	* [r338] configure: more configure updates
+	* configure: more configure updates
 
 2012-04-23 16:17  rsbivand
 
-	* [r337] configure.ac: more configure updates
+	* configure.ac: more configure updates
 
 2012-04-23 09:34  rsbivand
 
-	* [r336] configure, configure.ac: change C tests LIBS and CPPFLAGS
-	  for proj in configure
+	* configure, configure.ac: change C tests LIBS and CPPFLAGS for
+	  proj in configure
 
 2012-04-22 12:44  rsbivand
 
-	* [r335] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-04-22 12:43  rsbivand
 
-	* [r334] configure, configure.ac: correct if nesting in configure
+	* configure, configure.ac: correct if nesting in configure
 
 2012-04-22 12:29  rsbivand
 
-	* [r333] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-04-22 12:29  rsbivand
 
-	* [r332] DESCRIPTION, configure, configure.ac: correct if nesting
-	  in configure
+	* DESCRIPTION, configure, configure.ac: correct if nesting in
+	  configure
 
 2012-04-21 11:07  rsbivand
 
-	* [r331] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-04-21 11:06  rsbivand
 
-	* [r330] configure, configure.ac: add data readability tests to
+	* configure, configure.ac: add data readability tests to
 	  configure.ac
 
 2012-04-20 14:32  rsbivand
 
-	* [r329] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-04-20 14:32  rsbivand
 
-	* [r328] configure, configure.ac: tidy
+	* configure, configure.ac: tidy
 
 2012-04-20 14:26  rsbivand
 
-	* [r327] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-04-20 14:25  rsbivand
 
-	* [r326] DESCRIPTION, configure, configure.ac, configure.in,
+	* DESCRIPTION, configure, configure.ac, configure.in,
 	  src/Makevars.in: upgrading configure
 
 2012-04-16 13:11  rsbivand
 
-	* [r325] DESCRIPTION, R/ogr_sp.R, R/ogr_write.R, man/readOGR.Rd,
+	* DESCRIPTION, R/ogr_sp.R, R/ogr_write.R, man/readOGR.Rd,
 	  src/local_stubs.c, src/ogr_geom.cpp, src/ogr_polygons.c,
 	  src/rgdal.h: extracting OGC SFS comments for Polygons from input
 	  geometry order
 
 2012-01-18 14:57  rsbivand
 
-	* [r324] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-01-18 14:56  rsbivand
 
-	* [r323] DESCRIPTION, src/ogrsource.cpp: extend ogrListLayers() <
-	  OGR 1.8
+	* DESCRIPTION, src/ogrsource.cpp: extend ogrListLayers() < OGR 1.8
 
 2012-01-18 14:13  rsbivand
 
-	* [r322] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-01-18 14:13  rsbivand
 
-	* [r321] DESCRIPTION, NAMESPACE, R/ogr.R, man/readOGR.Rd,
+	* DESCRIPTION, NAMESPACE, R/ogr.R, man/readOGR.Rd,
 	  src/ogrsource.cpp: add ogrListLayers()
 
 2012-01-18 12:57  rsbivand
 
-	* [r320] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2012-01-18 12:56  rsbivand
 
-	* [r319] DESCRIPTION, R/project.R, src/Makevars.win: adding ODBC
-	  libraries for Windows
+	* DESCRIPTION, R/project.R, src/Makevars.win: adding ODBC libraries
+	  for Windows
 
 2011-11-16 13:24  rsbivand
 
-	* [r318] R/ogr_write.R: Shapefile writing field name length trapped
+	* R/ogr_write.R: Shapefile writing field name length trapped
 
 2011-11-16 13:22  rsbivand
 
-	* [r317] R/ogr_write.R: Shapefile writing field name length trapped
+	* R/ogr_write.R: Shapefile writing field name length trapped
 
 2011-11-16 13:17  rsbivand
 
-	* [r316] ChangeLog, inst/ChangeLog: Shapefile writing field name
-	  length trapped
+	* ChangeLog, inst/ChangeLog: Shapefile writing field name length
+	  trapped
 
 2011-11-16 13:13  rsbivand
 
-	* [r315] DESCRIPTION, R/ogr_write.R: Shapefile writing field name
-	  length trapped
+	* DESCRIPTION, R/ogr_write.R: Shapefile writing field name length
+	  trapped
 
 2011-11-14 10:44  rsbivand
 
-	* [r314] ChangeLog, inst/ChangeLog, inst/README: tidy
+	* ChangeLog, inst/ChangeLog, inst/README: tidy
 
 2011-11-12 19:59  rsbivand
 
-	* [r313] DESCRIPTION, R/AAA.R, R/ogr_write.R: rename POSIXct,
-	  POSIXlt, Date class to POSIXt in writeOGR
+	* DESCRIPTION, R/AAA.R, R/ogr_write.R: rename POSIXct, POSIXlt,
+	  Date class to POSIXt in writeOGR
 
 2011-10-20 07:43  rsbivand
 
-	* [r312] DESCRIPTION: add OSX binary verbatim
+	* DESCRIPTION: add OSX binary verbatim
 
 2011-07-08 10:43  edzer
 
-	* [r311] man/llgrid.Rd: added offset example
+	* man/llgrid.Rd: added offset example
 
 2011-07-08 10:42  edzer
 
-	* [r310] R/llgrid.R: now offset is passed on to grid_at
+	* R/llgrid.R: now offset is passed on to grid_at
 
 2011-07-08 09:06  rsbivand
 
-	* [r309] ChangeLog, inst/ChangeLog: add side to gridat call
+	* ChangeLog, inst/ChangeLog: add side to gridat call
 
 2011-07-08 09:05  rsbivand
 
-	* [r308] R/llgrid.R, man/llgrid.Rd, tests/tests.R,
-	  tests/tests.Rout.save: add side to gridat call
+	* R/llgrid.R, man/llgrid.Rd, tests/tests.R, tests/tests.Rout.save:
+	  add side to gridat call
 
 2011-07-06 13:38  edzer
 
-	* [r307] DESCRIPTION, NAMESPACE, R/llgrid.R, man/llgrid.Rd: version
-	  bump; added llgridlines() function for plotting long/lat grid
+	* DESCRIPTION, NAMESPACE, R/llgrid.R, man/llgrid.Rd: version bump;
+	  added llgridlines() function for plotting long/lat grid
 	  lines over a projected object.
 
 2011-07-02 17:31  rsbivand
 
-	* [r306] ChangeLog, inst/ChangeLog: clean tests
+	* ChangeLog, inst/ChangeLog: clean tests
 
 2011-07-02 17:30  rsbivand
 
-	* [r305] tests/tests.R, tests/tests.Rout.save: clean tests
+	* tests/tests.R, tests/tests.Rout.save: clean tests
 
 2011-07-01 19:33  rsbivand
 
-	* [r304] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2011-06-29 07:25  rsbivand
 
-	* [r303] configure: configure to autoconf 2.66
+	* configure: configure to autoconf 2.66
 
 2011-06-29 06:37  rsbivand
 
-	* [r302] configure, configure.in: correct headers for tests in
+	* configure, configure.in: correct headers for tests in
 	  configure.in
 
 2011-06-28 18:05  rsbivand
 
-	* [r301] configure, configure.in: revert configure to autoconf 2.59
+	* configure, configure.in: revert configure to autoconf 2.59
 
 2011-06-24 17:56  rsbivand
 
-	* [r300] tests, tests/tests.R, tests/tests.Rout.save: adding fail
-	  tests
+	* tests, tests/tests.R, tests/tests.Rout.save: adding fail tests
 
 2011-06-23 12:57  rsbivand
 
-	* [r299] DESCRIPTION, src/OGR_write.cpp, src/gdal-bindings.cpp,
+	* DESCRIPTION, src/OGR_write.cpp, src/gdal-bindings.cpp,
 	  src/ogr_geom.cpp, src/ogr_proj.cpp, src/ogrdrivers.cpp,
 	  src/ogrsource.cpp, src/projectit.cpp: progressing error handling
 
 2011-06-22 19:48  rsbivand
 
-	* [r298] R/ogr_sp.R, man/readOGR.Rd, src/rgdal.h: adding
-	  disambiguateFIDs to readOGR
+	* R/ogr_sp.R, man/readOGR.Rd, src/rgdal.h: adding disambiguateFIDs
+	  to readOGR
 
 2011-06-11 06:57  rsbivand
 
-	* [r297] R/gdal.R, src/local_stubs.c: touch local_stubs.c
+	* R/gdal.R, src/local_stubs.c: touch local_stubs.c
 
 2011-03-14 19:11  rsbivand
 
-	* [r296] src/gdal-bindings.cpp, src/rgdal.h: first stage error
-	  handling modifications - incomplete
+	* src/gdal-bindings.cpp, src/rgdal.h: first stage error handling
+	  modifications - incomplete
 
 2011-02-24 14:40  rsbivand
 
-	* [r294] R/SGDF2RGB.R, R/gdal.R, R/ogr.R, R/ogr_sp.R,
-	  R/ogr_write.R, R/project.R, R/sgdf_gdal.R, R/sp_gdal.R, R/subs.R:
-	  making length comparisons literal integers
+	* R/SGDF2RGB.R, R/gdal.R, R/ogr.R, R/ogr_sp.R, R/ogr_write.R,
+	  R/project.R, R/sgdf_gdal.R, R/sp_gdal.R, R/subs.R: making length
+	  comparisons literal integers
 
 2011-02-24 06:57  rsbivand
 
-	* [r293] src/projectit.cpp: make printed messages into count-based
+	* src/projectit.cpp: make printed messages into count-based
 	  warnings
 
 2011-02-23 14:41  rsbivand
 
-	* [r292] DESCRIPTION, R/project.R, configure, configure.in,
+	* DESCRIPTION, R/project.R, configure, configure.in,
 	  src/projectit.cpp: Adding CTX handling for non-API proj4 calls
 
 2011-02-18 19:59  rsbivand
 
-	* [r291] DESCRIPTION, R/AAA.R, src/gdal-bindings.cpp: change set
-	  error handler to push/pop on load/unload
+	* DESCRIPTION, R/AAA.R, src/gdal-bindings.cpp: change set error
+	  handler to push/pop on load/unload
 
 2011-01-21 10:43  rsbivand
 
-	* [r290] R/gdal.R, R/sp_gdal.R, man/readGDAL.Rd: adding Category
-	  names support to GDALinfo
+	* R/gdal.R, R/sp_gdal.R, man/readGDAL.Rd: adding Category names
+	  support to GDALinfo
 
 2011-01-21 08:03  rsbivand
 
-	* [r289] DESCRIPTION, src/gdal-bindings.cpp: list/string issue in
+	* DESCRIPTION, src/gdal-bindings.cpp: list/string issue in
 	  RGDAL_GetCategoryNames
 
 2010-12-16 13:20  rsbivand
 
-	* [r288] ChangeLog, inst/ChangeLog: adding layer deletion for GDAL
-	  1.8
+	* ChangeLog, inst/ChangeLog: adding layer deletion for GDAL 1.8
 
 2010-12-16 13:10  rsbivand
 
-	* [r287] DESCRIPTION, R/gdal.R, R/ogr_write.R, inst/README,
+	* DESCRIPTION, R/gdal.R, R/ogr_write.R, inst/README,
 	  man/GDALDriver-class.Rd, man/writeOGR.Rd, src/OGR_write.cpp,
 	  src/gdal-bindings.cpp, src/ogrsource.cpp: adding layer deletion
 	  for GDAL 1.8
 
 2010-12-14 11:39  rsbivand
 
-	* [r286] ChangeLog, inst/ChangeLog: adding layer deletion for GDAL
-	  1.8
+	* ChangeLog, inst/ChangeLog: adding layer deletion for GDAL 1.8
 
 2010-12-14 11:39  rsbivand
 
-	* [r285] DESCRIPTION, R/ogr_write.R, inst/vectors/airports.gml,
+	* DESCRIPTION, R/ogr_write.R, inst/vectors/airports.gml,
 	  man/writeOGR.Rd, src/ogrsource.cpp: adding layer deletion for
 	  GDAL 1.8
 
 2010-12-13 11:38  rsbivand
 
-	* [r284] R/SGDF2RGB.R: adding na.rm in SGDF2PCT
+	* R/SGDF2RGB.R: adding na.rm in SGDF2PCT
 
 2010-11-18 07:53  rsbivand
 
-	* [r283] .Rbuildignore: add .Rbuildignore
+	* .Rbuildignore: add .Rbuildignore
 
 2010-11-12 12:12  rsbivand
 
-	* [r282] ChangeLog, inst/ChangeLog: tidy help files; add writeGDAL
+	* ChangeLog, inst/ChangeLog: tidy help files; add writeGDAL
 	  options= details
 
 2010-11-12 12:12  rsbivand
 
-	* [r281] man/readGDAL.Rd: tidy help files; add writeGDAL options=
-	  details
+	* man/readGDAL.Rd: tidy help files; add writeGDAL options= details
 
 2010-11-12 12:07  rsbivand
 
-	* [r280] man/CRS-class.Rd, man/GDALRasterBand-class.Rd,
-	  man/SGDF2PCT.Rd, man/SpatialGDAL-class.Rd, man/displayDataset.Rd,
-	  man/project.Rd, man/readGDAL.Rd, man/readOGR.Rd,
-	  man/spTransform-methods.Rd, man/writeOGR.Rd: tidy help files; add
-	  writeGDAL options= details
+	* man/CRS-class.Rd, man/GDALRasterBand-class.Rd, man/SGDF2PCT.Rd,
+	  man/SpatialGDAL-class.Rd, man/displayDataset.Rd, man/project.Rd,
+	  man/readGDAL.Rd, man/readOGR.Rd, man/spTransform-methods.Rd,
+	  man/writeOGR.Rd: tidy help files; add writeGDAL options= details
 
 2010-11-11 14:28  rsbivand
 
-	* [r279] ChangeLog, inst/ChangeLog: mvFlag warnings
+	* ChangeLog, inst/ChangeLog: mvFlag warnings
 
 2010-11-11 14:27  rsbivand
 
-	* [r278] DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd,
-	  src/gdal-bindings.cpp: mvFlag warnings
+	* DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp:
+	  mvFlag warnings
 
 2010-11-07 17:38  rsbivand
 
-	* [r277] ChangeLog, inst/ChangeLog: tidy
+	* ChangeLog, inst/ChangeLog: tidy
 
 2010-11-07 17:37  rsbivand
 
-	* [r276] DESCRIPTION: tidy
+	* DESCRIPTION: tidy
 
 2010-11-07 17:31  rsbivand
 
-	* [r275] configure.win, src/Makevars.win: Windows static build
-	  config
+	* configure.win, src/Makevars.win: Windows static build config
 
 2010-11-06 20:20  rsbivand
 
-	* [r274] configure.win, src/Makevars.win: Windows static build
-	  config
+	* configure.win, src/Makevars.win: Windows static build config
 
 2010-11-05 19:32  rsbivand
 
-	* [r273] INDEX: tidy
+	* INDEX: tidy
 
 2010-11-05 19:05  rsbivand
 
-	* [r272] ChangeLog, inst/ChangeLog, svn2cl.xsl: tidy
+	* ChangeLog, inst/ChangeLog, svn2cl.xsl: tidy
 
 2010-11-05 11:29  rsbivand
 
-	* [r271] R/ogr_write.R: coerce gridded to points in writeOGR
+	* R/ogr_write.R: coerce gridded to points in writeOGR
 
 2010-11-05 11:16  rsbivand
 
-	* [r270] R/ogr_write.R: error messages in writeOGR
+	* R/ogr_write.R: error messages in writeOGR
 
 2010-11-05 10:51  rsbivand
 
-	* [r269] R/sp_gdal.R, src/gdal-bindings.cpp: add names to RAT
+	* R/sp_gdal.R, src/gdal-bindings.cpp: add names to RAT
 
 2010-11-04 22:55  rsbivand
 
-	* [r268] src/gdal-bindings.cpp: add names to RAT
+	* src/gdal-bindings.cpp: add names to RAT
 
 2010-11-01 20:54  rsbivand
 
-	* [r267] R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp: added
-	  return RAT to GDALinfo - default FALSE
+	* R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp: added return
+	  RAT to GDALinfo - default FALSE
 
 2010-11-01 11:32  rsbivand
 
-	* [r266] man/readGDAL.Rd: added set statistics to writeGDAL -
-	  default FALSE
+	* man/readGDAL.Rd: added set statistics to writeGDAL - default
+	  FALSE
 
 2010-11-01 11:30  rsbivand
 
-	* [r265] DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd,
-	  src/gdal-bindings.cpp: added set statistics to writeGDAL -
-	  default FALSE
+	* DESCRIPTION, R/sp_gdal.R, man/readGDAL.Rd, src/gdal-bindings.cpp:
+	  added set statistics to writeGDAL - default FALSE
 
 2010-09-14 09:04  rsbivand
 
-	* [r264] oChangeLog: add oChangeLog
+	* oChangeLog: add oChangeLog
 
 2010-09-14 09:02  rsbivand
 
-	* [r263] ChangeLog, DESCRIPTION, INDEX, NAMESPACE, R, R/AAA.R,
+	* ChangeLog, DESCRIPTION, INDEX, NAMESPACE, R, R/AAA.R,
 	  R/Class-CRSx.R, R/SGDF2RGB.R, R/gdal.R, R/make_EPSG.R, R/ogr.R,
 	  R/ogr_sp.R, R/ogr_write.R, R/project.R, R/sgdf_gdal.R,
 	  R/sp_gdal.R, R/subs.R, R/zzz.R, cleanup, configure, configure.in,
@@ -3895,7 +3890,7 @@
 
 2010-09-10 09:42  stefan7th
 
-	* [r1] .: improved the README file and made some corrections to the
+	* .: improved the README file and made some corrections to the
 	  index.php
 
 2010-07-02 15:37  rsbivand

@@ -1,4 +1,4 @@
-# Copyright 2006-2016 Roger Bivand
+# Copyright 2006-2021 Roger Bivand
 
 readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL, 
         stringsAsFactors=as.logical(NA),
@@ -7,7 +7,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
         disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE, encoding=NULL,
         use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
         integer64="no.loss", GDAL1_integer64_policy=FALSE,
-        morphFromESRI=NULL, dumpSRS=FALSE, enforce_xy=NULL) {
+        morphFromESRI=NULL, dumpSRS=FALSE, enforce_xy=NULL,
+        D3_if_2D3D_points=FALSE, missing_3D=0) {
 	if (missing(dsn)) stop("missing dsn")
         stopifnot(is.character(dsn))
         stopifnot(length(dsn) == 1L)
@@ -61,7 +62,8 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 	suppressMessages(ogr_info <- ogrInfo(dsn=dsn, layer=layer,
             encoding=encoding, use_iconv=use_iconv,
             swapAxisOrder=swapAxisOrder, require_geomType=require_geomType,
-            morphFromESRI=morphFromESRI, dumpSRS=dumpSRS))
+            morphFromESRI=morphFromESRI, dumpSRS=dumpSRS,
+            D3_if_2D3D_points=D3_if_2D3D_points))
         HAS_FEATURES <- TRUE
         if (!ogr_info$have_features) {
             if (dropNULLGeometries) {
@@ -262,11 +264,22 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
             eType <- eType[!isNULL]
             with_z <- with_z[!isNULL]
         }   
-     
+        elevated <- attr(ogr_info$with_z, "elevated")
 	u_with_z <- unique(sort(with_z))
-	if (length(u_with_z) != 1L) stop(
-		paste("Multiple # dimensions:", 
-			paste((u_with_z + 2), collapse=":")))
+	if (length(u_with_z) != 1L) {
+          if (elevated) {
+            if (pointDropZ) {
+              warning("Dropping mixed third dimension")
+              u_with_z <- 0L
+            } else {
+              warning("Setting any missing third dimension to ", missing_3D)
+              u_with_z <- 1L
+            }
+          } else {
+            stop(paste("Multiple # dimensions:", paste((u_with_z + 2), 
+              collapse=":")))
+          }
+        }
 	if (u_with_z < 0 || u_with_z > 1) stop(
 		paste("Invalid # dimensions:", (u_with_z + 2)))
 
@@ -333,15 +346,27 @@ readOGR <- function(dsn, layer, verbose=TRUE, p4s=NULL,
 				function(x) c(x[[1]][[1]], x[[1]][[2]])))
                     }
 		} else {
+                  if (elevated) {
                     if (swapAxisOrder) {
 			coords <- do.call("rbind", lapply(gFeatures, 
-				function(x) c(x[[1]][[2]], x[[1]][[1]],
-				x[[1]][[3]])))
+			    function(x) c(x[[1]][[2]], x[[1]][[1]], 
+                            ifelse(length(x[[1]]) == 2L, missing_3D, x[[1]][[3]]))))
                     } else {
 			coords <- do.call("rbind", lapply(gFeatures, 
-				function(x) c(x[[1]][[1]], x[[1]][[2]],
-				x[[1]][[3]])))
-                    }  
+			    function(x) c(x[[1]][[1]], x[[1]][[2]],
+                            ifelse(length(x[[1]]) == 2L, missing_3D, x[[1]][[3]]))))
+                    } 
+                  } else {
+                    if (swapAxisOrder) {
+			coords <- do.call("rbind", lapply(gFeatures, 
+			    function(x) c(x[[1]][[2]], x[[1]][[1]],
+                            ifelse(length(x[[1]]) == 2L, missing_3D, x[[1]][[3]]))))
+                    } else {
+			coords <- do.call("rbind", lapply(gFeatures, 
+			    function(x) c(x[[1]][[1]], x[[1]][[2]], 
+                            ifelse(length(x[[1]]) == 2L, missing_3D, x[[1]][[3]]))))
+                    } 
+                  } 
 		}
 #		data <- data.frame(dlist)
 		row.names(data) <- NULL
@@ -587,6 +612,7 @@ showSRID <- function(inSRID, format="WKT2", multiline="NO", enforce_xy=NULL, EPS
     if (substring(inSRID, 1, 2) == "BO") in_format = 3L
     if (substring(inSRID, 1, 1) == "S") in_format = 3L
     if (substring(inSRID, 1, 2) == "CO") in_format = 3L
+    if (substring(inSRID, 1, 3) == "ENG") in_format = 3L
     if (substring(inSRID, 1, 4) == "EPSG") in_format = 4L
     if (substring(inSRID, 1, 4) == "ESRI") in_format = 5L
     if (substring(inSRID, 1, 3) == "OGC") in_format = 5L
@@ -598,7 +624,7 @@ showSRID <- function(inSRID, format="WKT2", multiline="NO", enforce_xy=NULL, EPS
     } else {
         prefer_proj <- get_prefer_proj()
     }
-    if (in_format == 4L) {
+    if (!is.na(in_format) && in_format == 4L) {
         if (EPSG_to_init && !prefer_proj) {
             in_format = 1L
             inSRID <- paste0("+init=epsg:", substring(inSRID, 6, nchar(inSRID)))
@@ -665,7 +691,8 @@ showSRID <- function(inSRID, format="WKT2", multiline="NO", enforce_xy=NULL, EPS
 #                    " in Proj4 definition")
             if ((!is.null(attr(res, "datum"))) 
                 && (nchar(attr(res, "datum")) > 0L)
-                && (length(grep("datum|DATUM", c(res))) == 0L)) {
+# spatsoc tripped PROJ 8.0.0 ENSEMBLE 2021-02-22
+                && (length(grep("datum|DATUM|ENSEMBLE", c(res))) == 0L)) {
                 msg <- paste0("Discarded datum ", attr(res, "datum"),
                     " in Proj4 definition")
                 if (!no_towgs84 && (length(grep("towgs84", c(res))) > 0L))

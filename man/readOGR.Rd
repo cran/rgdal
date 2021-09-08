@@ -33,10 +33,11 @@ readOGR(dsn, layer, verbose = TRUE, p4s=NULL,
  useC=TRUE, disambiguateFIDs=FALSE, addCommentsToPolygons=TRUE,
  encoding=NULL, use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL,
  integer64="no.loss", GDAL1_integer64_policy=FALSE, morphFromESRI = NULL,
- dumpSRS = FALSE, enforce_xy = NULL)
+ dumpSRS = FALSE, enforce_xy = NULL, D3_if_2D3D_points=FALSE, missing_3D=0)
 ogrInfo(dsn, layer, encoding=NULL,
  use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType = NULL,
- morphFromESRI = NULL, dumpSRS = FALSE, enforce_xy = NULL)
+ morphFromESRI = NULL, dumpSRS = FALSE, enforce_xy = NULL,
+ D3_if_2D3D_points=FALSE)
 ogrFIDs(dsn, layer)
 ogrDrivers()
 OGRSpatialRef(dsn, layer, morphFromESRI=NULL, dumpSRS = FALSE, driver = NULL,
@@ -66,6 +67,8 @@ ogrListLayers(dsn)
   \item{morphFromESRI}{default NULL, morph from ESRI WKT1 dialect}
   \item{dumpSRS}{dump SRS to stdout from inside GDAL to debug conversion - developer use only}
   \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
+  \item{D3_if_2D3D_points}{https://github.com/r-spatial/sf/issues/1683 case of mixed 2D/3D track points - set TRUE to 3D to pass}
+  \item{missing_3D}{default 0, may be finite real numbers; https://github.com/r-spatial/sf/issues/1683}
   \item{driver}{default NULL, driver found using \code{ogrListLayers} from the data source; otherwise already known and passed through from a calling function}
   \item{x}{ogrinfo object}
   \item{...}{other arguments to print method}

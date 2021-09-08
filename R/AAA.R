@@ -18,7 +18,7 @@ load_stuff <- function() {
   assign(".rgdal_old.GDAL_DATA", Sys.getenv("GDAL_DATA"), envir=.RGDAL_CACHE)
   assign(".rgdal_old.NEEDED", FALSE, envir=.RGDAL_CACHE)
   if (file.exists(system.file("proj/nad.lst", package = "rgdal")[1])) {
-  prj = system.file("proj", package = "rgdal")[1]
+    prj = system.file("proj", package = "rgdal")[1]
     if (PROJis6ormore() && 
       .Call("PROJ4VersionInfo", PACKAGE="rgdal")[[2]] < 700) {
       set_is <- set_proj_search_paths(prj)
@@ -91,7 +91,7 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
     assign("has_proj_def.dat", pdd, envir=.RGDAL_CACHE)
   }
 
-  Smess <- paste('rgdal: version: ',
+  Smess <- paste('Please note that rgdal will be retired by the end of 2023,\nplan transition to sf/stars/terra functions using GDAL and PROJ\nat your earliest convenience.\n\n', 'rgdal: version: ',
     utils::packageDescription("rgdal")$Version,
     ', (SVN revision ', svn_version, ')\n',
     'Geospatial Data Abstraction Library ',
@@ -118,7 +118,7 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
     spVcheck <- utils::packageVersion("sp") == splVersion
   if (!is.null(spVcheck) && !spVcheck) paste(Smess, 
     "sp version used to install rgdal and loaded sp version differ\n")
-  if (PROJis6ormore()) Smess <- paste(Smess, "To mute warnings of possible GDAL/OSR exportToProj4() degradation,\nuse options(\"rgdal_show_exportToProj4_warnings\"=\"none\") before loading rgdal.\n", sep="")
+  if (PROJis6ormore()) Smess <- paste(Smess, "To mute warnings of possible GDAL/OSR exportToProj4() degradation,\nuse options(\"rgdal_show_exportToProj4_warnings\"=\"none\") before loading sp or rgdal.\n", sep="")
   if (nzchar(get(".rgdal_set.PROJ_LIB", envir=.RGDAL_CACHE))) {
     Smess <- paste(Smess, "Overwritten PROJ_LIB was ",
       get(".rgdal_set.PROJ_LIB", envir=.RGDAL_CACHE), "\n", sep="")
@@ -136,7 +136,9 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
 }
 
 rgdal_extSoftVersion <- function() {
+  epsg_version <- EPSG_version()
   res <- c("GDAL"=strsplit(strsplit(getGDALVersionInfo(), ",")[[1]][1], " ")[[1]][2], "GDAL_with_GEOS"=as.character(getGDALwithGEOS()), "PROJ"=strsplit(strsplit(getPROJ4VersionInfo(), ",")[[1]][1], " ")[[1]][2], "sp"=version_sp_linkingTo())
+  if (!is.null(epsg_version)) res <- c(res, "EPSG"=epsg_version)
   res
 }
 
