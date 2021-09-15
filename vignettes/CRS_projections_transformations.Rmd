@@ -302,17 +302,21 @@ Let us check that **rgdal** is running with on-demand downloading disabled:
 is_proj_CDN_enabled()
 ```
 
+```{r, eval=run && odd_run}
+not_ucrt_run <- is.null(R.version$crt) || R.version$crt != "ucrt"
+```
+
 
 We can enable on-demand download using a function that reports the value of the PR$\phi$J CDN user-writable directory; we see that with this setting, network download is enabled:
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 enable_proj_CDN()
 is_proj_CDN_enabled()
 ```
 
 The reader will recall that the search path was stored in `shpr` above, the first element being the user-writable directory; at this point no SQLite database has been created:
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 shpr[1]
 try(file.size(file.path(shpr[1], "cache.db")))
 ```
@@ -320,36 +324,36 @@ try(file.size(file.path(shpr[1], "cache.db")))
 When we then search for candidate coordinate operations, we see that the operation using an absent grid now sees that download is enabled, and proposes the 1m accuracy candidate, because the required grid can be downloaded (again using the area of interest):
 
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 list_coordOps(WKT, "OGC:CRS84", area_of_interest=aoi)
 ```
 
 On making the transformation, we may see that the coordinate operation takes longer than expected, because on first pass the grid is downloaded from the network:
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 system.time(is1m <- spTransform(b_pump, CRS(SRS_string="OGC:CRS84")))
 ```
 
 The coordinate operation used now specifies the grid in the pipeline:
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 get_last_coordOp()
 ```
 
 The coordinate values differ little from the 2m accuracy Helmert pipeline:
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 print(coordinates(is1m), digits=10)
 ```
 
 as we can see, the 1m accuracy point is 1.7m from the 2m accuracy point, just to the West:
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 c(spDists(is2m, is1m)*1000)
 ```
 
 
-```{r, eval=mrun && run && odd_run}
+```{r, eval=not_ucrt_run && mrun && run && odd_run}
 c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
 ```
 
@@ -361,7 +365,7 @@ try(file.size(file.path(shpr[1], "cache.db")))
 
 If we look in the SQLite database of downloaded grids, we see that the grid components that were downloaded. Here we have not yet used the area of interest to limit the number of chunks involved:
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 library(RSQLite)
 db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
 dbListTables(db)
@@ -371,7 +375,7 @@ dbDisconnect(db)
 
 Finally, we disable grid download to return to the status existing when **rgdal** was attached; the cached grids in this case, using an R temporary directory, will be discarded, but in usual workflows, grids are downloaded once, used often and updated seldom when the server versions change. 
 
-```{r, eval=run && odd_run}
+```{r, eval=not_ucrt_run && run && odd_run}
 disable_proj_CDN()
 is_proj_CDN_enabled()
 ```

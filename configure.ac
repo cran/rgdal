@@ -1,6 +1,6 @@
 # dnl Process this file with autoconf to produce a configure script.
 define([pkgversion], esyscmd([sh -c "grep Version: DESCRIPTION | cut -d' ' -f2 | tr -d '\n'"]))dnl
-AC_INIT(rgdal, [pkgversion], Roger.Bivand@nhh.no)
+AC_INIT([rgdal],[pkgversion],[Roger.Bivand@nhh.no])
 AC_CONFIG_SRCDIR(src/gdal-bindings.cpp)
 
 # AC_PROG_CXX()
@@ -31,8 +31,7 @@ AC_MSG_NOTICE([CXXFLAGS: ${CXXFLAGS}])
 AC_MSG_NOTICE([LDFLAGS: ${LDFLAGS}])
 
 AC_ARG_ENABLE([loadflags], 
-    [AC_HELP_STRING([--enable-loadflags=yes/no],
-    [use value of R CMD config LDFLAGS for configure, default yes])], 
+    [AS_HELP_STRING([--enable-loadflags=yes/no],[use value of R CMD config LDFLAGS for configure, default yes])], 
     [loadflags=${enableval}], 
     [loadflags="yes"])
 
@@ -116,8 +115,7 @@ GDAL_CONFIG="gdal-config"
 GDAL_CONFIG_SET="no"
 
 AC_ARG_WITH([gdal-config],
-    AC_HELP_STRING([--with-gdal-config=GDAL_CONFIG],
-           [the location of gdal-config]),
+    AS_HELP_STRING([--with-gdal-config=GDAL_CONFIG],[the location of gdal-config]),
            [gdal_config=$withval])
 if test [ -n "$gdal_config" ] ; then
     GDAL_CONFIG_SET="yes"
@@ -371,8 +369,7 @@ fi # proj_config_ok
 
 
 AC_ARG_WITH([proj-include],
-    AC_HELP_STRING([--with-proj-include=DIR],
-                   [location of proj header files]),
+    AS_HELP_STRING([--with-proj-include=DIR],[location of proj header files]),
     [proj_include_path=$withval])
 if test [ -n "$proj_include_path" ] ; then # proj_include_path
    proj_include_path="-I${proj_include_path}"
@@ -398,8 +395,7 @@ PROJ_LIB_PATH=""
           
 # dnl ditto for a library path
 AC_ARG_WITH([proj-lib],
-    AC_HELP_STRING([--with-proj-lib=LIB_PATH],
-               [the location of proj libraries]),
+    AS_HELP_STRING([--with-proj-lib=LIB_PATH],[the location of proj libraries]),
                [proj_lib_path=$withval])
 if test [ -n "$proj_lib_path" ] ; then # proj_lib_path
     AC_SUBST([PKG_LIBS], ["-L${proj_lib_path} ${INPKG_LIBS}"])
@@ -653,8 +649,7 @@ fi # < 493 test for projects.h
 #AC_MSG_NOTICE([CPP FLAGS: ${PKG_CPPFLAGS}])
 
 AC_ARG_WITH([proj-share],
-    AC_HELP_STRING([--with-proj-share=SHARE_PATH],
-               [the location of proj metadata files]),
+    AS_HELP_STRING([--with-proj-share=SHARE_PATH],[the location of proj metadata files]),
                [proj_share_path=$withval])
 if test [ -n "$proj_share_path" ] ; then
     AC_MSG_NOTICE([PROJ_LIB: ${proj_share_path}])
@@ -834,16 +829,14 @@ if test "${PROJ_GDAL_DATA_COPY}" ; then
     AC_MSG_NOTICE(["PROJ_GDAL_DATA_COPY used."])
 else
     AC_ARG_WITH([data-copy],
-        AC_HELP_STRING([--with-data-copy=yes/no],
-               [local copy of data directories in package, default no]),
+        AS_HELP_STRING([--with-data-copy=yes/no],[local copy of data directories in package, default no]),
                [data_copy=$withval])
 fi
 if test "${data_copy}" = "yes" ; then
 AC_MSG_NOTICE([Copy data for:])
   proj_lib0="${PROJ_LIB}"
   AC_ARG_WITH([proj-data],
-    AC_HELP_STRING([--with-proj-data=DIR],
-                   [location of PROJ.4 data directory]),
+    AS_HELP_STRING([--with-proj-data=DIR],[location of PROJ.4 data directory]),
     [proj_lib1=$withval])
   if test -n "${proj_lib0}" ; then
     proj_lib="${proj_lib0}"
