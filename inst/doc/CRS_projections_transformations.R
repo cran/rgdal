@@ -149,7 +149,7 @@ run <- run && (attr(getPROJ4VersionInfo(), "short") >= 710)
 ## ---- eval=run && odd_run-----------------------------------------------------
 is_proj_CDN_enabled()
 
-## ---- eval=run && odd_run-----------------------------------------------------
+## -----------------------------------------------------------------------------
 not_ucrt_run <- is.null(R.version$crt) || R.version$crt != "ucrt"
 
 ## ---- eval=not_ucrt_run && run && odd_run-------------------------------------

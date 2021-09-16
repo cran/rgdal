@@ -302,7 +302,7 @@ Let us check that **rgdal** is running with on-demand downloading disabled:
 is_proj_CDN_enabled()
 ```
 
-```{r, eval=run && odd_run}
+```{r}
 not_ucrt_run <- is.null(R.version$crt) || R.version$crt != "ucrt"
 ```
 
