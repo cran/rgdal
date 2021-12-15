@@ -1,6 +1,10 @@
 # Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.5-27 (development, rev. 1149-)
+# Version 1.5-28 (development, rev. 1157-)
+
+* Adapting to R 4.2 Windows UCRT
+
+# Version 1.5-27 (2021-09-16, rev. 1149-1156)
 
 * Correcting logic error in check for MXE UCRT builds (temporary)
 

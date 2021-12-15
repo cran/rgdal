@@ -149,46 +149,43 @@ run <- run && (attr(getPROJ4VersionInfo(), "short") >= 710)
 ## ---- eval=run && odd_run-----------------------------------------------------
 is_proj_CDN_enabled()
 
-## -----------------------------------------------------------------------------
-not_ucrt_run <- is.null(R.version$crt) || R.version$crt != "ucrt"
-
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 enable_proj_CDN()
 is_proj_CDN_enabled()
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 shpr[1]
 try(file.size(file.path(shpr[1], "cache.db")))
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 list_coordOps(WKT, "OGC:CRS84", area_of_interest=aoi)
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 system.time(is1m <- spTransform(b_pump, CRS(SRS_string="OGC:CRS84")))
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 get_last_coordOp()
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 print(coordinates(is1m), digits=10)
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 c(spDists(is2m, is1m)*1000)
 
-## ---- eval=not_ucrt_run && mrun && run && odd_run-----------------------------
+## ---- eval= mrun && run && odd_run--------------------------------------------
 c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
 
 ## ---- eval=run && odd_run-----------------------------------------------------
 try(file.size(file.path(shpr[1], "cache.db")))
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 library(RSQLite)
 db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
 dbListTables(db)
 dbReadTable(db, "chunks")
 dbDisconnect(db)
 
-## ---- eval=not_ucrt_run && run && odd_run-------------------------------------
+## ---- eval= run && odd_run----------------------------------------------------
 disable_proj_CDN()
 is_proj_CDN_enabled()
 
