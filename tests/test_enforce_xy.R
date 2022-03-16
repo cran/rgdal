@@ -1,4 +1,5 @@
 suppressPackageStartupMessages(library(rgdal))
+set_thin_PROJ6_warnings(TRUE)
 if (new_proj_and_gdal()) {
 get_enforce_xy()
 x0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)

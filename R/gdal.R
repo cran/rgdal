@@ -417,7 +417,7 @@ setMethod('dim', 'GDALReadOnlyDataset',
               c(nrows, ncols)
           })
 
-getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enforce_xy=NULL) {
+getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enforce_xy=NULL, get_source_if_boundcrs=TRUE) {
 
   assertClass(dataset, 'GDALReadOnlyDataset')
 
@@ -499,7 +499,16 @@ getProjectionRef <- function(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enf
         }
 #warning(msg)
     }
-    if (new_proj_and_gdal()) wkt2 <- attr(res, "WKT2_2018")
+    if (new_proj_and_gdal()) {
+      wkt2 <- attr(res, "WKT2_2018")
+      if (get_source_if_boundcrs) {
+        if (length(grep("^BOUNDCRS", wkt2)) > 0L) {
+          wkt2a <- try(.Call("get_source_crs", wkt2, PACKAGE="rgdal"),
+            silent=TRUE)
+          if (!inherits(wkt2a, "try-error")) wkt2 <- wkt2a
+        }
+      }
+    }
   }
   res <- c(res)
   if (new_proj_and_gdal()) {

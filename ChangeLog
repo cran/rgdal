@@ -1,3 +1,45 @@
+2022-03-08 16:10  rsbivand
+
+	* [r1165] NEWS.md: convert BOUNDCRS to PROJCRS by default in
+	  getProjectionRef
+
+2022-03-08 16:09  rsbivand
+
+	* [r1164] NEWS.md, R/gdal.R, R/sp_gdal.R,
+	  man/GDALRasterBand-class.Rd, man/readGDAL.Rd: convert BOUNDCRS to
+	  PROJCRS by default in getProjectionRef
+
+2022-03-08 15:16  rsbivand
+
+	* [r1163] NEWS.md: convert BOUNDCRS to PROJCRS by default in
+	  OGRSpatialRef
+
+2022-03-08 15:15  rsbivand
+
+	* [r1162] NEWS.md, R/ogr.R, man/readOGR.Rd: convert BOUNDCRS to
+	  PROJCRS by default in OGRSpatialRef
+
+2022-03-07 09:52  rsbivand
+
+	* [r1161] DESCRIPTION, NEWS.md,
+	  vignettes/CRS_projections_transformations.Rmd,
+	  vignettes/PROJ6_GDAL3.Rmd: test for chunks table in cache.db in
+	  vignette
+
+2021-12-20 15:05  rsbivand
+
+	* [r1160] tests/test_enforce_xy.Rout.save: quieten test SRS output
+
+2021-12-20 15:00  rsbivand
+
+	* [r1159] DESCRIPTION, NAMESPACE, NEWS.md, man/make_EPSG.Rd,
+	  tests/srs_rendering.R, tests/srs_rendering.Rout.save,
+	  tests/test_enforce_xy.R: quieten test SRS output
+
+2021-12-14 14:10  rsbivand
+
+	* [r1158] ChangeLog, configure, inst/ChangeLog: tidy
+
 2021-12-14 14:07  rsbivand
 
 	* [r1157] DESCRIPTION, NEWS.md, src/Makevars.ucrt: R 4.2 Windows

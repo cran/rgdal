@@ -1,5 +1,6 @@
 \name{make_EPSG}
 \alias{make_EPSG}
+\alias{EPSG_version}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Make a data frame of EPSG projection codes}
 \description{
@@ -7,6 +8,7 @@
 }
 \usage{
 make_EPSG(file)
+EPSG_version()
 }
 
 \arguments{

@@ -31,7 +31,7 @@ GDALinfo(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE,
  OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE,
  allowedDrivers = NULL, enforce_xy = NULL, options=NULL)
 GDALSpatialRef(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL,
- allowedDrivers = NULL, enforce_xy = NULL, options=NULL)
+ allowedDrivers = NULL, enforce_xy = NULL, get_source_if_boundcrs=TRUE, options=NULL)
 }
 
 \arguments{
@@ -74,6 +74,7 @@ suitable in-range value that fits the data type should be used for other
 data types, for example 255 for \sQuote{Byte}, -32768 for \sQuote{Int16}, 
 and so on; see Details below.}
 \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
+\item{get_source_if_boundcrs}{The presence of the \code{+towgs84=} key in a Proj4 string \code{projargs=} argument value may promote the output WKT2 CRS to BOUNDCRS for PROJ >= 6 and GDAL >= 3, which is a coordinate operation from the input datum to WGS84. This is often unfortunate, so a PROJ function is called through \pkg{rgdal} to retrieve the underlying source definition.}
 \item{options}{driver-specific options to be passed to the GDAL driver; only available for opening datasets from GDAL 2.0; 
 see copying and creation details below}
 \item{setStatistics}{default FALSE, if TRUE, attempt to set per-band 

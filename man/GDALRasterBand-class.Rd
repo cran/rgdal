@@ -40,7 +40,8 @@ getRasterData(dataset, band = NULL, offset = c(0, 0),
 getRasterTable(dataset, band = NULL, offset = c(0, 0), 
   region.dim = dim(dataset))
 
-getProjectionRef(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = NULL, enforce_xy = NULL)
+getProjectionRef(dataset, OVERRIDE_PROJ_DATUM_WITH_TOWGS84 = NULL,
+ enforce_xy = NULL, get_source_if_boundcrs=TRUE)
 
 getRasterBand(dataset, band = 1)
 
@@ -73,6 +74,7 @@ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84(value)
   \item{base}{If Byte input, 8, if Int16 or UInt16, 16}
   \item{OVERRIDE_PROJ_DATUM_WITH_TOWGS84}{logical value, default NULL, which case the cached option set by \code{set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84} is used. Ignored if the GDAL version is less than \dQuote{1.8.0} or if the CPLConfigOption variable is already set}
   \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
+  \item{get_source_if_boundcrs}{The presence of the \code{+towgs84=} key in a Proj4 string \code{projargs=} argument value may promote the output WKT2 CRS to BOUNDCRS for PROJ >= 6 and GDAL >= 3, which is a coordinate operation from the input datum to WGS84. This is often unfortunate, so a PROJ function is called through \pkg{rgdal} to retrieve the underlying source definition.}
   \item{value}{logical value to set OVERRIDE_PROJ_DATUM_WITH_TOWGS84}
 }
 

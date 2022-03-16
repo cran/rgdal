@@ -41,7 +41,7 @@ ogrInfo(dsn, layer, encoding=NULL,
 ogrFIDs(dsn, layer)
 ogrDrivers()
 OGRSpatialRef(dsn, layer, morphFromESRI=NULL, dumpSRS = FALSE, driver = NULL,
- enforce_xy = NULL)
+ enforce_xy = NULL, get_source_if_boundcrs=TRUE)
 ogrListLayers(dsn)
 \method{print}{ogrinfo}(x, ...)
 }
@@ -67,6 +67,7 @@ ogrListLayers(dsn)
   \item{morphFromESRI}{default NULL, morph from ESRI WKT1 dialect}
   \item{dumpSRS}{dump SRS to stdout from inside GDAL to debug conversion - developer use only}
   \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
+  \item{get_source_if_boundcrs}{The presence of the \code{+towgs84=} key in a Proj4 string \code{projargs=} argument value may promote the output WKT2 CRS to BOUNDCRS for PROJ >= 6 and GDAL >= 3, which is a coordinate operation from the input datum to WGS84. This is often unfortunate, so a PROJ function is called through \pkg{rgdal} to retrieve the underlying source definition.}
   \item{D3_if_2D3D_points}{https://github.com/r-spatial/sf/issues/1683 case of mixed 2D/3D track points - set TRUE to 3D to pass}
   \item{missing_3D}{default 0, may be finite real numbers; https://github.com/r-spatial/sf/issues/1683}
   \item{driver}{default NULL, driver found using \code{ogrListLayers} from the data source; otherwise already known and passed through from a calling function}

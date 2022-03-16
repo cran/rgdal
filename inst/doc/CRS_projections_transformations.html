@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 /* for pandoc --citeproc since 2.11 */
 div.csl-bib-body { }
@@ -106,6 +107,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -286,13 +290,13 @@ library(rgdal)</code></pre>
 ## plan transition to sf/stars/terra functions using GDAL and PROJ
 ## at your earliest convenience.
 ## 
-## rgdal: version: 1.5-28, (SVN revision 1158)
+## rgdal: version: 1.5-29, (SVN revision 1165M)
 ## Geospatial Data Abstraction Library extensions to R successfully loaded
-## Loaded GDAL runtime: GDAL 3.4.0, released 2021/11/04
+## Loaded GDAL runtime: GDAL 3.4.2, released 2022/03/08
 ## Path to GDAL shared files: /usr/local/share/gdal
 ## GDAL binary built with GEOS: TRUE 
-## Loaded PROJ runtime: Rel. 8.2.0, November 1st, 2021, [PJ_VERSION: 820]
-## Path to PROJ shared files: /tmp/RtmpTwRRyK/file35c32875473:/usr/local/share/proj:/usr/local/share/proj
+## Loaded PROJ runtime: Rel. 9.0.0, March 1st, 2022, [PJ_VERSION: 900]
+## Path to PROJ shared files: /tmp/RtmpcHloq0/file1190ee45c12d03:/usr/local/share/proj:/usr/local/share/proj
 ## PROJ CDN enabled: FALSE
 ## Linking to sp version:1.4-6
 ## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
@@ -337,7 +341,7 @@ print(sqrt((a^2-b^2)/a^2), digits=10)</code></pre>
 <h2>PR<span class="math inline">\(\phi\)</span>J</h2>
 <p>Signalling changes, PROJ.4 changed its name to PR<span class="math inline">\(\phi\)</span>J, and began burning through major version numbers. PROJ 5 (2018) introduced transformation pipelines <span class="citation">(<a href="#ref-knudsen+evers17" role="doc-biblioref">Knudsen and Evers 2017</a>; <a href="#ref-evers+knudsen17" role="doc-biblioref">Evers and Knudsen 2017</a>)</span>, representing coordinate operations using a syntax similar to PROJ.4 strings, but showing the whole operation pipeline. PROJ 6 (2019) followed up by shifting from ad-hoc text files for holding coordinate reference system and coordinate operation metadata to an SQLite database. In an increasing number of cases, more accurate coordinate operations could be supported using open access transformation grids, and the grid files needed were now tabulated in the SQLite database. This database is distributed with PROJ, and kept in a directory on the PROJ search path, usually the only or final directory (<code>get_proj_search_paths()</code> returns a vector of current search paths).</p>
 <pre class="r"><code>(shpr &lt;- get_proj_search_paths())</code></pre>
-<pre><code>## [1] &quot;/tmp/RtmpTwRRyK/file35c32875473&quot; &quot;/usr/local/share/proj&quot;          
+<pre><code>## [1] &quot;/tmp/RtmpcHloq0/file1190ee45c12d03&quot; &quot;/usr/local/share/proj&quot;             
 ## [3] &quot;/usr/local/share/proj&quot;</code></pre>
 <pre class="r"><code>library(RSQLite)
 db &lt;- dbConnect(SQLite(), dbname=file.path(shpr[length(shpr)], &quot;proj.db&quot;))
@@ -404,18 +408,18 @@ dbListTables(db)</code></pre>
 ##                                                                              value
 ## 1                                                                                1
 ## 2                                                                                2
-## 3                                                                       2021-10-21
-## 4                                                                          v10.038
-## 5                                                                       2021-05-06
-## 6                                                                      ArcMap 12.8
+## 3                                                                       2022-02-13
+## 4                                                                          v10.054
+## 5                                                                       2021-11-08
+## 6                                                                      ArcMap 12.9
 ## 7                                                                       2019-05-24
 ## 8  https://raw.githubusercontent.com/rouault/proj-resources/master/IGNF.v3.1.0.xml
 ## 9                                                                            3.1.0
 ## 10                                                                      2020-12-21
 ## 11                          https://github.com/NordicGeodesy/NordicTransformations
 ## 12                                                                           1.0.0
-## 13                                                                           8.2.0
-## 14                                                                             1.8</code></pre>
+## 13                                                                           9.0.0
+## 14                                                                             1.9</code></pre>
 <p>PROJ 7 (2020) reconfigured the transformation grids, now using the Geodetic TIFF Grid (GTG) format, and created pathways for on-demand download (typically using a content download network (CDN) over CURL) of chunks of such grids to a local user-writable cache held in another SQLite database. After little change from the late 1990s to early 2018, PROJ.4 has incremented its major version number three times in three years, and by 2021 (PROJ 8), the pre-existing application programming interface will be history. In addition, GDAL 3 (2019) has tightened its links with PROJ &gt;= 6, and <code>exportToProj4()</code> now says:</p>
 <blockquote>
 <p>“Use of this function is discouraged. Its behavior in GDAL &gt;= 3 / PROJ &gt;= 6 is significantly different from earlier versions. In particular +datum will only encode WGS84, NAD27 and NAD83, and +towgs84/+nadgrids terms will be missing most of the time. PROJ strings to encode CRS should be considered as a a legacy solution. Using a AUTHORITY:CODE or WKT representation is the recommended way” (<a href="https://gdal.org/api/ogrspatialref.html" class="uri">https://gdal.org/api/ogrspatialref.html</a>).</p>
@@ -460,7 +464,7 @@ dbListTables(db)</code></pre>
 ## dumpSRS, : Discarded datum OSGB_1936 in Proj4 definition: +proj=tmerc +lat_0=49
 ## +lon_0=-2 +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs</code></pre>
 <pre><code>## OGR data source with driver: GPKG 
-## Source: &quot;/tmp/Rtmp9kZqOq/Rinst358b95d098241/rgdal/vectors/b_pump.gpkg&quot;, layer: &quot;b_pump&quot;
+## Source: &quot;/tmp/RtmpvlwNt2/Rinst118d7d45bd6ac7/rgdal/vectors/b_pump.gpkg&quot;, layer: &quot;b_pump&quot;
 ## with 1 features
 ## It has 1 fields
 ## Integer64 fields read as strings:  cat</code></pre>
@@ -528,37 +532,37 @@ cat(WKT, &quot;\n&quot;)</code></pre>
 ## 163     grid_transformation   5339           OSGB36 to WGS 84 (7)
 ## 213     grid_transformation   7709           OSGB36 to ETRS89 (2)
 ## 214     grid_transformation   7710           OSGB36 to WGS 84 (9)
-## 692     grid_transformation 108057  ETRS_1989_To_OSGB_1936_OSTN15
-## 693     grid_transformation 108058   WGS_1984_To_OSGB_1936_OSTN15
-## 694     grid_transformation 108059      OSGB_1936_To_Xrail84_NTv2
-## 906  helmert_transformation   1195           OSGB36 to WGS 84 (1)
-## 907  helmert_transformation   1196           OSGB36 to WGS 84 (2)
-## 908  helmert_transformation   1197           OSGB36 to WGS 84 (3)
-## 909  helmert_transformation   1198           OSGB36 to WGS 84 (4)
-## 910  helmert_transformation   1199           OSGB36 to WGS 84 (5)
-## 1008 helmert_transformation   1314           OSGB36 to WGS 84 (6)
-## 1009 helmert_transformation   1315             OSGB36 to ED50 (1)
-## 1563 helmert_transformation   5622           OSGB36 to WGS 84 (8)
-## 2312 helmert_transformation 108089 OSGB_1936_To_WGS_1984_8_BAD_DX
-## 2467 helmert_transformation 108336 OSGB_1936_To_WGS_1984_NGA_7PAR
+## 722     grid_transformation 108057  ETRS_1989_To_OSGB_1936_OSTN15
+## 723     grid_transformation 108058   WGS_1984_To_OSGB_1936_OSTN15
+## 724     grid_transformation 108059      OSGB_1936_To_Xrail84_NTv2
+## 936  helmert_transformation   1195           OSGB36 to WGS 84 (1)
+## 937  helmert_transformation   1196           OSGB36 to WGS 84 (2)
+## 938  helmert_transformation   1197           OSGB36 to WGS 84 (3)
+## 939  helmert_transformation   1198           OSGB36 to WGS 84 (4)
+## 940  helmert_transformation   1199           OSGB36 to WGS 84 (5)
+## 1038 helmert_transformation   1314           OSGB36 to WGS 84 (6)
+## 1039 helmert_transformation   1315             OSGB36 to ED50 (1)
+## 1593 helmert_transformation   5622           OSGB36 to WGS 84 (8)
+## 2357 helmert_transformation 108089 OSGB_1936_To_WGS_1984_8_BAD_DX
+## 2512 helmert_transformation 108336 OSGB_1936_To_WGS_1984_NGA_7PAR
 ##                                         method_name accuracy
 ## 162                                            NTv2     0.03
 ## 163                                            NTv2     1.00
 ## 213                                            NTv2     0.03
 ## 214                                            NTv2     1.00
-## 692                                            NTv2     0.03
-## 693                                            NTv2     1.00
-## 694                                            NTv2     0.50
-## 906         Geocentric translations (geog2D domain)    21.00
-## 907         Geocentric translations (geog2D domain)    10.00
-## 908         Geocentric translations (geog2D domain)    21.00
-## 909         Geocentric translations (geog2D domain)    18.00
-## 910         Geocentric translations (geog2D domain)    35.00
-## 1008 Position Vector transformation (geog2D domain)     2.00
-## 1009 Position Vector transformation (geog2D domain)     2.00
-## 1563        Geocentric translations (geog2D domain)     3.00
-## 2312        Geocentric translations (geog2D domain)     5.00
-## 2467      Coordinate Frame rotation (geog2D domain)    21.00</code></pre>
+## 722                                            NTv2     0.03
+## 723                                            NTv2     1.00
+## 724                                            NTv2     0.50
+## 936         Geocentric translations (geog2D domain)    21.00
+## 937         Geocentric translations (geog2D domain)    10.00
+## 938         Geocentric translations (geog2D domain)    21.00
+## 939         Geocentric translations (geog2D domain)    18.00
+## 940         Geocentric translations (geog2D domain)    35.00
+## 1038 Position Vector transformation (geog2D domain)     2.00
+## 1039 Position Vector transformation (geog2D domain)     2.00
+## 1593        Geocentric translations (geog2D domain)     3.00
+## 2357        Geocentric translations (geog2D domain)     5.00
+## 2512      Coordinate Frame rotation (geog2D domain)    21.00</code></pre>
 <p>The same search can be conducted directly without using <strong>RSQLite</strong> to query the database tables, searching by source and target CRS, and in the near future also by area of interest. If we search using only the degraded PROJ.4 string, we only find a ballpark accuracy coordinate operation, yielding a pipeline with two steps, inverse projection to geographical coordinates in radians, and conversion from radians to degrees. Note that <code>rgdal::spTransform()</code> and its wrapper <code>sp::spTransform()</code> use PROJ for coordinate operations. Here we will use <code>&quot;EPSG:4326&quot;</code> briefly for exposition:</p>
 <pre class="r"><code>list_coordOps(paste0(proj4string(b_pump), &quot; +type=crs&quot;), &quot;EPSG:4326&quot;)</code></pre>
 <pre><code>## Warning in proj4string(b_pump): CRS object has comment, which is lost in output; in tests, see
@@ -723,12 +727,12 @@ library(rgdal)</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <p>We can enable on-demand download using a function that reports the value of the PR<span class="math inline">\(\phi\)</span>J CDN user-writable directory; we see that with this setting, network download is enabled:</p>
 <pre class="r"><code>enable_proj_CDN()</code></pre>
-<pre><code>## [1] &quot;Using: /tmp/RtmpTwRRyK/file35c32875473&quot;</code></pre>
+<pre><code>## [1] &quot;Using: /tmp/RtmpcHloq0/file1190ee45c12d03&quot;</code></pre>
 <pre class="r"><code>is_proj_CDN_enabled()</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>The reader will recall that the search path was stored in <code>shpr</code> above, the first element being the user-writable directory; at this point no SQLite database has been created:</p>
 <pre class="r"><code>shpr[1]</code></pre>
-<pre><code>## [1] &quot;/tmp/RtmpTwRRyK/file35c32875473&quot;</code></pre>
+<pre><code>## [1] &quot;/tmp/RtmpcHloq0/file1190ee45c12d03&quot;</code></pre>
 <pre class="r"><code>try(file.size(file.path(shpr[1], &quot;cache.db&quot;)))</code></pre>
 <pre><code>## [1] NA</code></pre>
 <p>When we then search for candidate coordinate operations, we see that the operation using an absent grid now sees that download is enabled, and proposes the 1m accuracy candidate, because the required grid can be downloaded (again using the area of interest):</p>
@@ -769,7 +773,7 @@ library(rgdal)</code></pre>
 <p>On making the transformation, we may see that the coordinate operation takes longer than expected, because on first pass the grid is downloaded from the network:</p>
 <pre class="r"><code>system.time(is1m &lt;- spTransform(b_pump, CRS(SRS_string=&quot;OGC:CRS84&quot;)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.058   0.018   1.198</code></pre>
+##   0.083   0.014   1.214</code></pre>
 <p>The coordinate operation used now specifies the grid in the pipeline:</p>
 <pre class="r"><code>get_last_coordOp()</code></pre>
 <pre><code>## [1] &quot;+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=hgridshift +grids=uk_os_OSTN15_NTv2_OSGBtoETRS.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg&quot;</code></pre>
@@ -789,12 +793,12 @@ library(rgdal)</code></pre>
 <p>If we look in the SQLite database of downloaded grids, we see that the grid components that were downloaded. Here we have not yet used the area of interest to limit the number of chunks involved:</p>
 <pre class="r"><code>library(RSQLite)
 db &lt;- dbConnect(SQLite(), dbname=file.path(shpr[1], &quot;cache.db&quot;))
-dbListTables(db)</code></pre>
+(tbs &lt;- dbListTables(db))</code></pre>
 <pre><code>## [1] &quot;chunk_data&quot;                 &quot;chunks&quot;                    
 ## [3] &quot;downloaded_file_properties&quot; &quot;linked_chunks&quot;             
 ## [5] &quot;linked_chunks_head_tail&quot;    &quot;properties&quot;                
 ## [7] &quot;sqlite_sequence&quot;</code></pre>
-<pre class="r"><code>dbReadTable(db, &quot;chunks&quot;)</code></pre>
+<pre class="r"><code>if (any(&quot;chunks&quot; %in% tbs)) print(dbReadTable(db, &quot;chunks&quot;))</code></pre>
 <pre><code>##    id                                                   url  offset data_id
 ## 1   1 https://cdn.proj.org/uk_os_OSTN15_NTv2_OSGBtoETRS.tif       0       1
 ## 2   2 https://cdn.proj.org/uk_os_OSTN15_NTv2_OSGBtoETRS.tif 2621440       2

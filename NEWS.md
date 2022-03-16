@@ -1,6 +1,14 @@
 # Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.5-28 (development, rev. 1157-)
+# Version 1.5-29 (development, rev. 1159-1165)
+
+* also convert BOUNDCRS to PROJCRS by default in OGRSpatialRef() and getProjectionRef()
+
+* test for chunks table in cache.db in vignette
+
+* quietening tests only differing by `proj.db` version.
+
+# Version 1.5-28 (2021-12-15, rev. 1157-1158)
 
 * Adapting to R 4.2 Windows UCRT
 

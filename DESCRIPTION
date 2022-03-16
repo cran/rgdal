@@ -1,7 +1,7 @@
 Package: rgdal
 Title: Bindings for the 'Geospatial' Data Abstraction Library
-Version: 1.5-28
-Date: 2021-12-14
+Version: 1.5-29
+Date: 2022-03-07
 Depends: R (>= 3.5.0), methods, sp (>= 1.1-0)
 Imports: grDevices, graphics, stats, utils
 LinkingTo: sp
@@ -31,7 +31,7 @@ SystemRequirements: PROJ (>= 4.8.0, https://proj.org/download.html) and
         argument '--with-proj_api="proj_api.h"'.
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
-Packaged: 2021-12-14 14:11:37 UTC; rsb
+Packaged: 2022-03-15 08:11:38 UTC; rsb
 Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Tim Keitt [aut],
   Barry Rowlingson [aut, ctb],
@@ -45,4 +45,4 @@ Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>),
   Colin Rundel [ctb]
 Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
 Repository: CRAN
-Date/Publication: 2021-12-15 03:50:06 UTC
+Date/Publication: 2022-03-16 22:10:02 UTC

@@ -864,7 +864,7 @@ On reading with PROJ6/GDAL3, we discard the `+datum` tag, so losing information 
 ## [1] TRUE
 ```
 
-(Again, commented output blocks are run on a PROJ6/GDAL3 platform). This demonstration was impacted by PROJ 6.3.0 fragility, with the `+ellps=` tag vanishing (with the `+units=` tag) apparently arbitrarily. A tentative diagnosis is that the datum node of the OGRSpatialReference object becomes unavailable, although why some change in PROJ leads to this aberation is unknown.
+(Again, commented output blocks are run on a PROJ6/GDAL3 platform). This demonstration was impacted by PROJ 6.3.0 fragility, with the `+ellps=` tag vanishing (with the `+units=` tag) apparently arbitrarily. A tentative diagnosis is that the datum node of the OGRSpatialReference object becomes unavailable, although why some change in PROJ leads to this aberration is unknown.
 
 ```{r}
 set_transform_wkt_comment(FALSE)

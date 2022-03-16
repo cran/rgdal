@@ -571,12 +571,12 @@ toUnSigned <- function(x, base) {
     as.integer(x)
 }
 
-"GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, enforce_xy=NULL, options=NULL) {
+"GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, enforce_xy=NULL, get_source_if_boundcrs=TRUE, options=NULL) {
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent,
               allowedDrivers=allowedDrivers, options=options)
 #        p4s <- .Call("RGDAL_GetProjectionRef", x, PACKAGE="rgdal")
-        p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy)
+        p4s <- getProjectionRef(x, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=OVERRIDE_PROJ_DATUM_WITH_TOWGS84, enforce_xy=enforce_xy, get_source_if_boundcrs=get_source_if_boundcrs)
 	GDAL.close(x)
         p4s
 }

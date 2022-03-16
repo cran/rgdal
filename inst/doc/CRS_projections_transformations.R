@@ -181,8 +181,8 @@ try(file.size(file.path(shpr[1], "cache.db")))
 ## ---- eval= run && odd_run----------------------------------------------------
 library(RSQLite)
 db <- dbConnect(SQLite(), dbname=file.path(shpr[1], "cache.db"))
-dbListTables(db)
-dbReadTable(db, "chunks")
+(tbs <- dbListTables(db))
+if (any("chunks" %in% tbs)) print(dbReadTable(db, "chunks"))
 dbDisconnect(db)
 
 ## ---- eval= run && odd_run----------------------------------------------------

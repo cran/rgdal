@@ -1,5 +1,5 @@
 
-R version 4.1.1 (2021-08-10) -- "Kick Things"
+R version 4.1.2 (2021-11-01) -- "Bird Hippie"
 Copyright (C) 2021 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -16,6 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > suppressPackageStartupMessages(library(rgdal))
+> set_thin_PROJ6_warnings(TRUE)
 > if (new_proj_and_gdal()) {
 + get_enforce_xy()
 + x0 <- showSRID("EPSG:4326", multiline=TRUE, EPSG_to_init=FALSE)
@@ -53,6 +54,8 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ID["EPSG",1155]],
         MEMBER["World Geodetic System 1984 (G1762)",
             ID["EPSG",1156]],
+        MEMBER["World Geodetic System 1984 (G2139)",
+            ID["EPSG",1309]],
         ELLIPSOID["WGS 84",6378137,298.257223563,
             LENGTHUNIT["metre",1],
             ID["EPSG",7030]],
@@ -83,6 +86,7 @@ GEOGCRS["WGS 84",
         MEMBER["World Geodetic System 1984 (G1150)"],
         MEMBER["World Geodetic System 1984 (G1674)"],
         MEMBER["World Geodetic System 1984 (G1762)"],
+        MEMBER["World Geodetic System 1984 (G2139)"],
         ELLIPSOID["WGS 84",6378137,298.257223563,
             LENGTHUNIT["metre",1]],
         ENSEMBLEACCURACY[2.0]],
@@ -114,6 +118,8 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ID["EPSG",1155]],
         MEMBER["World Geodetic System 1984 (G1762)",
             ID["EPSG",1156]],
+        MEMBER["World Geodetic System 1984 (G2139)",
+            ID["EPSG",1309]],
         ELLIPSOID["WGS 84",6378137,298.257223563,
             LENGTHUNIT["metre",1],
             ID["EPSG",7030]],
@@ -150,6 +156,8 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ID["EPSG",1155]],
         MEMBER["World Geodetic System 1984 (G1762)",
             ID["EPSG",1156]],
+        MEMBER["World Geodetic System 1984 (G2139)",
+            ID["EPSG",1309]],
         ELLIPSOID["WGS 84",6378137,298.257223563,
             LENGTHUNIT["metre",1],
             ID["EPSG",7030]],
@@ -180,6 +188,7 @@ GEOGCRS["WGS 84",
         MEMBER["World Geodetic System 1984 (G1150)"],
         MEMBER["World Geodetic System 1984 (G1674)"],
         MEMBER["World Geodetic System 1984 (G1762)"],
+        MEMBER["World Geodetic System 1984 (G2139)"],
         ELLIPSOID["WGS 84",6378137,298.257223563,
             LENGTHUNIT["metre",1]],
         ENSEMBLEACCURACY[2.0]],
@@ -211,6 +220,8 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
             ID["EPSG",1155]],
         MEMBER["World Geodetic System 1984 (G1762)",
             ID["EPSG",1156]],
+        MEMBER["World Geodetic System 1984 (G2139)",
+            ID["EPSG",1309]],
         ELLIPSOID["WGS 84",6378137,298.257223563,
             LENGTHUNIT["metre",1],
             ID["EPSG",7030]],
@@ -238,4 +249,4 @@ GEOGCRS["WGS 84 (with axis order normalized for visualization)",
 > 
 > proc.time()
    user  system elapsed 
-  0.253   0.032   0.278 
+  0.253   0.025   0.271 

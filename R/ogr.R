@@ -259,7 +259,7 @@ ogrDrivers <- function() {
 }
 
 OGRSpatialRef <- function(dsn, layer, morphFromESRI=NULL, dumpSRS=FALSE,
-  driver=NULL, enforce_xy=NULL) {
+  driver=NULL, enforce_xy=NULL, get_source_if_boundcrs=TRUE) {
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
   if (is.null(driver)) driver <- attr(ogrListLayers(dsn), "driver")
@@ -340,7 +340,16 @@ OGRSpatialRef <- function(dsn, layer, morphFromESRI=NULL, dumpSRS=FALSE,
         }
 #warning(msg)
     }
-    if (new_proj_and_gdal()) wkt2 <- attr(res, "WKT2_2018")
+    if (new_proj_and_gdal()) {
+      wkt2 <- attr(res, "WKT2_2018")
+      if (get_source_if_boundcrs) {
+        if (length(grep("^BOUNDCRS", wkt2)) > 0L) {
+          wkt2a <- try(.Call("get_source_crs", wkt2, PACKAGE="rgdal"),
+            silent=TRUE)
+          if (!inherits(wkt2a, "try-error")) wkt2 <- wkt2a
+        }
+      }
+    }
   }
   res <- c(res)
   if (new_proj_and_gdal()) {
