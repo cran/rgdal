@@ -72,8 +72,9 @@ set_proj_search_paths <- function(paths) {
         stopifnot(!missing(paths))
         stopifnot(is.character(paths))
         stopifnot(length(paths) > 0)
-        n <- length(paths)
-        for (i in 1:n) stopifnot(dir.exists(paths[i]))
+#        n <- length(paths)
+#        stopifnot(dir.exists(paths[length(paths)]))
+#        stopifnot(file.exists(file.path(paths[n], "proj.db")))
         res <- .Call("set_proj_paths", paths, PACKAGE="rgdal")
     } else {
         res <- NULL

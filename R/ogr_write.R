@@ -100,7 +100,7 @@ writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_option
                 }
                 layer_del <- try(ogrDeleteLayer(dsn, layer, driver),
                     silent=TRUE)
-                if (class(layer_del) == "try-error" && delete_dsn) {
+                if (inherits(layer_del, "try-error") && delete_dsn) {
                     ogrDeleteDataSource(dsn, driver)
                     if (verbose) warning("existing data source removed")
                 }

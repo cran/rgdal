@@ -1,3 +1,22 @@
+2022-04-03 13:57  rsbivand
+
+	* [r1169] R/AAA.R, R/project.R: restore PROJ path assignment for
+	  PROJ >= 6 not using PROJ_LIB
+
+2022-03-15 14:01  rsbivand
+
+	* [r1168] src/Makevars.win: delete comments within blocks
+
+2022-03-15 12:31  rsbivand
+
+	* [r1167] DESCRIPTION, NEWS.md, src/Makevars.win:
+	  https://github.com/r-spatial/sf/pull/1919
+
+2022-03-15 08:09  rsbivand
+
+	* [r1166] ChangeLog, inst/ChangeLog, man/GDALRasterBand-class.Rd:
+	  pre-submit tidy
+
 2022-03-08 16:10  rsbivand
 
 	* [r1165] NEWS.md: convert BOUNDCRS to PROJCRS by default in
