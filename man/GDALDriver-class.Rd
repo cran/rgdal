@@ -78,7 +78,7 @@ get_cached_set_GDAL_DATA()
 }
 }
 
-\note{Loading the rgdal package changes the \code{GDAL\_DATA} environmental variable to the GDAL support files bundled with the package.}
+\note{Loading the rgdal package changes the \code{GDAL_DATA} environmental variable to the GDAL support files bundled with the package.}
 
 \author{Timothy H. Keitt, modified by Roger Bivand}
 

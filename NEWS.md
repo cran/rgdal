@@ -1,6 +1,10 @@
 # Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.5-30 (development, rev. 1166-)
+# Version 1.5-31 (development, rev. 1172-)
+
+* unescape underscores in help pages
+
+# Version 1.5-30 (development, rev. 1166-1171)
 
 * restore PROJ path assignment for PROJ >= 6 not using PROJ_LIB (was used for PROJ 6 but not > 6) https://github.com/rsbivand/rgrass/issues/52
 

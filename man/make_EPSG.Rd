@@ -27,7 +27,7 @@ EPSG_version()
 \references{(unlinked because of certificate issues: https://epsg.org/home.html.}
 
 \author{Roger Bivand}
-\note{See also Clifford J. Mugnier's Grids \& Datums columns in Photogrammetric Engineering & Remote Sensing, \url{https://www.asprs.org/a/resources/grids/}, see also \code{\link{GridsDatums}}.}
+\note{See also Clifford J. Mugnier's Grids & Datums columns in Photogrammetric Engineering & Remote Sensing, \url{https://www.asprs.org/a/resources/grids/}, see also \code{\link{GridsDatums}}.}
 \examples{
 EPSG <- try(make_EPSG())
 # from PROJ 6.0.0, EPSG data is no longer stored in a flat file

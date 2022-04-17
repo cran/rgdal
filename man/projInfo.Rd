@@ -11,7 +11,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{List PROJ.4 tag information}
 \description{
-  The \code{projInfo} function lists known values and descriptions for PROJ.4 tags for tag in \code{c("proj", "ellps", "datum", "units")}; \code{getPROJ4VersionInfo} returns the version of the underlying PROJ.4 release, \code{getPROJ4libPath} returns the value of the PROJ\_LIB environment variable, \code{projNAD} detects the presence of NAD datum conversion tables (looking for conus).
+  The \code{projInfo} function lists known values and descriptions for PROJ.4 tags for tag in \code{c("proj", "ellps", "datum", "units")}; \code{getPROJ4VersionInfo} returns the version of the underlying PROJ.4 release, \code{getPROJ4libPath} returns the value of the PROJ_LIB environment variable, \code{projNAD} detects the presence of NAD datum conversion tables (looking for conus).
 }
 \usage{
 projInfo(type = "proj")
@@ -36,7 +36,7 @@ new_proj_and_gdal()
 \references{\url{https://proj.org/}}
 \author{Roger Bivand \email{Roger.Bivand@nhh.no}}
 
-\note{Loading the rgdal package may change the \code{PROJ\_LIB} environmental variable to the PROJ.4 support files if bundled with binary packages.}
+\note{Loading the rgdal package may change the \code{PROJ_LIB} environmental variable to the PROJ.4 support files if bundled with binary packages.}
 
 \examples{
 getPROJ4VersionInfo()

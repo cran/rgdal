@@ -52,7 +52,7 @@ ogrListLayers(dsn)
   \item{verbose}{report progress}
   \item{p4s}{PROJ4 string defining CRS, if default NULL, the value is read from the OGR data set} 
   \item{stringsAsFactors}{logical: should character vectors be converted to factors? Default NA, which uses the deprecated \code{default.stringsAsFactors()} in R < 4.1.0 (see \code{link[base]{data.frame}}). Before R 4, strings were converted to factors by default, as argument value TRUE. See \url{https://developer.r-project.org/Blog/public/2020/02/16/stringsasfactors/index.html} for details of changes.}
-  \item{drop\_unsupported\_fields}{default FALSE, if TRUE skip fields other than String, Integer, and Real; Date, Time and DateTime are converted to String}
+  \item{drop_unsupported_fields}{default FALSE, if TRUE skip fields other than String, Integer, and Real; Date, Time and DateTime are converted to String}
   \item{pointDropZ}{default FALSE, if TRUE, discard third coordinates for point geometries; third coordinates are alway discarded for line and polygon geometries}
   \item{dropNULLGeometries}{default TRUE, drop both declared NULL geometries, and empty geometries with no coordinates; if FALSE, return a data frame with the attribute values of the NULL and empty geometries. From 1.3-6, setting FALSE also works when there are no geometries at all, returning a data.frame including all FIDs}
   \item{useC}{default TRUE, if FALSE use original interpreted code in a loop}
