@@ -1,3 +1,23 @@
+2022-05-06 09:49  rsbivand
+
+	* [r1173] DESCRIPTION, src/Makevars.ucrt: modify PKG_LIBS in
+	  Makevars.ucrt for Geospatial PDF driver
+
+2022-04-17 16:37  rsbivand
+
+	* [r1172] DESCRIPTION, NEWS.md, man/GDALDriver-class.Rd,
+	  man/make_EPSG.Rd, man/projInfo.Rd, man/readOGR.Rd: unescape
+	  underscores in help pages
+
+2022-04-08 07:15  rsbivand
+
+	* [r1171] DESCRIPTION, R/ogr_write.R: tidy
+
+2022-04-04 09:07  rsbivand
+
+	* [r1170] ChangeLog, NEWS.md, configure, inst/ChangeLog,
+	  man/spTransform-methods.Rd: tidy
+
 2022-04-03 13:57  rsbivand
 
 	* [r1169] R/AAA.R, R/project.R: restore PROJ path assignment for

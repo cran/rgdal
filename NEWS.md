@@ -1,10 +1,14 @@
 # Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.5-31 (development, rev. 1172-)
+# Version 1.5-32 (development, rev. 1173-)
+
+* update src/Makefile.ucrt to accommodate the GDAL raster Geospatial PDF driver for reading
+
+# Version 1.5-31 (2022-04-18, rev. 1172)
 
 * unescape underscores in help pages
 
-# Version 1.5-30 (development, rev. 1166-1171)
+# Version 1.5-30 (2022-04-08, rev. 1166-1171)
 
 * restore PROJ path assignment for PROJ >= 6 not using PROJ_LIB (was used for PROJ 6 but not > 6) https://github.com/rsbivand/rgrass/issues/52
 
