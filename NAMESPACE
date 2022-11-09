@@ -9,75 +9,197 @@ importFrom(stats, sd, offset, na.omit)
 importFrom(utils, packageVersion)
 importFrom("utils", "read.csv")
 
+# packages using exported rgdal functions 2022-08-11 
+
+
 #exportMethods(spTransform)
-exportMethods(closeDataset)
-exportMethods(initialize)
-exportMethods(summary)
-exportMethods(coerce, "[", "[[")
+exportMethods(closeDataset) # raster ursa
+exportMethods(initialize) # 
+exportMethods(summary) # 
+exportMethods(
+ coerce, # 
+ "[", # 
+ "[[" # 
+)
 
-exportClass(GDALDataset)
-exportClass(GDALDriver)
-exportClass(GDALMajorObject)
-exportClass(GDALRasterBand)
-exportClass(GDALReadOnlyDataset)
-exportClass(GDALTransientDataset)
-exportClass(SpatialGDAL, SpatialGDALWrite)
+exportClass(GDALDataset) # 
+exportClass(GDALDriver) # 
+exportClass(GDALMajorObject) # 
+exportClass(GDALRasterBand) # 
+exportClass(GDALReadOnlyDataset) # 
+exportClass(GDALTransientDataset) # 
+exportClass(
+ SpatialGDAL, # 
+ SpatialGDALWrite # 
+)
 
-export(rgdal_extSoftVersion, PROJis6ormore, GDALis3ormore, GDAL_OSR_PROJ, 
- new_proj_and_gdal)
+export(
+ rgdal_extSoftVersion, # ConR
+ PROJis6ormore, # 
+ GDALis3ormore, # sdmpredictors
+ GDAL_OSR_PROJ,  # 
+ new_proj_and_gdal # inlabru raster sp
+)
 
-export(project, make_EPSG, projInfo, getPROJ4VersionInfo, getPROJ4libPath,
-  projNAD, EPSG_version)
-export(CRSargs, checkCRSArgs, checkCRSArgs_ng, compare_CRS)
-export(get_P6_datum_hard_fail, set_P6_datum_hard_fail, get_transform_wkt_comment, set_transform_wkt_comment, get_last_coordOp, get_thin_PROJ6_warnings, set_thin_PROJ6_warnings, get_enforce_xy, set_enforce_xy, get_prefer_proj, set_prefer_proj, get_rgdal_show_exportToProj4_warnings, set_rgdal_show_exportToProj4_warnings, get_PROJ6_warnings_count)
-export(putRasterData, saveDataset, copyDataset, deleteDataset, saveDatasetAs)
-export(getGDALDriverNames, getDriverName, getDriverLongName, gdalDrivers)
-export(getDescription)
-export(getRasterData, getRasterTable, getProjectionRef)
-export(getRasterBand, getRasterBlockSize)
-export(toSigned, toUnSigned)
-export(getDriver, GDAL.close, GDAL.open, getColorTable,
-  getGeoTransFunc, sub.GDROD, SGDF2PCT, vec2RGB, asSGDF_GROD, RGB2PCT)
-export(readGDAL, writeGDAL, create2GDAL)
-export(showWKT, showEPSG, showP4, showSRID, list_coordOps, best_instantiable_coordOp)
-export(readOGR, ogrInfo, ogrFIDs, ogrDrivers, writeOGR, ogrListLayers)
-export(GDALinfo, print.GDALobj, getGDALVersionInfo, getGDALCheckVersion, getGDAL_DATA_Path, getGDALwithGEOS)
-export(displayDataset)
-export(open.SpatialGDAL, copy.SpatialGDAL)
-export(llgridlines)
-export(GDALcall)
-export(rawTransform)
-export(is_proj_CDN_enabled, enable_proj_CDN, disable_proj_CDN)
-export(get_proj_search_paths, set_proj_search_paths, proj_CDN_user_writable_dir)
+export(
+ project, # ConR ctmm envirem eseis FIESTAutils geometr hyperbrick kernelPhil lingtypology paleofire red tripEstimation ursa deprecated 2022-10-11
+ make_EPSG, # FIESTAutils
+ projInfo, # crestr FIESTAutils raster
+ getPROJ4VersionInfo, # elevatr
+ getPROJ4libPath, # 
+ projNAD, # 
+ EPSG_version # 
+)
+export(
+ CRSargs, # geonetwork inlabru inlmisc intamap plotKML rosm RSurvey rtop TOC tripEstimation ursa deprecated 2022-10-12
+ checkCRSArgs, # RSurvey sp
+ checkCRSArgs_ng, # sp
+ compare_CRS # raster
+)
+export(
+ get_P6_datum_hard_fail, # 
+ set_P6_datum_hard_fail, # 
+ get_transform_wkt_comment, # 
+ set_transform_wkt_comment, # 
+ get_last_coordOp, # 
+ get_thin_PROJ6_warnings, # inlabru
+ set_thin_PROJ6_warnings, # inlabru reproducible
+ get_enforce_xy, # 
+ set_enforce_xy, # 
+ get_prefer_proj, # 
+ set_prefer_proj, # 
+ get_rgdal_show_exportToProj4_warnings, # inlabru
+ set_rgdal_show_exportToProj4_warnings, # inlabru
+ get_PROJ6_warnings_count # 
+)
+export(
+ putRasterData, # atakrig FIESTAutils raster ursa
+ saveDataset, # FIESTAutils raster ursa
+ copyDataset, # FIESTAutils
+ deleteDataset, # 
+ saveDatasetAs # 
+)
+export(
+ getGDALDriverNames, # 
+ getDriverName, # raster ursa
+ getDriverLongName, # 
+ gdalDrivers # ebirdst raster rgrass7
+)
+export(
+ getDescription # FIESTAutils raster
+)
+export(
+ getRasterData, # FIESTAutils raster ursa
+ getRasterTable, # 
+ getProjectionRef # FIESTAutils
+)
+export(
+ getRasterBand, # FIESTAutils raster
+ getRasterBlockSize # raster
+)
+export(
+ toSigned, # 
+ toUnSigned # 
+)
+export(
+ getDriver, # raster ursa
+ GDAL.close, # FIESTAutils raster ursa
+ GDAL.open, # FIESTAutils raster
+ getColorTable, # raster
+ getGeoTransFunc, # 
+ sub.GDROD, # 
+ SGDF2PCT, # 
+ vec2RGB, # 
+ asSGDF_GROD, # deprecated 2022-10-11
+ RGB2PCT # 
+)
+export(
+ readGDAL, # inlabru openSTARS plotKML pRecipe rdwd rgrass7 deprecated 2022-10-11
+ writeGDAL, # ParallelDSM plotKML sperich deprecated 2022-10-11
+ create2GDAL # deprecated 2022-10-11
+)
+export(
+ showWKT, # geotopbricks quickmapr rpostgis ursa deprecated 2022-10-12
+ showEPSG, # postGIStools rpostgis deprecated 2022-10-12
+ showP4, # RSurvey ursa
+ showSRID, # inlabru
+ list_coordOps, # 
+ best_instantiable_coordOp # 
+)
+export(
+ readOGR, # actel agriwater APfun ASIP BARIS bdvis bfsMaps biosurvey briskaR chronosphere cropDemand cropZoning disdat eechidna ExposR FedData FIESTAutils HurreconR hyfo iconr importinegi intamap ipumsr LabourMarketAreas letsR malariaAtlas mapmisc mapReasy MazamaSpatialUtils modchart naijR OasisR onemapsgapi openSTARS plotKML pRecipe PReMiuM raster rcanvec rdhs ref.ICAR rgplates rgrass7 riverdist rmapzen rnaturalearth rnoaa RSAGA RSIP RSurvey RTL secrlinear SegEnvIneq ShapePattern SSN tigris TUFLOWR ursa wux deprecated 2022-10-11
+ ogrInfo, # bnspatial nhdR ursa deprecated 2022-10-11
+ ogrFIDs, # deprecated 2022-10-11
+ ogrDrivers, # rgrass7 deprecated 2022-10-11
+ writeOGR, # animaltracker APfun AQuadtree BIEN chronosphere ConR ctmm dssd FedData foster GADMTools gDefrag GmAMisc GPSeqClus grainscape iSDM LabourMarketAreas movecost OCNet openSTARS paleofire plotKML prevR PWFSLSmoke rangemap raster rcanvec rgplates rgrass7 RSAGA Rsagacmd RSurvey ShapePattern SSN uavRmp ursa deprecated 2022-10-11
+ ogrListLayers # eechidna FedData mapReasy nhdR rmapzen rnoaa ursa deprecated 2022-10-11
+)
+export(
+ GDALinfo, # APfun bnspatial FIESTA FIESTAutils raster rgrass7 sen2r ursa deprecated 2022-10-11
+ print.GDALobj, # deprecated 2022-10-11
+ getGDALVersionInfo, # reproducible
+ getGDALCheckVersion, # geoviz
+ getGDAL_DATA_Path, # 
+ getGDALwithGEOS # 
+)
+export(
+ displayDataset # 
+)
+export(
+ open.SpatialGDAL, # 
+ copy.SpatialGDAL # 
+)
+export(
+ llgridlines # 
+)
+export(
+ GDALcall # FIESTAutils raster ursa deprecated 2022-10-12
+)
+export(
+ rawTransform # mapmisc raster deprecated 2022-10-12
+)
+export(
+ is_proj_CDN_enabled, # 
+ enable_proj_CDN, # 
+ disable_proj_CDN # 
+)
+export(
+ get_proj_search_paths, # 
+ set_proj_search_paths, # 
+ proj_CDN_user_writable_dir # 
+)
 
-#export(spTransform, spTransform.SpatialPoints, 
-#  spTransform.SpatialPointsDataFrame, spTransform.SpatialLines, 
-#  spTransform.SpatialLinesDataFrame, spTransform.SpatialPolygons, 
-#  spTransform.SpatialPolygonsDataFrame)
 
-export(OGRSpatialRef, GDALSpatialRef, OSRIsProjected)
+export(
+ OGRSpatialRef, # deprecated 2022-10-11
+ GDALSpatialRef, # deprecated 2022-10-11
+ OSRIsProjected # sp
+)
 
-export(get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84,
- set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84)
+export(
+ get_OVERRIDE_PROJ_DATUM_WITH_TOWGS84, # 
+ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84 # 
+)
 
-export(getCPLConfigOption, setCPLConfigOption)
+export(
+ getCPLConfigOption, # deprecated 2022-10-12
+ setCPLConfigOption # ExposR HurreconR ursa deprecated 2022-10-12
+)
 
-export(get_cached_orig_PROJ_LIB, get_cached_orig_GDAL_DATA,
- get_cached_set_PROJ_LIB, get_cached_set_GDAL_DATA)
+export(
+ get_cached_orig_PROJ_LIB, # 
+ get_cached_orig_GDAL_DATA, # 
+ get_cached_set_PROJ_LIB, # 
+ get_cached_set_GDAL_DATA # 
+)
 
-#S3method(spTransform, SpatialPoints)
-#S3method(spTransform, SpatialPointsDataFrame)
-#S3method(spTransform, SpatialLines)
-#S3method(spTransform, SpatialLinesDataFrame)
-#S3method(spTransform, SpatialPolygons)
-#S3method(spTransform, SpatialPolygonsDataFrame)
-S3method(print, GDALobj)
-S3method(print, ogrinfo)
-S3method(open, SpatialGDAL)
-S3method(close, SpatialGDAL)
-S3method(close, SpatialGDALWrite)
-S3method(print, summary.SpatialGDAL)
-S3method(print, coordOps)
+S3method(print, GDALobj) # deprecated 2022-10-11
+S3method(print, ogrinfo) # deprecated 2022-10-11
+S3method(open, SpatialGDAL) # 
+S3method(close, SpatialGDAL) # 
+S3method(close, SpatialGDALWrite) # 
+S3method(print, summary.SpatialGDAL) # 
+S3method(print, coordOps) # 
 
 
 

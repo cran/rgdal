@@ -198,7 +198,7 @@ SEXP get_proj_search_path(void) {
 
 }
 
-SEXP get_proj_user_writable_dir() {
+SEXP get_proj_user_writable_dir(void) {
 
 #if ((PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 1) || PROJ_VERSION_MAJOR > 7)
     SEXP res;

@@ -10,6 +10,7 @@
 ogrInfo <- function(dsn, layer, encoding=NULL,
   use_iconv=FALSE, swapAxisOrder=FALSE, require_geomType=NULL,
   morphFromESRI=NULL, dumpSRS=FALSE, enforce_xy=NULL, D3_if_2D3D_points=FALSE) {
+  .Deprecated("", package="rgdal", msg="OGR support is provided by the sf and terra packages among others")
   if (missing(dsn)) stop("missing dsn")
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
@@ -196,6 +197,7 @@ ogrInfo <- function(dsn, layer, encoding=NULL,
 }
 
 print.ogrinfo <- function(x, ...) {
+  .Deprecated("", package="rgdal", msg="OGR support is provided by the sf and terra packages among others")
   cat("Source: \"", x$dsn, '\", layer: \"', x$layer, "\"", '\n', sep='')
   cat("Driver:", x$driver)
   if (x$have_features) cat("; number of rows:", x$nrows, "\n")
@@ -227,6 +229,7 @@ print.ogrinfo <- function(x, ...) {
 
 
 ogrFIDs <- function(dsn, layer){
+  .Deprecated("", package="rgdal", msg="OGR support is provided by the sf and terra packages among others")
   if (missing(dsn)) stop("missing dsn")
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
@@ -243,6 +246,7 @@ ogrFIDs <- function(dsn, layer){
 }
 
 ogrDrivers <- function() {
+  .Deprecated("", package="rgdal", msg="OGR support is provided by the sf and terra packages among others")
   if (strsplit(getGDALVersionInfo(), " ")[[1]][2] < "2") {
     res <- .Call("ogr_GetDriverNames", PACKAGE="rgdal")
     res <- as.data.frame(res, stringsAsFactors=FALSE)
@@ -260,6 +264,7 @@ ogrDrivers <- function() {
 
 OGRSpatialRef <- function(dsn, layer, morphFromESRI=NULL, dumpSRS=FALSE,
   driver=NULL, enforce_xy=NULL, get_source_if_boundcrs=TRUE) {
+  .Deprecated("", package="rgdal", msg="OGR support is provided by the sf and terra packages among others")
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1L)
   if (is.null(driver)) driver <- attr(ogrListLayers(dsn), "driver")
@@ -360,6 +365,7 @@ OGRSpatialRef <- function(dsn, layer, morphFromESRI=NULL, dumpSRS=FALSE,
 }
 
 ogrListLayers <- function(dsn) {
+  .Deprecated("", package="rgdal", msg="OGR support is provided by the sf and terra packages among others")
   if (missing(dsn)) stop("missing dsn")
   stopifnot(is.character(dsn))
   stopifnot(length(dsn) == 1)

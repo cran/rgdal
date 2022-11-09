@@ -140,7 +140,7 @@ SEXP set_proj_paths(SEXP path) {
     return(R_NilValue);
 }
 
-SEXP get_proj_user_writable_dir() {
+SEXP get_proj_user_writable_dir(void) {
     Rprintf("Not available for deprecated API");
     return(R_NilValue);
 }

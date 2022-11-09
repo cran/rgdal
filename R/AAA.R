@@ -49,11 +49,11 @@ load_stuff <- function() {
   if (!is.null(rgdal_show_exportToProj4_warnings)) {
     if (!(rgdal_show_exportToProj4_warnings %in% c("all", "thin", "none"))) {
 # CURRENT DEFAULT: "all"
-      rgdal_show_exportToProj4_warnings <- "all"
+      rgdal_show_exportToProj4_warnings <- "none"
     }
   } else {
 # CURRENT DEFAULT: "all"
-    rgdal_show_exportToProj4_warnings <- "all"
+    rgdal_show_exportToProj4_warnings <- "none"
   }
   if (rgdal_show_exportToProj4_warnings == "all") {
     assign("rgdal_show_exportToProj4_warnings", TRUE, envir=.RGDAL_CACHE)
@@ -93,7 +93,7 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
     assign("has_proj_def.dat", pdd, envir=.RGDAL_CACHE)
   }
 
-  Smess <- paste('Please note that rgdal will be retired by the end of 2023,\nplan transition to sf/stars/terra functions using GDAL and PROJ\nat your earliest convenience.\n\n', 'rgdal: version: ',
+  Smess <- paste('Please note that rgdal will be retired during 2023,\nplan transition to sf/stars/terra functions using GDAL and PROJ\nat your earliest convenience.\nSee https://r-spatial.org/r/2022/04/12/evolution.html and https://github.com/r-spatial/evolution\n', 'rgdal: version: ',
     utils::packageDescription("rgdal")$Version,
     ', (SVN revision ', svn_version, ')\n',
     'Geospatial Data Abstraction Library ',

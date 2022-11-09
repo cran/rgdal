@@ -210,13 +210,13 @@ trigger the error handler at the same time */
         saved_error_msg[sizeof(saved_error_msg)-1] = 0;
 }
 
-void installErrorHandler()
+void installErrorHandler(void)
 {
    CPLPushErrorHandler(__errorHandler);
    saved_err_no = 0;
 }
 
-void uninstallErrorHandlerAndTriggerError()
+void uninstallErrorHandlerAndTriggerError(void)
 {
     CPLPopErrorHandler();
     if (saved_err_no == CE_Warning) {

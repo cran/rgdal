@@ -162,6 +162,7 @@ OSRIsProjected <- function(obj) {
 
 #    if (new_proj_and_gdal()) 
 #        warning("project() will not be adapted for PROJ 6 and is deprecated")
+  .Deprecated("", package="rgdal", msg="PROJ support is provided by the sf and terra packages among others")
 
     if (!is.numeric(xy)) stop("xy not numeric")
     if (is.matrix(xy)) nc <- dim(xy)[1]

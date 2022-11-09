@@ -1,4 +1,5 @@
 writeOGR <- function(obj, dsn, layer, driver, dataset_options=NULL, layer_options=NULL, verbose=FALSE, check_exists=NULL, overwrite_layer=FALSE, delete_dsn=FALSE, morphToESRI=NULL, encoding=NULL, shp_edge_case_fix=FALSE, dumpSRS=FALSE) {
+  .Deprecated("", package="rgdal", msg="OGR support is provided by the sf and terra packages among others")
     if (missing(dsn)) stop("missing dsn")
     stopifnot(is.character(dsn))
     stopifnot(length(dsn) == 1L)

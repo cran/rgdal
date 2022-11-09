@@ -875,12 +875,14 @@ set_OVERRIDE_PROJ_DATUM_WITH_TOWGS84 <- function(value) {
 }
 
 getCPLConfigOption <- function(ConfigOption) {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
     stopifnot(is.character(ConfigOption))
     stopifnot(length(ConfigOption) == 1)
     .Call("RGDAL_CPLGetConfigOption", ConfigOption, PACKAGE="rgdal")
 }
 
 setCPLConfigOption <- function(ConfigOption, value) {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
     stopifnot(is.character(ConfigOption))
     stopifnot(length(ConfigOption) == 1)
     if (!is.null(value)) {

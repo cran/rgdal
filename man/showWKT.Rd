@@ -1,6 +1,4 @@
 \name{showWKT}
-\alias{showWKT}
-\alias{showEPSG}
 \alias{showP4}
 \alias{showSRID}
 \alias{get_P6_datum_hard_fail}
@@ -20,9 +18,7 @@ In modern workflows with PROJ >= 6 and GDAL >= 3, use only \code{showSRID()}
   DEPRECATED: Use GDAL/OGR spatial reference objects to convert a PROJ.4 representation to a Well-Known Text representation, and report an EPSG code if it can be determined by OGR SRS services.
 }
 \usage{
-showWKT(p4s, file = NULL, morphToESRI = FALSE, enforce_xy = NULL)
 showP4(wkt, morphFromESRI=FALSE, enforce_xy = NULL)
-showEPSG(p4s, enforce_xy = NULL)
 showSRID(inSRID, format="WKT2", multiline="NO", enforce_xy = NULL, EPSG_to_init=TRUE,
  prefer_proj=NULL)
 get_P6_datum_hard_fail()
@@ -38,9 +34,6 @@ OSRIsProjected(obj)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{p4s}{A valid PROJ.4 string representing a spatial reference system}
-  \item{file}{if not NULL, a file name to which the output Well-Known Text representation should be written}
-  \item{morphToESRI}{default FALSE, morph the WKT string to the representation used by ESRI; set FALSE by default 2020-03-04 to avoid occasional Windows crashes seen when passing a very modern WKT string to an old version of PROJ: \url{https://github.com/edzer/sp/issues/75}}
   \item{enforce_xy}{(PROJ6+/GDAL3+) either use global setting (default NULL) or override policy for coordinate ordering easting/x as first axis, northing/y as second axis.}
   \item{wkt}{A valid WKT character string representing a spatial reference system}
   \item{morphFromESRI}{default TRUE, morph the WKT string from the representation used by ESRI}
@@ -68,11 +61,7 @@ OSRIsProjected(obj)
 set_thin_PROJ6_warnings(TRUE)
 cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities")
 readLines(system.file("vectors/cities.prj", package = "rgdal")[1])
-showWKT(proj4string(cities))
-showWKT("+init=epsg:28992")
 showP4(showWKT("+init=epsg:28992"))
-showEPSG("+proj=utm +zone=30")
-showEPSG("+proj=longlat +ellps=WGS84")
 exts <- rgdal_extSoftVersion()
 run <- new_proj_and_gdal()
 if (run) {

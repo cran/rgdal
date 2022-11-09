@@ -25,8 +25,8 @@ SEXP make_Polygonlist(SEXP iG, SEXP iGc);
 SEXP make_Polygon(SEXP jG, SEXP jGc);
 SEXP rgdal_sp_linkingTo_version(void);
 
-void installErrorHandler();
-void uninstallErrorHandlerAndTriggerError();
+void installErrorHandler(void);
+void uninstallErrorHandlerAndTriggerError(void);
 
 SEXP RGDAL_Init(void);
 SEXP RGDAL_Exit(void);
@@ -127,15 +127,15 @@ SEXP PROJ4NADsInstalled(void); // both, different at R level ??
 SEXP PROJ4_proj_def_dat_Installed(void); // both, different at R level ??
 SEXP get_proj_search_path(void); // both
 SEXP set_proj_paths(SEXP path); // both
-SEXP get_proj_user_writable_dir(); // both
+SEXP get_proj_user_writable_dir(void); // both
 SEXP transform(SEXP fromargs, SEXP toargs, SEXP npts, SEXP x, SEXP y, SEXP z); // both
 SEXP transform_ng(SEXP fromargs, SEXP toargs, SEXP coordOp, SEXP npts, SEXP x, SEXP y, SEXP z, SEXP aoi); // both
 SEXP CRS_compare(SEXP fromargs, SEXP toargs, SEXP type1, SEXP type2);
-SEXP proj_network_enabled(); // both
-SEXP enable_proj_network(); // both
-SEXP disable_proj_network(); // both
+SEXP proj_network_enabled(void); // both
+SEXP enable_proj_network(void); // both
+SEXP disable_proj_network(void); // both
 SEXP RGDAL_projInfo(SEXP type); // both
-SEXP R_GDAL_OSR_PROJ();// GDAL
+SEXP R_GDAL_OSR_PROJ(void);// GDAL
 SEXP RGDAL_project(SEXP n, SEXP xlon, SEXP ylat, SEXP projarg, SEXP ob_tran); // both
 SEXP project_inv(SEXP n, SEXP x, SEXP y, SEXP projarg, SEXP ob_tran); // both
 SEXP project_ng(SEXP n, SEXP xlon, SEXP ylat, SEXP zz, SEXP coordOp); // both

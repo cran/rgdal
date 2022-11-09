@@ -1,6 +1,20 @@
 # Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.5-32 (development, rev. 1173-)
+# Version 1.6-2 (development, rev. 1177-)
+
+* deprecation of `project()`, `CRSargs()`, `asSGDF_GROD()`, `readGDAL()`, `writeGDAL()`, `create2GDAL()`, `showWKT()`, `showEPSG()`, `readOGR()`, `ogrFIDs()`, `ogrInfo()`, `ogrDrivers()`, `writeOGR()`, `ogrListLayers()`, `GDALinfo()`, `print.GDALobj()`, `GDALcall()`, `rawTransform()`, `OGRSpatialRef()` in favour of functions and methods ib **sf** and **terra**. 
+
+* handle -Wstrict-prototypes `int main()` to `int main(void)` in `configure.ac`
+
+* update `src/Makevars.ucrt` to upgraded MXE geospatial libraries
+
+* address https://github.com/r-spatial/sf/pull/2009
+
+* set PROJ4 warnings default to "none"
+
+* fix -Wstrict-prototypes warnings in code
+
+# Version 1.5-32 (2022-05-09, rev. 1173-1176)
 
 * update src/Makefile.ucrt to accommodate the GDAL raster Geospatial PDF driver for reading
 

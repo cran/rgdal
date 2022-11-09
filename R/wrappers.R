@@ -107,6 +107,7 @@ if (new_proj_and_gdal()) warning("NOT UPDATED FOR PROJ >= 6")
 
 # exported version
 rawTransform <- function(projfrom, projto, n, x, y, z=NULL, wkt=FALSE) {
+  .Deprecated("", package="rgdal", msg="PROJ support is provided by the sf and terra packages among others")
 	if (wkt) { 
 		# the caller determines that projfrom and projto are wkt 
 		# and that new_proj_and_gdal() returns TRUE

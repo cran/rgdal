@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-SEXP proj_network_enabled() {
+SEXP proj_network_enabled(void) {
 #if PROJ_VERSION_MAJOR > 6
     SEXP res;
 //    PJ_CONTEXT *ctx = proj_context_create();
@@ -30,7 +30,7 @@ SEXP proj_network_enabled() {
 #endif
 }
 
-SEXP enable_proj_network() {
+SEXP enable_proj_network(void) {
 #if PROJ_VERSION_MAJOR > 6
     SEXP res;
 //    PJ_CONTEXT *ctx = proj_context_create();
@@ -47,7 +47,7 @@ SEXP enable_proj_network() {
 #endif
 }
 
-SEXP disable_proj_network() {
+SEXP disable_proj_network(void) {
 #if PROJ_VERSION_MAJOR > 6
     SEXP res;
 //    PJ_CONTEXT *ctx = proj_context_create();

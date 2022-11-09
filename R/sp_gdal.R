@@ -1,4 +1,5 @@
 GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=FALSE, returnStats=TRUE, returnColorTable=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, returnScaleOffset=TRUE, allowedDrivers=NULL, enforce_xy=NULL, options=NULL) {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent,
               allowedDrivers=allowedDrivers, options=options)
@@ -145,6 +146,7 @@ GDALinfo <- function(fname, silent=FALSE, returnRAT=FALSE, returnCategoryNames=F
 }
 
 print.GDALobj <- function(x, ...) {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
 	cat("rows       ", x[1], "\n")
 	cat("columns    ", x[2], "\n")
 	cat("bands      ", x[3], "\n")
@@ -257,6 +259,7 @@ asGDALROD_SGDF <- function(from) {
 setAs("GDALReadOnlyDataset", "SpatialGridDataFrame", asGDALROD_SGDF)
 
 asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.cell=c(0.5,0.5), OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, enforce_xy=NULL) {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
 	if (!extends(class(x), "GDALReadOnlyDataset"))
 		stop("x must be or extend a GDALReadOnlyDataset")
 	d = dim(x)
@@ -320,6 +323,7 @@ asSGDF_GROD <- function(x, offset, region.dim, output.dim, p4s=NULL, ..., half.c
 }
 
 readGDAL = function(fname, offset, region.dim, output.dim, band, p4s=NULL, ..., half.cell=c(0.5,0.5), silent = FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, enforce_xy=NULL, options=NULL) {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
 	if (nchar(fname) == 0) stop("empty file name")
 	x = GDAL.open(fname, silent=silent,
               allowedDrivers=allowedDrivers, options=options)
@@ -452,6 +456,7 @@ writeGDAL = function(dataset, fname, drivername = "GTiff", type = "Float32",
 
 create2GDAL = function(dataset, drivername = "GTiff", type = "Float32", mvFlag = NA, options=NULL, fname=NULL, setStatistics=FALSE, colorTables=NULL, catNames=NULL, enforce_xy=NULL)
 {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
 	stopifnot(gridded(dataset))
 	fullgrid(dataset) = TRUE
 	if (is.na(match(type, .GDALDataTypes)))
@@ -572,6 +577,7 @@ toUnSigned <- function(x, base) {
 }
 
 "GDALSpatialRef" <- function(fname, silent=FALSE, OVERRIDE_PROJ_DATUM_WITH_TOWGS84=NULL, allowedDrivers=NULL, enforce_xy=NULL, get_source_if_boundcrs=TRUE, options=NULL) {
+  .Deprecated("", package="rgdal", msg="GDAL support is provided by the sf and terra packages among others")
 	if (nchar(fname) == 0) stop("empty file name")
 	x <- GDAL.open(fname, silent=silent,
               allowedDrivers=allowedDrivers, options=options)

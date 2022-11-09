@@ -243,7 +243,7 @@ LIBS="${INLIBS} ${PKG_LIBS}"
 #ifdef __cplusplus
 extern "C" {
 #endif
-int main() {
+int main(void) {
 GDALAllRegister();
 }
 #ifdef __cplusplus
@@ -460,7 +460,7 @@ if test -z ${PROJ_API} ; then # PROJ_API = ""
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
     printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
     exit(0);
 }
@@ -478,7 +478,7 @@ rm -f proj_conf_test_proj.c proj_conf_test_proj
 #include <stdlib.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     printf("%d\n", PJ_VERSION);
     exit(0);
 }
@@ -528,7 +528,7 @@ AC_MSG_CHECKING(proj_api.h presence and usability)
 #include <stdlib.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     printf("%d\n", PJ_VERSION);
     exit(0);
 }
@@ -618,7 +618,7 @@ AC_MSG_CHECKING(projects.h presence and usability)
 #include <stdlib.h>
 #include <projects.h>
 
-int main() {
+int main(void) {
     exit(0);
 }
 _EOCONF]
@@ -668,7 +668,7 @@ if test ${PROJ6} = "no"; then
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION == 480
     FILE *fp;
 #else
@@ -723,7 +723,7 @@ else # test for new files if PROJ6
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
     PJ_CONTEXT *ctx = proj_context_create();
     if (proj_context_get_database_path(ctx) == NULL) {
         proj_context_destroy(ctx);
@@ -774,7 +774,7 @@ fi # don't test for old files if PROJ6
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION == 480
     FILE *fp;
 #else

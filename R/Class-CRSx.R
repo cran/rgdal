@@ -22,6 +22,7 @@
 
 
 "CRSargs" <- function(object) {
+  .Deprecated("", package="rgdal", msg="PROJ support is provided by the sf and terra packages among others")
 	if (!is(object, "CRS")) stop("not a CRS object")
 
 	if (!is.na(object@projargs)) {

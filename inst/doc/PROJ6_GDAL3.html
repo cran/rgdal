@@ -130,8 +130,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -139,16 +139,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -334,7 +327,7 @@ div.tocify {
 <p>My fork of <strong>sp</strong> (<a href="https://github.com/rsbivand/sp" class="uri">https://github.com/rsbivand/sp</a>) is currently at 1.3-3 or higher, and contains extra code conditionally using the development version of <strong>rgdal</strong> on the R-Forge repository at 1.5-1 or higher. The commented out blocks marked PROJ4/GDAL2 were generated on a Windows platform with <strong>sp</strong> 1.3-2 and <strong>rgdal</strong> 1.4-7, using PROJ4/GDAL2. The other commented out blocks were <strong>sp</strong> fork and <strong>rgdal</strong> development version, revision 886. The uncommented output is what the package build platform put there.</p>
 <pre class="r"><code>library(sp)
 packageVersion(&quot;sp&quot;)</code></pre>
-<pre><code>## [1] &#39;1.4.7&#39;</code></pre>
+<pre><code>## [1] &#39;1.5.1&#39;</code></pre>
 <pre class="r"><code>## [1] &#39;1.3.3&#39;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2 [1] &#39;1.3.2&#39;</code></pre>
 <p>The <code>&quot;CRS&quot;</code> class definition is unchanged going forward to maintain backward compatibility.</p>
@@ -347,21 +340,18 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## Class: character</code></pre>
 <pre class="r"><code>rgdal::rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.5.0&quot;         &quot;TRUE&quot;        &quot;9.0.0&quot;        &quot;1.4-7&quot;      &quot;v10.054&quot;</code></pre>
+##        &quot;3.5.3&quot;         &quot;TRUE&quot;        &quot;9.1.0&quot;        &quot;1.5-1&quot;      &quot;v10.074&quot;</code></pre>
 <pre class="r"><code>##           GDAL GDAL_with_GEOS           PROJ             sp 
 ##        &quot;3.0.2&quot;         &quot;TRUE&quot;        &quot;6.2.1&quot;        &quot;1.3-3&quot;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2           GDAL GDAL_with_GEOS         PROJ.4             sp 
 ## PROJ4/GDAL2        &quot;2.2.3&quot;         &quot;TRUE&quot;        &quot;4.9.3&quot;        &quot;1.3-1&quot;</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.5.32&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.2&#39;</code></pre>
 <pre class="r"><code>## [1] &#39;1.5.1&#39;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2 [1] &#39;1.4.7&#39;</code></pre>
 <p>The changes introduced affect <code>CRS()</code> when <strong>rgdal</strong> is available; if <strong>rgdal</strong> is not available, the <code>&quot;CRS&quot;</code> object just contains a lightly checked PROJ-style string. Because some terms are deprecated or defunct from PROJ6/GDAL3, we need to be careful. GDAL’s <code>exportToProj4()</code> uses the PROJ <code>proj_as_proj_string()</code> function in its new API to return the PROJ string. Terms which are deprecated or defunct may be omitted. In the PROJ6+/GDAL3+ case, <code>CRS()</code> calls <code>rgdal::checkCRSArgs_ng()</code>, a new generation function replacing the legacy <code>rgdal::checkCRSArgs()</code> function.</p>
 <p>It passes on the input PROJ-style string to <code>rgdal::showSRID()</code>, which is a many-to-many converter. It can take PROJ-style strings, WKT strings, urn-style strings and EPSG-style strings, and converts to WKT (many types) and PROJ. The PROJ-to-PROJ conversion is equivalent to PROJ4/GDAL2 behaviour, using <code>importFromProj4()</code> and friends to instantiate an SRS object in GDAL, and <code>exportToProj4()</code> and <code>exportToWkt()</code> to emit strings. If the output string appears to be missing a specification term implied by the input, a warning is given; the warnings are at present overly cautious.</p>
 <pre class="r"><code>(crs &lt;- CRS(&quot;+proj=longlat +ellps=WGS84&quot;))</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj
-## = prefer_proj): Discarded datum Unknown based on WGS84 ellipsoid in Proj4
-## definition</code></pre>
 <pre><code>## Coordinate Reference System:
 ## Deprecated Proj.4 representation: +proj=longlat +ellps=WGS84 +no_defs 
 ## WKT2 2019 representation:
@@ -601,9 +591,6 @@ packageVersion(&quot;sp&quot;)</code></pre>
 <p>From <strong>sp</strong> 1.3-3 (my fork), <code>CRS()</code> takes a third argument to the legacy two, <code>projargs=</code> and <code>doCheckCRSArgs=TRUE</code>: <code>SRS_string=NULL</code>. This can take any string that <code>rgdal::showSRID()</code> can handle. The warning follows use of <code>exportToProj4()</code>:</p>
 <pre class="r"><code>run &lt;- rgdal::new_proj_and_gdal()</code></pre>
 <pre class="r"><code>(crs &lt;- CRS(SRS_string = &quot;EPSG:27700&quot;))</code></pre>
-<pre><code>## Warning in showSRID(SRS_string, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj
-## = prefer_proj): Discarded datum Ordnance Survey of Great Britain 1936 in Proj4
-## definition</code></pre>
 <pre><code>## Coordinate Reference System:
 ## Deprecated Proj.4 representation:
 ##  +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
@@ -690,8 +677,6 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## -9.2, 61.14, 2.88]], ID[\&quot;EPSG\&quot;, 27700]]&quot;</code></pre>
 <p>We can also use a more detailed PROJ string, but without any improvement of the output PROJ representation; the comment is OK:</p>
 <pre class="r"><code>(crs &lt;- CRS(&quot;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +datum=OSGB36 +units=m +no_defs&quot;))</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
-## prefer_proj): Discarded datum OSGB 1936 in Proj4 definition</code></pre>
 <pre><code>## Coordinate Reference System:
 ## Deprecated Proj.4 representation:
 ##  +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
@@ -866,8 +851,6 @@ packageVersion(&quot;sp&quot;)</code></pre>
 <pre class="r"><code>run &lt;- new_proj_and_gdal()</code></pre>
 <p>We can first show what happens when searching for instantiable coordinate operations. These are coordinate operations that can be created by look-up in the PROJ database given the information in the input description. Here the datum has been discarded.</p>
 <pre class="r"><code>(discarded_datum &lt;- showSRID(&quot;EPSG:27700&quot;, &quot;PROJ&quot;))</code></pre>
-<pre><code>## Warning in showSRID(&quot;EPSG:27700&quot;, &quot;PROJ&quot;): Discarded datum Ordnance Survey of
-## Great Britain 1936 in Proj4 definition</code></pre>
 <pre><code>## [1] &quot;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs +type=crs&quot;</code></pre>
 <pre class="r"><code>## Warning in showSRID(&quot;EPSG:27700&quot;, &quot;PROJ&quot;): Discarded datum OSGB_1936 in CRS
 ## definition</code></pre>
@@ -1091,8 +1074,6 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:4326&quot;, &quot;WKT2&quot;)
 ## [1] &quot;Inverse of British National Grid + OSGB 1936 to WGS 84 (6) + axis order change (2D)&quot;</code></pre>
 <p>Turning to a different example, a Brazilian UTM25S Corrego Alegre 1970-72 datum, and looking for coordinate operations transform to UTM25S SIRGAS 2000, we see that a <code>+towgs84=</code> tag was preserved.</p>
 <pre class="r"><code>discarded_datum &lt;- showSRID(&quot;EPSG:22525&quot;, &quot;PROJ&quot;)</code></pre>
-<pre><code>## Warning in showSRID(&quot;EPSG:22525&quot;, &quot;PROJ&quot;): Discarded datum Corrego Alegre
-## 1970-72 in Proj4 definition</code></pre>
 <pre class="r"><code>## Warning in showSRID(&quot;EPSG:22525&quot;, &quot;PROJ&quot;): Discarded datum Corrego_Alegre_1970-72 in CRS definition,
 ##  but +towgs84= values preserved</code></pre>
 <p>This meant that while only ballpark accuracy is reported, a Helmert transformation is carried out:</p>
@@ -1351,12 +1332,14 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 <h2>Transformations</h2>
 <p>The problem raised by the modernisation of PROJ can be encapsulated in this example of Scotland (once again the commented out runs are from a PROJ62/GDAL30 platform, the live runs from the platform building the vignette):</p>
 <pre class="r"><code>scot_BNG &lt;- readOGR(system.file(&quot;vectors&quot;, package=&quot;rgdal&quot;), &quot;scot_BNG&quot;)</code></pre>
-<pre><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS
-## = dumpSRS, : Discarded datum Ordnance_Survey_of_Great_Britain_1936 in Proj4
-## definition: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
-## +y_0=-100000 +ellps=airy +units=m +no_defs</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/Rtmpwzf5I7/Rinst21b9c9d4ca94/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpUjAhvU/Rinst142ccc10492ea/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1378,8 +1361,9 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 <pre class="r"><code>## [1] TRUE</code></pre>
 <p>(Again, commented output blocks are run on a PROJ6/GDAL3 platform). This demonstration was impacted by PROJ 6.3.0 fragility, with the <code>+ellps=</code> tag vanishing (with the <code>+units=</code> tag) apparently arbitrarily. A tentative diagnosis is that the datum node of the OGRSpatialReference object becomes unavailable, although why some change in PROJ leads to this aberration is unknown.</p>
 <pre class="r"><code>set_transform_wkt_comment(FALSE)
-scot_LL &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;))
-(b0 &lt;- bbox(scot_LL))</code></pre>
+scot_LL &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
+<pre class="r"><code>(b0 &lt;- bbox(scot_LL))</code></pre>
 <pre><code>##         min       max
 ## x -8.621387 -0.753056
 ## y 54.626555 60.843843</code></pre>
@@ -1441,8 +1425,9 @@ scot_LL &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;))
 <p>and updating the PROJ string in-place if we know a sensible incantation:</p>
 <pre class="r"><code>slot(crs, &quot;projargs&quot;) &lt;- paste0(slot(crs, &quot;projargs&quot;), &quot; +datum=OSGB36&quot;)
 slot(scot_BNG, &quot;proj4string&quot;) &lt;- crs
-scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;))
-(b1 &lt;- bbox(scot_LL1))</code></pre>
+scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
+<pre class="r"><code>(b1 &lt;- bbox(scot_LL1))</code></pre>
 <pre><code>##         min        max
 ## x -8.622158 -0.7550709
 ## y 54.626633 60.8432318</code></pre>
@@ -1460,12 +1445,14 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <p>Re-instating the use of WKT comments lets us use the transformation path which instantiates the coordinate operation from the WKT strings in the <code>&quot;CRS&quot;</code> object comments:</p>
 <pre class="r"><code>set_transform_wkt_comment(load_status)</code></pre>
 <pre class="r"><code>scot_BNG &lt;- readOGR(system.file(&quot;vectors&quot;, package=&quot;rgdal&quot;), &quot;scot_BNG&quot;)</code></pre>
-<pre><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS
-## = dumpSRS, : Discarded datum Ordnance_Survey_of_Great_Britain_1936 in Proj4
-## definition: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
-## +y_0=-100000 +ellps=airy +units=m +no_defs</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
+<pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/Rtmpwzf5I7/Rinst21b9c9d4ca94/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpUjAhvU/Rinst142ccc10492ea/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1483,8 +1470,9 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 ## datum Unknown_based_on_Airy_1830_ellipsoid in CRS definition</code></pre>
 <p>In <strong>rgdal</strong> 1.5-2, the coordinate operation lookup is done once for the first matrix of coordinates, and passed then on to subsequent transformations:</p>
 <pre class="r"><code>system.time(scot_LL2 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.045   0.000   0.045</code></pre>
+##   0.047   0.000   0.047</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.095   0.000   0.096</code></pre>
 <p>Timings for <strong>rgdal</strong> 1.5-1, when look-up was repeated for each matrix of coordinates:</p>
@@ -1511,8 +1499,9 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <p>If a given coordinate operation needs to be repeated, a good deal of time can be saved, as searches for coordinate operations take place once for <code>&quot;SpatialPoints&quot;</code> objects, but for <code>&quot;SpatialLines&quot;</code> and <code>&quot;SpatialPolygons&quot;</code> objects once for each “<code>Line&quot;</code> or <code>&quot;Polygon&quot;</code> object:</p>
 <pre class="r"><code>system.time(scot_LL3 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;),
                                     coordOp=get_last_coordOp()))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.043   0.000   0.043</code></pre>
+##   0.038   0.000   0.039</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.070</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL3), scale=1)</code></pre>
@@ -1524,8 +1513,9 @@ wkt_target_datum &lt;- comment(CRS(&quot;+proj=longlat +datum=WGS84&quot;))
 x &lt;- list_coordOps(wkt_source_datum, wkt_target_datum)
 system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;),
                                     coordOp=best_instantiable_coordOp(x)))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.042   0.000   0.042</code></pre>
+##   0.038   0.000   0.039</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.069</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL4), scale=1)</code></pre>
@@ -1537,23 +1527,14 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
 <p>Luigi Ranghetti and Lorenzo Busetto provided <a href="http://rpubs.com/ranghetti/sptransform-issue">input</a> with regard to axis swapping in <strong>rgdal</strong>. The task is to provide round-trip coordinate identity for four CRS. Here, we use just <strong>sp</strong>/<strong>rgdal</strong> to create the input objects:</p>
 <pre class="r"><code>library(rgdal)</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.5.32&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.2&#39;</code></pre>
 <pre class="r"><code>rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.5.0&quot;         &quot;TRUE&quot;        &quot;9.0.0&quot;        &quot;1.4-7&quot;      &quot;v10.054&quot;</code></pre>
+##        &quot;3.5.3&quot;         &quot;TRUE&quot;        &quot;9.1.0&quot;        &quot;1.5-1&quot;      &quot;v10.074&quot;</code></pre>
 <pre class="r"><code>pt0_lonlat &lt;- SpatialPoints(matrix(c(10,46), nrow=1), proj4string= CRS(&quot;+init=epsg:4326&quot;))
-pt0_laea89 &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3035&quot;))</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj
-## = prefer_proj): Discarded datum European_Terrestrial_Reference_System_1989 in
-## Proj4 definition</code></pre>
-<pre class="r"><code>pt0_wgs32n &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:32632&quot;))
+pt0_laea89 &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3035&quot;))
+pt0_wgs32n &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:32632&quot;))
 pt0_psmerc &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3857&quot;))</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
-## prefer_proj): Discarded ellps WGS 84 in Proj4 definition: +proj=merc +a=6378137
-## +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null
-## +wktext +no_defs</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
-## prefer_proj): Discarded datum WGS_1984 in Proj4 definition</code></pre>
 <pre class="r"><code>coordinates(pt0_lonlat)</code></pre>
 <pre><code>##      coords.x1 coords.x2
 ## [1,]        10        46</code></pre>
@@ -1571,17 +1552,6 @@ pt0_psmerc &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3857&quot;))</code
 names(from)</code></pre>
 <pre><code>## [1] &quot;pt0_lonlat&quot; &quot;pt0_psmerc&quot; &quot;pt0_wgs32n&quot; &quot;pt0_laea89&quot;</code></pre>
 <pre class="r"><code>sapply(from, proj4string)</code></pre>
-<pre><code>## Warning in FUN(X[[i]], ...): CRS object has comment, which is lost in output; in tests, see
-## https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html
-
-## Warning in FUN(X[[i]], ...): CRS object has comment, which is lost in output; in tests, see
-## https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html
-
-## Warning in FUN(X[[i]], ...): CRS object has comment, which is lost in output; in tests, see
-## https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html
-
-## Warning in FUN(X[[i]], ...): CRS object has comment, which is lost in output; in tests, see
-## https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</code></pre>
 <pre><code>##                                                                                                         pt0_lonlat 
 ##                                                                              &quot;+proj=longlat +datum=WGS84 +no_defs&quot; 
 ##                                                                                                         pt0_psmerc 
@@ -1750,6 +1720,7 @@ out_EPSG_non_viz2</code></pre>
 -5.24836150474498, -5.68430388755925, NA, NA), .Dim = c(10L, 
 2L), .Dimnames = list(NULL, c(&quot;longitude&quot;, &quot;latitude&quot;)))
 try(xy0 &lt;- project(ll, &quot;+proj=moll&quot;, legacy=TRUE, verbose=TRUE))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## +proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step
 ## +proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84</code></pre>
 <pre class="r"><code>if (!exists(&quot;xy0&quot;)) xy0 &lt;- structure(c(1217100.8468177, 1191302.229156,
@@ -1759,22 +1730,31 @@ try(xy0 &lt;- project(ll, &quot;+proj=moll&quot;, legacy=TRUE, verbose=TRUE))</c
 -616845.926397351, -648585.161643274, -702393.1160979, NA, NA), 
 .Dim = c(10L, 2L), .Dimnames = list(NULL, c(&quot;longitude&quot;, &quot;latitude&quot;)))
 try(ll0 &lt;- project(xy0, &quot;+proj=moll&quot;, inv=TRUE, legacy=TRUE, verbose=TRUE))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others
+
+## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## +proj=pipeline +step +inv +proj=moll +lon_0=0 +x_0=0 +y_0=0
 ## +ellps=WGS84 +step +proj=unitconvert +xy_in=rad +xy_out=deg</code></pre>
 <pre class="r"><code>if (exists(&quot;ll0&quot;)) all.equal(ll, ll0)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>It is possible to use the <code>coordOp=</code> argument to pass through a known transformation pipeline:</p>
 <pre class="r"><code>try(xy1 &lt;- project(ll, &quot;+proj=moll&quot;, legacy=TRUE, coordOp=paste(&quot;+proj=pipeline +step&quot;,
-&quot;+proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=moll +lon_0=0 +x_0=0 +y_0=0 ellps=WGS84&quot;)))
-try(ll1 &lt;- project(xy1, &quot;+proj=moll&quot;, inv=TRUE, legacy=TRUE, coordOp=paste(&quot;+proj=pipeline +step&quot;, 
-&quot;+inv +proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +step +proj=unitconvert +xy_in=rad +xy_out=deg&quot;)))
-if (exists(&quot;ll1&quot;)) all.equal(ll, ll1)</code></pre>
+&quot;+proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=moll +lon_0=0 +x_0=0 +y_0=0 ellps=WGS84&quot;)))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
+<pre class="r"><code>try(ll1 &lt;- project(xy1, &quot;+proj=moll&quot;, inv=TRUE, legacy=TRUE, coordOp=paste(&quot;+proj=pipeline +step&quot;, 
+&quot;+inv +proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +step +proj=unitconvert +xy_in=rad +xy_out=deg&quot;)))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
+<pre class="r"><code>if (exists(&quot;ll1&quot;)) all.equal(ll, ll1)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>WKT &lt;- CRS(&quot;+proj=moll&quot;)
 try(xy2 &lt;- project(ll, comment(WKT), legacy=TRUE, verbose=TRUE))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## +proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step
 ## +proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84</code></pre>
 <pre class="r"><code>try(ll2 &lt;- project(xy1, comment(WKT), inv=TRUE, legacy=TRUE, verbose=TRUE))</code></pre>
+<pre><code>## Warning: PROJ support is provided by the sf and terra packages among others
+
+## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## +proj=pipeline +step +inv +proj=moll +lon_0=0 +x_0=0 +y_0=0
 ## +ellps=WGS84 +step +proj=unitconvert +xy_in=rad +xy_out=deg</code></pre>
 <pre class="r"><code>if (exists(&quot;ll2&quot;)) all.equal(ll, ll2)</code></pre>
