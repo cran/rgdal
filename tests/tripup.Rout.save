@@ -1,6 +1,6 @@
 
-R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
-Copyright (C) 2020 The R Foundation for Statistical Computing
+R Under development (unstable) (2022-12-10 r83428) -- "Unsuffered Consequences"
+Copyright (C) 2022 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -23,6 +23,8 @@ Type 'q()' to quit R.
 > comment(slot(Ps1_nc, "polygons")[[1]]) <- NULL
 > drivers <- c("GeoJSON", "ESRI Shapefile")
 > drivers <- drivers[drivers %in% ogrDrivers()$name]
+Warning message:
+OGR support is provided by the sf and terra packages among others 
 > tfbase <- tempfile()
 > for (driver in drivers) {
 + tf <- paste0(tfbase, driver, "P", sep=".")
@@ -297,7 +299,8 @@ Writing 1 wkbMultiPolygon objects
 Ps1_nc with driver: ESRI Shapefile 
  coords TRUE 
  holes TRUE 
+There were 50 or more warnings (use warnings() to see the first 50)
 > 
 > proc.time()
    user  system elapsed 
-  3.956   0.066   4.418 
+  3.538   0.067   3.607 

@@ -1,3 +1,8 @@
+## ---- echo=FALSE, results='hide'----------------------------------------------
+td <- tempfile()
+dir.create(td)
+Sys.setenv("PROJ_USER_WRITABLE_DIRECTORY"=td)
+
 ## -----------------------------------------------------------------------------
 library(sp)
 packageVersion("sp")

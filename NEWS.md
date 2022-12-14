@@ -1,6 +1,12 @@
 # Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.6-2 (development, rev. 1177-)
+# Version 1.6-3 (development, rev. 1184-)
+
+* CRAN error in possibly writing outside tempdir
+
+* CRAN error in printing stored stale `sessionInfo()` output in vignette
+
+# Version 1.6-2 (2022-11-09, rev. 1177-1183)
 
 * deprecation of `project()`, `CRSargs()`, `asSGDF_GROD()`, `readGDAL()`, `writeGDAL()`, `create2GDAL()`, `showWKT()`, `showEPSG()`, `readOGR()`, `ogrFIDs()`, `ogrInfo()`, `ogrDrivers()`, `writeOGR()`, `ogrListLayers()`, `GDALinfo()`, `print.GDALobj()`, `GDALcall()`, `rawTransform()`, `OGRSpatialRef()` in favour of functions and methods ib **sf** and **terra**. 
 
@@ -8,7 +14,7 @@
 
 * update `src/Makevars.ucrt` to upgraded MXE geospatial libraries
 
-* address https://github.com/r-spatial/sf/pull/2009
+* address https://github.com/r-spatial/sf/pull/2009 in `src/Makevars.ucrt`
 
 * set PROJ4 warnings default to "none"
 

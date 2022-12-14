@@ -30,6 +30,12 @@ We've established that we should have preferred WKT over PROJ strings starting e
 
 # Migration to PROJ6/GDAL3
 
+```{r, echo=FALSE, results='hide'}
+td <- tempfile()
+dir.create(td)
+Sys.setenv("PROJ_USER_WRITABLE_DIRECTORY"=td)
+```
+
 ## PROJ
 
 Because so much open source (and other) software uses the PROJ library and framework, many are affected when PROJ upgrades. Until very recently, PROJ has been seen as very reliable, and the changes taking place now are intended to confirm and reinforce this reliability. Before PROJ 5 (PROJ 6 is out now, PROJ 7 is coming early in 2020), the `+datum=` tag was used, perhaps with `+towgs84=` with three or seven coefficients, and possibly `+nadgrids=` where datum transformation grids were available. However, transformations from one projection to another first inversed to longitude-latitude in WGS84, then projected on to the target projection.

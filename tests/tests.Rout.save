@@ -1,6 +1,6 @@
 
-R version 3.5.0 (2018-04-23) -- "Joy in Playing"
-Copyright (C) 2018 The R Foundation for Statistical Computing
+R Under development (unstable) (2022-12-10 r83428) -- "Unsuffered Consequences"
+Copyright (C) 2022 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -32,49 +32,87 @@ Error in .local(.Object, ...) : No driver registered with name: GeoTIFF
 
 > fn <- system.file("pictures/erdas_spnad83.tif", package = "rgdal")[1]
 > x <- GDALinfo(fn)
-Warning message:
-In GDALinfo(fn) : statistics not supported by this driver
+Warning messages:
+1: GDAL support is provided by the sf and terra packages among others 
+2: GDAL support is provided by the sf and terra packages among others 
+3: In GDALinfo(fn) : statistics not supported by this driver
 > try(erdas_spnad83 <- readGDAL(fn, offset=c(500, 1000), region.dim=c(400, 400), silent=TRUE))
 Error in getRasterData(x, band = band, offset = offset, region.dim = region.dim,  : 
   Failure during raster IO
 
+In addition: Warning messages:
+1: GDAL support is provided by the sf and terra packages among others 
+2: GDAL support is provided by the sf and terra packages among others 
 > try(erdas_spnad83 <- readGDAL(fn, region.dim=c(4000, 400), silent=TRUE))
 Error in getRasterData(x, band = band, offset = offset, region.dim = region.dim,  : 
   Failure during raster IO
 
+In addition: Warning messages:
+1: GDAL support is provided by the sf and terra packages among others 
+2: GDAL support is provided by the sf and terra packages among others 
 > x <- readGDAL(fn, silent=TRUE)
+Warning messages:
+1: GDAL support is provided by the sf and terra packages among others 
+2: GDAL support is provided by the sf and terra packages among others 
 > tf <- tempfile()
 > try(writeGDAL(x, tf, drivername="GTiff", type="Byte", options="INTERLEAVE=PIXIL"))
 Error in .local(.Object, ...) : Unable to create dataset
 
-In addition: Warning message:
-In create2GDAL(dataset = dataset, drivername = drivername, type = type,  :
+In addition: Warning messages:
+1: GDAL support is provided by the sf and terra packages among others 
+2: In create2GDAL(dataset = dataset, drivername = drivername, type = type,  :
   mvFlag=NA unsuitable for type Byte
 > try(writeGDAL(x, tf, drivername="GeoTiff", type="Byte"))
 Error in .local(.Object, ...) : No driver registered with name: GeoTiff
 
-In addition: Warning message:
-In create2GDAL(dataset = dataset, drivername = drivername, type = type,  :
+In addition: Warning messages:
+1: GDAL support is provided by the sf and terra packages among others 
+2: In create2GDAL(dataset = dataset, drivername = drivername, type = type,  :
   mvFlag=NA unsuitable for type Byte
 > dsn <- system.file("vectors", package = "rgdal")[1]
 > x <- try(ogrInfo(dsn=dsn, layer="citis"))
 Error in ogrInfo(dsn = dsn, layer = "citis") : Cannot open layer
+In addition: Warning message:
+OGR support is provided by the sf and terra packages among others 
 > try(OGRSpatialRef(dsn=dsn, layer="scot_BMG"))
 Error in OGRSpatialRef(dsn = dsn, layer = "scot_BMG") : Cannot open layer
+In addition: Warning messages:
+1: OGR support is provided by the sf and terra packages among others 
+2: OGR support is provided by the sf and terra packages among others 
 > dsn <- system.file("vectors/test_trk2.gpx", package = "rgdal")[1]
 > try(readOGR(dsn=dsn, layer="trucks", verbose=FALSE))
 Error in ogrInfo(dsn = dsn, layer = layer, encoding = encoding, use_iconv = use_iconv,  : 
   Cannot open layer
+In addition: Warning messages:
+1: OGR support is provided by the sf and terra packages among others 
+2: OGR support is provided by the sf and terra packages among others 
 > cities <- readOGR(system.file("vectors", package = "rgdal")[1], "cities", verbose=FALSE)
+Warning messages:
+1: OGR support is provided by the sf and terra packages among others 
+2: OGR support is provided by the sf and terra packages among others 
+3: OGR support is provided by the sf and terra packages among others 
+4: OGR support is provided by the sf and terra packages among others 
+5: OGR support is provided by the sf and terra packages among others 
+6: OGR support is provided by the sf and terra packages among others 
 > td <- tempdir()
 > try(writeOGR(cities, td, "cities", driver="ESRI_Shapefile"))
 Error in writeOGR(cities, td, "cities", driver = "ESRI_Shapefile") : 
   No such driver: ESRI_Shapefile
+In addition: Warning messages:
+1: OGR support is provided by the sf and terra packages among others 
+2: OGR support is provided by the sf and terra packages among others 
 > x <- '{"type":"Point","coordinates":[-99.74,32.45]}"'
 > try(rgdal::readOGR(x, "OGRGeoJSON", verbose = FALSE))
       coordinates FID
 1 (-99.74, 32.45)   0
+Warning messages:
+1: OGR support is provided by the sf and terra packages among others 
+2: OGR support is provided by the sf and terra packages among others 
+3: OGR support is provided by the sf and terra packages among others 
+4: OGR support is provided by the sf and terra packages among others 
+5: OGR support is provided by the sf and terra packages among others 
+6: OGR support is provided by the sf and terra packages among others 
 > 
 > proc.time()
    user  system elapsed 
-  0.543   0.019   0.555 
+  0.534   0.044   0.572 

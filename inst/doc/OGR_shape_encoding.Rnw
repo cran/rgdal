@@ -127,10 +127,10 @@ Despite the uncertainty present in the LDID and codepage definitions, it is poss
 load(paste(dsn, .Platform$file.sep, "point_LinuxGDAL.RData", sep=""))
 @
 <<echo=TRUE,eval=FALSE>>=
-sessionInfo()
+sessionInfo()$locale
 @
 <<echo=FALSE,eval=TRUE>>=
-sI_1
+sI_1$locale
 @
 \noindent
 This system has \pkg{rgdal} installed from source, using GDAL also installed from source. Similar behaviour will be found on other similar systems, also including \pkg{rgdal} installed from source under OSX, built against the Kyngchaos GDAL framework. Here, we can check that iconv is available in GDAL:
@@ -221,10 +221,10 @@ Next we turn to the GDAL without iconv case. The data displayed here are pre-sto
 load(paste(dsn, .Platform$file.sep, "point_WinCRAN.RData", sep=""))
 @
 <<echo=TRUE,eval=FALSE>>=
-sessionInfo()
+sessionInfo()$locale
 @
 <<echo=FALSE,eval=TRUE>>=
-sI
+sI$locale
 @
 <<echo=TRUE,eval=FALSE>>=
 unlist(l10n_info())

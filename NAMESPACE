@@ -9,11 +9,12 @@ importFrom(stats, sd, offset, na.omit)
 importFrom(utils, packageVersion)
 importFrom("utils", "read.csv")
 
-# packages using exported rgdal functions 2022-08-11 
+# packages using exported rgdal functions 2022-08-11 and 2022-12-06
+# moved after deprecation date if no longer present at latest pkgapi check 
 
 
 #exportMethods(spTransform)
-exportMethods(closeDataset) # raster ursa
+exportMethods(closeDataset) # (gone 2212 raster) ursa
 exportMethods(initialize) # 
 exportMethods(summary) # 
 exportMethods(
@@ -34,27 +35,27 @@ exportClass(
 )
 
 export(
- rgdal_extSoftVersion, # ConR
+ rgdal_extSoftVersion, # (gone 2212 ConR)
  PROJis6ormore, # 
  GDALis3ormore, # sdmpredictors
  GDAL_OSR_PROJ,  # 
- new_proj_and_gdal # inlabru raster sp
+ new_proj_and_gdal # inlabru (gone 2212 raster) (new 2212 micromapST) sp
 )
 
 export(
- project, # ConR ctmm envirem eseis FIESTAutils geometr hyperbrick kernelPhil lingtypology paleofire red tripEstimation ursa deprecated 2022-10-11
+ project, # ConR ctmm (new 2212 eixport) envirem eseis FIESTAutils hyperbrick kernelPhil paleofire red tripEstimation ursa deprecated 2022-10-11 geometr lingtypology
  make_EPSG, # FIESTAutils
- projInfo, # crestr FIESTAutils raster
+ projInfo, # crestr FIESTAutils (gone 2212 raster)
  getPROJ4VersionInfo, # elevatr
  getPROJ4libPath, # 
  projNAD, # 
  EPSG_version # 
 )
 export(
- CRSargs, # geonetwork inlabru inlmisc intamap plotKML rosm RSurvey rtop TOC tripEstimation ursa deprecated 2022-10-12
+ CRSargs, # geonetwork inlabru intamap (new 2212 micromapST) plotKML rosm rtop TOC tripEstimation ursa deprecated 2022-10-12 inlmisc RSurvey
  checkCRSArgs, # RSurvey sp
  checkCRSArgs_ng, # sp
- compare_CRS # raster
+ compare_CRS #  (gone 2212 raster)
 )
 export(
  get_P6_datum_hard_fail, # 
@@ -63,49 +64,49 @@ export(
  set_transform_wkt_comment, # 
  get_last_coordOp, # 
  get_thin_PROJ6_warnings, # inlabru
- set_thin_PROJ6_warnings, # inlabru reproducible
+ set_thin_PROJ6_warnings, # inlabru (gone 2212 reproducible) (new 2212 micromapST)
  get_enforce_xy, # 
  set_enforce_xy, # 
  get_prefer_proj, # 
  set_prefer_proj, # 
  get_rgdal_show_exportToProj4_warnings, # inlabru
- set_rgdal_show_exportToProj4_warnings, # inlabru
+ set_rgdal_show_exportToProj4_warnings, # inlabru (new 2212 micromapST)
  get_PROJ6_warnings_count # 
 )
 export(
- putRasterData, # atakrig FIESTAutils raster ursa
- saveDataset, # FIESTAutils raster ursa
+ putRasterData, # atakrig FIESTAutils (gone 2212 raster) ursa
+ saveDataset, # FIESTAutils (gone 2212 raster) ursa
  copyDataset, # FIESTAutils
  deleteDataset, # 
  saveDatasetAs # 
 )
 export(
  getGDALDriverNames, # 
- getDriverName, # raster ursa
+ getDriverName, # (gone 2212 raster) ursa
  getDriverLongName, # 
- gdalDrivers # ebirdst raster rgrass7
+ gdalDrivers # ebirdst (gone 2212 raster) rgrass7
 )
 export(
- getDescription # FIESTAutils raster
+ getDescription # FIESTAutils (gone 2212 raster)
 )
 export(
- getRasterData, # FIESTAutils raster ursa
+ getRasterData, # FIESTAutils (gone 2212 raster) ursa
  getRasterTable, # 
  getProjectionRef # FIESTAutils
 )
 export(
- getRasterBand, # FIESTAutils raster
- getRasterBlockSize # raster
+ getRasterBand, # FIESTAutils (gone 2212 raster)
+ getRasterBlockSize # (gone 2212 raster)
 )
 export(
  toSigned, # 
  toUnSigned # 
 )
 export(
- getDriver, # raster ursa
- GDAL.close, # FIESTAutils raster ursa
- GDAL.open, # FIESTAutils raster
- getColorTable, # raster
+ getDriver, # (gone 2212 raster) ursa
+ GDAL.close, # FIESTAutils (gone 2212 raster) ursa
+ GDAL.open, # FIESTAutils (gone 2212 raster)
+ getColorTable, # (gone 2212 raster)
  getGeoTransFunc, # 
  sub.GDROD, # 
  SGDF2PCT, # 
@@ -114,30 +115,30 @@ export(
  RGB2PCT # 
 )
 export(
- readGDAL, # inlabru openSTARS plotKML pRecipe rdwd rgrass7 deprecated 2022-10-11
+ readGDAL, # inlabru openSTARS plotKML rdwd rgrass7 deprecated 2022-10-11 pRecipe
  writeGDAL, # ParallelDSM plotKML sperich deprecated 2022-10-11
  create2GDAL # deprecated 2022-10-11
 )
 export(
  showWKT, # geotopbricks quickmapr rpostgis ursa deprecated 2022-10-12
  showEPSG, # postGIStools rpostgis deprecated 2022-10-12
- showP4, # RSurvey ursa
+ showP4, # (gone 2212 RSurvey) ursa
  showSRID, # inlabru
  list_coordOps, # 
  best_instantiable_coordOp # 
 )
 export(
- readOGR, # actel agriwater APfun ASIP BARIS bdvis bfsMaps biosurvey briskaR chronosphere cropDemand cropZoning disdat eechidna ExposR FedData FIESTAutils HurreconR hyfo iconr importinegi intamap ipumsr LabourMarketAreas letsR malariaAtlas mapmisc mapReasy MazamaSpatialUtils modchart naijR OasisR onemapsgapi openSTARS plotKML pRecipe PReMiuM raster rcanvec rdhs ref.ICAR rgplates rgrass7 riverdist rmapzen rnaturalearth rnoaa RSAGA RSIP RSurvey RTL secrlinear SegEnvIneq ShapePattern SSN tigris TUFLOWR ursa wux deprecated 2022-10-11
+ readOGR, # actel agriwater APfun ASIP BARIS bdvis bfsMaps biosurvey briskaR chronosphere cropDemand cropZoning disdat eechidna ExposR FIESTAutils HurreconR hyfo iconr importinegi intamap ipumsr LabourMarketAreas letsR malariaAtlas mapmisc mapReasy (new 2212 micromapST) modchart naijR OasisR (new 2212 occTest) openSTARS plotKML rcanvec rdhs ref.ICAR rgrass7 riverdist rmapzen rnaturalearth rnoaa RSAGA RSIP RTL secrlinear SegEnvIneq ShapePattern SSN tigris TUFLOWR ursa wux deprecated 2022-10-11 FedData MazamaSpatialUtils onemapsgapi pRecipe PReMiuM raster rgplates RSurvey
  ogrInfo, # bnspatial nhdR ursa deprecated 2022-10-11
  ogrFIDs, # deprecated 2022-10-11
  ogrDrivers, # rgrass7 deprecated 2022-10-11
- writeOGR, # animaltracker APfun AQuadtree BIEN chronosphere ConR ctmm dssd FedData foster GADMTools gDefrag GmAMisc GPSeqClus grainscape iSDM LabourMarketAreas movecost OCNet openSTARS paleofire plotKML prevR PWFSLSmoke rangemap raster rcanvec rgplates rgrass7 RSAGA Rsagacmd RSurvey ShapePattern SSN uavRmp ursa deprecated 2022-10-11
- ogrListLayers # eechidna FedData mapReasy nhdR rmapzen rnoaa ursa deprecated 2022-10-11
+ writeOGR, # animaltracker APfun AQuadtree BIEN chronosphere ConR ctmm dssd foster gDefrag GmAMisc GPSeqClus grainscape iSDM LabourMarketAreas (new 2212 micromapST) movecost (new 2212 occTest) OCNet openSTARS paleofire plotKML prevR PWFSLSmoke rangemap rcanvec rgrass7 RSAGA Rsagacmd RSurvey ShapePattern SSN uavRmp ursa deprecated 2022-10-11 FedData GADMTools raster rgplates
+ ogrListLayers # eechidna mapReasy nhdR rmapzen rnoaa ursa deprecated 2022-10-11 FedData
 )
 export(
- GDALinfo, # APfun bnspatial FIESTA FIESTAutils raster rgrass7 sen2r ursa deprecated 2022-10-11
+ GDALinfo, # APfun bnspatial FIESTA FIESTAutils rgrass7 sen2r ursa deprecated 2022-10-11 raster
  print.GDALobj, # deprecated 2022-10-11
- getGDALVersionInfo, # reproducible
+ getGDALVersionInfo, # (gone 2212 reproducible)
  getGDALCheckVersion, # geoviz
  getGDAL_DATA_Path, # 
  getGDALwithGEOS # 
@@ -153,10 +154,10 @@ export(
  llgridlines # 
 )
 export(
- GDALcall # FIESTAutils raster ursa deprecated 2022-10-12
+ GDALcall # FIESTAutils ursa deprecated 2022-10-12 raster
 )
 export(
- rawTransform # mapmisc raster deprecated 2022-10-12
+ rawTransform # mapmisc deprecated 2022-10-12 raster
 )
 export(
  is_proj_CDN_enabled, # 

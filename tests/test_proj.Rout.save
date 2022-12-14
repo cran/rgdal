@@ -1,6 +1,6 @@
 
-R version 4.1.1 (2021-08-10) -- "Kick Things"
-Copyright (C) 2021 The R Foundation for Statistical Computing
+R Under development (unstable) (2022-12-10 r83428) -- "Unsuffered Consequences"
+Copyright (C) 2022 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -20,18 +20,18 @@ Type 'q()' to quit R.
 > data(state)
 > xy <- cbind(state.center$x, state.center$y)
 > res <- project(xy, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80")
+Warning message:
+PROJ support is provided by the sf and terra packages among others 
 > res1 <- project(res, "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=GRS80",
 +  inv=TRUE)
+Warning messages:
+1: PROJ support is provided by the sf and terra packages among others 
+2: PROJ support is provided by the sf and terra packages among others 
 > stopifnot(isTRUE(all.equal(res1, xy)))
 > states <- data.frame(state.x77, state.center)
 > states <- states[states$x > -121,]
 > coordinates(states) <- c("x", "y")
 > proj4string(states) <- CRS("+proj=longlat +ellps=clrk66")
-Warning message:
-In showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj = prefer_proj) :
-  PROJ/GDAL PROJ string degradation in workflow
- repeated warnings suppressed
- Discarded datum Unknown based on Clarke 1866 ellipsoid in Proj4 definition
 > state.ll83 <- spTransform(states, CRS("+proj=longlat +ellps=GRS80"))
 > state.ll <- spTransform(state.ll83, CRS("+proj=longlat +ellps=clrk66"))
 > stopifnot(isTRUE(all.equal(coordinates(states), coordinates(state.ll))))
@@ -66,12 +66,8 @@ In showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj = prefer_p
 +proj=ob_tran +o_proj=longlat +o_lon_p=-162 +o_lat_p=39.25 +lon_0=180
 +ellps=sphere +step +proj=unitconvert +xy_in=rad +xy_out=deg
 Warning messages:
-1: In proj4string(x) :
-  CRS object has comment, which is lost in output; in tests, see
-https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html
-2: In proj4string(x) :
-  CRS object has comment, which is lost in output; in tests, see
-https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html
+1: PROJ support is provided by the sf and terra packages among others 
+2: PROJ support is provided by the sf and terra packages among others 
 > sp <- SpatialPoints(matrix(c(1, 1), nrow=1), proj4string=CRS("+init=epsg:4326"))
 > sp.tr <- spTransform(sp, CRS("+init=epsg:3857"))
 > stopifnot(isTRUE(all.equal(unname(coordinates(sp.tr)), matrix(c(111319.4908, 111325.1429), nrow=1))))
@@ -79,4 +75,4 @@ https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html
 > 
 > proc.time()
    user  system elapsed 
-  0.373   0.037   0.404 
+  0.401   0.055   0.449 

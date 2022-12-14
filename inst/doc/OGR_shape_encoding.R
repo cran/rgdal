@@ -51,13 +51,13 @@ load(paste(dsn, .Platform$file.sep, "point_LinuxGDAL.RData", sep=""))
 ###################################################
 ### code chunk number 8: OGR_shape_encoding.Rnw:129-130 (eval = FALSE)
 ###################################################
-## sessionInfo()
+## sessionInfo()$locale
 
 
 ###################################################
 ### code chunk number 9: OGR_shape_encoding.Rnw:132-133
 ###################################################
-sI_1
+sI_1$locale
 
 
 ###################################################
@@ -178,13 +178,13 @@ load(paste(dsn, .Platform$file.sep, "point_WinCRAN.RData", sep=""))
 ###################################################
 ### code chunk number 27: OGR_shape_encoding.Rnw:223-224 (eval = FALSE)
 ###################################################
-## sessionInfo()
+## sessionInfo()$locale
 
 
 ###################################################
 ### code chunk number 28: OGR_shape_encoding.Rnw:226-227
 ###################################################
-sI
+sI$locale
 
 
 ###################################################
