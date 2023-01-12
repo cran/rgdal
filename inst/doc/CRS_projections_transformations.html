@@ -283,23 +283,24 @@ library(rgdal)</code></pre>
 ## plan transition to sf/stars/terra functions using GDAL and PROJ
 ## at your earliest convenience.
 ## See https://r-spatial.org/r/2022/04/12/evolution.html and https://github.com/r-spatial/evolution
-## rgdal: version: 1.6-3, (SVN revision 1187)
+## rgdal: version: 1.6-4, (SVN revision 1196)
 ## Geospatial Data Abstraction Library extensions to R successfully loaded
-## Loaded GDAL runtime: GDAL 3.6.0, released 2022/11/06
+## Loaded GDAL runtime: GDAL 3.6.2, released 2023/01/02
 ## Path to GDAL shared files: /usr/local/share/gdal
 ##  GDAL does not use iconv for recoding strings.
 ## GDAL binary built with GEOS: TRUE 
 ## Loaded PROJ runtime: Rel. 9.1.1, December 1st, 2022, [PJ_VERSION: 911]
-## Path to PROJ shared files: /tmp/RtmpOPXhvq/filec019f39414b81:/usr/local/share/proj:/usr/local/share/proj
+## Path to PROJ shared files: /tmp/RtmpXSFSS6/filed13e231ee67e:/usr/local/share/proj:/usr/local/share/proj
 ## PROJ CDN enabled: FALSE
-## Linking to sp version:1.5-2
+## Linking to sp version:1.5-1
 ## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
 ## use options(&quot;rgdal_show_exportToProj4_warnings&quot;=&quot;none&quot;) before loading sp or rgdal.</code></pre>
 <pre class="r"><code>data(&quot;GridsDatums&quot;)
 GridsDatums[grep(&quot;Netherlands&quot;, GridsDatums$country),]</code></pre>
-<pre><code>##                               country      month year ISO
-## 50 Aruba and the Netherlands Antilles     (July) 2002 ABW
-## 57     The Kingdom of the Netherlands (February) 2003 NLD</code></pre>
+<pre><code>##                                country      month year ISO
+## 50  Aruba and the Netherlands Antilles     (July) 2002 ABW
+## 57      The Kingdom of the Netherlands (February) 2003 NLD
+## 243     The Kingdom of the Netherlands (February) 2021 NLD</code></pre>
 <p>While most national mapping agencies defined their own standard geographical and projected CRS, supranational bodies, such as military alliances and colonial administrations often imposed some regularity to facilitate operations across national boundaries. This also led to the creation of the European Petroleum Survey Group (EPSG), because maritime jurisdiction was not orderly, and mattered when countries sharing the same coastal shelf tried to assign conflicting exploration concessions. Experts from oil companies accumulated vast experience, which fed through to the International Standards Organization (ISO, especially TC 211) and the Open Geospatial Consortium (OGC).</p>
 <p>Defining the CRS became necessary when integrating other data with a different CRS, and for displaying on a web map background. Many legacy file formats, such as the ESRI Shapefile format, did not mandate the inclusion of the CRS of positional data. Most open source software then used PROJ.4 strings as a flexible representation, but as internationally accepted standards have been reached, in particular ISO 19111, and improved over time by iteration, it is really necessary to change to a modern text representation, known as WKT2 (2019). Now it looks as though almost all corporations and mapping agencies accommodate this representation, and it has been adopted by <strong>sp</strong> through <strong>rgdal</strong>, <strong>sf</strong> and other packages.</p>
 <pre class="r"><code>demo(meuse, ask=FALSE, package=&quot;sp&quot;, echo=FALSE)
@@ -335,7 +336,7 @@ print(sqrt((a^2-b^2)/a^2), digits=10)</code></pre>
 <h2>PR<span class="math inline">\(\phi\)</span>J</h2>
 <p>Signalling changes, PROJ.4 changed its name to PR<span class="math inline">\(\phi\)</span>J, and began burning through major version numbers. PROJ 5 (2018) introduced transformation pipelines <span class="citation">(<a href="#ref-knudsen+evers17" role="doc-biblioref">Knudsen and Evers 2017</a>; <a href="#ref-evers+knudsen17" role="doc-biblioref">Evers and Knudsen 2017</a>)</span>, representing coordinate operations using a syntax similar to PROJ.4 strings, but showing the whole operation pipeline. PROJ 6 (2019) followed up by shifting from ad-hoc text files for holding coordinate reference system and coordinate operation metadata to an SQLite database. In an increasing number of cases, more accurate coordinate operations could be supported using open access transformation grids, and the grid files needed were now tabulated in the SQLite database. This database is distributed with PROJ, and kept in a directory on the PROJ search path, usually the only or final directory (<code>get_proj_search_paths()</code> returns a vector of current search paths).</p>
 <pre class="r"><code>(shpr &lt;- get_proj_search_paths())</code></pre>
-<pre><code>## [1] &quot;/tmp/RtmpOPXhvq/filec019f39414b81&quot; &quot;/usr/local/share/proj&quot;            
+<pre><code>## [1] &quot;/tmp/RtmpXSFSS6/filed13e231ee67e&quot; &quot;/usr/local/share/proj&quot;           
 ## [3] &quot;/usr/local/share/proj&quot;</code></pre>
 <pre class="r"><code>library(RSQLite)
 db &lt;- dbConnect(SQLite(), dbname=file.path(shpr[length(shpr)], &quot;proj.db&quot;))
@@ -462,7 +463,7 @@ dbListTables(db)</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: GPKG 
-## Source: &quot;/tmp/RtmpjChrDe/Rinstbfeaf170b7437/rgdal/vectors/b_pump.gpkg&quot;, layer: &quot;b_pump&quot;
+## Source: &quot;/tmp/RtmpXMZYyE/Rinstce051e8efbc/rgdal/vectors/b_pump.gpkg&quot;, layer: &quot;b_pump&quot;
 ## with 1 features
 ## It has 1 fields
 ## Integer64 fields read as strings:  cat</code></pre>
@@ -728,12 +729,12 @@ library(rgdal)</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <p>We can enable on-demand download using a function that reports the value of the PR<span class="math inline">\(\phi\)</span>J CDN user-writable directory; we see that with this setting, network download is enabled:</p>
 <pre class="r"><code>enable_proj_CDN()</code></pre>
-<pre><code>## [1] &quot;Using: /tmp/RtmpOPXhvq/filec019f39414b81&quot;</code></pre>
+<pre><code>## [1] &quot;Using: /tmp/RtmpXSFSS6/filed13e231ee67e&quot;</code></pre>
 <pre class="r"><code>is_proj_CDN_enabled()</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>The reader will recall that the search path was stored in <code>shpr</code> above, the first element being the user-writable directory; at this point no SQLite database has been created:</p>
 <pre class="r"><code>shpr[1]</code></pre>
-<pre><code>## [1] &quot;/tmp/RtmpOPXhvq/filec019f39414b81&quot;</code></pre>
+<pre><code>## [1] &quot;/tmp/RtmpXSFSS6/filed13e231ee67e&quot;</code></pre>
 <pre class="r"><code>try(file.size(file.path(shpr[1], &quot;cache.db&quot;)))</code></pre>
 <pre><code>## [1] NA</code></pre>
 <p>When we then search for candidate coordinate operations, we see that the operation using an absent grid now sees that download is enabled, and proposes the 1m accuracy candidate, because the required grid can be downloaded (again using the area of interest):</p>
@@ -775,7 +776,7 @@ library(rgdal)</code></pre>
 <pre class="r"><code>system.time(is1m &lt;- spTransform(b_pump, CRS(SRS_string=&quot;OGC:CRS84&quot;)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.056   0.006   0.347</code></pre>
+##   0.056   0.008   0.200</code></pre>
 <p>The coordinate operation used now specifies the grid in the pipeline:</p>
 <pre class="r"><code>get_last_coordOp()</code></pre>
 <pre><code>## [1] &quot;+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=hgridshift +grids=uk_os_OSTN15_NTv2_OSGBtoETRS.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg&quot;</code></pre>

@@ -193,6 +193,16 @@ if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 3 ; then
   fi
 fi
 
+AC_MSG_CHECKING([GDAL version != 3.6.0])
+if test ${GDAL_MAJOR} = 3 && test ${GDAL_MINOR} = 6 && test ${GDAL_PATCH} = 0 ; then
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([GDAL 3.6.0 was retracted, use a subsequent version])
+else
+  AC_MSG_RESULT(yes)
+fi
+
+
+
 AC_MSG_CHECKING([GDAL version >= 1.11.4])
 if test ${GDAL_MAJOR} -gt 1 ; then
   AC_MSG_RESULT(yes)

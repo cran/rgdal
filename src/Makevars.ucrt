@@ -3,10 +3,10 @@ PKG_CPPFLAGS =\
 	-DPROJ_H_API
 
 PKG_LIBS = \
-        -lgdal -lblosc -lkea -lhdf5_cpp -lhdf5 -lgta -lsqlite3 -lmysqlclient -lspatialite -lminizip -lproj -lgeos_c -lgeos  \
-        -ljson-c -lnetcdf -lpq \
+        -fopenmp -lgdal -larmadillo -lopenblas -lgfortran -lquadmath -lblosc -lkea -lhdf5_cpp -lhdf5 -lgta -lsqlite3 -lmysqlclient -lspatialite -lminizip -lproj -lgeos_c -lgeos  \
+        -ljson-c -lnetcdf -lpq -lpgcommon -lpgport \
         -lpoppler -llcms2 -lfreetype -lharfbuzz -lfreetype -llz4 -lpcre2-8 \
-        -lwebp -lcurl -lidn2 -lunistring -lssh2 -lgcrypt -lgpg-error -lssl \
+        -lwebp -lcurl -lbcrypt -lidn2 -lunistring -lssh2 -lgcrypt -lgpg-error -lssl \
         -lhdf5_hl -lhdf5 -lsz -lexpat -lfreexl \
         -lmfhdf -ldf -lportablexdr  -lpcre \
         -lopenjp2 -ljasper -lpng -ljpeg -ltiff -lwebp -lgeotiff -lgif -lxml2 -llzma \

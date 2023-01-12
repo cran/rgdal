@@ -64,6 +64,8 @@ load_stuff <- function() {
     assign("rgdal_show_exportToProj4_warnings", FALSE, envir=.RGDAL_CACHE)
   }
   local_RGDAL_Init() #.Call('RGDAL_Init', PACKAGE="rgdal")
+  rver <- getGDALVersionInfo()
+  if (strsplit(strsplit(rver, ",")[[1]][1], " ")[[1]][2] == "3.6.0") warning("GDAL 3.6.0 has been officially retracted; use a later release:\nhttps://lists.osgeo.org/pipermail/gdal-dev/2022-December/056621.html")
 }
 
 local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")

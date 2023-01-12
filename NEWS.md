@@ -1,6 +1,14 @@
 # Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.6-3 (development, rev. 1184-)
+# Version 1.6-4 (development, rev. 1188-)
+
+* Update GridsDatums data set
+
+* Warn if retracted GDAL 3.6.0 is being used
+
+* Update `makevars.ucrt` to Rtools 4.3
+
+# Version 1.6-3 (2022-12-14, rev. 1184-1187)
 
 * CRAN error in possibly writing outside tempdir
 

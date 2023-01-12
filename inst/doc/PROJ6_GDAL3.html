@@ -340,13 +340,13 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## Class: character</code></pre>
 <pre class="r"><code>rgdal::rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.6.0&quot;         &quot;TRUE&quot;        &quot;9.1.1&quot;        &quot;1.5-2&quot;      &quot;v10.076&quot;</code></pre>
+##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.1.1&quot;        &quot;1.5-1&quot;      &quot;v10.076&quot;</code></pre>
 <pre class="r"><code>##           GDAL GDAL_with_GEOS           PROJ             sp 
 ##        &quot;3.0.2&quot;         &quot;TRUE&quot;        &quot;6.2.1&quot;        &quot;1.3-3&quot;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2           GDAL GDAL_with_GEOS         PROJ.4             sp 
 ## PROJ4/GDAL2        &quot;2.2.3&quot;         &quot;TRUE&quot;        &quot;4.9.3&quot;        &quot;1.3-1&quot;</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.6.3&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.4&#39;</code></pre>
 <pre class="r"><code>## [1] &#39;1.5.1&#39;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2 [1] &#39;1.4.7&#39;</code></pre>
 <p>The changes introduced affect <code>CRS()</code> when <strong>rgdal</strong> is available; if <strong>rgdal</strong> is not available, the <code>&quot;CRS&quot;</code> object just contains a lightly checked PROJ-style string. Because some terms are deprecated or defunct from PROJ6/GDAL3, we need to be careful. GDAL’s <code>exportToProj4()</code> uses the PROJ <code>proj_as_proj_string()</code> function in its new API to return the PROJ string. Terms which are deprecated or defunct may be omitted. In the PROJ6+/GDAL3+ case, <code>CRS()</code> calls <code>rgdal::checkCRSArgs_ng()</code>, a new generation function replacing the legacy <code>rgdal::checkCRSArgs()</code> function.</p>
@@ -1339,7 +1339,7 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpjChrDe/Rinstbfeaf170b7437/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpXMZYyE/Rinstce051e8efbc/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1452,7 +1452,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpjChrDe/Rinstbfeaf170b7437/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpXMZYyE/Rinstce051e8efbc/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1472,7 +1472,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <pre class="r"><code>system.time(scot_LL2 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.059   0.000   0.059</code></pre>
+##    0.06    0.00    0.06</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.095   0.000   0.096</code></pre>
 <p>Timings for <strong>rgdal</strong> 1.5-1, when look-up was repeated for each matrix of coordinates:</p>
@@ -1501,7 +1501,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
                                     coordOp=get_last_coordOp()))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.039   0.000   0.039</code></pre>
+##   0.041   0.000   0.041</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.070</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL3), scale=1)</code></pre>
@@ -1515,7 +1515,7 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
                                     coordOp=best_instantiable_coordOp(x)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.039   0.000   0.039</code></pre>
+##    0.04    0.00    0.04</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.069</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL4), scale=1)</code></pre>
@@ -1527,10 +1527,10 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
 <p>Luigi Ranghetti and Lorenzo Busetto provided <a href="http://rpubs.com/ranghetti/sptransform-issue">input</a> with regard to axis swapping in <strong>rgdal</strong>. The task is to provide round-trip coordinate identity for four CRS. Here, we use just <strong>sp</strong>/<strong>rgdal</strong> to create the input objects:</p>
 <pre class="r"><code>library(rgdal)</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.6.3&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.4&#39;</code></pre>
 <pre class="r"><code>rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.6.0&quot;         &quot;TRUE&quot;        &quot;9.1.1&quot;        &quot;1.5-2&quot;      &quot;v10.076&quot;</code></pre>
+##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.1.1&quot;        &quot;1.5-1&quot;      &quot;v10.076&quot;</code></pre>
 <pre class="r"><code>pt0_lonlat &lt;- SpatialPoints(matrix(c(10,46), nrow=1), proj4string= CRS(&quot;+init=epsg:4326&quot;))
 pt0_laea89 &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3035&quot;))
 pt0_wgs32n &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:32632&quot;))
