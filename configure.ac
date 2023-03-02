@@ -43,7 +43,7 @@ if test "${loadflags}" = "no" ; then
 fi
 AC_MSG_NOTICE([LDFLAGS: ${LDFLAGS}])
 
-#CXX_11
+#CXX_17
 
 R_VERSION=`echo 'o <- R.version; cat(paste0(o$major, ".", o$minor))' | ${RBIN} --vanilla --slave`
 #AC_MSG_NOTICE([R_VERSION is: ${R_VERSION}])
@@ -52,45 +52,34 @@ R_MAJOR=`echo $R_VERSION | cut -f1 -d"."`
 #AC_MSG_NOTICE([R_MAJOR is: ${R_MAJOR}, R_MINOR is: ${R_MINOR}])
 
 #if test ${R_MINOR} -ge 4; then
-#: ${CXX=`"${RBIN}" CMD config CXX11`}
+#: ${CXX=`"${RBIN}" CMD config CXX17`}
 #else
 #: ${CXX=`"${RBIN}" CMD config CXX1X`}
 #fi
 
-if test ${R_MAJOR} -ge 4; then
- CXX11=`"${RBIN}" CMD config CXX11`
- CXX11STD=`"${RBIN}" CMD config CXX11STD`
-else
-# if test ${R_MAJOR} -eq 3 -a ${R_MINOR} -ge 4; then
- if test ${R_MAJOR} -eq 3 && test ${R_MINOR} -ge 4; then
-  CXX11=`"${RBIN}" CMD config CXX11`
-  CXX11STD=`"${RBIN}" CMD config CXX11STD`
- else
-  CXX11=`"${RBIN}" CMD config CXX1X`
-  CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
- fi
-fi
+CXX17=`"${RBIN}" CMD config CXX17`
+CXX17STD=`"${RBIN}" CMD config CXX17STD`
 
-AC_MSG_NOTICE([CXX11 is: ${CXX11}, CXX11STD is: ${CXX11STD}])
+AC_MSG_NOTICE([CXX17 is: ${CXX17}, CXX17STD is: ${CXX17STD}])
 
-CXX="${CXX11} ${CXX11STD}"
+CXX="${CXX17} ${CXX17STD}"
 
 AC_MSG_NOTICE([CXX is: ${CXX}])
 
-if test -n "${CXX11}"; then
-HAVE_CXX11=1
+if test -n "${CXX17}"; then
+HAVE_CXX17=1
 else
-HAVE_CXX11=0
+HAVE_CXX17=0
 fi
 
-#HAVE_CXX11=1
+#HAVE_CXX17=1
 
 #m4_include([inst/m4/ax_cxx_compile_stdcxx.m4])
 #AX_CXX_COMPILE_STDCXX([11], [ext], [optional])
-if test [${HAVE_CXX11} = 1] ; then
-  AC_MSG_NOTICE([C++11 support available])
+if test [${HAVE_CXX17} = 1] ; then
+  AC_MSG_NOTICE([C++17 support available])
 else
-  AC_MSG_NOTICE([C++11 support not available])
+  AC_MSG_NOTICE([C++17 support not available])
 fi
 
 
@@ -185,7 +174,7 @@ GDAL_PATCH=`echo $GDAL_VERSION | cut -f3 -d"."`
 #if test ${GDAL_MAJOR} = 2 -a test ${GDAL_MINOR} -ge 3 ; then
 if test ${GDAL_MAJOR} = 2 && test ${GDAL_MINOR} -ge 3 ; then
   AC_MSG_CHECKING([C++11 support for GDAL >= 2.3.0])
-  if test ${HAVE_CXX11} = 1 ; then
+  if test ${HAVE_CXX17} = 1 ; then
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)

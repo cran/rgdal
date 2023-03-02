@@ -20,7 +20,7 @@
 
 # all: clean winlibs
 
-# CXX_STD = CXX11
+# CXX_STD = CXX17
 
 # winlibs:
 # 	mkdir -p ../inst
@@ -58,7 +58,7 @@ PKG_LIBS = \
 
 all: clean winlibs
 
-CXX_STD = CXX11
+CXX_STD = CXX17
 
 winlibs:
 	mkdir -p ../inst

@@ -1,6 +1,10 @@
-# Please note that **rgdal** will be retired by the end of 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
+# Please note that **rgdal** will be retired during 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.6-4 (development, rev. 1188-)
+# Version 1.6-5 (development, rev. 1198-)
+
+* Upgrade CXX11 to CXX17 (may cause problems for archaic OS)
+
+# Version 1.6-4 (2023-01-12, rev. 1188-1197)
 
 * Update GridsDatums data set
 

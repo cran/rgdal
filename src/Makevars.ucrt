@@ -15,7 +15,7 @@ PKG_LIBS = \
 
 all: clean  winlibs
 
-CXX_STD = CXX11
+CXX_STD = CXX17
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)

@@ -327,7 +327,7 @@ div.tocify {
 <p>My fork of <strong>sp</strong> (<a href="https://github.com/rsbivand/sp" class="uri">https://github.com/rsbivand/sp</a>) is currently at 1.3-3 or higher, and contains extra code conditionally using the development version of <strong>rgdal</strong> on the R-Forge repository at 1.5-1 or higher. The commented out blocks marked PROJ4/GDAL2 were generated on a Windows platform with <strong>sp</strong> 1.3-2 and <strong>rgdal</strong> 1.4-7, using PROJ4/GDAL2. The other commented out blocks were <strong>sp</strong> fork and <strong>rgdal</strong> development version, revision 886. The uncommented output is what the package build platform put there.</p>
 <pre class="r"><code>library(sp)
 packageVersion(&quot;sp&quot;)</code></pre>
-<pre><code>## [1] &#39;1.5.2&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.0&#39;</code></pre>
 <pre class="r"><code>## [1] &#39;1.3.3&#39;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2 [1] &#39;1.3.2&#39;</code></pre>
 <p>The <code>&quot;CRS&quot;</code> class definition is unchanged going forward to maintain backward compatibility.</p>
@@ -340,13 +340,13 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## Class: character</code></pre>
 <pre class="r"><code>rgdal::rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.1.1&quot;        &quot;1.5-1&quot;      &quot;v10.076&quot;</code></pre>
+##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.2.0&quot;        &quot;1.6-0&quot;      &quot;v10.082&quot;</code></pre>
 <pre class="r"><code>##           GDAL GDAL_with_GEOS           PROJ             sp 
 ##        &quot;3.0.2&quot;         &quot;TRUE&quot;        &quot;6.2.1&quot;        &quot;1.3-3&quot;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2           GDAL GDAL_with_GEOS         PROJ.4             sp 
 ## PROJ4/GDAL2        &quot;2.2.3&quot;         &quot;TRUE&quot;        &quot;4.9.3&quot;        &quot;1.3-1&quot;</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.6.4&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.5&#39;</code></pre>
 <pre class="r"><code>## [1] &#39;1.5.1&#39;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2 [1] &#39;1.4.7&#39;</code></pre>
 <p>The changes introduced affect <code>CRS()</code> when <strong>rgdal</strong> is available; if <strong>rgdal</strong> is not available, the <code>&quot;CRS&quot;</code> object just contains a lightly checked PROJ-style string. Because some terms are deprecated or defunct from PROJ6/GDAL3, we need to be careful. GDAL’s <code>exportToProj4()</code> uses the PROJ <code>proj_as_proj_string()</code> function in its new API to return the PROJ string. Terms which are deprecated or defunct may be omitted. In the PROJ6+/GDAL3+ case, <code>CRS()</code> calls <code>rgdal::checkCRSArgs_ng()</code>, a new generation function replacing the legacy <code>rgdal::checkCRSArgs()</code> function.</p>
@@ -632,7 +632,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ##     USAGE[
 ##         SCOPE[&quot;Engineering survey, topographic mapping.&quot;],
 ##         AREA[&quot;United Kingdom (UK) - offshore to boundary of UKCS within 49°45&#39;N to 61°N and 9°W to 2°E; onshore Great Britain (England, Wales and Scotland). Isle of Man onshore.&quot;],
-##         BBOX[49.75,-9,61.01,2.01]],
+##         BBOX[49.75,-9.01,61.01,2.01]],
 ##     ID[&quot;EPSG&quot;,27700]]</code></pre>
 <pre class="r"><code>## Warning in showSRID(SRS_string, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;):
 ## Discarded datum OSGB_1936 in CRS definition
@@ -659,7 +659,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## topographic mapping.&quot;], AREA[&quot;United Kingdom (UK) - offshore to
 ## boundary of UKCS within 49°45&#39;N to 61°N and 9°W to 2°E; onshore Great
 ## Britain (England, Wales and Scotland). Isle of Man onshore.&quot;],
-## BBOX[49.75, -9, 61.01, 2.01]], ID[&quot;EPSG&quot;, 27700]]</code></pre>
+## BBOX[49.75, -9.01, 61.01, 2.01]], ID[&quot;EPSG&quot;, 27700]]</code></pre>
 <pre class="r"><code>## [1] &quot;PROJCRS[\&quot;OSGB 1936 / British National Grid\&quot;, BASEGEOGCRS[\&quot;OSGB 1936\&quot;,
 ## DATUM[\&quot;OSGB 1936\&quot;, ELLIPSOID[\&quot;Airy 1830\&quot;, 6377563.396, 299.3249646,
 ## LENGTHUNIT[\&quot;metre\&quot;, 1]]], PRIMEM[\&quot;Greenwich\&quot;, 0, ANGLEUNIT[\&quot;degree\&quot;,
@@ -794,7 +794,7 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ##     USAGE[
 ##         SCOPE[&quot;unknown&quot;],
 ##         AREA[&quot;United Kingdom (UK) - offshore to boundary of UKCS within 49°45&#39;N to 61°N and 9°W to 2°E; onshore Great Britain (England, Wales and Scotland). Isle of Man onshore.&quot;],
-##         BBOX[49.75,-9,61.01,2.01]]]</code></pre>
+##         BBOX[49.75,-9.01,61.01,2.01]]]</code></pre>
 <pre class="r"><code>## PROJCRS[&quot;OSGB 1936 / British National Grid&quot;,
 ##     BASEGEOGCRS[&quot;OSGB 1936&quot;,
 ##         DATUM[&quot;OSGB 1936&quot;,
@@ -907,8 +907,8 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ##         +datum=OSGB36 +type=crs
 ## Target: EPSG:4326 
 ## Best instantiable operation has accuracy: 2 m
-## Description: Inverse of unknown + OSGB36 to WGS 84 (6) + axis order change
-##              (2D)
+## Description: Inverse of unknown + axis order change (2D) + OSGB36 to WGS 84
+##              (6) + axis order change (2D)
 ## Definition:  +proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2
 ##              +k=0.9996012717 +x_0=400000 +y_0=-100000
 ##              +ellps=airy +step +proj=push +v_3 +step +proj=cart
@@ -972,7 +972,7 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:4326&quot;, &quot;WKT2&quot;)
 ##         (UK) - offshore to boundary of UKCS within 49°45&#39;N to
 ##         61°N and 9°W to 2°E; onshore Great Britain (England,
 ##         Wales and Scotland). Isle of Man onshore.&quot;],
-##         BBOX[49.75, -9, 61.01, 2.01]], ID[&quot;EPSG&quot;, 27700]]
+##         BBOX[49.75, -9.01, 61.01, 2.01]], ID[&quot;EPSG&quot;, 27700]]
 ## Target:
 ## GEOGCRS[&quot;WGS 84 (with axis order normalized for
 ##         visualization)&quot;, ENSEMBLE[&quot;World Geodetic System 1984
@@ -1339,7 +1339,7 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpXMZYyE/Rinstce051e8efbc/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpnhhpV2/Rinst1035f722c6b6fd/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1413,7 +1413,7 @@ scot_LL &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;))
 ##     USAGE[
 ##         SCOPE[&quot;Engineering survey, topographic mapping.&quot;],
 ##         AREA[&quot;United Kingdom (UK) - offshore to boundary of UKCS within 49°45&#39;N to 61°N and 9°W to 2°E; onshore Great Britain (England, Wales and Scotland). Isle of Man onshore.&quot;],
-##         BBOX[49.75,-9,61.01,2.01]],
+##         BBOX[49.75,-9.01,61.01,2.01]],
 ##     ID[&quot;EPSG&quot;,27700]]</code></pre>
 <pre class="r"><code>## CRS arguments:
 ##  +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000
@@ -1452,7 +1452,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpXMZYyE/Rinstce051e8efbc/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpnhhpV2/Rinst1035f722c6b6fd/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1472,7 +1472,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <pre class="r"><code>system.time(scot_LL2 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.06    0.00    0.06</code></pre>
+##   0.061   0.001   0.063</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.095   0.000   0.096</code></pre>
 <p>Timings for <strong>rgdal</strong> 1.5-1, when look-up was repeated for each matrix of coordinates:</p>
@@ -1501,7 +1501,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
                                     coordOp=get_last_coordOp()))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.041   0.000   0.041</code></pre>
+##   0.039   0.000   0.039</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.070</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL3), scale=1)</code></pre>
@@ -1515,7 +1515,7 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
                                     coordOp=best_instantiable_coordOp(x)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.04    0.00    0.04</code></pre>
+##   0.039   0.000   0.039</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.069</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL4), scale=1)</code></pre>
@@ -1527,10 +1527,10 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
 <p>Luigi Ranghetti and Lorenzo Busetto provided <a href="http://rpubs.com/ranghetti/sptransform-issue">input</a> with regard to axis swapping in <strong>rgdal</strong>. The task is to provide round-trip coordinate identity for four CRS. Here, we use just <strong>sp</strong>/<strong>rgdal</strong> to create the input objects:</p>
 <pre class="r"><code>library(rgdal)</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.6.4&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.5&#39;</code></pre>
 <pre class="r"><code>rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.1.1&quot;        &quot;1.5-1&quot;      &quot;v10.076&quot;</code></pre>
+##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.2.0&quot;        &quot;1.6-0&quot;      &quot;v10.082&quot;</code></pre>
 <pre class="r"><code>pt0_lonlat &lt;- SpatialPoints(matrix(c(10,46), nrow=1), proj4string= CRS(&quot;+init=epsg:4326&quot;))
 pt0_laea89 &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3035&quot;))
 pt0_wgs32n &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:32632&quot;))
