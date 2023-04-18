@@ -110,7 +110,7 @@ mrun <- FALSE
 if (suppressPackageStartupMessages(require(maptools, quietly=TRUE))) mrun <- TRUE
 
 ## ---- eval=mrun && odd_run----------------------------------------------------
-c(maptools::gzAzimuth(coordinates(isballpark), coordinates(is2m)))
+#  c(maptools::gzAzimuth(coordinates(isballpark), coordinates(is2m)))
 
 ## ---- eval=odd_run------------------------------------------------------------
 (a <- project(coordinates(b_pump), proj4string(b_pump), inv=TRUE, verbose=TRUE))
@@ -173,7 +173,7 @@ print(coordinates(is1m), digits=10)
 c(spDists(is2m, is1m)*1000)
 
 ## ---- eval= mrun && run && odd_run--------------------------------------------
-c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
+#  c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))
 
 ## ---- eval=run && odd_run-----------------------------------------------------
 try(file.size(file.path(shpr[1], "cache.db")))

@@ -340,13 +340,13 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## Class: character</code></pre>
 <pre class="r"><code>rgdal::rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.2.0&quot;        &quot;1.6-0&quot;      &quot;v10.082&quot;</code></pre>
+##        &quot;3.6.3&quot;         &quot;TRUE&quot;        &quot;9.2.0&quot;        &quot;1.6-0&quot;      &quot;v10.082&quot;</code></pre>
 <pre class="r"><code>##           GDAL GDAL_with_GEOS           PROJ             sp 
 ##        &quot;3.0.2&quot;         &quot;TRUE&quot;        &quot;6.2.1&quot;        &quot;1.3-3&quot;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2           GDAL GDAL_with_GEOS         PROJ.4             sp 
 ## PROJ4/GDAL2        &quot;2.2.3&quot;         &quot;TRUE&quot;        &quot;4.9.3&quot;        &quot;1.3-1&quot;</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.6.5&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.6&#39;</code></pre>
 <pre class="r"><code>## [1] &#39;1.5.1&#39;</code></pre>
 <pre class="r"><code>## PROJ4/GDAL2 [1] &#39;1.4.7&#39;</code></pre>
 <p>The changes introduced affect <code>CRS()</code> when <strong>rgdal</strong> is available; if <strong>rgdal</strong> is not available, the <code>&quot;CRS&quot;</code> object just contains a lightly checked PROJ-style string. Because some terms are deprecated or defunct from PROJ6/GDAL3, we need to be careful. GDAL’s <code>exportToProj4()</code> uses the PROJ <code>proj_as_proj_string()</code> function in its new API to return the PROJ string. Terms which are deprecated or defunct may be omitted. In the PROJ6+/GDAL3+ case, <code>CRS()</code> calls <code>rgdal::checkCRSArgs_ng()</code>, a new generation function replacing the legacy <code>rgdal::checkCRSArgs()</code> function.</p>
@@ -437,25 +437,52 @@ packageVersion(&quot;sp&quot;)</code></pre>
 <p>We know that <code>+datum</code>, <code>+towgs84</code>, <code>+nadgrids</code> and <code>+init</code> are fragile, so we’ll try one:</p>
 <pre class="r"><code>(crs &lt;- CRS(&quot;+proj=longlat +towgs84=0,0,0&quot;))</code></pre>
 <pre><code>## Coordinate Reference System:
-## Deprecated Proj.4 representation: +proj=longlat +datum=WGS84 +no_defs 
+## Deprecated Proj.4 representation:
+##  +proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs 
 ## WKT2 2019 representation:
-## GEOGCRS[&quot;unknown&quot;,
-##     DATUM[&quot;World Geodetic System 1984&quot;,
-##         ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
-##             LENGTHUNIT[&quot;metre&quot;,1]],
-##         ID[&quot;EPSG&quot;,6326]],
-##     PRIMEM[&quot;Greenwich&quot;,0,
-##         ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##         ID[&quot;EPSG&quot;,8901]],
-##     CS[ellipsoidal,2],
-##         AXIS[&quot;longitude&quot;,east,
-##             ORDER[1],
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,
-##                 ID[&quot;EPSG&quot;,9122]]],
-##         AXIS[&quot;latitude&quot;,north,
-##             ORDER[2],
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,
-##                 ID[&quot;EPSG&quot;,9122]]]]</code></pre>
+## BOUNDCRS[
+##     SOURCECRS[
+##         GEOGCRS[&quot;unknown&quot;,
+##             DATUM[&quot;World Geodetic System 1984&quot;,
+##                 ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##                     LENGTHUNIT[&quot;metre&quot;,1]],
+##                 ID[&quot;EPSG&quot;,6326]],
+##             PRIMEM[&quot;Greenwich&quot;,0,
+##                 ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                 ID[&quot;EPSG&quot;,8901]],
+##             CS[ellipsoidal,2],
+##                 AXIS[&quot;longitude&quot;,east,
+##                     ORDER[1],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,
+##                         ID[&quot;EPSG&quot;,9122]]],
+##                 AXIS[&quot;latitude&quot;,north,
+##                     ORDER[2],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,
+##                         ID[&quot;EPSG&quot;,9122]]]]],
+##     TARGETCRS[
+##         GEOGCRS[&quot;WGS 84&quot;,
+##             DATUM[&quot;World Geodetic System 1984&quot;,
+##                 ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##                     LENGTHUNIT[&quot;metre&quot;,1]]],
+##             PRIMEM[&quot;Greenwich&quot;,0,
+##                 ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             CS[ellipsoidal,2],
+##                 AXIS[&quot;latitude&quot;,north,
+##                     ORDER[1],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##                 AXIS[&quot;longitude&quot;,east,
+##                     ORDER[2],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             ID[&quot;EPSG&quot;,4326]]],
+##     ABRIDGEDTRANSFORMATION[&quot;Transformation from unknown to WGS84&quot;,
+##         METHOD[&quot;Geocentric translations (geog2D domain)&quot;,
+##             ID[&quot;EPSG&quot;,9603]],
+##         PARAMETER[&quot;X-axis translation&quot;,0,
+##             ID[&quot;EPSG&quot;,8605]],
+##         PARAMETER[&quot;Y-axis translation&quot;,0,
+##             ID[&quot;EPSG&quot;,8606]],
+##         PARAMETER[&quot;Z-axis translation&quot;,0,
+##             ID[&quot;EPSG&quot;,8607]]]]</code></pre>
 <pre class="r"><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;): Discarded datum WGS_1984 in CRS definition,
 ##  but +towgs84= values preserved
 
@@ -463,13 +490,24 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ##  +proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs</code></pre>
 <p>The comment here includes the <code>+towgs84</code> parameters (three of them), while the PROJ string gives seven.</p>
 <pre class="r"><code>cat(strwrap(gsub(&quot;,&quot;, &quot;, &quot;, (comment(crs)))), sep=&quot;\n&quot;)</code></pre>
-<pre><code>## GEOGCRS[&quot;unknown&quot;, DATUM[&quot;World Geodetic System 1984&quot;, ELLIPSOID[&quot;WGS
-## 84&quot;, 6378137, 298.257223563, LENGTHUNIT[&quot;metre&quot;, 1]], ID[&quot;EPSG&quot;,
-## 6326]], PRIMEM[&quot;Greenwich&quot;, 0, ANGLEUNIT[&quot;degree&quot;, 0.0174532925199433],
-## ID[&quot;EPSG&quot;, 8901]], CS[ellipsoidal, 2], AXIS[&quot;longitude&quot;, east,
-## ORDER[1], ANGLEUNIT[&quot;degree&quot;, 0.0174532925199433, ID[&quot;EPSG&quot;, 9122]]],
-## AXIS[&quot;latitude&quot;, north, ORDER[2], ANGLEUNIT[&quot;degree&quot;,
-## 0.0174532925199433, ID[&quot;EPSG&quot;, 9122]]]]</code></pre>
+<pre><code>## BOUNDCRS[ SOURCECRS[ GEOGCRS[&quot;unknown&quot;, DATUM[&quot;World Geodetic System
+## 1984&quot;, ELLIPSOID[&quot;WGS 84&quot;, 6378137, 298.257223563, LENGTHUNIT[&quot;metre&quot;,
+## 1]], ID[&quot;EPSG&quot;, 6326]], PRIMEM[&quot;Greenwich&quot;, 0, ANGLEUNIT[&quot;degree&quot;,
+## 0.0174532925199433], ID[&quot;EPSG&quot;, 8901]], CS[ellipsoidal, 2],
+## AXIS[&quot;longitude&quot;, east, ORDER[1], ANGLEUNIT[&quot;degree&quot;,
+## 0.0174532925199433, ID[&quot;EPSG&quot;, 9122]]], AXIS[&quot;latitude&quot;, north,
+## ORDER[2], ANGLEUNIT[&quot;degree&quot;, 0.0174532925199433, ID[&quot;EPSG&quot;, 9122]]]]],
+## TARGETCRS[ GEOGCRS[&quot;WGS 84&quot;, DATUM[&quot;World Geodetic System 1984&quot;,
+## ELLIPSOID[&quot;WGS 84&quot;, 6378137, 298.257223563, LENGTHUNIT[&quot;metre&quot;, 1]]],
+## PRIMEM[&quot;Greenwich&quot;, 0, ANGLEUNIT[&quot;degree&quot;, 0.0174532925199433]],
+## CS[ellipsoidal, 2], AXIS[&quot;latitude&quot;, north, ORDER[1],
+## ANGLEUNIT[&quot;degree&quot;, 0.0174532925199433]], AXIS[&quot;longitude&quot;, east,
+## ORDER[2], ANGLEUNIT[&quot;degree&quot;, 0.0174532925199433]], ID[&quot;EPSG&quot;, 4326]]],
+## ABRIDGEDTRANSFORMATION[&quot;Transformation from unknown to WGS84&quot;,
+## METHOD[&quot;Geocentric translations (geog2D domain)&quot;, ID[&quot;EPSG&quot;, 9603]],
+## PARAMETER[&quot;X-axis translation&quot;, 0, ID[&quot;EPSG&quot;, 8605]], PARAMETER[&quot;Y-axis
+## translation&quot;, 0, ID[&quot;EPSG&quot;, 8606]], PARAMETER[&quot;Z-axis translation&quot;, 0,
+## ID[&quot;EPSG&quot;, 8607]]]]</code></pre>
 <pre class="r"><code>## [1] &quot;BOUNDCRS[SOURCECRS[GEOGCRS[\&quot;unknown\&quot;, DATUM[\&quot;World Geodetic System 1984\&quot;,
 ## ELLIPSOID[\&quot;WGS 84\&quot;, 6378137, 298.257223563, LENGTHUNIT[\&quot;metre\&quot;, 1]], ID[\&quot;EPSG\&quot;,
 ## 6326]], PRIMEM[\&quot;Greenwich\&quot;, 0, ANGLEUNIT[\&quot;degree\&quot;, 0.0174532925199433],
@@ -489,6 +527,8 @@ packageVersion(&quot;sp&quot;)</code></pre>
 ## PROJ4/GDAL2  +proj=longlat +towgs84=0,0,0 +ellps=WGS84</code></pre>
 <p>The <code>+init</code> value is still accepted, but not repeated in the output:</p>
 <pre class="r"><code>(crs &lt;- CRS(&quot;+init=epsg:4326&quot;))</code></pre>
+<pre><code>## Warning in CPL_crs_from_input(x): GDAL Message 1: +init=epsg:XXXX syntax is
+## deprecated. It might return a CRS with a non-EPSG compliant axis order.</code></pre>
 <pre><code>## Coordinate Reference System:
 ## Deprecated Proj.4 representation: +proj=longlat +datum=WGS84 +no_defs 
 ## WKT2 2019 representation:
@@ -1339,7 +1379,7 @@ wkt_target_datum &lt;- showSRID(&quot;EPSG:31985&quot;, &quot;WKT2&quot;)
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpnhhpV2/Rinst1035f722c6b6fd/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpJ5g6Ga/Rinst2536f476288e3/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1452,7 +1492,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: ESRI Shapefile 
-## Source: &quot;/tmp/RtmpnhhpV2/Rinst1035f722c6b6fd/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
+## Source: &quot;/tmp/RtmpJ5g6Ga/Rinst2536f476288e3/rgdal/vectors&quot;, layer: &quot;scot_BNG&quot;
 ## with 56 features
 ## It has 13 fields</code></pre>
 <pre class="r"><code>## Warning in OGRSpatialRef(dsn, layer, morphFromESRI = morphFromESRI, dumpSRS =
@@ -1472,7 +1512,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
 <pre class="r"><code>system.time(scot_LL2 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.061   0.001   0.063</code></pre>
+##   0.070   0.001   0.071</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.095   0.000   0.096</code></pre>
 <p>Timings for <strong>rgdal</strong> 1.5-1, when look-up was repeated for each matrix of coordinates:</p>
@@ -1501,7 +1541,7 @@ scot_LL1 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=WGS84&quot;)
                                     coordOp=get_last_coordOp()))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.039   0.000   0.039</code></pre>
+##   0.049   0.000   0.049</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.070</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL3), scale=1)</code></pre>
@@ -1515,7 +1555,7 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
                                     coordOp=best_instantiable_coordOp(x)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.039   0.000   0.039</code></pre>
+##    0.05    0.00    0.05</code></pre>
 <pre class="r"><code>##    user  system elapsed 
 ##   0.066   0.002   0.069</code></pre>
 <pre class="r"><code>all.equal(b2, bbox(scot_LL4), scale=1)</code></pre>
@@ -1527,10 +1567,10 @@ system.time(scot_LL4 &lt;- spTransform(scot_BNG, CRS(&quot;+proj=longlat +datum=
 <p>Luigi Ranghetti and Lorenzo Busetto provided <a href="http://rpubs.com/ranghetti/sptransform-issue">input</a> with regard to axis swapping in <strong>rgdal</strong>. The task is to provide round-trip coordinate identity for four CRS. Here, we use just <strong>sp</strong>/<strong>rgdal</strong> to create the input objects:</p>
 <pre class="r"><code>library(rgdal)</code></pre>
 <pre class="r"><code>packageVersion(&quot;rgdal&quot;)</code></pre>
-<pre><code>## [1] &#39;1.6.5&#39;</code></pre>
+<pre><code>## [1] &#39;1.6.6&#39;</code></pre>
 <pre class="r"><code>rgdal_extSoftVersion()</code></pre>
 <pre><code>##           GDAL GDAL_with_GEOS           PROJ             sp           EPSG 
-##        &quot;3.6.2&quot;         &quot;TRUE&quot;        &quot;9.2.0&quot;        &quot;1.6-0&quot;      &quot;v10.082&quot;</code></pre>
+##        &quot;3.6.3&quot;         &quot;TRUE&quot;        &quot;9.2.0&quot;        &quot;1.6-0&quot;      &quot;v10.082&quot;</code></pre>
 <pre class="r"><code>pt0_lonlat &lt;- SpatialPoints(matrix(c(10,46), nrow=1), proj4string= CRS(&quot;+init=epsg:4326&quot;))
 pt0_laea89 &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:3035&quot;))
 pt0_wgs32n &lt;- spTransform(pt0_lonlat, CRS(&quot;+init=epsg:32632&quot;))
@@ -1688,10 +1728,10 @@ for (j in seq(along=from)) {
 }
 out_EPSG_non_viz1</code></pre>
 <pre><code>##       pt0_lonlat pt0_psmerc pt0_wgs32n pt0_laea89
-## 4326        TRUE       TRUE       TRUE       TRUE
+## 4326       FALSE      FALSE      FALSE      FALSE
 ## 3857        TRUE       TRUE       TRUE       TRUE
 ## 32632       TRUE       TRUE       TRUE       TRUE
-## 3035        TRUE       TRUE       TRUE       TRUE</code></pre>
+## 3035       FALSE      FALSE      FALSE      FALSE</code></pre>
 <pre class="r"><code>out_EPSG_non_viz2 &lt;- matrix(as.logical(NA), nrow=4, ncol=4)
 colnames(out_EPSG_non_viz2) &lt;- names(from)
 rownames(out_EPSG_non_viz2) &lt;- to
@@ -1705,10 +1745,10 @@ for (j in seq(along=from)) {
 }
 out_EPSG_non_viz2</code></pre>
 <pre><code>##       pt0_lonlat pt0_psmerc pt0_wgs32n pt0_laea89
-## 4326        TRUE       TRUE       TRUE       TRUE
+## 4326       FALSE      FALSE      FALSE      FALSE
 ## 3857        TRUE       TRUE       TRUE       TRUE
 ## 32632       TRUE       TRUE       TRUE       TRUE
-## 3035        TRUE       TRUE       TRUE       TRUE</code></pre>
+## 3035       FALSE      FALSE      FALSE      FALSE</code></pre>
 </div>
 <div id="adapting-project-for-proj-6" class="section level2">
 <h2>Adapting <code>project()</code> for PROJ 6+</h2>

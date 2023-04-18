@@ -1,12 +1,13 @@
 
 PKG_CPPFLAGS =\
 	-DPROJ_H_API
+LIBSHARPYUV = $(or $(and $(wildcard $(R_TOOLS_SOFT)/lib/libsharpyuv.a),-lsharpyuv),)
 
 PKG_LIBS = \
         -fopenmp -lgdal -larmadillo -lopenblas -lgfortran -lquadmath -lblosc -lkea -lhdf5_cpp -lhdf5 -lgta -lsqlite3 -lmysqlclient -lspatialite -lminizip -lproj -lgeos_c -lgeos  \
         -ljson-c -lnetcdf -lpq -lpgcommon -lpgport \
         -lpoppler -llcms2 -lfreetype -lharfbuzz -lfreetype -llz4 -lpcre2-8 \
-        -lwebp -lcurl -lbcrypt -lidn2 -lunistring -lssh2 -lgcrypt -lgpg-error -lssl \
+        -lwebp $(LIBSHARPYUV) -lcurl -lbcrypt -lidn2 -lunistring -lssh2 -lgcrypt -lgpg-error -lssl \
         -lhdf5_hl -lhdf5 -lsz -lexpat -lfreexl \
         -lmfhdf -ldf -lportablexdr  -lpcre \
         -lopenjp2 -ljasper -lpng -ljpeg -ltiff -lwebp -lgeotiff -lgif -lxml2 -llzma \

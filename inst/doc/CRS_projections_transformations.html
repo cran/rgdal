@@ -283,14 +283,14 @@ library(rgdal)</code></pre>
 ## plan transition to sf/stars/terra functions using GDAL and PROJ
 ## at your earliest convenience.
 ## See https://r-spatial.org/r/2022/04/12/evolution.html and https://github.com/r-spatial/evolution
-## rgdal: version: 1.6-5, (SVN revision 1199)
+## rgdal: version: 1.6-6, (SVN revision 1201)
 ## Geospatial Data Abstraction Library extensions to R successfully loaded
-## Loaded GDAL runtime: GDAL 3.6.2, released 2023/01/02
+## Loaded GDAL runtime: GDAL 3.6.3, released 2023/03/07
 ## Path to GDAL shared files: /usr/local/share/gdal
 ##  GDAL does not use iconv for recoding strings.
 ## GDAL binary built with GEOS: TRUE 
 ## Loaded PROJ runtime: Rel. 9.2.0, March 1st, 2023, [PJ_VERSION: 920]
-## Path to PROJ shared files: /tmp/Rtmp4rApGL/file1038e02526a344:/usr/local/share/proj:/usr/local/share/proj
+## Path to PROJ shared files: /tmp/Rtmp6S1QLm/file2566d675127f0:/usr/local/share/proj:/usr/local/share/proj
 ## PROJ CDN enabled: FALSE
 ## Linking to sp version:1.6-0
 ## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
@@ -336,7 +336,7 @@ print(sqrt((a^2-b^2)/a^2), digits=10)</code></pre>
 <h2>PR<span class="math inline">\(\phi\)</span>J</h2>
 <p>Signalling changes, PROJ.4 changed its name to PR<span class="math inline">\(\phi\)</span>J, and began burning through major version numbers. PROJ 5 (2018) introduced transformation pipelines <span class="citation">(<a href="#ref-knudsen+evers17" role="doc-biblioref">Knudsen and Evers 2017</a>; <a href="#ref-evers+knudsen17" role="doc-biblioref">Evers and Knudsen 2017</a>)</span>, representing coordinate operations using a syntax similar to PROJ.4 strings, but showing the whole operation pipeline. PROJ 6 (2019) followed up by shifting from ad-hoc text files for holding coordinate reference system and coordinate operation metadata to an SQLite database. In an increasing number of cases, more accurate coordinate operations could be supported using open access transformation grids, and the grid files needed were now tabulated in the SQLite database. This database is distributed with PROJ, and kept in a directory on the PROJ search path, usually the only or final directory (<code>get_proj_search_paths()</code> returns a vector of current search paths).</p>
 <pre class="r"><code>(shpr &lt;- get_proj_search_paths())</code></pre>
-<pre><code>## [1] &quot;/tmp/Rtmp4rApGL/file1038e02526a344&quot; &quot;/usr/local/share/proj&quot;             
+<pre><code>## [1] &quot;/tmp/Rtmp6S1QLm/file2566d675127f0&quot; &quot;/usr/local/share/proj&quot;            
 ## [3] &quot;/usr/local/share/proj&quot;</code></pre>
 <pre class="r"><code>library(RSQLite)
 db &lt;- dbConnect(SQLite(), dbname=file.path(shpr[length(shpr)], &quot;proj.db&quot;))
@@ -422,32 +422,23 @@ dbListTables(db)</code></pre>
 <p>For these reasons, <strong>sf</strong> and <strong>sp</strong> are changing from PROJ.4 strings representing coordinate reference systems to WKT2:2019 strings, as described in <a href="https://r-spatial.org/r/2020/03/17/wkt.html">this r-spatial blog</a>. Most users who had been relying on file reading to set the coordinate reference systems of objects will not notice much difference, and legacy PROJ.4 strings can still be used to create new, authority-free definitions if need be.</p>
 <p>It will be useful to know that in general <code>&quot;OGC:CRS84&quot;</code> should be used instead of <code>&quot;EPSG:4326&quot;</code>, because the latter presupposes that Latitude is always ordered before Longitude. <code>&quot;OGC:CRS84&quot;</code> is the standard representation used by GeoJSON, with coordinates always ordered Longitude before Latitude. This is also the standard GIS and visualization order:</p>
 <pre class="r"><code>cat(wkt(CRS(SRS_string=&quot;OGC:CRS84&quot;)), &quot;\n&quot;)</code></pre>
-<pre><code>## GEOGCRS[&quot;WGS 84 (CRS84)&quot;,
-##     ENSEMBLE[&quot;World Geodetic System 1984 ensemble&quot;,
-##         MEMBER[&quot;World Geodetic System 1984 (Transit)&quot;],
-##         MEMBER[&quot;World Geodetic System 1984 (G730)&quot;],
-##         MEMBER[&quot;World Geodetic System 1984 (G873)&quot;],
-##         MEMBER[&quot;World Geodetic System 1984 (G1150)&quot;],
-##         MEMBER[&quot;World Geodetic System 1984 (G1674)&quot;],
-##         MEMBER[&quot;World Geodetic System 1984 (G1762)&quot;],
-##         MEMBER[&quot;World Geodetic System 1984 (G2139)&quot;],
+<pre><code>## GEOGCRS[&quot;WGS 84&quot;,
+##     DATUM[&quot;World Geodetic System 1984&quot;,
 ##         ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
 ##             LENGTHUNIT[&quot;metre&quot;,1]],
-##         ENSEMBLEACCURACY[2.0]],
+##         ID[&quot;EPSG&quot;,6326]],
 ##     PRIMEM[&quot;Greenwich&quot;,0,
-##         ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##         ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##         ID[&quot;EPSG&quot;,8901]],
 ##     CS[ellipsoidal,2],
-##         AXIS[&quot;geodetic longitude (Lon)&quot;,east,
+##         AXIS[&quot;longitude&quot;,east,
 ##             ORDER[1],
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
-##         AXIS[&quot;geodetic latitude (Lat)&quot;,north,
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,
+##                 ID[&quot;EPSG&quot;,9122]]],
+##         AXIS[&quot;latitude&quot;,north,
 ##             ORDER[2],
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
-##     USAGE[
-##         SCOPE[&quot;Not known.&quot;],
-##         AREA[&quot;World.&quot;],
-##         BBOX[-90,-180,90,180]],
-##     ID[&quot;OGC&quot;,&quot;CRS84&quot;]]</code></pre>
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433,
+##                 ID[&quot;EPSG&quot;,9122]]]]</code></pre>
 <p>Note that all <code>&quot;GEOGCRS&quot;</code> <code>&quot;BBOX&quot;</code> CRS bounding boxes are always specified latitude minimum, longitude minimum, latitude maximum, longitude maximum, even though the declared axis order is the opposite.</p>
 </div>
 </div>
@@ -463,7 +454,7 @@ dbListTables(db)</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## Warning: OGR support is provided by the sf and terra packages among others</code></pre>
 <pre><code>## OGR data source with driver: GPKG 
-## Source: &quot;/tmp/RtmpnhhpV2/Rinst1035f722c6b6fd/rgdal/vectors/b_pump.gpkg&quot;, layer: &quot;b_pump&quot;
+## Source: &quot;/tmp/RtmpJ5g6Ga/Rinst2536f476288e3/rgdal/vectors/b_pump.gpkg&quot;, layer: &quot;b_pump&quot;
 ## with 1 features
 ## It has 1 fields
 ## Integer64 fields read as strings:  cat</code></pre>
@@ -632,8 +623,6 @@ is2m &lt;- spTransform(b_pump, CRS(SRS_string=&quot;OGC:CRS84&quot;))</code></pr
 <pre class="r"><code>c(spDists(isballpark, is2m)*1000)</code></pre>
 <pre><code>## [1] 125.0577</code></pre>
 <pre class="r"><code>c(maptools::gzAzimuth(coordinates(isballpark), coordinates(is2m)))</code></pre>
-<pre><code>## coords.x1 
-## -62.98022</code></pre>
 <p>This was about as good as one could get prior to PROJ 7 without downloading the missing grid file manually, and installing the downloaded file in a directory that would usually not be user-writable. The whole set of grids can be downloaded and installed manually for workgroups needing to be sure that the same grids are available to all users, as has been the case in the past as well.</p>
 <p>The <code>rgdal::project()</code> uses the underlying geographical coordinate reference system, and does not transform, so using the degraded PROJ.4 string and WKT2 give the same output, and because the input is projected, we take the inverse:</p>
 <pre class="r"><code>(a &lt;- project(coordinates(b_pump), proj4string(b_pump), inv=TRUE, verbose=TRUE))</code></pre>
@@ -729,12 +718,12 @@ library(rgdal)</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <p>We can enable on-demand download using a function that reports the value of the PR<span class="math inline">\(\phi\)</span>J CDN user-writable directory; we see that with this setting, network download is enabled:</p>
 <pre class="r"><code>enable_proj_CDN()</code></pre>
-<pre><code>## [1] &quot;Using: /tmp/Rtmp4rApGL/file1038e02526a344&quot;</code></pre>
+<pre><code>## [1] &quot;Using: /tmp/Rtmp6S1QLm/file2566d675127f0&quot;</code></pre>
 <pre class="r"><code>is_proj_CDN_enabled()</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>The reader will recall that the search path was stored in <code>shpr</code> above, the first element being the user-writable directory; at this point no SQLite database has been created:</p>
 <pre class="r"><code>shpr[1]</code></pre>
-<pre><code>## [1] &quot;/tmp/Rtmp4rApGL/file1038e02526a344&quot;</code></pre>
+<pre><code>## [1] &quot;/tmp/Rtmp6S1QLm/file2566d675127f0&quot;</code></pre>
 <pre class="r"><code>try(file.size(file.path(shpr[1], &quot;cache.db&quot;)))</code></pre>
 <pre><code>## [1] NA</code></pre>
 <p>When we then search for candidate coordinate operations, we see that the operation using an absent grid now sees that download is enabled, and proposes the 1m accuracy candidate, because the required grid can be downloaded (again using the area of interest):</p>
@@ -776,7 +765,7 @@ library(rgdal)</code></pre>
 <pre class="r"><code>system.time(is1m &lt;- spTransform(b_pump, CRS(SRS_string=&quot;OGC:CRS84&quot;)))</code></pre>
 <pre><code>## Warning: PROJ support is provided by the sf and terra packages among others</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.086   0.011   0.618</code></pre>
+##   0.085   0.013   0.247</code></pre>
 <p>The coordinate operation used now specifies the grid in the pipeline:</p>
 <pre class="r"><code>get_last_coordOp()</code></pre>
 <pre><code>## [1] &quot;+proj=pipeline +step +inv +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +step +proj=hgridshift +grids=uk_os_OSTN15_NTv2_OSGBtoETRS.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg&quot;</code></pre>
@@ -788,8 +777,6 @@ library(rgdal)</code></pre>
 <pre class="r"><code>c(spDists(is2m, is1m)*1000)</code></pre>
 <pre><code>## [1] 1.751474</code></pre>
 <pre class="r"><code>c(maptools::gzAzimuth(coordinates(is1m), coordinates(is2m)))</code></pre>
-<pre><code>## coords.x1 
-## -95.57299</code></pre>
 <p>Now the SQLite grid cache database has been created and has grown in size:</p>
 <pre class="r"><code>try(file.size(file.path(shpr[1], &quot;cache.db&quot;)))</code></pre>
 <pre><code>## [1] 319488</code></pre>
@@ -869,120 +856,222 @@ library(sp)
 <p>Running <code>sp::CRS()</code> takes the original Proj4 key-value pairs, and converts them into a WKT2 representation as well as returning an (unused) Proj4 string. This is kept in place for packages still expecting to see/use it, but all <strong>rgdal</strong> functions and methods use the WKT2 representation. Here, we do not try to handle the <code>BOUNDCRS</code> special case, something that leads to difficulties with some versions of PROJ later in workflows. The <code>BOUNDCRS</code> contains a <code>SOURCECRS</code> and a <code>TARGETCRS</code> (which also has swapped axes), while really all that was needed was the contents of the <code>SOURCECRS</code>:</p>
 <pre class="r"><code>orig1 &lt;- CRS(slot(orig, &quot;projargs&quot;), get_source_if_boundcrs=FALSE)
 cat(wkt(orig1), &quot;\n&quot;)</code></pre>
-<pre><code>## PROJCRS[&quot;unknown&quot;,
-##     BASEGEOGCRS[&quot;unknown&quot;,
-##         DATUM[&quot;OSGB 1936&quot;,
-##             ELLIPSOID[&quot;Airy 1830&quot;,6377563.396,299.3249646,
-##                 LENGTHUNIT[&quot;metre&quot;,1]],
-##             ID[&quot;EPSG&quot;,6277]],
-##         PRIMEM[&quot;Greenwich&quot;,0,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8901]]],
-##     CONVERSION[&quot;unknown&quot;,
-##         METHOD[&quot;Transverse Mercator&quot;,
-##             ID[&quot;EPSG&quot;,9807]],
-##         PARAMETER[&quot;Latitude of natural origin&quot;,49,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8801]],
-##         PARAMETER[&quot;Longitude of natural origin&quot;,-2,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8802]],
-##         PARAMETER[&quot;Scale factor at natural origin&quot;,0.9996012717,
-##             SCALEUNIT[&quot;unity&quot;,1],
-##             ID[&quot;EPSG&quot;,8805]],
-##         PARAMETER[&quot;False easting&quot;,400000,
-##             LENGTHUNIT[&quot;metre&quot;,1],
-##             ID[&quot;EPSG&quot;,8806]],
-##         PARAMETER[&quot;False northing&quot;,-100000,
-##             LENGTHUNIT[&quot;metre&quot;,1],
-##             ID[&quot;EPSG&quot;,8807]]],
-##     CS[Cartesian,2],
-##         AXIS[&quot;(E)&quot;,east,
-##             ORDER[1],
-##             LENGTHUNIT[&quot;metre&quot;,1,
-##                 ID[&quot;EPSG&quot;,9001]]],
-##         AXIS[&quot;(N)&quot;,north,
-##             ORDER[2],
-##             LENGTHUNIT[&quot;metre&quot;,1,
-##                 ID[&quot;EPSG&quot;,9001]]]]</code></pre>
+<pre><code>## BOUNDCRS[
+##     SOURCECRS[
+##         PROJCRS[&quot;unknown&quot;,
+##             BASEGEOGCRS[&quot;unknown&quot;,
+##                 DATUM[&quot;OSGB 1936&quot;,
+##                     ELLIPSOID[&quot;Airy 1830&quot;,6377563.396,299.3249646,
+##                         LENGTHUNIT[&quot;metre&quot;,1]],
+##                     ID[&quot;EPSG&quot;,6277]],
+##                 PRIMEM[&quot;Greenwich&quot;,0,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8901]]],
+##             CONVERSION[&quot;unknown&quot;,
+##                 METHOD[&quot;Transverse Mercator&quot;,
+##                     ID[&quot;EPSG&quot;,9807]],
+##                 PARAMETER[&quot;Latitude of natural origin&quot;,49,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8801]],
+##                 PARAMETER[&quot;Longitude of natural origin&quot;,-2,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8802]],
+##                 PARAMETER[&quot;Scale factor at natural origin&quot;,0.9996012717,
+##                     SCALEUNIT[&quot;unity&quot;,1],
+##                     ID[&quot;EPSG&quot;,8805]],
+##                 PARAMETER[&quot;False easting&quot;,400000,
+##                     LENGTHUNIT[&quot;metre&quot;,1],
+##                     ID[&quot;EPSG&quot;,8806]],
+##                 PARAMETER[&quot;False northing&quot;,-100000,
+##                     LENGTHUNIT[&quot;metre&quot;,1],
+##                     ID[&quot;EPSG&quot;,8807]]],
+##             CS[Cartesian,2],
+##                 AXIS[&quot;(E)&quot;,east,
+##                     ORDER[1],
+##                     LENGTHUNIT[&quot;metre&quot;,1,
+##                         ID[&quot;EPSG&quot;,9001]]],
+##                 AXIS[&quot;(N)&quot;,north,
+##                     ORDER[2],
+##                     LENGTHUNIT[&quot;metre&quot;,1,
+##                         ID[&quot;EPSG&quot;,9001]]]]],
+##     TARGETCRS[
+##         GEOGCRS[&quot;WGS 84&quot;,
+##             DATUM[&quot;World Geodetic System 1984&quot;,
+##                 ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##                     LENGTHUNIT[&quot;metre&quot;,1]]],
+##             PRIMEM[&quot;Greenwich&quot;,0,
+##                 ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             CS[ellipsoidal,2],
+##                 AXIS[&quot;latitude&quot;,north,
+##                     ORDER[1],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##                 AXIS[&quot;longitude&quot;,east,
+##                     ORDER[2],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             ID[&quot;EPSG&quot;,4326]]],
+##     ABRIDGEDTRANSFORMATION[&quot;Transformation from unknown to WGS84&quot;,
+##         METHOD[&quot;Position Vector transformation (geog2D domain)&quot;,
+##             ID[&quot;EPSG&quot;,9606]],
+##         PARAMETER[&quot;X-axis translation&quot;,446.448,
+##             ID[&quot;EPSG&quot;,8605]],
+##         PARAMETER[&quot;Y-axis translation&quot;,-125.157,
+##             ID[&quot;EPSG&quot;,8606]],
+##         PARAMETER[&quot;Z-axis translation&quot;,542.06,
+##             ID[&quot;EPSG&quot;,8607]],
+##         PARAMETER[&quot;X-axis rotation&quot;,0.1502,
+##             ID[&quot;EPSG&quot;,8608]],
+##         PARAMETER[&quot;Y-axis rotation&quot;,0.247,
+##             ID[&quot;EPSG&quot;,8609]],
+##         PARAMETER[&quot;Z-axis rotation&quot;,0.8421,
+##             ID[&quot;EPSG&quot;,8610]],
+##         PARAMETER[&quot;Scale difference&quot;,0.9999795106,
+##             ID[&quot;EPSG&quot;,8611]]]]</code></pre>
 <p>Using the default setting to remove the unintended <code>BOUNDCRS</code> representation, we can get what was (probably) intended (when the <strong>sp</strong> version is as was before this work-around was added, the following two chunks yield <code>BOUNDCRS</code> for some versions of PROJ/GDAL:</p>
 <pre class="r"><code>orig1a &lt;- CRS(slot(orig, &quot;projargs&quot;))
 cat(wkt(orig1a), &quot;\n&quot;)</code></pre>
-<pre><code>## PROJCRS[&quot;unknown&quot;,
-##     BASEGEOGCRS[&quot;unknown&quot;,
-##         DATUM[&quot;OSGB 1936&quot;,
-##             ELLIPSOID[&quot;Airy 1830&quot;,6377563.396,299.3249646,
-##                 LENGTHUNIT[&quot;metre&quot;,1]],
-##             ID[&quot;EPSG&quot;,6277]],
-##         PRIMEM[&quot;Greenwich&quot;,0,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8901]]],
-##     CONVERSION[&quot;unknown&quot;,
-##         METHOD[&quot;Transverse Mercator&quot;,
-##             ID[&quot;EPSG&quot;,9807]],
-##         PARAMETER[&quot;Latitude of natural origin&quot;,49,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8801]],
-##         PARAMETER[&quot;Longitude of natural origin&quot;,-2,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8802]],
-##         PARAMETER[&quot;Scale factor at natural origin&quot;,0.9996012717,
-##             SCALEUNIT[&quot;unity&quot;,1],
-##             ID[&quot;EPSG&quot;,8805]],
-##         PARAMETER[&quot;False easting&quot;,400000,
-##             LENGTHUNIT[&quot;metre&quot;,1],
-##             ID[&quot;EPSG&quot;,8806]],
-##         PARAMETER[&quot;False northing&quot;,-100000,
-##             LENGTHUNIT[&quot;metre&quot;,1],
-##             ID[&quot;EPSG&quot;,8807]]],
-##     CS[Cartesian,2],
-##         AXIS[&quot;(E)&quot;,east,
-##             ORDER[1],
-##             LENGTHUNIT[&quot;metre&quot;,1,
-##                 ID[&quot;EPSG&quot;,9001]]],
-##         AXIS[&quot;(N)&quot;,north,
-##             ORDER[2],
-##             LENGTHUNIT[&quot;metre&quot;,1,
-##                 ID[&quot;EPSG&quot;,9001]]]]</code></pre>
+<pre><code>## BOUNDCRS[
+##     SOURCECRS[
+##         PROJCRS[&quot;unknown&quot;,
+##             BASEGEOGCRS[&quot;unknown&quot;,
+##                 DATUM[&quot;OSGB 1936&quot;,
+##                     ELLIPSOID[&quot;Airy 1830&quot;,6377563.396,299.3249646,
+##                         LENGTHUNIT[&quot;metre&quot;,1]],
+##                     ID[&quot;EPSG&quot;,6277]],
+##                 PRIMEM[&quot;Greenwich&quot;,0,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8901]]],
+##             CONVERSION[&quot;unknown&quot;,
+##                 METHOD[&quot;Transverse Mercator&quot;,
+##                     ID[&quot;EPSG&quot;,9807]],
+##                 PARAMETER[&quot;Latitude of natural origin&quot;,49,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8801]],
+##                 PARAMETER[&quot;Longitude of natural origin&quot;,-2,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8802]],
+##                 PARAMETER[&quot;Scale factor at natural origin&quot;,0.9996012717,
+##                     SCALEUNIT[&quot;unity&quot;,1],
+##                     ID[&quot;EPSG&quot;,8805]],
+##                 PARAMETER[&quot;False easting&quot;,400000,
+##                     LENGTHUNIT[&quot;metre&quot;,1],
+##                     ID[&quot;EPSG&quot;,8806]],
+##                 PARAMETER[&quot;False northing&quot;,-100000,
+##                     LENGTHUNIT[&quot;metre&quot;,1],
+##                     ID[&quot;EPSG&quot;,8807]]],
+##             CS[Cartesian,2],
+##                 AXIS[&quot;(E)&quot;,east,
+##                     ORDER[1],
+##                     LENGTHUNIT[&quot;metre&quot;,1,
+##                         ID[&quot;EPSG&quot;,9001]]],
+##                 AXIS[&quot;(N)&quot;,north,
+##                     ORDER[2],
+##                     LENGTHUNIT[&quot;metre&quot;,1,
+##                         ID[&quot;EPSG&quot;,9001]]]]],
+##     TARGETCRS[
+##         GEOGCRS[&quot;WGS 84&quot;,
+##             DATUM[&quot;World Geodetic System 1984&quot;,
+##                 ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##                     LENGTHUNIT[&quot;metre&quot;,1]]],
+##             PRIMEM[&quot;Greenwich&quot;,0,
+##                 ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             CS[ellipsoidal,2],
+##                 AXIS[&quot;latitude&quot;,north,
+##                     ORDER[1],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##                 AXIS[&quot;longitude&quot;,east,
+##                     ORDER[2],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             ID[&quot;EPSG&quot;,4326]]],
+##     ABRIDGEDTRANSFORMATION[&quot;Transformation from unknown to WGS84&quot;,
+##         METHOD[&quot;Position Vector transformation (geog2D domain)&quot;,
+##             ID[&quot;EPSG&quot;,9606]],
+##         PARAMETER[&quot;X-axis translation&quot;,446.448,
+##             ID[&quot;EPSG&quot;,8605]],
+##         PARAMETER[&quot;Y-axis translation&quot;,-125.157,
+##             ID[&quot;EPSG&quot;,8606]],
+##         PARAMETER[&quot;Z-axis translation&quot;,542.06,
+##             ID[&quot;EPSG&quot;,8607]],
+##         PARAMETER[&quot;X-axis rotation&quot;,0.1502,
+##             ID[&quot;EPSG&quot;,8608]],
+##         PARAMETER[&quot;Y-axis rotation&quot;,0.247,
+##             ID[&quot;EPSG&quot;,8609]],
+##         PARAMETER[&quot;Z-axis rotation&quot;,0.8421,
+##             ID[&quot;EPSG&quot;,8610]],
+##         PARAMETER[&quot;Scale difference&quot;,0.9999795106,
+##             ID[&quot;EPSG&quot;,8611]]]]</code></pre>
 <p>The <code>sp::rebuild_CRS()</code> method for <code>&quot;CRS&quot;</code> objects (and thus that for <code>&quot;Spatial&quot;</code> objects) can be used to do the same as using <code>sp::CRS()</code> directly, with special treatment for a number of other objects inheriting from <code>&quot;Spatial&quot;</code>:</p>
 <pre class="r"><code>orig1b &lt;- rebuild_CRS(orig)
 cat(wkt(orig1b), &quot;\n&quot;)</code></pre>
-<pre><code>## PROJCRS[&quot;unknown&quot;,
-##     BASEGEOGCRS[&quot;unknown&quot;,
-##         DATUM[&quot;OSGB 1936&quot;,
-##             ELLIPSOID[&quot;Airy 1830&quot;,6377563.396,299.3249646,
-##                 LENGTHUNIT[&quot;metre&quot;,1]],
-##             ID[&quot;EPSG&quot;,6277]],
-##         PRIMEM[&quot;Greenwich&quot;,0,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8901]]],
-##     CONVERSION[&quot;unknown&quot;,
-##         METHOD[&quot;Transverse Mercator&quot;,
-##             ID[&quot;EPSG&quot;,9807]],
-##         PARAMETER[&quot;Latitude of natural origin&quot;,49,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8801]],
-##         PARAMETER[&quot;Longitude of natural origin&quot;,-2,
-##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
-##             ID[&quot;EPSG&quot;,8802]],
-##         PARAMETER[&quot;Scale factor at natural origin&quot;,0.9996012717,
-##             SCALEUNIT[&quot;unity&quot;,1],
-##             ID[&quot;EPSG&quot;,8805]],
-##         PARAMETER[&quot;False easting&quot;,400000,
-##             LENGTHUNIT[&quot;metre&quot;,1],
-##             ID[&quot;EPSG&quot;,8806]],
-##         PARAMETER[&quot;False northing&quot;,-100000,
-##             LENGTHUNIT[&quot;metre&quot;,1],
-##             ID[&quot;EPSG&quot;,8807]]],
-##     CS[Cartesian,2],
-##         AXIS[&quot;(E)&quot;,east,
-##             ORDER[1],
-##             LENGTHUNIT[&quot;metre&quot;,1,
-##                 ID[&quot;EPSG&quot;,9001]]],
-##         AXIS[&quot;(N)&quot;,north,
-##             ORDER[2],
-##             LENGTHUNIT[&quot;metre&quot;,1,
-##                 ID[&quot;EPSG&quot;,9001]]]]</code></pre>
+<pre><code>## BOUNDCRS[
+##     SOURCECRS[
+##         PROJCRS[&quot;unknown&quot;,
+##             BASEGEOGCRS[&quot;unknown&quot;,
+##                 DATUM[&quot;OSGB 1936&quot;,
+##                     ELLIPSOID[&quot;Airy 1830&quot;,6377563.396,299.3249646,
+##                         LENGTHUNIT[&quot;metre&quot;,1]],
+##                     ID[&quot;EPSG&quot;,6277]],
+##                 PRIMEM[&quot;Greenwich&quot;,0,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8901]]],
+##             CONVERSION[&quot;unknown&quot;,
+##                 METHOD[&quot;Transverse Mercator&quot;,
+##                     ID[&quot;EPSG&quot;,9807]],
+##                 PARAMETER[&quot;Latitude of natural origin&quot;,49,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8801]],
+##                 PARAMETER[&quot;Longitude of natural origin&quot;,-2,
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##                     ID[&quot;EPSG&quot;,8802]],
+##                 PARAMETER[&quot;Scale factor at natural origin&quot;,0.9996012717,
+##                     SCALEUNIT[&quot;unity&quot;,1],
+##                     ID[&quot;EPSG&quot;,8805]],
+##                 PARAMETER[&quot;False easting&quot;,400000,
+##                     LENGTHUNIT[&quot;metre&quot;,1],
+##                     ID[&quot;EPSG&quot;,8806]],
+##                 PARAMETER[&quot;False northing&quot;,-100000,
+##                     LENGTHUNIT[&quot;metre&quot;,1],
+##                     ID[&quot;EPSG&quot;,8807]]],
+##             CS[Cartesian,2],
+##                 AXIS[&quot;(E)&quot;,east,
+##                     ORDER[1],
+##                     LENGTHUNIT[&quot;metre&quot;,1,
+##                         ID[&quot;EPSG&quot;,9001]]],
+##                 AXIS[&quot;(N)&quot;,north,
+##                     ORDER[2],
+##                     LENGTHUNIT[&quot;metre&quot;,1,
+##                         ID[&quot;EPSG&quot;,9001]]]]],
+##     TARGETCRS[
+##         GEOGCRS[&quot;WGS 84&quot;,
+##             DATUM[&quot;World Geodetic System 1984&quot;,
+##                 ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##                     LENGTHUNIT[&quot;metre&quot;,1]]],
+##             PRIMEM[&quot;Greenwich&quot;,0,
+##                 ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             CS[ellipsoidal,2],
+##                 AXIS[&quot;latitude&quot;,north,
+##                     ORDER[1],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##                 AXIS[&quot;longitude&quot;,east,
+##                     ORDER[2],
+##                     ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##             ID[&quot;EPSG&quot;,4326]]],
+##     ABRIDGEDTRANSFORMATION[&quot;Transformation from unknown to WGS84&quot;,
+##         METHOD[&quot;Position Vector transformation (geog2D domain)&quot;,
+##             ID[&quot;EPSG&quot;,9606]],
+##         PARAMETER[&quot;X-axis translation&quot;,446.448,
+##             ID[&quot;EPSG&quot;,8605]],
+##         PARAMETER[&quot;Y-axis translation&quot;,-125.157,
+##             ID[&quot;EPSG&quot;,8606]],
+##         PARAMETER[&quot;Z-axis translation&quot;,542.06,
+##             ID[&quot;EPSG&quot;,8607]],
+##         PARAMETER[&quot;X-axis rotation&quot;,0.1502,
+##             ID[&quot;EPSG&quot;,8608]],
+##         PARAMETER[&quot;Y-axis rotation&quot;,0.247,
+##             ID[&quot;EPSG&quot;,8609]],
+##         PARAMETER[&quot;Z-axis rotation&quot;,0.8421,
+##             ID[&quot;EPSG&quot;,8610]],
+##         PARAMETER[&quot;Scale difference&quot;,0.9999795106,
+##             ID[&quot;EPSG&quot;,8611]]]]</code></pre>
 <p>In practice, <code>sp::rebuild_CRS()</code> methods may be used, but users should check the output for coherence, and the PROJ function for extracting <code>SOURCECRS</code> from <code>BOUNDCRS</code> avoided if it has unfortunate consequences.</p>
 <div id="references" class="section level3 unnumbered">
 <h3 class="unnumbered">References</h3>

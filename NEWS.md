@@ -1,6 +1,10 @@
 # Please note that **rgdal** will be retired during 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
 
-# Version 1.6-5 (development, rev. 1198-)
+# Version 1.6-5 (development, 1200-)
+
+* add SharpYuv condition in src/Makevars.ucrt
+
+# Version 1.6-5 (2023-03-02, rev. 1198-1199)
 
 * Upgrade CXX11 to CXX17 (may cause problems for archaic OS)
 
