@@ -66,13 +66,7 @@ load_stuff <- function() {
   local_RGDAL_Init() #.Call('RGDAL_Init', PACKAGE="rgdal")
   rver <- getGDALVersionInfo()
   if (strsplit(strsplit(rver, ",")[[1]][1], " ")[[1]][2] == "3.6.0") warning("GDAL 3.6.0 has been officially retracted; use a later release:\nhttps://lists.osgeo.org/pipermail/gdal-dev/2022-December/056621.html")
-}
-
-local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
-
-.onAttach <- function(lib, pkg) {
   ver_ok <- getGDALCheckVersion()
-  rver <- getGDALVersionInfo()
 
   gdl <- getGDAL_DATA_Path()
 #  skip_writable <- Sys.getenv("PROJ_SKIP_READ_USER_WRITABLE_DIRECTORY")
@@ -95,7 +89,7 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
     assign("has_proj_def.dat", pdd, envir=.RGDAL_CACHE)
   }
 
-  Smess <- paste('Please note that rgdal will be retired during 2023,\nplan transition to sf/stars/terra functions using GDAL and PROJ\nat your earliest convenience.\nSee https://r-spatial.org/r/2022/04/12/evolution.html and https://github.com/r-spatial/evolution\n', 'rgdal: version: ',
+  Smess <- paste('Please note that rgdal will be retired during October 2023,\nplan transition to sf/stars/terra functions using GDAL and PROJ\nat your earliest convenience.\nSee https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution\n', 'rgdal: version: ',
     utils::packageDescription("rgdal")$Version,
     ', (SVN revision ', svn_version, ')\n',
     'Geospatial Data Abstraction Library ',
@@ -129,6 +123,12 @@ local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
       get(".rgdal_set.PROJ_LIB", envir=.RGDAL_CACHE), "\n", sep="")
   }
   packageStartupMessage(Smess, appendLF = FALSE)
+}
+
+local_RGDAL_Init <- function() .Call('RGDAL_Init', PACKAGE="rgdal")
+
+.onAttach <- function(lib, pkg) {
+
 }
 
 #.Last.lib <- function(lib, pkg) {

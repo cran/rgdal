@@ -1,6 +1,10 @@
-# Please note that **rgdal** will be retired during 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience.
+# Please note that **rgdal** will be retired during 2023, plan transition to sf/stars/terra functions using GDAL and PROJ at your earliest convenience (see https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs for guidance).
 
-# Version 1.6-5 (development, 1200-)
+# Version 1.6-7 (development, rev. 1202-)
+
+* Make retirement in October 2023 explicit, move package start-up messages to load from attach
+
+# Version 1.6-6 (2023-04-18, rev. 1200-1201)
 
 * add SharpYuv condition in src/Makevars.ucrt
 
